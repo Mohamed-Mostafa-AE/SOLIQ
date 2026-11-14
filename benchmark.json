@@ -1,0 +1,2507 @@
+{
+  "project": "Soliq",
+  "schemaVersion": 1,
+  "evidenceClass": "synthetic_software_diagnostics",
+  "generatedAt": "2026-11-14T22:56:48.222Z",
+  "provenance": {
+    "commit": null,
+    "workingTreeDirty": null,
+    "engineSHA256": "c985cb1b939b14671a85a852ae85ebc6b4c98c5e06fc4495a60e3d5597b42403",
+    "fixture": "demoWeather(year=2024); deterministic, invented daily values",
+    "githubRun": null,
+    "runtime": "v24.22.1",
+    "platform": "win32",
+    "architecture": "x64",
+    "cpu": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz"
+  },
+  "checks": {
+    "configurationCases": 81,
+    "strategyRuns": 243,
+    "dailyRecords": 88938,
+    "largestDailyResidualMm": 3.730349362740526e-14,
+    "largestIntegratedClosureErrorMm": 2.2737367544323206e-12,
+    "conservationPassed": true,
+    "irrigationLimitsPassed": true,
+    "storageBoundsPassed": true,
+    "deterministic": true,
+    "candidateOrderInvariant": true,
+    "zeroWaterCheckPassed": true
+  },
+  "performance": {
+    "warmups": 5,
+    "repetitions": 30,
+    "medianMs": 1.582400000000007,
+    "p95Ms": 1.998199999999997,
+    "samplesMs": [
+      1.5773000000000366,
+      1.5910000000000082,
+      1.585800000000006,
+      1.580600000000004,
+      1.5892000000000053,
+      1.619799999999998,
+      2.390199999999993,
+      1.6499000000000024,
+      1.619100000000003,
+      1.5795999999999708,
+      1.5801999999999907,
+      1.5760999999999967,
+      1.57650000000001,
+      1.5708999999999946,
+      1.5842000000000098,
+      1.5750000000000455,
+      1.7315000000000396,
+      1.5775000000000432,
+      1.571899999999971,
+      1.5784000000000447,
+      1.5778999999999996,
+      1.574700000000007,
+      1.5740999999999872,
+      1.574199999999962,
+      1.6036000000000286,
+      1.998199999999997,
+      1.6628999999999792,
+      1.644299999999987,
+      1.640199999999993,
+      1.6424000000000092
+    ],
+    "scope": "Three strategies over 366 days; excludes downloads, rendering and exports. Machine-specific, not a comparative speed claim."
+  },
+  "independentAgronomicValidation": {
+    "status": "not_performed",
+    "yield": null,
+    "soilCarbon": null,
+    "waterSavings": null
+  },
+  "fixtures": [
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 138.26497303167076,
+          "deficit": 1337.7059013517774,
+          "finalStorage": 1.9350269683292254,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 138.26497247266724,
+          "deficit": 1230.2607679664231,
+          "finalStorage": 1.9350275273325872,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 138.0285348638909,
+          "deficit": 1184.5180442396916,
+          "finalStorage": 2.171465136109193,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 251.52994542425284,
+          "deficit": 1224.4409289591952,
+          "finalStorage": 3.8700545757471567,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 251.52994494533488,
+          "deficit": 1116.9957954937556,
+          "finalStorage": 3.8700550546651744,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 251.0570667340621,
+          "deficit": 1071.4895123695203,
+          "finalStorage": 4.342933265937752,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 364.794917816835,
+          "deficit": 1111.175956566613,
+          "finalStorage": 5.805082183165089,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 364.7949174143881,
+          "deficit": 1003.7308230247023,
+          "finalStorage": 5.805082585612215,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 364.08559860423406,
+          "deficit": 958.4609804993484,
+          "finalStorage": 6.514401395766312,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 438.2649730316709,
+          "deficit": 1037.7059013517771,
+          "finalStorage": 1.9350269683292254,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 438.26497247266735,
+          "deficit": 930.2607679664231,
+          "finalStorage": 1.9350275273325872,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 438.0285348638907,
+          "deficit": 884.5180442396918,
+          "finalStorage": 2.171465136109193,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 551.5299454242528,
+          "deficit": 924.4409289591953,
+          "finalStorage": 3.8700545757471567,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 551.529944945335,
+          "deficit": 816.9957954937554,
+          "finalStorage": 3.8700550546651744,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 551.0570667340625,
+          "deficit": 771.48951236952,
+          "finalStorage": 4.342933265937752,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 664.7949178168348,
+          "deficit": 811.1759565666133,
+          "finalStorage": 5.805082183165089,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 664.7949174143866,
+          "deficit": 703.7308230247038,
+          "finalStorage": 5.805082585612215,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 664.0855986042338,
+          "deficit": 658.4609804993486,
+          "finalStorage": 6.514401395766312,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1138.264972803245,
+          "deficit": 337.7059015802031,
+          "finalStorage": 1.935027196753481,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1138.2643704274558,
+          "deficit": 230.26137001163465,
+          "finalStorage": 1.9356295725427142,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1138.0232725182118,
+          "deficit": 184.52330658537062,
+          "finalStorage": 2.1767274817903126,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1251.529600020437,
+          "deficit": 224.44127436301096,
+          "finalStorage": 3.870399979561734,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1251.4536683955876,
+          "deficit": 117.07207204350289,
+          "finalStorage": 3.9463316044126984,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1249.7873102829979,
+          "deficit": 72.75926882058457,
+          "finalStorage": 5.612689717003453,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1364.7293463273502,
+          "deficit": 111.24152805609788,
+          "finalStorage": 5.870653672648022,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1340.2862662585512,
+          "deficit": 28.23947418053922,
+          "finalStorage": 19.70341922869051,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1291.643603360841,
+          "deficit": 30.90297574274132,
+          "finalStorage": 22.51021168969679,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 184.81077375262208,
+          "deficit": 1291.160100630826,
+          "finalStorage": 5.389226247377779,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 184.76751169334963,
+          "deficit": 1183.7582287457408,
+          "finalStorage": 5.432488306650246,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 184.3554807752794,
+          "deficit": 1138.191098328303,
+          "finalStorage": 5.844519224720582,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 294.6064800310427,
+          "deficit": 1181.3643943524053,
+          "finalStorage": 10.793519968957265,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 294.5350233866996,
+          "deficit": 1073.990717052391,
+          "finalStorage": 10.864976613300492,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 293.68755878671556,
+          "deficit": 1028.859020316867,
+          "finalStorage": 11.712441213284606,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 404.4021863094635,
+          "deficit": 1071.5686880739845,
+          "finalStorage": 16.19781369053675,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 404.28669798994645,
+          "deficit": 964.239042449144,
+          "finalStorage": 16.313302010053533,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 403.0196367981518,
+          "deficit": 919.5269423054306,
+          "finalStorage": 17.580363201848634,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 484.81077375262186,
+          "deficit": 991.1601006308263,
+          "finalStorage": 5.389226247377779,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 484.76751169334966,
+          "deficit": 883.7582287457408,
+          "finalStorage": 5.432488306650246,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 484.3554807752794,
+          "deficit": 838.191098328303,
+          "finalStorage": 5.844519224720582,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 594.6064800310437,
+          "deficit": 881.3643943524044,
+          "finalStorage": 10.793519968957265,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 594.5350233866997,
+          "deficit": 773.9907170523908,
+          "finalStorage": 10.864976613300492,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 593.6875587867162,
+          "deficit": 728.8590203168662,
+          "finalStorage": 11.712441213284606,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 704.4021863094625,
+          "deficit": 771.5686880739855,
+          "finalStorage": 16.19781369053675,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 704.286482529065,
+          "deficit": 664.2392579100255,
+          "finalStorage": 16.3135174709343,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 703.0196367981521,
+          "deficit": 619.5269423054303,
+          "finalStorage": 17.580363201848634,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1184.211230244847,
+          "deficit": 291.75964413860106,
+          "finalStorage": 5.988769755150813,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1181.9107445545246,
+          "deficit": 186.61499588456581,
+          "finalStorage": 8.289255445475295,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1178.6660092009488,
+          "deficit": 143.88056990263362,
+          "finalStorage": 11.533990799052685,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1292.0447249166905,
+          "deficit": 183.92614946675758,
+          "finalStorage": 13.355275083308872,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1281.3685714752146,
+          "deficit": 87.15716896387585,
+          "finalStorage": 24.03142852478622,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1267.4285452864647,
+          "deficit": 55.11803381711775,
+          "finalStorage": 37.971454713535664,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1391.4870256230188,
+          "deficit": 84.48384876042928,
+          "finalStorage": 29.112974376980908,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1331.604009565486,
+          "deficit": 36.921730873604474,
+          "finalStorage": 69.34299654412764,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1282.024315130346,
+          "deficit": 40.52226397323648,
+          "finalStorage": 78.72443038380288,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 256.14216931678266,
+          "deficit": 1219.8287050666654,
+          "finalStorage": 9.05783068321759,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 255.50865498883115,
+          "deficit": 1113.0170854502594,
+          "finalStorage": 9.691345011168774,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 255.54216751434822,
+          "deficit": 1067.0044115892342,
+          "finalStorage": 9.657832485651591,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 362.13747683855894,
+          "deficit": 1113.833397544889,
+          "finalStorage": 18.26252316144096,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 360.76940244073296,
+          "deficit": 1007.7563379983575,
+          "finalStorage": 19.63059755926681,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 360.90270490145434,
+          "deficit": 961.643874202128,
+          "finalStorage": 19.49729509854591,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 467.14737661772574,
+          "deficit": 1008.8234977657223,
+          "finalStorage": 28.45262338227453,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 465.24892041744096,
+          "deficit": 903.2768200216494,
+          "finalStorage": 30.351079582558928,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 464.410316451338,
+          "deficit": 858.1362626522443,
+          "finalStorage": 31.189683548661723,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 556.1421693167825,
+          "deficit": 919.8287050666655,
+          "finalStorage": 9.05783068321759,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 555.5086549888305,
+          "deficit": 813.01708545026,
+          "finalStorage": 9.691345011168774,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 555.5421675143486,
+          "deficit": 767.0044115892338,
+          "finalStorage": 9.657832485651591,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 662.1374768385595,
+          "deficit": 813.8333975448886,
+          "finalStorage": 18.26252316144096,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 660.5637769341681,
+          "deficit": 707.9619635049223,
+          "finalStorage": 19.83622306583157,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 660.9027049014545,
+          "deficit": 661.6438742021279,
+          "finalStorage": 19.49729509854591,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 767.0287720408289,
+          "deficit": 708.9421023426191,
+          "finalStorage": 28.57122795917186,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 765.0078905687441,
+          "deficit": 603.5178498703464,
+          "finalStorage": 30.592109431255864,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 764.0493772088589,
+          "deficit": 558.4972018947235,
+          "finalStorage": 31.550622791141567,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1241.7190463286395,
+          "deficit": 234.25182805480858,
+          "finalStorage": 23.48095367135931,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1225.6621492564987,
+          "deficit": 142.8635911825918,
+          "finalStorage": 39.537850743500634,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1213.0850674462674,
+          "deficit": 109.46151165731499,
+          "finalStorage": 52.11493255373385,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1333.3765460549735,
+          "deficit": 142.5943283284746,
+          "finalStorage": 47.023453945024144,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1298.4711711410032,
+          "deficit": 70.05456929808724,
+          "finalStorage": 81.92882885899598,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1272.5513638517455,
+          "deficit": 49.99521525183695,
+          "finalStorage": 107.84863614825468,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": -30,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1407.5871638286667,
+          "deficit": 68.38371055478137,
+          "finalStorage": 88.0128361713325,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1321.4145582943136,
+          "deficit": 47.111182144776876,
+          "finalStorage": 174.1854417056865,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1278.218341252954,
+          "deficit": 44.32823785062851,
+          "finalStorage": 132.9194323112191,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 137.7692390835719,
+          "deficit": 1597.4938982992526,
+          "finalStorage": 2.4307609164279347,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 137.76923169918436,
+          "deficit": 1423.892339083548,
+          "finalStorage": 2.430768300815654,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 137.5114429977642,
+          "deficit": 1411.7543419609287,
+          "finalStorage": 2.6885570022357443,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 250.53847045246835,
+          "deficit": 1484.724666930356,
+          "finalStorage": 4.861529547531682,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 250.53846339836886,
+          "deficit": 1311.1231073843635,
+          "finalStorage": 4.861536601631308,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 250.02285917284684,
+          "deficit": 1299.242925785846,
+          "finalStorage": 5.377140827153366,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 363.30770182136433,
+          "deficit": 1371.95543556146,
+          "finalStorage": 7.2922981786354315,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 363.3076950785318,
+          "deficit": 1198.3538757042004,
+          "finalStorage": 7.292304921468283,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 362.534275347929,
+          "deficit": 1186.7315096107639,
+          "finalStorage": 8.065724652070989,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 437.769239083572,
+          "deficit": 1297.4938982992524,
+          "finalStorage": 2.4307609164279347,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 437.76923169918433,
+          "deficit": 1123.892339083548,
+          "finalStorage": 2.430768300815654,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 437.511442997764,
+          "deficit": 1111.7543419609287,
+          "finalStorage": 2.6885570022357443,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 550.538470452469,
+          "deficit": 1184.7246669303554,
+          "finalStorage": 4.861529547531682,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 550.538463398369,
+          "deficit": 1011.1231073843633,
+          "finalStorage": 4.861536601631308,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 550.0228591728468,
+          "deficit": 999.2429257858461,
+          "finalStorage": 5.377140827153366,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 663.3077018213636,
+          "deficit": 1071.955435561461,
+          "finalStorage": 7.2922981786354315,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 663.3076950785313,
+          "deficit": 898.353875704201,
+          "finalStorage": 7.292304921468283,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 662.5342753479287,
+          "deficit": 886.7315096107642,
+          "finalStorage": 8.065724652070989,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1137.7692390835728,
+          "deficit": 597.4938982992517,
+          "finalStorage": 2.4307609164279347,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1137.769231699185,
+          "deficit": 423.8923390835473,
+          "finalStorage": 2.430768300815654,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1137.511442997765,
+          "deficit": 411.75434196092783,
+          "finalStorage": 2.6885570022357443,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1250.5384704524693,
+          "deficit": 484.72466693035517,
+          "finalStorage": 4.861529547531682,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1250.5384582336744,
+          "deficit": 311.12311254905785,
+          "finalStorage": 4.8615417663250735,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1250.0228591728473,
+          "deficit": 299.2429257858455,
+          "finalStorage": 5.377140827153366,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1363.307701821366,
+          "deficit": 371.95543556145844,
+          "finalStorage": 7.2922981786354315,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1363.3073217521387,
+          "deficit": 198.35424903059356,
+          "finalStorage": 7.292678247861381,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1362.5330155043246,
+          "deficit": 186.73276945436828,
+          "finalStorage": 8.06698449567568,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 183.85953486902847,
+          "deficit": 1551.403602513796,
+          "finalStorage": 6.3404651309713955,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 183.7682520817436,
+          "deficit": 1377.8933187009886,
+          "finalStorage": 6.431747918256416,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 183.35024127760346,
+          "deficit": 1365.9155436810893,
+          "finalStorage": 6.849758722396321,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 292.690161230904,
+          "deficit": 1442.5729761519206,
+          "finalStorage": 12.709838769095699,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 292.5365041634872,
+          "deficit": 1269.125066619245,
+          "finalStorage": 12.863495836512833,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 291.6588254267523,
+          "deficit": 1257.6069595319404,
+          "finalStorage": 13.741174573247712,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 401.5207875927801,
+          "deficit": 1333.7423497900443,
+          "finalStorage": 19.07921240722001,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 401.30139129628617,
+          "deficit": 1160.3601794864462,
+          "finalStorage": 19.298608703713903,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 399.96740957590106,
+          "deficit": 1149.2983753827918,
+          "finalStorage": 20.63259042409911,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 483.8595348690285,
+          "deficit": 1251.403602513796,
+          "finalStorage": 6.3404651309713955,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 483.76825208174324,
+          "deficit": 1077.893318700989,
+          "finalStorage": 6.431747918256416,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 483.3502412776036,
+          "deficit": 1065.9155436810893,
+          "finalStorage": 6.849758722396321,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 592.6901612309046,
+          "deficit": 1142.5729761519199,
+          "finalStorage": 12.709838769095699,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 592.5365041634867,
+          "deficit": 969.1250666192456,
+          "finalStorage": 12.863495836512833,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 591.658825426752,
+          "deficit": 957.6069595319409,
+          "finalStorage": 13.741174573247712,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 701.5207875927799,
+          "deficit": 1033.7423497900445,
+          "finalStorage": 19.07921240722001,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 701.3013912962864,
+          "deficit": 860.3601794864459,
+          "finalStorage": 19.298608703713903,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 699.9674095759007,
+          "deficit": 849.2983753827922,
+          "finalStorage": 20.63259042409911,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1183.8595348690296,
+          "deficit": 551.4036025137948,
+          "finalStorage": 6.3404651309713955,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1183.6405411613162,
+          "deficit": 378.0210296214161,
+          "finalStorage": 6.559458838684088,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1183.3502412776036,
+          "deficit": 365.9155436810893,
+          "finalStorage": 6.849758722396321,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1292.6901612309046,
+          "deficit": 442.5729761519199,
+          "finalStorage": 12.709838769095699,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1291.9709243493398,
+          "deficit": 269.69064643339243,
+          "finalStorage": 13.42907565066036,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1291.2364998287635,
+          "deficit": 258.02928512992935,
+          "finalStorage": 14.163500171237727,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1401.4996951249655,
+          "deficit": 333.76344225785897,
+          "finalStorage": 19.100304875034215,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1398.6683715626423,
+          "deficit": 162.99319922009,
+          "finalStorage": 21.931628437357563,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1396.8420524961743,
+          "deficit": 152.4237324625185,
+          "finalStorage": 23.757947503825115,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 254.93346047374442,
+          "deficit": 1480.32967690908,
+          "finalStorage": 10.266539526255288,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 254.02860278431214,
+          "deficit": 1307.63296799842,
+          "finalStorage": 11.171397215687788,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 254.32741725837008,
+          "deficit": 1294.9383677003227,
+          "finalStorage": 10.872582741630021,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 359.6748075956418,
+          "deficit": 1375.5883297871826,
+          "finalStorage": 20.725192404358154,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 358.0572055686243,
+          "deficit": 1203.604365214108,
+          "finalStorage": 22.342794431375577,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 358.42544569807626,
+          "deficit": 1190.8403392606165,
+          "finalStorage": 21.974554301923646,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 463.86402106983957,
+          "deficit": 1271.399116312985,
+          "finalStorage": 31.735978930160172,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 461.5805094011183,
+          "deficit": 1100.0810613816138,
+          "finalStorage": 34.01949059888158,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 461.28219919447474,
+          "deficit": 1087.983585764218,
+          "finalStorage": 34.31780080552525,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 554.9334604737447,
+          "deficit": 1180.3296769090798,
+          "finalStorage": 10.266539526255288,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 554.0286027843123,
+          "deficit": 1007.63296799842,
+          "finalStorage": 11.171397215687788,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 554.3274172583699,
+          "deficit": 994.9383677003229,
+          "finalStorage": 10.872582741630021,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 659.6748075956416,
+          "deficit": 1075.5883297871828,
+          "finalStorage": 20.725192404358154,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 658.0572055686242,
+          "deficit": 903.604365214108,
+          "finalStorage": 22.342794431375577,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 658.4254456980768,
+          "deficit": 890.840339260616,
+          "finalStorage": 21.974554301923646,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 763.8410021695469,
+          "deficit": 971.4221352132776,
+          "finalStorage": 31.758997830452554,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 761.5020963330225,
+          "deficit": 800.1594744497098,
+          "finalStorage": 34.09790366697774,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 761.1947176675963,
+          "deficit": 788.0710672910966,
+          "finalStorage": 34.405282332403466,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1254.933460473745,
+          "deficit": 480.32967690907935,
+          "finalStorage": 10.266539526255288,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1246.56897771284,
+          "deficit": 315.09259306989225,
+          "finalStorage": 18.63102228716134,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1249.2590142412573,
+          "deficit": 300.00677071743553,
+          "finalStorage": 15.940985758742976,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1357.085612746753,
+          "deficit": 378.17752463607144,
+          "finalStorage": 23.31438725324795,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1344.3399744603646,
+          "deficit": 217.32159632236767,
+          "finalStorage": 36.06002553963615,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1342.9125852716923,
+          "deficit": 206.3531996870006,
+          "finalStorage": 37.48741472830774,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 0,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1456.0356506950682,
+          "deficit": 279.22748668775625,
+          "finalStorage": 39.56434930493434,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1434.4834375619812,
+          "deficit": 127.17813322075108,
+          "finalStorage": 61.11656243801974,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1429.7828159788573,
+          "deficit": 119.4829689798355,
+          "finalStorage": 65.81718402114285,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 133.34559904882752,
+          "deficit": 1220.4810055995883,
+          "finalStorage": 6.854400951172439,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 133.2941214501214,
+          "deficit": 1030.9233074238532,
+          "finalStorage": 6.905878549878521,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 132.8178817626772,
+          "deficit": 1068.99856298507,
+          "finalStorage": 7.3821182373228185,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 241.65652084543234,
+          "deficit": 1112.1700838029835,
+          "finalStorage": 13.743479154567549,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 241.58728535129862,
+          "deficit": 922.6301435226759,
+          "finalStorage": 13.812714648701442,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 240.58582854867544,
+          "deficit": 961.2306161990718,
+          "finalStorage": 14.814171451324341,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 349.8369975178151,
+          "deficit": 1003.9896071306008,
+          "finalStorage": 20.763002482185048,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 349.87408321693283,
+          "deficit": 814.3433456570417,
+          "finalStorage": 20.725916783067493,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 348.13734017444426,
+          "deficit": 853.679104573303,
+          "finalStorage": 22.462659825555797,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 433.3455990488281,
+          "deficit": 920.4810055995879,
+          "finalStorage": 6.854400951172439,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 433.294121450122,
+          "deficit": 730.9233074238525,
+          "finalStorage": 6.905878549878521,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 432.8178817626774,
+          "deficit": 768.9985629850698,
+          "finalStorage": 7.3821182373228185,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 541.6565208454323,
+          "deficit": 812.1700838029836,
+          "finalStorage": 13.743479154567549,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 541.5872853512981,
+          "deficit": 622.6301435226765,
+          "finalStorage": 13.812714648701442,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 540.5858285486763,
+          "deficit": 661.2306161990709,
+          "finalStorage": 14.814171451324341,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 649.8369975178156,
+          "deficit": 703.9896071306003,
+          "finalStorage": 20.763002482185048,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 649.8740832169319,
+          "deficit": 514.3433456570426,
+          "finalStorage": 20.725916783067493,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 648.1373401744448,
+          "deficit": 553.6791045733024,
+          "finalStorage": 22.462659825555797,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1133.345599048828,
+          "deficit": 220.4810055995879,
+          "finalStorage": 6.854400951172439,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1111.4280255819026,
+          "deficit": 52.78940329207194,
+          "finalStorage": 21.957084541410183,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1130.409384804074,
+          "deficit": 71.40705994367318,
+          "finalStorage": 9.790615195926359,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1241.656520845433,
+          "deficit": 112.17008380298284,
+          "finalStorage": 13.743479154567549,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1128.6387524310167,
+          "deficit": 35.578676442957885,
+          "finalStorage": 36.3549615010649,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1167.9487170845425,
+          "deficit": 33.86772766320473,
+          "finalStorage": 27.234816121203924,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 50,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1324.096581974868,
+          "deficit": 29.730022673547865,
+          "finalStorage": 35.24653268569764,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1135.7911749850318,
+          "deficit": 28.42625388894271,
+          "finalStorage": 35.24653268569764,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1172.778952804346,
+          "deficit": 29.037491943401164,
+          "finalStorage": 38.43733909658358,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 176.8817627929384,
+          "deficit": 1176.9448418554775,
+          "finalStorage": 13.318237207061653,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 175.37700244020252,
+          "deficit": 988.840426433772,
+          "finalStorage": 14.822997559797367,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 176.31061071649043,
+          "deficit": 1025.5058340312569,
+          "finalStorage": 13.889389283509509,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 277.5245447954568,
+          "deficit": 1076.3020598529592,
+          "finalStorage": 27.875455204543435,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 275.6761374345105,
+          "deficit": 888.541291439464,
+          "finalStorage": 29.72386256548975,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 275.80726067281927,
+          "deficit": 926.009184074928,
+          "finalStorage": 29.592739327180585,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 375.688850525881,
+          "deficit": 978.137754122535,
+          "finalStorage": 44.91114947411879,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 375.16501033674604,
+          "deficit": 789.0524185372285,
+          "finalStorage": 45.43498966325417,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 372.7293951445172,
+          "deficit": 829.0870496032301,
+          "finalStorage": 47.87060485548273,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 476.8817627929383,
+          "deficit": 876.9448418554776,
+          "finalStorage": 13.318237207061653,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 475.3770024402029,
+          "deficit": 688.8404264337717,
+          "finalStorage": 14.822997559797367,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 476.3106107164906,
+          "deficit": 725.5058340312567,
+          "finalStorage": 13.889389283509509,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 577.5243537690035,
+          "deficit": 776.3022508794124,
+          "finalStorage": 27.875646230996946,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 575.6761374345103,
+          "deficit": 588.5412914394642,
+          "finalStorage": 29.72386256548975,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 575.805601883373,
+          "deficit": 626.0108428643742,
+          "finalStorage": 29.59439811662664,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 675.6884712709032,
+          "deficit": 678.1381333775128,
+          "finalStorage": 44.911528729096936,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 675.1581601447285,
+          "deficit": 489.059268729246,
+          "finalStorage": 45.44183985527093,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 672.7258042043277,
+          "deficit": 529.0906405434196,
+          "finalStorage": 47.87419579567291,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1176.0035474666633,
+          "deficit": 177.82305718175257,
+          "finalStorage": 14.196452533338178,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1126.854966604537,
+          "deficit": 37.36246226943763,
+          "finalStorage": 63.34503339546268,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1148.1453144347356,
+          "deficit": 53.671130313011645,
+          "finalStorage": 42.05468556526435,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1266.013443293542,
+          "deficit": 87.81316135487396,
+          "finalStorage": 39.38655670645994,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1128.0781629087526,
+          "deficit": 36.139265965221966,
+          "finalStorage": 73.46487532691359,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1166.8040352422677,
+          "deficit": 35.01240950547958,
+          "finalStorage": 93.5396104214666,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 150,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1316.4059415704016,
+          "deficit": 37.420663078014286,
+          "finalStorage": 101.21483257109465,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1134.1181949709637,
+          "deficit": 30.099233903010827,
+          "finalStorage": 94.31831912640928,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1168.0181024591475,
+          "deficit": 33.79834228859977,
+          "finalStorage": 70.40540924117437,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 248.37785940120438,
+          "deficit": 1105.4487452472115,
+          "finalStorage": 16.822140598795407,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 244.87484326258485,
+          "deficit": 919.3425856113897,
+          "finalStorage": 20.325156737415256,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 247.9695560468017,
+          "deficit": 953.8468887009456,
+          "finalStorage": 17.23044395319826,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 340.28484154321137,
+          "deficit": 1013.5417631052046,
+          "finalStorage": 40.11515845678845,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 339.1922944373636,
+          "deficit": 825.0251344366109,
+          "finalStorage": 41.2077055626363,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 337.8781632511253,
+          "deficit": 863.938281496622,
+          "finalStorage": 42.5218367488748,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 0,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 429.69487780696926,
+          "deficit": 924.1317268414466,
+          "finalStorage": 65.90512219303089,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 428.1002480512335,
+          "deficit": 736.117180822741,
+          "finalStorage": 67.49975194876647,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 425.7147315437736,
+          "deficit": 776.1017132039736,
+          "finalStorage": 69.8852684562265,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 548.377859401205,
+          "deficit": 805.4487452472109,
+          "finalStorage": 16.822140598795407,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 544.8748432625846,
+          "deficit": 619.34258561139,
+          "finalStorage": 20.325156737415256,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 547.9695560468019,
+          "deficit": 653.8468887009453,
+          "finalStorage": 17.23044395319826,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 640.0118150302978,
+          "deficit": 713.8147896181181,
+          "finalStorage": 40.38818496970162,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 638.0928687324738,
+          "deficit": 526.1245601415008,
+          "finalStorage": 42.307131267525435,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 637.0962583439857,
+          "deficit": 564.7201864037615,
+          "finalStorage": 43.30374165601461,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 300,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 729.3359131248097,
+          "deficit": 624.4906915236062,
+          "finalStorage": 66.26408687519042,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 726.6619616023567,
+          "deficit": 437.5554672716179,
+          "finalStorage": 68.93803839764415,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 724.6820299772415,
+          "deficit": 477.1344147705057,
+          "finalStorage": 70.91797002275887,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 0.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1217.7775843803136,
+          "deficit": 136.04902026810237,
+          "finalStorage": 47.42241561968791,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1126.3351636314812,
+          "deficit": 37.882265242493304,
+          "finalStorage": 138.86483636851867,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1156.1142863926104,
+          "deficit": 45.70215835513682,
+          "finalStorage": 109.08571360738965,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 1,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1282.6309142157734,
+          "deficit": 71.19569043264255,
+          "finalStorage": 97.7690857842263,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1124.953749357498,
+          "deficit": 39.263679516476486,
+          "finalStorage": 180.04953051155616,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1161.9163190711492,
+          "deficit": 39.90012567659801,
+          "finalStorage": 135.21546264109367,
+          "coverDays": 304
+        }
+      ]
+    },
+    {
+      "latitude": 45,
+      "capacity": 300,
+      "irrigation": 1000,
+      "rainScale": 1.5,
+      "weatherSHA256": "226c571f25dd26528ae5e7c39813339cdb0f9a97d5eccd255a83e78ebce186fd",
+      "results": [
+        {
+          "id": "R0",
+          "et": 1306.1339726436931,
+          "deficit": 47.69263200472278,
+          "finalStorage": 189.4660273563075,
+          "coverDays": 304
+        },
+        {
+          "id": "R1",
+          "et": 1127.259595753724,
+          "deficit": 36.9578331202506,
+          "finalStorage": 195.85371173304634,
+          "coverDays": 305
+        },
+        {
+          "id": "R2",
+          "et": 1167.4140140860497,
+          "deficit": 34.40243066169751,
+          "finalStorage": 163.70887937088736,
+          "coverDays": 304
+        }
+      ]
+    }
+  ]
+}

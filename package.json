@@ -1,0 +1,12 @@
+{
+  "name": "soliq",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "benchmark": "node benchmarks.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

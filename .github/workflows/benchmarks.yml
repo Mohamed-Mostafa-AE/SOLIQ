@@ -1,0 +1,34 @@
+name: Soliq tests and benchmarks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Numerical checks and reproducible benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Run automated tests
+        run: npm test
+      - name: Run benchmark matrix
+        run: npm run benchmark
+      - name: Check application syntax
+        run: node --check app.js
+      - name: Preserve benchmark outputs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: soliq-benchmarks-${{ github.sha }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 90
