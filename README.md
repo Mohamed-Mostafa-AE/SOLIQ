@@ -50,3 +50,9 @@ No visual brand endorsement by NASA or IEEE is claimed.
 Use Guided view for plain-language monthly baseline/alternative crop changes. Use Research view for methods, physical metrics, data provenance, diagnostics and exports. Select Arabic for the RTL interface. Both views share the same calculations; see ACCURACY_AND_LANGUAGE.md for validation limits.
 
 Run `npm test` and `npm run benchmark`. GitHub workflow: .github/workflows/benchmarks.yml. The included benchmark snapshot is local execution, not a GitHub run.
+
+## Conditional crop analyzer
+
+Open Crop analyzer to compare six sourced crop profiles, review seed/equipment/market/local constraints, change assumed growth-stage lengths and inspect water sensitivity. The rest of your baseline calendar stays in place. See CROP_ANALYZER.md.
+
+Browser checks run in GitHub Actions with a pinned test runner. To reproduce: `npm install --no-save --package-lock=false @playwright/test@1.65.1`, `npx playwright install --with-deps chromium`, then `npx playwright test`. Numerical tests remain dependency-free.

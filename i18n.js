@@ -121,6 +121,7 @@ entries.push(
  ['Explore a month','استكشف شهراً'],['Monthly crop sequence','تسلسل المحاصيل الشهري'],['Uncertainty and limitations','عدم اليقين وحدود الاستخدام'],['Detailed calculations','الحسابات التفصيلية']
  ,['Weather or field inputs changed during retrieval. Load again if needed.','تغيّر الطقس أو مدخلات الحقل أثناء التحميل. أعد الطلب عند الحاجة.']
 );
+entries.push(['Crop analyzer','\u0645\u062d\u0644\u0644 \u0627\u0644\u0645\u062d\u0627\u0635\u064a\u0644'],['Find crop options for your field.','\u0627\u0628\u062d\u062b \u0639\u0646 \u062e\u064a\u0627\u0631\u0627\u062a \u0645\u062d\u0627\u0635\u064a\u0644 \u0644\u062d\u0642\u0644\u0643.']);
 const dictionary = new Map(entries);
 const replacements = [...dictionary].sort((a,b)=>b[0].length-a[0].length).map(([english,translation])=>{
   const escaped=english.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
