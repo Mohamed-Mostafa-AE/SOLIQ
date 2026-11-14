@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULTS, STRATEGIES, demoWeather } from './engine.js';
-import { PROFILES, defaultScreening, stageCoefficient, screenCrops } from './crop-analysis.js';
+import { PROFILES, defaultScreening, stageCoefficient, screenCrops, synchronizeScreeningPlan } from './crop-analysis.js';
 import { cropAnalyzerView } from './crop-analysis-view.js';
 
 const weather=demoWeather(2024);
@@ -89,4 +89,15 @@ test('Arabic crop analyzer renders actual names and exposes the validation limit
   const html=cropAnalyzerView({config:DEFAULTS,plan,report,language:'ar'},{esc:String,fmt:String});
   assert.ok(html.includes('فول صويا'));assert.ok(html.includes('ليست فترات ثقة'));
   assert.ok(html.includes('crop-screen-form'));assert.equal(PROFILES.length,6);
+});
+
+test('changed soil values invalidate the old soil review while preserving local crop checks',()=>{
+  const original=synchronizeScreeningPlan(null,DEFAULTS);
+  original.soilConfirmed=true;original.checks.maize.market='yes';
+  const same=synchronizeScreeningPlan(original,DEFAULTS);
+  assert.equal(same.soilConfirmed,true);
+  const changed=synchronizeScreeningPlan(original,{...DEFAULTS,capacity:200});
+  assert.equal(changed.soilConfirmed,false);assert.equal(changed.checks.maize.market,'yes');
+  const relocated=synchronizeScreeningPlan(original,{...DEFAULTS,lat:20});
+  assert.equal(relocated.checks.maize.market,'unknown');
 });

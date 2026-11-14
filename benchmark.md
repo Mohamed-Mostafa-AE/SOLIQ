@@ -15,8 +15,8 @@ Evidence class: **synthetic software diagnostics**. No field performance claim.
 | Largest integrated closure error | 2.274e-12 mm |
 | Conservation / storage / irrigation | Passed |
 | Determinism / order invariance / zero-water check | Passed |
-| Median calculation time (30 repeats) | 1.59 ms |
-| p95 calculation time | 2.55 ms |
+| Median calculation time (30 repeats) | 1.64 ms |
+| p95 calculation time | 2.48 ms |
 
 Node v24.22.1; win32/x64. Commit: unavailable. Working tree dirty: null.
 Engine SHA-256: c985cb1b939b14671a85a852ae85ebc6b4c98c5e06fc4495a60e3d5597b42403.

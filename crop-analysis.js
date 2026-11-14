@@ -16,6 +16,13 @@ export function defaultScreening(year){
     checks:Object.fromEntries(PROFILES.map(p=>[p.id,{seed:'unknown',equipment:'unknown',market:'unknown',local:'unknown'}]))};
 }
 
+export function synchronizeScreeningPlan(plan,config){
+  const context={lat:config.lat,lon:config.lon,year:config.year,capacity:config.capacity,initial:config.initial};
+  if(!plan?.context||['lat','lon','year'].some(key=>plan.context[key]!==context[key]))return {...defaultScreening(config.year),context};
+  const soilChanged=['capacity','initial'].some(key=>plan.context[key]!==context[key]);
+  return {...plan,context,soilConfirmed:soilChanged?false:plan.soilConfirmed};
+}
+
 export function stageCoefficient(day,stages,coefficients){
   const [initial,development,middle,late]=stages;
   const [low,high,end]=coefficients;
