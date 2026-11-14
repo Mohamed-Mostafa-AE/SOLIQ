@@ -32,3 +32,29 @@ jobs:
           path: artifacts/
           if-no-files-found: error
           retention-days: 90
+
+  browser:
+    name: English and Arabic browser checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Install pinned test runner
+        run: npm install --no-save --package-lock=false @playwright/test@1.65.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test crop workflows and both languages
+        run: npx playwright test
+      - name: Preserve browser report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: soliq-browser-${{ github.sha }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: error
+          retention-days: 90

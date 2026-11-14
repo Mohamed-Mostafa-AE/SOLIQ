@@ -37,3 +37,5 @@ artifacts, show successful GitHub Actions runs, and state unresolved limitations
 The final repository should receive a reviewed snapshot when it is ready. Keep
 the development repository and research provenance available; a new release
 repository is not evidence of an absence of development failures.
+
+The crop-screening extension additionally checks 18 configurations and 108 profile runs with stage-varying coefficients, integrated closure and synthetic-evidence abstention. These fixtures are also synthetic. The separate browser job tests user workflows and uploads a report with screenshots; it does not validate field accuracy.
