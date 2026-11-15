@@ -331,6 +331,35 @@ entries.push(
  ['CROSS-STRATEGY OUTPUTS','نتائج مقارنة الاستراتيجيات'],
  ['STATE TRAJECTORIES','مسارات الحالة']
 );
+entries.push(
+ ['YOUR NEXT STEPS','خطواتك التالية'],
+ ['Get your field ready.','جهّز بيانات حقلك.'],
+ ['Complete these simple steps to compare your crop plans.','أكمل هذه الخطوات البسيطة لمقارنة خطط المحاصيل.'],
+ ['Set up your field','إعداد حقلك'],
+ ['Add your field name and location','أضف اسم حقلك وموقعه'],
+ ['Add local weather','أضف بيانات الطقس المحلية'],
+ ['Load weather for your area','حمّل بيانات الطقس لمنطقتك'],
+ ['Check crop plans','راجع خطط المحاصيل'],
+ ['Choose what to grow in each month','اختر ما ستزرعه في كل شهر'],
+ ['Done','تم'],
+ ['Open','افتح'],
+ ['Add weather for my field','أضف الطقس لحقلي'],
+ ['Review field details','راجع بيانات الحقل'],
+ ['View my crop plans','اعرض خطط المحاصيل'],
+ ['Check my field details','تحقق من بيانات حقلي'],
+ ['Your plan','خطتك'],
+ ['Another plan','خطة أخرى'],
+ ['CURRENT','الحالية'],
+ ['OPTION','بديل'],
+ ['Water left in soil','المياه المتبقية في التربة'],
+ ['Estimated water left at month-end. This is not a sensor reading.','المياه المتبقية المقدّرة في نهاية الشهر. هذه ليست قراءة جهاز قياس.'],
+ ['Months with a different crop:','أشهر يختلف فيها المحصول:'],
+ ['This month:','هذا الشهر:'],
+ ['Next month:','الشهر التالي:'],
+ ['Different crop this month','محصول مختلف هذا الشهر'],
+ ['The crop stays the same this month','المحصول هو نفسه هذا الشهر'],
+ ['See more details and downloads','عرض مزيد من التفاصيل والتنزيلات']
+);
 const dictionary = new Map(entries);
 const replacements = [...dictionary].sort((a,b)=>b[0].length-a[0].length).map(([english,translation])=>{
   const escaped=english.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
