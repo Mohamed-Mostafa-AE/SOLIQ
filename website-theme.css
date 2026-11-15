@@ -1080,3 +1080,275 @@ html[dir="rtl"] .farm-location-dialog select {
   .research-method-grid { grid-template-columns: 1fr; }
   .guide-version { display: none; }
 }
+
+
+/* Audience separation: the Guided workspace is intentionally quieter and shorter. */
+#workspace-nav button[hidden] { display: none !important; }
+.audience-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 21px;
+  padding: 10px 13px;
+  background: rgba(90, 159, 154, .055);
+  border: 1px solid rgba(90, 159, 154, .16);
+  border-left: 2px solid #5a9f9a;
+  color: #a9a7af;
+  font-size: .66rem;
+  line-height: 1.6;
+}
+.audience-banner-label {
+  flex: 0 0 auto;
+  color: #c2df9b;
+  font: 700 .49rem/1.5 var(--mono);
+  letter-spacing: .12em;
+}
+body[data-audience="research"] .audience-banner {
+  background: rgba(223, 177, 141, .045);
+  border-color: rgba(223, 177, 141, .16);
+  border-left-color: #dfb18d;
+}
+body[data-audience="research"] .audience-banner-label { color: #dfb18d; }
+body[data-audience="guided"] .side-note { display: none; }
+body[data-audience="guided"] .side-footer { margin-top: auto; }
+body[data-audience="guided"] .side-footer small { color: #8c9e8d; }
+body[data-audience="guided"] .sidebar nav button.active {
+  background: linear-gradient(90deg, rgba(90, 159, 154, .14), rgba(194, 223, 155, .045));
+  border-color: rgba(90, 159, 154, .25);
+  box-shadow: inset 2px 0 0 #5a9f9a;
+}
+body[data-audience="research"] .sidebar nav button.active {
+  background: linear-gradient(90deg, rgba(240, 90, 54, .13), rgba(90, 159, 154, .055));
+  box-shadow: inset 2px 0 0 #f05a36;
+}
+
+/* Simple farmer-facing plan editor. */
+.guided-journey {
+  margin: 18px 0 22px;
+  padding: 19px;
+  background: linear-gradient(135deg, rgba(24, 48, 39, .90), rgba(15, 20, 24, .98));
+  border-color: rgba(90, 159, 154, .22);
+}
+.guided-journey h2 { margin: 2px 0 5px; color: #f0eee5; }
+.guided-journey > div:first-child p {
+  margin: 5px 0 0;
+  color: #a7b1a8;
+  font-size: .72rem;
+}
+.guided-journey-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 16px;
+}
+.guided-journey-step {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 27px 1fr;
+  gap: 3px 9px;
+  align-items: start;
+  padding: 12px;
+  color: #eeeae2;
+  text-align: left;
+  background: rgba(5, 12, 12, .42);
+  border: 1px solid rgba(194, 223, 155, .14);
+  border-radius: 2px;
+  transition: border-color .2s ease, background .2s ease;
+}
+.guided-journey-step:hover {
+  background: rgba(90, 159, 154, .09);
+  border-color: rgba(194, 223, 155, .36);
+}
+.guided-journey-step > span {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  grid-row: span 2;
+  color: #c2df9b;
+  background: rgba(90, 159, 154, .15);
+  border: 1px solid rgba(90, 159, 154, .23);
+  font: 700 .58rem/1 var(--mono);
+}
+.guided-journey-step strong {
+  color: #eeeae2;
+  font: 600 .77rem/1.35 var(--heading);
+}
+.guided-journey-step small {
+  color: #a4a5a0;
+  font-size: .61rem;
+  line-height: 1.55;
+}
+.guided-journey-step.done > span {
+  color: #101710;
+  background: #c2df9b;
+}
+.guided-plan-editor { margin-bottom: 16px; }
+.guided-plan-editor .panel-head { align-items: end; }
+.guided-plan-select { width: min(330px, 45%); }
+.guided-plan-select select { margin-top: 6px; }
+.guided-crop-calendar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 19px;
+}
+.guided-month-card {
+  min-width: 0;
+  padding: 10px;
+  background: rgba(255,255,255,.018);
+  border: 1px solid rgba(226, 200, 177, .11);
+}
+.guided-month-card > span {
+  display: block;
+  margin-bottom: 4px;
+  color: #d9c6ad;
+  font: 700 .55rem/1.5 var(--mono);
+  letter-spacing: .07em;
+}
+.guided-month-card select {
+  min-height: 36px;
+  margin: 0;
+  padding: 7px 28px 7px 8px;
+  font-size: .68rem;
+}
+.guided-small-note {
+  margin: 13px 0 0;
+  color: #96949e;
+  font-size: .65rem;
+  line-height: 1.7;
+}
+.guided-plan-results {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+.guided-plan-results h3 {
+  margin: 5px 0 8px;
+  color: #eee9e2;
+}
+.guided-result-number {
+  margin: 13px 0 2px;
+  color: #f0eee7;
+  font: 600 clamp(1.6rem, 3vw, 2.25rem)/1.1 var(--heading);
+  letter-spacing: -.05em;
+  font-variant-numeric: tabular-nums;
+}
+.guided-result-number small {
+  color: #a6a29d;
+  font: 500 .68rem/1 var(--body);
+}
+.guided-plan-results .panel > p {
+  margin: 6px 0 13px;
+  color: #a4a2aa;
+  font-size: .68rem;
+  line-height: 1.65;
+}
+.guided-result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  color: #aaa7ad;
+  border-top: 1px solid rgba(226, 200, 177, .10);
+  font-size: .66rem;
+}
+.guided-result-row strong {
+  color: #d7e6c5;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.guided-difference {
+  color: #d8e3ce !important;
+  font-size: .79rem !important;
+}
+.guided-disclaimer {
+  margin: 13px 0 0;
+  color: #a9a4a1;
+  font-size: .66rem;
+  line-height: 1.7;
+}
+.guided-settings-form .panel { margin-bottom: 13px; }
+.guided-settings-form h2,
+.guided-weather-panel h2 {
+  margin-top: 4px;
+  color: #eee9e2;
+}
+.guided-settings-form label {
+  color: #c4beb7;
+}
+.guided-weather-panel {
+  margin-top: 16px;
+  background: linear-gradient(135deg, rgba(24,48,39,.62), rgba(16,18,25,.98));
+}
+.guided-weather-panel > p {
+  color: #a8a6ae;
+  font-size: .73rem;
+  line-height: 1.7;
+}
+.guided-weather-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+}
+body[data-audience="guided"] .page-title .eyebrow {
+  color: #b6d09a;
+}
+body[data-audience="guided"] .guided-hero {
+  border-color: rgba(90, 159, 154, .24);
+}
+body[data-audience="guided"] .guided-hero h2 {
+  letter-spacing: -.04em;
+}
+body[data-audience="guided"] .crop-change-panel .panel-head h2 {
+  max-width: 640px;
+}
+body[data-audience="guided"] .guided-metrics .panel {
+  background: linear-gradient(145deg, rgba(20, 29, 26, .98), rgba(14, 16, 22, .98));
+}
+body[data-audience="guided"] .guided-disclaimer {
+  padding: 11px 13px;
+  background: rgba(90, 159, 154, .06);
+  border: 1px solid rgba(90, 159, 154, .15);
+}
+
+/* Researchers retain access to the complete analysis navigation and diagnostics. */
+body[data-audience="research"] .research-method-intro,
+body[data-audience="research"] .benchmark-panel,
+body[data-audience="research"] .data-source { border-color: rgba(223, 177, 141, .16); }
+
+@media (max-width: 900px) {
+  .guided-crop-calendar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .audience-banner { margin-bottom: 15px; padding: 9px 10px; gap: 5px; }
+  .audience-banner-label { width: 100%; font-size: .45rem; }
+  .guided-journey-steps { grid-template-columns: 1fr; }
+  .guided-plan-editor .panel-head { align-items: stretch; flex-direction: column; }
+  .guided-plan-select { width: 100%; }
+  .guided-crop-calendar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .guided-plan-results { grid-template-columns: 1fr; }
+  .guided-weather-actions { flex-direction: column; }
+  .guided-weather-actions .button { width: 100%; }
+  body[data-audience="guided"] .sidebar nav {
+    justify-content: space-around;
+  }
+  body[data-audience="guided"] .sidebar nav button {
+    display: flex;
+    width: 33.333%;
+    flex: 0 0 33.333%;
+  }
+  body[data-audience="research"] .sidebar nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  body[data-audience="research"] .sidebar nav::-webkit-scrollbar { display: none; }
+  body[data-audience="research"] .sidebar nav button {
+    width: 90px;
+    min-width: 90px;
+    flex: 0 0 90px;
+  }
+}
