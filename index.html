@@ -60,16 +60,106 @@
       <footer>Soliq · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer>
     </main>
   </div>
-  <dialog id="help">
-    <div class="dialog-head"><h2>A clearer view of your next rotation</h2><button class="icon-btn" id="close-help" aria-label="Close help">×</button></div>
-    <ol>
-      <li><b>Set your context.</b> Enter coordinates, soil water assumptions, water budget and your actual baseline calendar.</li>
-      <li><b>Bring real weather.</b> Load NASA POWER or import a complete daily weather year in Data & evidence.</li>
-      <li><b>Compare possibilities.</b> Edit all three calendars and priorities. Check physical water metrics before using the illustrative score.</li>
-      <li><b>Review the evidence.</b> Explore rainfall sensitivity and export the configuration, daily results and data lineage.</li>
-    </ol>
-    <p>Crop calendars and coefficients start as illustrative assumptions. This simplified model does not predict yield, profit, nitrogen or soil carbon. Local agronomic review and independent validation are required.</p>
-    <button class="button primary" id="start-help">Start exploring →</button>
+  <dialog id="help" class="guide-dialog" aria-labelledby="guide-title">
+    <div class="guide-shell">
+      <div class="guide-topbar">
+        <div><span class="guide-kicker">SOLIQ / TECHNICAL RESEARCH GUIDE</span><span class="guide-version">MODEL 0.1 · EXPLORATORY</span></div>
+        <button class="icon-btn" id="close-help" aria-label="Close research guide">×</button>
+      </div>
+      <div class="guide-content">
+        <div class="guide-intro">
+          <p class="eyebrow">METHODS / DATA / REPRODUCIBILITY</p>
+          <h2 id="guide-title">From meteorological forcing to a transparent crop-water comparison.</h2>
+          <p class="guide-lead">Soliq is an exploratory, deterministic water-balance workspace. It applies shared weather, soil-water and irrigation assumptions to alternative monthly crop calendars, then exposes the calculations, sensitivity cases and data lineage behind each comparison.</p>
+        </div>
+
+        <div class="guide-grid">
+          <section class="guide-section">
+            <span class="guide-index">01 / INPUT DATA</span>
+            <h3>Weather forcing and provenance</h3>
+            <p>The core workspace uses daily minimum and maximum 2 m air temperature and corrected precipitation. NASA POWER requests use <code>T2M_MIN</code>, <code>T2M_MAX</code> and <code>PRECTOTCORR</code> with the UTC time standard. Imported CSV files use the declared schema <code>date,tmin,tmax,rain</code>.</p>
+            <p>Each complete year is checked for ordered daily coverage, missing dates, invalid values and physically inconsistent temperature bounds. Gaps are rejected rather than silently interpolated. POWER is gridded meteorological context, not a field sensor or surveyed field boundary.</p>
+            <div class="guide-note">Synthetic weather is a deterministic software fixture. It is useful for exploring the interface and checking calculations, but it is not an observation and must not be presented as local evidence.</div>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">02 / BOUNDARY CONDITIONS</span>
+            <h3>Soil-water and management parameters</h3>
+            <p>The model requires a fixed-profile available-water capacity, initial available storage, an annual effective-irrigation budget and a rainfall-runoff fraction. These values are user-declared; they are not inferred from satellite imagery.</p>
+            <p>The same initial storage, weather series and irrigation limit are applied to every strategy. The state is carried forward day by day and across crop transitions. Irrigation is an effective depth reaching the modeled soil bucket; delivery losses are outside the current calculation.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">03 / DAILY MODEL</span>
+            <h3>Reference evapotranspiration and crop demand</h3>
+            <p>Reference evapotranspiration is estimated with the Hargreaves–Samani method using latitude, day of year and daily temperature range. Extraterrestrial radiation is calculated for the date and latitude, then converted from MJ m⁻² day⁻¹ to an equivalent water depth using the 0.408 factor.</p>
+            <p>Potential crop evapotranspiration is calculated as <code>ETc = ET₀ × Kc</code>. The current rotation engine assigns a constant, editable exploratory <code>Kc</code> to each crop in each calendar month. The crop-screening tool instead applies a staged coefficient curve using user-declared initial, development, mid-season and late-season durations.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">04 / WATER ACCOUNTING</span>
+            <h3>Storage, runoff, drainage and stress</h3>
+            <p>Each daily step adds rainfall after the declared runoff fraction and any rule-triggered irrigation. Water above the fixed storage capacity is counted as drainage before evapotranspiration is applied. Actual ET is constrained by available storage and the model's simplified depletion-stress factor.</p>
+            <div class="guide-equation"><code>Storageₜ₊₁ = Storageₜ + Rainₑff + Irrigation − Drainage − Actual ET</code><code>Actual ET = min(Available water, ETc × Stress factor)</code></div>
+            <p>For cropped conditions, the stress factor is capped at 1 and scales with storage relative to 50% of the declared capacity. When storage falls below 40% of capacity, the simplified irrigation rule refills toward 70%, subject to the remaining annual budget. This is a fixed-depth bucket approximation, not a complete FAO-56 dual-coefficient or layered soil model.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">05 / COMPARATIVE ANALYSIS</span>
+            <h3>Physical metrics versus preference score</h3>
+            <p>For each sequence, Soliq reports potential ET demand, modeled actual ET, unmet modeled demand, irrigation use, drainage, final storage and planned crop-cover days. The seasonal research view also exposes daily storage traces and mass-balance residuals.</p>
+            <p>The overview preference score combines modeled water adequacy and the fraction of days assigned to a non-fallow crop, using the weights selected by the user. It is a preference index for navigating scenarios—not a yield, profitability, sustainability or agronomic suitability score. Changing weights does not change the physical water calculations.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">06 / CROP SCREENING</span>
+            <h3>Feasibility gates before ranking</h3>
+            <p>The crop analyzer screens six profiles: spring wheat, barley, grain maize, grain sorghum, soybean and sunflower. Starting coefficients are based on FAO-56 Table 12 selections; they have not been locally calibrated. Users provide a planting date, stage durations, soil-review declaration and evidence for seed access, equipment or labour, market or own use, and local agronomic review.</p>
+            <p>A declared “no” excludes a candidate. Unknown constraints, unreviewed soil-water assumptions or synthetic weather prevent conditional shortlist membership. These are workflow gates based on declarations, not independent certification of a crop's feasibility.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">07 / SENSITIVITY & QA</span>
+            <h3>Stress-testing assumptions and numerical checks</h3>
+            <p>The research workspace compares rainfall multipliers of 0.75×, 1.00× and 1.25× while holding temperature and management policy constant. The crop analyzer additionally examines a 25% drier rainfall case and ±15% crop-coefficient perturbations inside the selected season. These are finite deterministic scenarios, not probability distributions or confidence intervals.</p>
+            <p>Daily water-budget residuals test arithmetic closure. Software benchmarks test reproducibility and numerical stability on their stated fixtures. Neither a small residual nor a fast benchmark demonstrates field accuracy; independent comparison with measured soil-water and crop observations is still required.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">08 / EVIDENCE TRAIL</span>
+            <h3>Traceable exports</h3>
+            <p>The research bundle records the configuration, coordinates, analysis year, crop calendars, crop coefficients, soil and irrigation assumptions, weather source metadata, raw daily weather, daily modeled outputs, sensitivity results and a SHA-256 fingerprint of the input weather.</p>
+            <p>Use the evidence ledger to check the declared source and assumptions before interpreting outputs. Keep a copy of the exported bundle with any report or presentation so the numerical comparison can be reconstructed from its inputs.</p>
+          </section>
+        </div>
+
+        <section class="guide-section guide-full">
+          <span class="guide-index">09 / RECOMMENDED RESEARCH PROTOCOL</span>
+          <h3>Run a defensible comparison</h3>
+          <ol class="guide-protocol">
+            <li><b>Define the study point.</b> Verify coordinates, analysis year and the spatial representativeness of the selected weather grid.</li>
+            <li><b>Document the soil profile.</b> Derive available-water capacity and initial storage from local measurements or clearly label them as assumptions.</li>
+            <li><b>Establish the baseline.</b> Enter the actual crop sequence and management context before introducing alternatives.</li>
+            <li><b>Verify the forcing.</b> Load a complete NASA POWER year or a documented daily CSV; inspect units, date coverage, source metadata and retrieval timing.</li>
+            <li><b>Compare in physical units.</b> Review daily storage, unmet ET demand, irrigation and drainage before looking at any preference score.</li>
+            <li><b>Challenge the assumptions.</b> Examine rainfall and coefficient sensitivity, residual checks and the implications of unsupported field processes.</li>
+            <li><b>Archive and review.</b> Export the research bundle, record unresolved limitations and seek local agronomic review before any field application.</li>
+          </ol>
+        </section>
+
+        <section class="guide-section guide-full">
+          <span class="guide-index">10 / SCOPE AND LIMITATIONS</span>
+          <h3>What the current model does not estimate</h3>
+          <p>The current release does not predict yield, harvest quality, prices, profit, nitrogen fixation credits, soil-carbon change, root development, layered soil-water movement, groundwater interaction, salinity, waterlogging, disease pressure or measured vegetation cover. Crop drawings are illustrations of crop identity, not phenology observations or growth forecasts.</p>
+          <p>The separate 2026 Living Farm module is a historical-analogue scenario tool: it preserves the retrieved 2026 weather through its publication cutoff and uses five selected historical years to construct the remaining-period scenarios. Its P10–P90 ranges summarize the small analogue ensemble; they are not calibrated forecast probabilities. Its hindcast comparison is retrospective, not prospective validation.</p>
+          <div class="guide-warning">Soliq is a research demonstrator and decision-support aid, not an irrigation prescription or validated farm recommendation. Local measurements, crop-specific calibration and independent outcome validation remain necessary.</div>
+        </section>
+      </div>
+      <div class="guide-footer">
+        <span>Evidence first. Farmer judgment always.</span>
+        <button class="button primary" id="start-help">Set up the study context →</button>
+      </div>
+    </div>
   </dialog>
   <input type="file" id="weather-file" accept=".json,.csv" hidden>
   <script type="module" src="app.js"></script>
