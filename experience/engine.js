@@ -11,7 +11,7 @@ export function allocateWater(demands,supply,mode="proportional"){
  const deliveredTotal=delivered.reduce((a,b)=>a+b,0);
  const shares=demands.map((d,i)=>d?delivered[i]/d:1);
  const numerator=shares.reduce((a,b)=>a+b,0)**2,denominator=shares.length*shares.reduce((a,b)=>a+b*b,0);
- return {totalDemand,supply,delivered,deliveredTotal,shortfall:demands.map((d,i)=>d-delivered[i]),fairness:denominator?numerator/denominator:null,unit:"user-defined common water unit",mode,dataClass:"simulated"};
+ return {totalDemand,supply,delivered,deliveredTotal,shortfall:demands.map((d,i)=>d-delivered[i]),fairness:denominator?Math.max(0,Math.min(1,numerator/denominator)):null,unit:"user-defined common water unit",mode,dataClass:"simulated"};
 }
 function erf(x){const sign=x<0?-1:1; x=Math.abs(x);const t=1/(1+.3275911*x);return sign*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x));}
 /** Tie-corrected exploratory Mann–Kendall + actual-year Theil–Sen. Not adjusted for serial correlation. */
