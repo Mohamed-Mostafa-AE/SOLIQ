@@ -205,6 +205,32 @@ entries.push(
  ['What they do not show','ما الذي لا توضحه هذه الأرقام؟'],
  ['They do not tell you the harvest, income or effect on soil. These results have not been checked on a real farm.','لا توضح هذه الأرقام كمية الحصاد أو الدخل أو تأثير الخطة على التربة. ولم يتم اختبار هذه النتائج في مزرعة فعلية.']
 );
+entries.push(
+ ['Compare plans to help choose what to plant.','قارن الخطط لتساعدك على اختيار ما ستزرعه.'],
+ ['What changes in the other plan?','ما الذي يتغير في الخطة الأخرى؟'],
+ ['Water left in the soil','المياه المتبقية في التربة'],
+ ['Estimated water left at the end of the month. It is not a real measurement.','كمية المياه المقدّرة في نهاية الشهر. هذه ليست قراءة حقيقية.'],
+ ['The other plan may need ','قد تحتاج الخطة الأخرى إلى '],
+ ['Both plans may need the same amount of water.','قد تحتاج الخطتان إلى الكمية نفسها من المياه.'],
+ ['Now:','الآن:'],
+ ['Next:','التالي:'],
+ ['The pictures show the crop in the plan. They do not show how big the plant will grow or how much you will harvest.','توضح الصور المحصول الموجود في الخطة. لكنها لا توضح حجم النبات أو كمية المحصول عند الحصاد.'],
+ ['Extra water the plan may need','مياه إضافية قد تحتاجها الخطة'],
+ ['This estimate uses the weather, soil details and water limit you entered. It does not tell you how much you will harvest.','يعتمد هذا التقدير على الطقس وبيانات التربة وحدّ المياه الذي أدخلته. لكنه لا يحدد كمية المحصول عند الحصاد.'],
+ ['Days with crops in the plan','عدد الأيام التي توجد فيها محاصيل في الخطة'],
+ ['This is the number of days in the year when a crop is planned.','هذا هو عدد أيام السنة التي توجد فيها محاصيل في الخطة.'],
+ ['1 mm of water is about 1 litre on each square metre of land.','كل ١ مم من المياه يعادل تقريباً لتراً واحداً لكل متر مربع من الأرض.'],
+ ['Ask a local farm expert about planting dates, seed types, water, tools and where to sell the crop.','اسأل خبيراً زراعياً في منطقتك عن مواعيد الزراعة وأنواع البذور والمياه والأدوات وأماكن بيع المحصول.'],
+ ['They show how much water each plan may use and how many days crops are planned.','توضح كمية المياه التي قد تستخدمها كل خطة وعدد الأيام التي توجد فيها محاصيل.'],
+ ['They do not tell you how much you will harvest, how much money you will make or how the soil will change. The results have not been tested on a real farm.','لا توضح هذه الأرقام كمية المحصول أو المال الذي ستكسبه أو كيف ستتغير التربة. ولم يتم اختبار النتائج في مزرعة فعلية.'],
+ ['How to understand these results','كيف تفهم هذه النتائج'],
+ ['What the numbers show','ما الذي توضحه الأرقام'],
+ ['What the numbers do not show','ما الذي لا توضحه الأرقام'],
+ ['The crop is the same this month','المحصول هو نفسه هذا الشهر'],
+ ['The other plan has a different crop this month','الخطة الأخرى بها محصول مختلف هذا الشهر'],
+ ['This is sample weather. Add weather from your area to see results for your field.','هذه بيانات طقس تجريبية. أضف بيانات الطقس من منطقتك لرؤية نتائج حقلك.'],
+ ['Weather is loaded. Check your soil details and planting dates before using these results.','تم تحميل الطقس. راجع بيانات التربة ومواعيد الزراعة قبل استخدام النتائج.']
+);
 const dictionary = new Map(entries);
 const replacements = [...dictionary].sort((a,b)=>b[0].length-a[0].length).map(([english,translation])=>{
   const escaped=english.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
