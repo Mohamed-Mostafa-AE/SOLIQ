@@ -20,17 +20,32 @@ function makeCloudTexture(THREE, mobile) {
     return fract(value);
   };
 
-  const noise = (u, v, columns, rows) => {
+  const grids = [[7, 4], [15, 8], [31, 16], [63, 32]].map(([columns, rows]) => {
+    const values = new Float32Array(columns * rows);
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        values[row * columns + column] = hash(column, row);
+      }
+    }
+    return { columns, rows, values };
+  });
+
+  const noise = (u, v, grid) => {
+    const { columns, rows, values } = grid;
     const x = u * columns;
     const y = v * rows;
     const x0 = Math.floor(x);
     const y0 = Math.floor(y);
     const x1 = (x0 + 1) % columns;
-    const y1 = Math.min(y0 + 1, rows);
+    const y1 = Math.min(y0 + 1, rows - 1);
     const sx = smooth(x - x0);
     const sy = smooth(y - y0);
-    const a = hash(x0, y0) * (1 - sx) + hash(x1, y0) * sx;
-    const b = hash(x0, y1) * (1 - sx) + hash(x1, y1) * sx;
+    const a0 = values[y0 * columns + x0];
+    const a1 = values[y0 * columns + x1];
+    const b0 = values[y1 * columns + x0];
+    const b1 = values[y1 * columns + x1];
+    const a = a0 * (1 - sx) + a1 * sx;
+    const b = b0 * (1 - sx) + b1 * sx;
     return a * (1 - sy) + b * sy;
   };
 
