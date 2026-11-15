@@ -12,23 +12,26 @@ export class EarthLensSystem {
     this.village = village;
     this.currentMode = 'ground'; // 'ground' | 'nasa' | 'future'
 
-    // NASA POWER Sakha Benchmark Telemetry (from pitch-3d/content.js & research data)
+    // NASA POWER has a working data path elsewhere in SOLIQ, but THIS game session has
+    // NOT loaded, verified or attributed a source receipt. No hardcoded values can be called observed.
     this.nasaTelemetry = {
-      station: 'Sakha / Kafr El Sheikh (31.08°N, 30.94°E)',
-      source: 'NASA POWER Daily Meteorological API',
-      t2m_avg: '21.4°C',
-      t2m_max: '34.8°C',
-      annual_rain: '68.4 mm',
-      sar_catalogue: 'ASF NISAR/Sentinel-1 Catalogue (Metadata only, no raw pixel diagnosis)',
-      coverage: 'Complete 2016-2025 series + 2026 provisional',
-      dataClass: 'observed',
+      station: 'Sakha / Kafr El Sheikh (illustrative game scene)',
+      source: 'NASA POWER — source receipt not loaded in game',
+      t2m_avg: 'غير متاح / unavailable',
+      t2m_max: 'غير متاح / unavailable',
+      annual_rain: 'غير متاح / unavailable',
+      sar_catalogue: 'ASF scene catalogue ≠ processed SAR pixels',
+      coverage: 'No dated, checksum-verified source loaded for this game scene',
+      dataClass: 'unavailable',
+      rawSha256: null,
+      reason: 'A verified NASA backend response must be injected before any observed overlay is shown',
     };
 
     this.futureTelemetry = {
-      rotation: 'Wheat -> Berseem/Clover -> Maize',
-      modeledET: '542 mm/season',
-      waterSavingPotential: 'Dynamic scenario comparison (not guaranteed)',
-      uncertaintyRange: '±14.2%',
+      rotation: 'Wheat → Berseem/Clover → Maize (illustrative candidate)',
+      modeledET: 'غير محسوب / not calculated',
+      waterSavingPotential: 'غير محسوب / requires a second real scenario run',
+      uncertaintyRange: 'غير محسوب / no interval bounds generated',
       certificateStatus: 'comparison_only',
       disclaimer: 'SIMULATION — NOT SATELLITE OBSERVATION',
       dataClass: 'simulated',
@@ -71,21 +74,10 @@ export class EarthLensSystem {
 
   _applyNasaMode() {
     if (typeof BABYLON === 'undefined') return;
-    // False-color NDVI / Moisture thermal spectrum
-    this.scene.clearColor = new BABYLON.Color4(0.2, 0.25, 0.35, 1.0);
-    const ndviColors = [
-      new BABYLON.Color3(0.15, 0.85, 0.35), // Dense green
-      new BABYLON.Color3(0.2, 0.9, 0.4),
-      new BABYLON.Color3(0.1, 0.6, 0.8),   // Flooded rice
-      new BABYLON.Color3(0.7, 0.75, 0.2),  // Maturing corn
-      new BABYLON.Color3(0.3, 0.8, 0.45),
-      new BABYLON.Color3(0.4, 0.7, 0.3),
-      new BABYLON.Color3(0.85, 0.5, 0.2),  // Unplanted 7th field
-    ];
-
-    this.village.fields.forEach((f, idx) => {
-      f.material.albedoColor.copyFrom(ndviColors[idx] || ndviColors[0]);
-    });
+    // Neutral overlay only; DO NOT paint fake NDVI/temperature as NASA observed pixels.
+    // When a verified, QA-screened HLS/IMERG raster is available, a source-bound renderer
+    // may be added here and will explicitly expose date, native grid, masks and checksum.
+    this.scene.clearColor = new BABYLON.Color4(0.24, 0.28, 0.33, 1.0);
   }
 
   _applyFutureMode() {
