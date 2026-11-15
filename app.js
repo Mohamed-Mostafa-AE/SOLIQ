@@ -129,12 +129,12 @@ function render(){
  stopSeasonMotion();stopOutlook();renderWorkspace();
  if(view==='outlook')stopOutlook=mountOutlook($('#living-outlook'),{language,config,strategies});
  $('#save-report').textContent=view==='outlook'?(language==='ar'?'↓ تصدير أدلة ٢٠٢٦':'↓ Export 2026 evidence'):(language==='ar'?'↓ تصدير التقرير':'↓ Export report');
- if(['overview','rotations','analyzer'].includes(view)){
+ if(audience==='research'&&['overview','rotations','analyzer'].includes(view)){
   const results=view==='analyzer'&&cropReport?cropReport.results.filter(r=>r.metrics).map(r=>({id:r.id,name:language==='ar'?r.profile.ar:r.profile.name,daily:r.metrics.daily})):output.results;
   stopSeasonMotion=mountSeasonMotion($('#page'),{results,capacity:config.capacity,language,sourceKind:source.kind});
  }
 }
-function go(next){if(next==='research'){audience='research';saveDisplay();}view=next;location.hash=next;render();window.scrollTo({top:0,behavior:'smooth'});}
+function go(next){if(['outlook','analyzer','evidence','research'].includes(next)){audience='research';saveDisplay();}view=resolveViewForAudience(audience,next);location.hash=view;render();window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)go(b.dataset.view);});
 $('#page').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go);});
 async function fingerprint(value){if(!globalThis.crypto?.subtle)return 'SHA-256 unavailable in this browser context';const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)));return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');}
@@ -156,6 +156,7 @@ function bindPage(){
  document.querySelectorAll('[data-month]').forEach(button=>button.addEventListener('click',()=>{selectedMonth=Number(button.dataset.month);const position=window.scrollY;render();window.scrollTo({top:position});}));
  on('#review-calendars','click',()=>{flags.calendarReviewed=true;flags.exported=false;persist();render();notify('Calendar review recorded. Local agronomic suitability still needs expert review.');});
 
+ on('#load-guided-weather','click',loadPower);
  on('#settings-form','submit',e=>{e.preventDefault();const data=new FormData(e.target);const next={...config,name:String(data.get('name')).trim()};for(const key of Object.keys(DEFAULTS))if(key!=='name'&&data.has(key))next[key]=Number(data.get(key));try{validateConfig(next);const changed=next.year!==config.year||next.lat!==config.lat||next.lon!==config.lon;config=next;flags.fieldSaved=true;flags.exported=false;if(changed){flags.calendarReviewed=false;useDemo();}persist();go('overview');notify(changed?'Context saved. Weather reset to illustrative data; load NASA weather for the new location/year.':'Assumptions saved and calculations updated.');}catch(error){notify(error.message,true);}});
  on('#reset','click',()=>{config={...DEFAULTS};strategies=structuredClone(STRATEGIES);flags={fieldSaved:false,calendarReviewed:false,exported:false};Object.keys(CROPS).forEach(k=>CROPS[k].kc=initialKc[k]);useDemo();persist();go('overview');notify('Illustrative project restored.');});
  document.querySelectorAll('[data-crop]').forEach(el=>el.addEventListener('change',()=>{const [i,m]=el.dataset.crop.split(',').map(Number);strategies[i].crops[m]=el.value;flags.calendarReviewed=false;flags.exported=false;persist();render();}));
