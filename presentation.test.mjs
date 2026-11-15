@@ -11,6 +11,7 @@ test('changing crops is derived from actual calendar differences',()=>{
 
 test('Arabic translates critical plain-language copy and preserves identifiers',()=>{
   assert.equal(arabic('Plan your next crop.'),'خطّط لمحصولك القادم.');
+  assert.equal(arabic('Plan what to grow next.'),'خطّط لما ستزرعه بعد ذلك.');
   assert.equal(arabic('Wheat'),'قمح');
   assert.equal(arabic('R0 / 2024'),'R0 / 2024');
   assert.equal(arabic('Different crop this month'),'محصول مختلف هذا الشهر');
@@ -26,6 +27,6 @@ test('guided rendering cannot mutate the shared scientific output',()=>{
   const state={config:DEFAULTS,source:{kind:'synthetic'},output,strategies:STRATEGIES,selectedMonth:5,selectedStrategy:1,months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']};
   const html=guidedOverview(state,{esc:String,fmt:String,progressPanel:()=>''});
   assert.ok(html.includes('Grain legume'));
-  assert.ok(html.includes('not predicted plant growth'));
+  assert.ok(html.includes('They do not show how the plant will grow'));
   assert.equal(JSON.stringify(output),before);
 });

@@ -1,7 +1,198 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183f35"><meta name="description" content="Explore crop rotations with transparent weather evidence and water accounting."><title>Soliq · Rotation explorer</title><link rel="icon" type="image/svg+xml" href="soliq-mark.svg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="season-motion.css"><link rel="stylesheet" href="outlook.css"></head>
-<body><a class="skip" href="#content">Skip to workspace</a><aside class="sidebar"><a class="brand" href="#overview"><span class="brandmark">⌁</span><span>Soliq<small>EARTH OBSERVATIONS. GROUNDED DECISIONS.</small></span></a><div class="workspace-label">YOUR WORKSPACE</div><nav aria-label="Workspace"><button data-view="outlook"><span>◷</span>2026 Living Farm</button><button data-view="analyzer"><span>&#10047;</span>Crop analyzer</button><button data-view="overview" class="active"><span>◈</span>Field overview</button><button data-view="rotations"><span>↻</span>Explore rotations</button><button data-view="evidence"><span>◎</span>Data & evidence</button><button data-view="research"><span>⌘</span>Research workspace</button><button data-view="settings"><span>⚙</span>Field & assumptions</button><a class="button" href="/experience/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none">✦ OMNI-EARTH Experience Lab ↗</a></nav><div class="side-note"><span class="tiny-leaf">↗</span><strong>Better questions.<br>Resilient possibilities.</strong><p>Explore the trade-offs before changing what you grow.</p><button id="guide" class="text-btn">How to use Soliq ↗</button></div><div class="side-footer"><span class="dot"></span> Research demonstrator <small>Version 0.1 · Support, not prescription</small></div></aside>
-<div class="workspace"><header><div class="breadcrumb">Workspace <span>/</span> <b id="crumb">Field overview</b></div><div class="header-actions"><div class="audience-switch" role="group" aria-label="Choose your view"><button id="guided-mode" aria-pressed="true">Guided view</button><button id="research-mode" aria-pressed="false">Research view</button></div><button class="button language-button" id="language-toggle" lang="ar">العربية</button><span class="pill" id="source-pill">Illustrative data</span><button class="button quiet" id="save-report">↓ Export report</button></div></header><main id="content" tabindex="-1"><div id="notice" role="status"></div><div id="page"></div><footer>Soliq · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer></main></div>
-<dialog id="help"><div class="dialog-head"><h2>A clearer view of your next rotation</h2><button class="icon-btn" id="close-help" aria-label="Close help">×</button></div><ol><li><b>Set your context.</b> Enter coordinates, soil water assumptions, water budget and your actual baseline calendar.</li><li><b>Bring real weather.</b> Load NASA POWER or import a complete daily weather year in Data & evidence.</li><li><b>Compare possibilities.</b> Edit all three calendars and priorities. Check physical water metrics before using the illustrative score.</li><li><b>Review the evidence.</b> Explore rainfall sensitivity and export the configuration, daily results and data lineage.</li></ol><p>Crop calendars and coefficients start as illustrative assumptions. This simplified model does not predict yield, profit, nitrogen or soil carbon. Local agronomic review and independent validation are required.</p><button class="button primary" id="start-help">Start exploring →</button></dialog>
-<input type="file" id="weather-file" accept=".json,.csv" hidden><script type="module" src="app.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08090e">
+  <meta name="description" content="Explore crop rotations with transparent weather evidence and water accounting.">
+  <title>Soliq · Rotation explorer</title>
+  <link rel="icon" type="image/svg+xml" href="soliq-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="season-motion.css">
+  <link rel="stylesheet" href="outlook.css">
+  <link rel="stylesheet" href="website-theme.css">
+  <link rel="stylesheet" href="plant-art.css">
+</head>
+<body>
+  <a class="skip" href="#content">Skip to workspace</a>
+  <aside class="sidebar">
+    <a class="brand" href="#overview">
+      <span class="brandmark"><img src="soliq-mark.svg" alt=""></span>
+      <span>Soliq<small>EARTH OBSERVATIONS. GROUNDED DECISIONS.</small></span>
+    </a>
+    <div class="workspace-label" id="workspace-label">FARMER & CLIENT WORKSPACE</div>
+    <nav id="workspace-nav" aria-label="Workspace">
+      <button data-view="overview" data-audience="both" class="active"><span>⌂</span>Overview</button>
+      <button data-view="rotations" data-audience="guided"><span>↻</span>Crop plans</button>
+      <button data-view="settings" data-audience="guided"><span>⚙</span>Field setup</button>
+      <button data-view="outlook" data-audience="research"><span>◷</span>2026 Living Farm</button>
+      <button data-view="analyzer" data-audience="research"><span>&#10047;</span>Crop analyzer</button>
+      <button data-view="rotations" data-audience="research"><span>↻</span>Rotation modeling</button>
+      <button data-view="evidence" data-audience="research"><span>◎</span>Data & evidence</button>
+      <button data-view="research" data-audience="research"><span>⌘</span>Methods & diagnostics</button>
+      <button data-view="settings" data-audience="research"><span>⚙</span>Model parameters</button>
+      <a class="button" data-audience="research" href="/experience/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none">✦ OMNI-EARTH Experience Lab ↗</a>
+    </nav>
+    <div class="side-note">
+      <span class="tiny-leaf">↗</span>
+      <strong id="side-note-title">Simple plans.<br>Clear next steps.</strong>
+      <p id="side-note-copy">Compare crop plans and review your field details.</p>
+      <button id="guide" class="text-btn">How to use this view ↗</button>
+    </div>
+    <div class="side-footer"><span class="dot"></span><span id="side-footer-label">Farmer & client workspace</span><small id="side-footer-detail">Clear estimates · Local advice matters</small></div>
+  </aside>
+  <div class="workspace">
+    <header>
+      <div class="breadcrumb">Workspace <span>/</span> <b id="crumb">Field overview</b></div>
+      <div class="header-actions">
+        <div class="audience-switch" role="group" aria-label="Choose your view">
+          <button id="guided-mode" aria-pressed="true">Guided view</button>
+          <button id="research-mode" aria-pressed="false">Research view</button>
+        </div>
+        <button class="button language-button" id="language-toggle" lang="ar">العربية</button>
+        <span class="pill" id="source-pill">Illustrative data</span>
+        <button class="button quiet" id="save-report">↓ Export report</button>
+      </div>
+    </header>
+    <main id="content" tabindex="-1">
+      <div class="audience-banner" id="audience-banner">
+        <span class="audience-banner-label" id="audience-banner-label">GUIDED VIEW / FARMERS & CLIENTS</span>
+        <span id="audience-banner-copy">Simple crop plans, field details and clear water estimates.</span>
+      </div>
+      <div id="notice" role="status"></div>
+      <div id="page"></div>
+      <footer>Soliq · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer>
+    </main>
+  </div>
+  <dialog id="guided-help" class="simple-guide-dialog" aria-labelledby="guided-help-title">
+    <div class="dialog-head"><div><p class="eyebrow">GETTING STARTED</p><h2 id="guided-help-title">A few simple steps for your field</h2></div><button class="icon-btn" id="close-guided-help" aria-label="Close help">×</button></div>
+    <ol>
+      <li><b>Add your field details.</b> Enter its name and location so we can find nearby weather.</li>
+      <li><b>Load the weather.</b> Use the weather button in Field setup.</li>
+      <li><b>Check your crop plans.</b> Choose the crops you plan to grow in each month.</li>
+      <li><b>Compare the estimates.</b> Look at the water estimates, then discuss your plans with a local farm expert.</li>
+    </ol>
+    <p>These estimates help you explore options. They do not predict harvest or replace local farming advice.</p>
+    <button class="button primary" id="start-guided-help">Set up my field →</button>
+  </dialog>
+  <dialog id="help" class="guide-dialog" aria-labelledby="guide-title">
+    <div class="guide-shell">
+      <div class="guide-topbar">
+        <div><span class="guide-kicker">SOLIQ / TECHNICAL RESEARCH GUIDE</span><span class="guide-version">MODEL 0.1 · EXPLORATORY</span></div>
+        <button class="icon-btn" id="close-help" aria-label="Close research guide">×</button>
+      </div>
+      <div class="guide-content">
+        <div class="guide-intro">
+          <p class="eyebrow">METHODS / DATA / REPRODUCIBILITY</p>
+          <h2 id="guide-title">From meteorological forcing to a transparent crop-water comparison.</h2>
+          <p class="guide-lead">Soliq is an exploratory, deterministic water-balance workspace. It applies shared weather, soil-water and irrigation assumptions to alternative monthly crop calendars, then exposes the calculations, sensitivity cases and data lineage behind each comparison.</p>
+        </div>
 
+        <div class="guide-grid">
+          <section class="guide-section">
+            <span class="guide-index">01 / INPUT DATA</span>
+            <h3>Weather forcing and provenance</h3>
+            <p>The core workspace uses daily minimum and maximum 2 m air temperature and corrected precipitation. NASA POWER requests use <code>T2M_MIN</code>, <code>T2M_MAX</code> and <code>PRECTOTCORR</code> with the UTC time standard. Imported CSV files use the declared schema <code>date,tmin,tmax,rain</code>.</p>
+            <p>Each complete year is checked for ordered daily coverage, missing dates, invalid values and physically inconsistent temperature bounds. Gaps are rejected rather than silently interpolated. POWER is gridded meteorological context, not a field sensor or surveyed field boundary.</p>
+            <div class="guide-note">Synthetic weather is a deterministic software fixture. It is useful for exploring the interface and checking calculations, but it is not an observation and must not be presented as local evidence.</div>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">02 / BOUNDARY CONDITIONS</span>
+            <h3>Soil-water and management parameters</h3>
+            <p>The model requires a fixed-profile available-water capacity, initial available storage, an annual effective-irrigation budget and a rainfall-runoff fraction. These values are user-declared; they are not inferred from satellite imagery.</p>
+            <p>The same initial storage, weather series and irrigation limit are applied to every strategy. The state is carried forward day by day and across crop transitions. Irrigation is an effective depth reaching the modeled soil bucket; delivery losses are outside the current calculation.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">03 / DAILY MODEL</span>
+            <h3>Reference evapotranspiration and crop demand</h3>
+            <p>Reference evapotranspiration is estimated with the Hargreaves–Samani method using latitude, day of year and daily temperature range. Extraterrestrial radiation is calculated for the date and latitude, then converted from MJ m⁻² day⁻¹ to an equivalent water depth using the 0.408 factor.</p>
+            <div class="guide-equation"><code>ET₀ = 0.0023 × (Tmean + 17.8) × √(Tmax − Tmin) × 0.408 × Ra</code><code>ETc = ET₀ × Kc</code></div>
+            <p><code>Ra</code> is extraterrestrial radiation in MJ m⁻² day⁻¹; temperatures are in °C. The first expression is the implementation's Hargreaves–Samani estimate, including the radiation-to-water-depth conversion. The second expression gives potential crop evapotranspiration.</p>
+            <p>The current rotation engine assigns a constant, editable exploratory <code>Kc</code> to each crop in each calendar month. The crop-screening tool instead applies a staged coefficient curve: initial Kc is held constant, Kc increases linearly through development, remains at the mid-season value, then decreases linearly during the late season. Stage durations are user-declared assumptions, not observed phenology.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">04 / WATER ACCOUNTING</span>
+            <h3>Storage, runoff, drainage and stress</h3>
+            <p>Each daily step adds rainfall after the declared runoff fraction and any rule-triggered irrigation. Water above the fixed storage capacity is counted as drainage before evapotranspiration is applied. Actual ET is constrained by available storage and the model's simplified depletion-stress factor.</p>
+            <div class="guide-equation"><code>Effective rainfall = P × (1 − runoff fraction)</code><code>Drainage = max(0, Storage + Effective rainfall + Irrigation − Capacity)</code><code>Post-drainage storage = min(Capacity, Storage + Effective rainfall + Irrigation)</code><code>Actual ET = min(Post-drainage storage, ETc × Stress factor)</code><code>Next storage = Post-drainage storage − Actual ET</code></div>
+            <p>For cropped conditions, the stress factor is min(1, post-drainage storage ÷ (0.5 × capacity)); fallow uses a stress factor of 1 in the current engine. When storage falls below 40% of capacity, the simplified irrigation rule applies water toward 70%, subject to the remaining annual budget. These daily terms are checked through a mass-balance residual. This is a fixed-depth bucket approximation, not a complete FAO-56 dual-coefficient or layered soil model.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">05 / COMPARATIVE ANALYSIS</span>
+            <h3>Physical metrics versus preference score</h3>
+            <p>For each sequence, Soliq reports potential ET demand, modeled actual ET, unmet modeled demand, irrigation use, drainage, final storage and planned crop-cover days. The seasonal research view also exposes daily storage traces and mass-balance residuals.</p>
+            <p>The overview preference score combines modeled water adequacy and the fraction of days assigned to a non-fallow crop, using the weights selected by the user.</p>
+            <div class="guide-equation"><code>Score = 100 × [w₁ × (1 − min(1, deficit ÷ max(1, demand))) + w₂ × (planned crop days ÷ days in year)]</code><code>w₁ = water weight ÷ (water weight + cover weight)</code><code>w₂ = cover weight ÷ (water weight + cover weight)</code></div>
+            <p>It is a preference index for navigating scenarios—not a yield, profitability, sustainability or agronomic suitability score. Changing weights does not change the physical water calculations. A lower modeled deficit can reflect lower modeled crop demand; it does not quantify the production trade-off.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">06 / CROP SCREENING</span>
+            <h3>Feasibility gates before ranking</h3>
+            <p>The crop analyzer screens six profiles: spring wheat, barley, grain maize, grain sorghum, soybean and sunflower. Starting coefficients are based on FAO-56 Table 12 selections; they have not been locally calibrated. Users provide a planting date, stage durations, soil-review declaration and evidence for seed access, equipment or labour, market or own use, and local agronomic review.</p>
+            <p>A declared “no” excludes a candidate. Unknown constraints, unreviewed soil-water assumptions or synthetic weather prevent conditional shortlist membership. These are workflow gates based on declarations, not independent certification of a crop's feasibility.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">07 / SENSITIVITY & QA</span>
+            <h3>Stress-testing assumptions and numerical checks</h3>
+            <p>The research workspace compares rainfall multipliers of 0.75×, 1.00× and 1.25× while holding temperature and management policy constant. The crop analyzer additionally examines a 25% drier rainfall case and ±15% crop-coefficient perturbations inside the selected season. These are finite deterministic scenarios, not probability distributions or confidence intervals.</p>
+            <p>Daily water-budget residuals test arithmetic closure. Software benchmarks test reproducibility and numerical stability on their stated fixtures. Neither a small residual nor a fast benchmark demonstrates field accuracy; independent comparison with measured soil-water and crop observations is still required.</p>
+          </section>
+
+          <section class="guide-section">
+            <span class="guide-index">08 / EVIDENCE TRAIL</span>
+            <h3>Traceable exports</h3>
+            <p>The research bundle records the configuration, coordinates, analysis year, crop calendars, crop coefficients, soil and irrigation assumptions, weather source metadata, raw daily weather, daily modeled outputs, sensitivity results and a SHA-256 fingerprint of the input weather.</p>
+            <p>Use the evidence ledger to check the declared source and assumptions before interpreting outputs. Keep a copy of the exported bundle with any report or presentation so the numerical comparison can be reconstructed from its inputs.</p>
+          </section>
+        </div>
+
+        <section class="guide-section guide-full">
+          <span class="guide-index">09 / RECOMMENDED RESEARCH PROTOCOL</span>
+          <h3>Run a defensible comparison</h3>
+          <ol class="guide-protocol">
+            <li><b>Define the study point.</b> Verify coordinates, analysis year and the spatial representativeness of the selected weather grid.</li>
+            <li><b>Document the soil profile.</b> Derive available-water capacity and initial storage from local measurements or clearly label them as assumptions.</li>
+            <li><b>Establish the baseline.</b> Enter the actual crop sequence and management context before introducing alternatives.</li>
+            <li><b>Verify the forcing.</b> Load a complete NASA POWER year or a documented daily CSV; inspect units, date coverage, source metadata and retrieval timing.</li>
+            <li><b>Compare in physical units.</b> Review daily storage, unmet ET demand, irrigation and drainage before looking at any preference score.</li>
+            <li><b>Challenge the assumptions.</b> Examine rainfall and coefficient sensitivity, residual checks and the implications of unsupported field processes.</li>
+            <li><b>Archive and review.</b> Export the research bundle, record unresolved limitations and seek local agronomic review before any field application.</li>
+          </ol>
+        </section>
+
+        <section class="guide-section guide-full">
+          <span class="guide-index">10 / 2026 LIVING FARM</span>
+          <h3>Historical-analogue scenario construction</h3>
+          <p>The Living Farm is a separate scenario module from the core monthly rotation comparison. It retrieves the available 2026 NASA POWER observations through a documented publication cutoff and complete historical daily records for 2016–2025. The remaining period is represented by five historical analogue years; it is not generated by the crop-water engine or a trained crop-growth model.</p>
+          <p>Analogue selection uses a feature window over the last 60 matching month-days: mean minimum temperature, mean maximum temperature and the logarithm of one plus accumulated rainfall. Each feature is standardized by its historical population standard deviation, with floors of 1 °C for temperature features and 0.1 for log-rainfall. The five nearest of the ten candidate years are selected by Euclidean distance, with year used to break ties.</p>
+          <p>Each scenario member preserves every retrieved 2026 daily value before the cutoff and maps one selected historical year onto the remaining 2026 month-days. Soil storage and the irrigation budget carry continuously across the observed/scenario boundary. Reported P10, P50 and P90 values are empirical summaries across the five members; daily storage bands are pointwise percentiles and do not describe one jointly median trajectory.</p>
+          <p>The retrospective check leaves one historical year out at a time and compares remaining-period rainfall and heat counts with the historical-median baseline using mean absolute error. It is a small retrospective diagnostic, not prospective forecast validation. The ensemble ranges do not include uncertainty in soil properties, crop calendars, irrigation rules or model structure.</p>
+        </section>
+
+        <section class="guide-section guide-full">
+          <span class="guide-index">11 / SCOPE AND LIMITATIONS</span>
+          <h3>What the current model does not estimate</h3>
+          <p>The current release does not predict yield, harvest quality, prices, profit, nitrogen fixation credits, soil-carbon change, root development, layered soil-water movement, groundwater interaction, salinity, waterlogging, disease pressure or measured vegetation cover. Crop drawings are illustrations of crop identity, not phenology observations or growth forecasts.</p>
+          <p>The separate 2026 Living Farm module is a historical-analogue scenario tool: it preserves the retrieved 2026 weather through its publication cutoff and uses five selected historical years to construct the remaining-period scenarios. Its P10–P90 ranges summarize the small analogue ensemble; they are not calibrated forecast probabilities. Its hindcast comparison is retrospective, not prospective validation.</p>
+          <div class="guide-warning">Soliq is a research demonstrator and decision-support aid, not an irrigation prescription or validated farm recommendation. Local measurements, crop-specific calibration and independent outcome validation remain necessary.</div>
+        </section>
+      </div>
+      <div class="guide-footer">
+        <span>Evidence first. Farmer judgment always.</span>
+        <button class="button primary" id="start-help">Set up the study context →</button>
+      </div>
+    </div>
+  </dialog>
+  <input type="file" id="weather-file" accept=".json,.csv" hidden>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
