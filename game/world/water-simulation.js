@@ -114,6 +114,7 @@ export class VisualWaterEngine {
     this.audio.setPumpSound(active, overload);
 
     if (!active) {
+      this.currentSimulation = null;
       this.targetWaterLevel = -0.52;
       this.targetFlowVelocity = 0.0;
       this.audio.setWaterFlowSound(0.0);
