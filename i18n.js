@@ -360,6 +360,11 @@ entries.push(
  ['The crop stays the same this month','المحصول هو نفسه هذا الشهر'],
  ['See more details and downloads','عرض مزيد من التفاصيل والتنزيلات']
 );
+entries.push(
+ ['I have checked my crop plans','راجعت خطط المحاصيل'],
+ ['Checking your plans here does not mean they are approved for your farm. Ask a local farm expert about crop suitability.','مراجعتك للخطط هنا لا تعني اعتمادها لمزرعتك. اسأل خبيراً زراعياً محلياً عن ملاءمة المحاصيل.'],
+ ['Crop plan review recorded. Ask a local farm expert to confirm crop suitability.','تم تسجيل مراجعة خطة المحاصيل. اسأل خبيراً زراعياً محلياً للتأكد من ملاءمة المحاصيل.']
+);
 const dictionary = new Map(entries);
 const replacements = [...dictionary].sort((a,b)=>b[0].length-a[0].length).map(([english,translation])=>{
   const escaped=english.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
