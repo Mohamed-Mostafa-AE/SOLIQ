@@ -60,8 +60,10 @@ test('API failure stays visible and does not display invented 2026 metrics',asyn
  await expect(page.locator('.living-metrics')).toHaveCount(0);
 });
 
-test('fresh workspace opens 2026 and header export downloads its evidence',async({page})=>{
+test('Research workspace opens the 2026 Living Farm and exports its evidence',async({page})=>{
  await mock(page);await page.goto('/');
+ await page.locator('#research-mode').click();
+ await page.locator('#workspace-nav [data-view="outlook"]').click();
  await expect(page.locator('.living-heading h2')).toContainText('Watch the choices');
  await expect(page.locator('[data-download]')).toBeVisible();
  const downloadEvent=page.waitForEvent('download');
