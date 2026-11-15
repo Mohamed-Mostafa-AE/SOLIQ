@@ -112,6 +112,7 @@ export function screenCrops(weather,config,plan,baseline,sourceKind='synthetic')
     const high=runCandidate(weather,config,plan,profile,baseline,1.15);
     const familyChange=profile.family!==baselineProfile.family;
     return {id:profile.id,status,excluded,missing,profile,metrics,familyChange,
+      scenarioDeficits:{reference:metrics.deficit,drier:dry.deficit,lowerKc:low.deficit,higherKc:high.deficit},
       baselineDifference:metrics.deficit-baselineResult.deficit,
       sensitivity:{dryRainMultiplier:Math.max(0.2,config.rainScale*0.75)/config.rainScale,dryDeficit:dry.deficit,coefficientDeficitMin:Math.min(low.deficit,high.deficit),coefficientDeficitMax:Math.max(low.deficit,high.deficit)}};
   });
@@ -122,3 +123,4 @@ export function screenCrops(weather,config,plan,baseline,sourceKind='synthetic')
     scope:'Historical weather analogue; not a seasonal forecast, yield prediction or validated farm recommendation',
     assumptions:{stageLengths:'User-declared; defaults illustrative, not inferred phenology',coefficients:'FAO-56 Table 12 starting values; mid/end range selections, climate and wetting adjustments not applied',soil:'Fixed-depth available-water bucket; stress depletion fraction 0.5 assumed',outsideWindow:'Existing baseline monthly coefficients retained; no storage reset',sensitivity:'Three deterministic perturbations; not probability intervals or a robustness certificate'},source:PROFILE_SOURCE};
 }
+
