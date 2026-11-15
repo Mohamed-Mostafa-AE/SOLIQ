@@ -59,6 +59,48 @@ $("trend-fetch").onclick=async()=>{
   out.append(table);
  }catch(e){showError("trend-result",e);$("trend-fetch").disabled=false;}
 };
+// Read-only NASA Earthdata CMR discovery. Real source metadata is NOT raster pixel QA.
+const cmrRegion=$('cmr-region');
+if(cmrRegion){
+ for(const r of REGIONS){
+  const opt=document.createElement('option');
+  opt.value=r.id;opt.textContent=r.name;
+  cmrRegion.append(opt);
+ }
+}
+if($('cmr-fetch'))$('cmr-fetch').onclick=async()=>{
+ const region=REGIONS.find(r=>r.id===cmrRegion.value)||REGIONS[0];
+ const out=$('cmr-result'),button=$('cmr-fetch');
+ try{
+  const data=await callApi('/api/eo-catalogue',{
+   lat:region.lat,lon:region.lon,product:$('cmr-product').value,
+   start:$('cmr-start').value,end:$('cmr-end').value
+  },button,out);
+  out.replaceChildren(paragraph('المصدر: NASA CMR Live. عدد النتائج المعروضة: '+data.count+
+  ' / '+(data.totalHits??'غير متاح')+'. النوع: catalogue_metadata_only؛ البكسلات/QA غير معالجة.'));
+  for(const item of data.entries||[]){
+    const article=document.createElement('article');
+    const title=document.createElement('h3');title.textContent=item.title;
+    const description=document.createElement('p');
+    description.textContent=[item.start,item.end,item.collection,'لا توجد هنا صورة HLS/IMERG معالجة'].filter(Boolean).join(' · ');
+    article.append(title,description);
+    if(item.dataLink){
+      try{
+        const u=new URL(item.dataLink);
+        if(u.protocol==='https:'&&u.hostname.endsWith('nasa.gov')){
+          const link=document.createElement('a');
+          link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';
+          link.textContent='رابط سجل NASA أو أصل البيانات (قد يتطلب Earthdata Login)';
+          article.append(link);
+        }
+      }catch{}
+    }
+    out.append(article);
+  }
+  if(!data.entries?.length)out.append(paragraph('لم تظهر مشاهد ضمن الفترة والنقطة المحددتين. هذا ليس دليلًا على عدم وجود بيانات في المنتج عمومًا.'));
+ }catch(e){showError('cmr-result',e);button.disabled=false;}
+};
+
 $("sar-fetch").onclick=async()=>{
  const r=regionFrom("sar-region"),out=$("sar-result");
  try{
