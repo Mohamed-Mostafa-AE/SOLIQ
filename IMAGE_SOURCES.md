@@ -13,3 +13,12 @@ and textual controls remain usable if a remote photograph is unavailable.
 No photographer identity is asserted without verified metadata. Images are
 delivered from the provider with resizing parameters rather than redistributed
 as scientific figures or field records.
+
+
+## 3D Earth scene
+
+- Earth surface: NASA Blue Marble: Next Generation global mosaic, served from NASA Goddard Earth Observatory. The surface is a static Earth visualization, not a live satellite feed: https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/
+- Cloud atlas, terrain-normal map, and ocean-specular map: Three.js r160 planet example textures, used only as rendering maps for the 3D globe. They do not represent current cloud conditions or live Earth-observation measurements:
+  - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_clouds_1024.png
+  - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_normal_2048.jpg
+  - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_specular_2048.jpg
