@@ -1,0 +1,58 @@
+name: "NASA Space Apps — Actual 29s Gameplay Recording"
+
+on:
+  push:
+    branches:
+      - demo/spaceapps-30s-real-gameplay-20261115
+    paths:
+      - tools/record-spaceapps-demo.mjs
+      - .github/workflows/spaceapps-demo.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  record-actual-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright video capture
+        run: npm install --no-save --package-lock=false @playwright/test@1.65.1
+      - name: Install headless Chromium and fonts
+        run: npx playwright install --with-deps chromium
+      - name: Install and verify FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -3
+      - name: Record real public SOLIQ browser gameplay and export 29-second MP4
+        env:
+          DEMO_BASE_URL: https://soliq-delta.vercel.app
+        run: node tools/record-spaceapps-demo.mjs
+      - name: Publish demo and recording diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soliq-spaceapps-real-gameplay-29s
+          path: |
+            demo/global-30s.mp4
+            demo/thumbnail.png
+            demo/recording-log.json
+            demo/recording-failure.txt
+            demo/failure.png
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish the 29-second MP4 as a public file in the demo branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demo/global-30s.mp4 demo/thumbnail.png demo/recording-log.json
+          git commit -m "Publish real browser gameplay demo for NASA Space Apps" || exit 0
+          git push origin HEAD:demo/spaceapps-30s-real-gameplay-20261115
