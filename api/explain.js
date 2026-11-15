@@ -13,7 +13,7 @@ export default async function handler(req,res) {
   const model=models[req.body.model];
   if (!model) return res.status(400).json({error:'Select Kimi or DeepSeek'});
   const language=req.body.language==='ar'?'Arabic':'English';
-  const credential=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN;
+  const credential=process.env.AI_GATEWAY_API_KEY||req.headers['x-vercel-oidc-token']||process.env.VERCEL_OIDC_TOKEN;
   if (!credential) return res.status(503).json({error:'AI access is not configured. Numerical scenarios are available without AI.',code:'ai_not_configured'});
   const ip=String(req.headers['x-forwarded-for']||'unknown').split(',')[0],now=Date.now();
   const recent=(requests.get(ip)||[]).filter(t=>now-t<60000);

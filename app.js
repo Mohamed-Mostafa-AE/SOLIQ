@@ -20,7 +20,7 @@ let selectedMonth=5,cropPlan=null,cropReport=null;
 try{cropPlan=JSON.parse(localStorage.getItem('soliq-crop-plan-v1'));}catch{}
 
 let flags={fieldSaved:false,calendarReviewed:false,exported:false};
-let config={...DEFAULTS},strategies=structuredClone(STRATEGIES),view='overview',weather,source,output,busy=false;
+let config={...DEFAULTS},strategies=structuredClone(STRATEGIES),view=location.hash?'overview':'outlook',weather,source,output,busy=false;
 try{const saved=JSON.parse(localStorage.getItem('fieldshift-project-v1'));if(saved){validateConfig(saved.config);if(saved.strategies?.length===3){analyze(demoWeather(saved.config.year),saved.config,saved.strategies);config=saved.config;strategies=saved.strategies;flags={...flags,...saved.flags,exported:false};}}}catch{/* An invalid or unavailable local draft must not prevent a fresh workspace. */}
 function useDemo(){weatherRevision++;flags.exported=false;weather=demoWeather(config.year);source={kind:'synthetic',label:'Illustrative weather',location:{lat:config.lat,lon:config.lon},year:config.year,description:'Deterministic seasonal example. These are not NASA observations or field measurements.'};}
 useDemo();
