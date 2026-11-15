@@ -363,9 +363,13 @@ export class GameHUD {
       </div>
       <div class="toast-body">${details}</div>
     `;
+    // Cancel the previous toast's timer. Otherwise an earlier notification can
+    // hide a newly opened NASA/Earth Lens message and race Playwright or users.
+    if (this._telemetryToastTimer) clearTimeout(this._telemetryToastTimer);
     t.hidden = false;
-    setTimeout(() => {
+    this._telemetryToastTimer = setTimeout(() => {
       t.hidden = true;
+      this._telemetryToastTimer = null;
     }, 6000);
   }
 
