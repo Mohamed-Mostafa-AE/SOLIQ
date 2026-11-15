@@ -131,9 +131,9 @@ class SeventhFieldGame {
         const res = this.earthLens.setMode(mode);
         if (mode === 'nasa') {
           this.hud.showTelemetryToast(
-            'رصد فضائي NASA POWER (سخا - كفر الشيخ)',
-            `درجة الحرارة: ${res.telemetry.t2m_avg} | الأمطار السنوية: ${res.telemetry.annual_rain} (بيانات سياقية إقليمية)`,
-            'observed'
+            'NASA POWER — الرصد غير متاح داخل اللعبة',
+            'لم يتم تحميل سجل NASA موثق بالتاريخ وSHA256 لهذه الجلسة. ألوان المشهد توضيحية وليست صور أقمار صناعية.',
+            'unavailable'
           );
         } else if (mode === 'future') {
           this.hud.showTelemetryToast(
