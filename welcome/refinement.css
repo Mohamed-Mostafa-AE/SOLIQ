@@ -611,3 +611,533 @@ body {
     animation: none !important;
   }
 }
+
+/* Original botanical artwork and editorial finish */
+.field-bridge {
+  min-height: 690px;
+  padding-block: clamp(92px, 10vw, 145px);
+  background:
+    radial-gradient(ellipse at 78% 52%, rgba(85, 124, 72, .22), transparent 42%),
+    radial-gradient(ellipse at 22% 100%, rgba(160, 133, 77, .09), transparent 38%),
+    linear-gradient(112deg, #0a130d 0%, #0a120c 52%, #080e0a 100%);
+}
+
+.field-bridge::before {
+  opacity: .055;
+  background-size: 92px 92px;
+  mask-image: linear-gradient(90deg, transparent 12%, #000 72%, transparent);
+}
+
+.field-bridge-copy {
+  width: min(610px, 52%);
+}
+
+.field-bridge-copy h2 {
+  max-width: 600px;
+  font-size: clamp(3.05rem, 5.7vw, 5.9rem);
+  line-height: .97;
+}
+
+.field-bridge-copy > p:not(.eyebrow) {
+  max-width: 510px;
+}
+
+.field-artwork {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: -3%;
+  width: 65%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .94;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.26) 18%, #000 42%, #000 92%, transparent 100%);
+}
+
+.botanical-illustration {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.botanical-aura {
+  fill: rgba(155, 184, 115, .075);
+  filter: url(#botanical-glow);
+}
+
+.botanical-stem {
+  fill: none;
+  stroke: url(#stem-line);
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .88;
+}
+
+.leaf-blade {
+  fill: url(#leaf-fill);
+  stroke: rgba(190, 211, 143, .78);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+
+.leaf-vein {
+  fill: none;
+  stroke: rgba(212, 220, 164, .58);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.grain-kernel {
+  fill: rgba(204, 192, 132, .42);
+  stroke: rgba(224, 210, 154, .8);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.grain-awn {
+  fill: none;
+  stroke: rgba(210, 195, 142, .68);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.botanical-ground {
+  fill: none;
+  stroke: rgba(161, 180, 120, .28);
+  stroke-width: 1;
+}
+
+.botanical-plant {
+  transform-box: view-box;
+  transform-origin: 58% 98%;
+  animation: botanical-wind 7.2s ease-in-out infinite;
+}
+
+.plant-secondary {
+  opacity: .48;
+  animation-duration: 8.6s;
+}
+
+.plant-left {
+  transform-origin: 38% 98%;
+  animation-delay: -2.8s;
+}
+
+.plant-right {
+  transform-origin: 81% 98%;
+  animation-delay: -5.1s;
+}
+
+.plant-main {
+  transform-origin: 58% 98%;
+}
+
+.botanical-leaf {
+  transform-box: fill-box;
+  transform-origin: 7% 90%;
+}
+
+.leaf-main-a { animation: leaf-response 5.3s ease-in-out -1.1s infinite; }
+.leaf-main-b { animation: leaf-response 4.8s ease-in-out -2.2s infinite; }
+.leaf-main-c { animation: leaf-response 5.7s ease-in-out -.6s infinite; }
+.leaf-main-d { animation: leaf-response 4.9s ease-in-out -3s infinite; }
+.leaf-main-e { animation: leaf-response 5.4s ease-in-out -1.7s infinite; }
+.leaf-main-f { animation: leaf-response 4.6s ease-in-out -2.7s infinite; }
+.leaf-left-a,.leaf-right-b { animation: leaf-response 6s ease-in-out -1.4s infinite; }
+.leaf-left-b,.leaf-right-c { animation: leaf-response 5.1s ease-in-out -3.2s infinite; }
+
+@keyframes botanical-wind {
+  0%, 100% { transform: rotate(-.9deg); }
+  34% { transform: rotate(2.1deg); }
+  66% { transform: rotate(1.1deg); }
+}
+
+@keyframes leaf-response {
+  0%, 100% { transform: rotate(-1deg); }
+  42% { transform: rotate(2.8deg); }
+  72% { transform: rotate(.7deg); }
+}
+
+.botanical-caption,
+.botanical-coordinate {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(173, 190, 145, .7);
+  font: 600 .48rem/1.5 var(--mono);
+  letter-spacing: .12em;
+}
+
+.botanical-caption {
+  top: 10%;
+  right: 12%;
+}
+
+.botanical-caption i {
+  width: 28px;
+  height: 1px;
+  background: rgba(194, 211, 150, .45);
+}
+
+.botanical-coordinate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.botanical-coordinate strong {
+  color: rgba(216, 215, 174, .86);
+  font-size: .53rem;
+  font-weight: 600;
+}
+
+.coordinate-one {
+  top: 29%;
+  right: 7%;
+}
+
+.coordinate-two {
+  right: 12%;
+  bottom: 14%;
+  align-items: flex-end;
+}
+
+.field-bridge-steps {
+  color: #cbdca0;
+}
+
+.field-bridge-steps i {
+  background: linear-gradient(90deg, rgba(202, 223, 145, .55), rgba(202, 223, 145, .08));
+}
+
+.field-bridge-cta {
+  color: #d3e2a7;
+}
+
+.site-footer-expanded {
+  display: block;
+  padding: 0 var(--pad);
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(74, 111, 68, .1), transparent 38%),
+    #060a08;
+  border-top: 1px solid rgba(190, 207, 163, .18);
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(230px, 1.45fr) minmax(120px, .65fr) minmax(160px, .85fr) minmax(210px, 1.15fr);
+  gap: clamp(24px, 4vw, 64px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 78px) 0;
+}
+
+.footer-brand-panel .footer-brand {
+  display: inline-flex;
+  gap: 13px;
+}
+
+.footer-brand-panel .footer-brand img {
+  width: 43px;
+  height: 43px;
+}
+
+.footer-brand-panel .footer-brand strong {
+  color: #f0efe3;
+  font-size: .86rem;
+  letter-spacing: .2em;
+}
+
+.footer-brand-panel .footer-brand small {
+  color: #8f9b83;
+  font-size: .48rem;
+  letter-spacing: .13em;
+}
+
+.footer-brand-panel > p {
+  max-width: 300px;
+  margin: 22px 0 22px;
+  color: #a1aa9a;
+  font: 400 .85rem/1.85 var(--body);
+  letter-spacing: 0;
+}
+
+.footer-project-tag {
+  display: inline-block;
+  padding: 7px 9px;
+  border: 1px solid rgba(181, 205, 142, .2);
+  color: #b6c58c;
+  font: 600 .46rem/1.5 var(--mono);
+  letter-spacing: .12em;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.footer-column h2 {
+  margin: 4px 0 9px;
+  color: #e0e6d5;
+  font: 600 .72rem/1.4 var(--heading);
+  letter-spacing: .04em;
+}
+
+.footer-column a {
+  color: #929d8e;
+  font: 400 .76rem/1.5 var(--body);
+  letter-spacing: 0;
+  transition: color .2s, transform .2s;
+}
+
+.footer-column a span {
+  color: #b5cc83;
+  font-size: .65rem;
+}
+
+.footer-column a:hover {
+  color: #d6e7a8;
+  transform: translateX(3px);
+}
+
+.footer-column-note p {
+  max-width: 285px;
+  margin: 0 0 4px;
+  color: #899486;
+  font: 400 .74rem/1.8 var(--body);
+  letter-spacing: 0;
+}
+
+.footer-column-note a {
+  color: #c6d895;
+  font-size: .67rem;
+}
+
+.footer-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 18px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 19px 0;
+  border-top: 1px solid rgba(190, 207, 163, .14);
+}
+
+.footer-bottom > span {
+  color: #768271;
+  font: 600 .47rem/1.7 var(--mono);
+  letter-spacing: .09em;
+}
+
+.footer-bottom > span:nth-child(2) {
+  text-align: center;
+}
+
+.footer-bottom .back-top {
+  grid-column: auto;
+  justify-self: end;
+  color: #c7d995;
+  font-size: .49rem;
+}
+
+.footer-note {
+  display: block;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px 0 22px;
+  border-top: 1px solid rgba(190, 207, 163, .08);
+  color: #687264;
+  font: 400 .68rem/1.7 var(--body);
+  letter-spacing: 0;
+}
+
+.text-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(2px);
+  transition:
+    opacity .82s cubic-bezier(.22,.72,.18,1),
+    transform .82s cubic-bezier(.22,.72,.18,1),
+    filter .82s cubic-bezier(.22,.72,.18,1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.text-reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.text-reveal-heading {
+  letter-spacing: -.045em;
+}
+
+@media (max-width: 1050px) {
+  .footer-main {
+    grid-template-columns: minmax(210px, 1.2fr) repeat(2, minmax(130px, .8fr));
+  }
+
+  .footer-column-note {
+    grid-column: 1 / -1;
+    max-width: 580px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(190, 207, 163, .12);
+  }
+
+  .field-bridge-copy {
+    width: 58%;
+  }
+
+  .field-artwork {
+    right: -10%;
+    width: 66%;
+  }
+}
+
+@media (max-width: 760px) {
+  .field-bridge {
+    min-height: 760px;
+    align-items: flex-start;
+    padding: 76px var(--pad) 54px;
+  }
+
+  .field-bridge-copy {
+    width: 100%;
+    max-width: 590px;
+  }
+
+  .field-bridge-copy h2 {
+    max-width: 520px;
+    font-size: clamp(2.8rem, 10.5vw, 4.3rem);
+  }
+
+  .field-bridge-copy > p:not(.eyebrow) {
+    max-width: 560px;
+    font-size: .84rem;
+  }
+
+  .field-artwork {
+    top: auto;
+    right: -16%;
+    bottom: -8%;
+    width: 112%;
+    height: 58%;
+    opacity: .82;
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 18%, #000 38%, #000 88%, transparent 100%);
+  }
+
+  .botanical-caption {
+    top: 18%;
+    right: 19%;
+    font-size: .42rem;
+  }
+
+  .coordinate-one {
+    top: 31%;
+    right: 12%;
+  }
+
+  .coordinate-two {
+    right: 17%;
+    bottom: 9%;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 34px 26px;
+    padding: 46px 0;
+  }
+
+  .footer-brand-panel,
+  .footer-column-note {
+    grid-column: 1 / -1;
+  }
+
+  .footer-brand-panel > p {
+    max-width: 420px;
+    margin: 15px 0;
+  }
+
+  .footer-bottom {
+    grid-template-columns: 1fr auto;
+    gap: 10px 20px;
+  }
+
+  .footer-bottom > span:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: left;
+  }
+
+  .footer-bottom .back-top {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .field-bridge {
+    min-height: 780px;
+  }
+
+  .field-bridge-steps {
+    max-width: 300px;
+    flex-wrap: wrap;
+    font-size: .45rem;
+    gap: 8px;
+  }
+
+  .botanical-caption {
+    right: 11%;
+    gap: 6px;
+    font-size: .38rem;
+  }
+
+  .botanical-coordinate {
+    font-size: .4rem;
+  }
+
+  .botanical-coordinate strong {
+    font-size: .44rem;
+  }
+
+  .footer-main {
+    gap: 30px 18px;
+  }
+
+  .footer-column h2 {
+    font-size: .67rem;
+  }
+
+  .footer-column a {
+    font-size: .71rem;
+  }
+
+  .footer-bottom > span {
+    font-size: .42rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botanical-plant,
+  .botanical-leaf {
+    animation: none !important;
+  }
+
+  .text-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}
