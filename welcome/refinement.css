@@ -1412,3 +1412,120 @@ html, body { overflow-x: clip; }
     filter: none !important;
   }
 }
+
+
+/* Mars-style editorial hero: the planet name is a typographic layer, not a label. */
+.giant-title {
+  display: block !important;
+  position: absolute;
+  top: 17%;
+  left: -3.6vw;
+  width: calc(198% + 7vw);
+  z-index: 0;
+  overflow: visible;
+  white-space: nowrap;
+  text-align: center;
+  color: rgba(230, 236, 224, .94);
+  font: 500 clamp(5.8rem, 14vw, 14.8rem)/.84 var(--display);
+  letter-spacing: .045em;
+  pointer-events: none;
+  user-select: none;
+  opacity: .96;
+}
+
+.hero-copy { position: relative; z-index: 3; }
+.story-panel { position: relative; }
+
+.planet-rail-global {
+  background: transparent !important;
+}
+
+.planet-grid { z-index: 0; }
+
+.earth-starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .82;
+  mix-blend-mode: screen;
+}
+
+.earth-fallback {
+  z-index: 1;
+  transition: opacity .8s ease, visibility .8s ease;
+}
+
+.planet-rail-global.earth-ready .earth-fallback {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.earth-glow {
+  display: none !important;
+}
+
+/* Use the same one-time 1.2s cinematic entrance used on Mars Society Egypt. */
+.text-reveal {
+  opacity: 0;
+  transform: translate3d(-8px, 0, 0);
+  filter: none;
+  transition: none;
+  will-change: transform, opacity;
+}
+
+.text-reveal.is-revealed {
+  animation: text-reveal-cinematic 1200ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+.text-reveal-heading {
+  background-image: linear-gradient(90deg, rgba(195, 220, 141, .94), rgba(195, 220, 141, .94));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0 2px;
+  padding-bottom: .08em;
+}
+
+.text-reveal-heading.is-revealed {
+  animation:
+    text-reveal-cinematic 1200ms cubic-bezier(.22, .61, .36, 1) both,
+    text-reveal-underline 1200ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes text-reveal-cinematic {
+  from { opacity: 0; transform: translate3d(-8px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes text-reveal-underline {
+  from { background-size: 0 2px; }
+  to { background-size: 100% 2px; }
+}
+
+@media (max-width: 760px) {
+  .giant-title {
+    top: 9%;
+    left: -2vw;
+    width: 100%;
+    text-align: left;
+    font-size: clamp(4.2rem, 17vw, 8rem);
+    opacity: .24;
+  }
+
+  .earth-starfield { opacity: .68; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-reveal,
+  .text-reveal.is-revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    will-change: auto;
+  }
+
+  .earth-fallback { transition: none; }
+}
