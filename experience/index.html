@@ -113,6 +113,16 @@
    <label>من<input id="cmr-start" type="date" value="2026-09-15"></label>
    <label>إلى<input id="cmr-end" type="date" value="2026-11-01"></label>
   </div>
+  <section style="padding:14px;margin:12px 0;border:1px solid #5e826c;border-radius:12px">
+   <h3>🛰 NASA GIBS — صورة فضائية حقيقية للمنطقة</h3>
+   <p>صورة Browse RGB من أقمار NASA بتاريخ تختاره. بيانات مرئية إقليمية وليست قيم NDVI أو رادار أو فحص تربة. تظهر الصورة فقط عندما ينجح تحميلها من خادم NASA.</p>
+   <div class="form-grid">
+    <label>نوع الصورة<select id="gibs-layer"><option value="MODIS_Terra_CorrectedReflectance_TrueColor">MODIS Terra True Color</option><option value="MODIS_Aqua_CorrectedReflectance_TrueColor">MODIS Aqua True Color</option><option value="VIIRS_SNPP_CorrectedReflectance_TrueColor">VIIRS SNPP True Color</option></select></label>
+    <label>تاريخ الصورة<input id="gibs-date" type="date" value="2026-11-01"></label>
+   </div>
+   <button type="button" id="gibs-fetch">اعرض صورة ناسا من GIBS</button>
+   <div id="gibs-result" class="result" role="status" aria-live="polite">لم تُطلب صورة بعد.</div>
+  </section>
   <button id="cmr-fetch" type="button">ابحث عن مشاهد NASA الحقيقية</button>
   <div id="cmr-result" class="result" role="status" aria-live="polite">اضغط بحث. عند عدم توفر الخدمة سيظهر السبب، دون أي بديل صناعي.</div>
  </section>
