@@ -1,0 +1,107 @@
+{
+  "pilotId": "west-minya-reclamation-eg",
+  "regionName": "Mallawi / West Minya Desert Reclamation Zone, Minya Governorate, Middle Egypt",
+  "regionNameAr": "منطقة ملوي واستصلاح غرب المنيا — محافظة المنيا، مصر الوسطى",
+  "evidenceStatus": "ASSUMED",
+  "evidenceKind": "assumed",
+  "calibrationStatus": "ASSUMED_UNCALIBRATED_LITERATURE",
+  "isFieldCalibrated": false,
+  "canIssueCalibratedFieldAdvice": false,
+  "coordinates": {
+    "latitude": 28.2847,
+    "longitude": 30.5279,
+    "elevationM": 128.0,
+    "mgrsTile": "36RQN",
+    "imergGridCenter": {
+      "lat": 28.25,
+      "lon": 30.55
+    }
+  },
+  "soil": {
+    "evidenceStatus": "ASSUMED",
+    "evidenceKind": "assumed",
+    "calibrationStatus": "ASSUMED_UNCALIBRATED_LITERATURE",
+    "isFieldCalibrated": false,
+    "textureClass": "Calcareous Sandy Loam (Typic Torripsamments)",
+    "clayFractionPct": 11.0,
+    "siltFractionPct": 18.0,
+    "sandFractionPct": 71.0,
+    "bulkDensityGcm3": 1.54,
+    "fieldCapacityThetaFc": 0.19,
+    "wiltingPointThetaWp": 0.08,
+    "saturationThetaSat": 0.39,
+    "saturatedHydraulicConductivityMmDay": 420.0,
+    "drainageCoefficientTauDay": 0.55,
+    "scsCurveNumberGroup": "A",
+    "scsCurveNumberDefault": 68,
+    "readilyEvaporableWaterRewMm": 6.0,
+    "totalEvaporableWaterTewMm": 14.0,
+    "topsoilEvaporationLayerDepthM": 0.10,
+    "baselineSoilSalinityEcDsm": 2.9,
+    "subsurfaceTileDrainageDepthM": 1.80
+  },
+  "waterManagement": {
+    "evidenceStatus": "ASSUMED",
+    "evidenceKind": "assumed",
+    "calibrationStatus": "ASSUMED_UNCALIBRATED_LITERATURE",
+    "isFieldCalibrated": false,
+    "primarySource": "Nubian / Eocene Carbonate Groundwater Wells & Pressurized Drip/Pivot",
+    "irrigationSystem": "pressurized_drip_and_center_pivot",
+    "applicationEfficiency": 0.82,
+    "irrigationWaterSalinityEcDsm": 1.45,
+    "seasonalWaterQuotaMm": 1100.0,
+    "summerPeakCanalCapMmDay": 9.5,
+    "leachingFractionRequirement": 0.14
+  },
+  "currentBaselineRotation": {
+    "rotationId": "west_minya_baseline_wheat_maize",
+    "name": "High-Evaporative Reclamation Cereal Sequence (Wheat -> Grain Maize -> Bare Fallow)",
+    "nameAr": "دورة الحبوب المستنزفة في الأراضي المستصلحة (قمح -> ذرة شامية -> بور)",
+    "evidenceStatus": "ASSUMED",
+    "sequence": [
+      {
+        "season": "winter",
+        "cropId": "wheat",
+        "sowingDate": "2025-11-15",
+        "harvestDate": "2026-04-25"
+      },
+      {
+        "season": "summer",
+        "cropId": "grain_maize",
+        "sowingDate": "2026-05-10",
+        "harvestDate": "2026-09-10"
+      },
+      {
+        "season": "fallow_window",
+        "cropId": "bare_fallow",
+        "sowingDate": "2026-09-11",
+        "harvestDate": "2026-11-14"
+      }
+    ]
+  },
+  "constraints": {
+    "maxAnnualWaterUseMm": 1100.0,
+    "maxAllowableSoilSalinityEcDsm": 4.2,
+    "requirePestHostBreak": true,
+    "requirePositiveOrNeutralNitrogenTrend": true,
+    "allowedCrops": [
+      "wheat",
+      "grain_maize",
+      "grain_sorghum",
+      "faba_bean",
+      "sugar_beet",
+      "soybean",
+      "short_season_cowpea"
+    ]
+  },
+  "UncertaintyBoundsConfig": {
+    "et0RelativeUncertainty": 0.10,
+    "kcRelativeUncertainty": 0.08,
+    "imergPrecipRelativeUncertainty": 0.20,
+    "hlsNdviAbsoluteUncertainty": 0.04,
+    "soilAvailableWaterRelativeUncertainty": 0.15,
+    "minMetCoverageRatio": 0.85,
+    "minImergCoverageRatio": 0.80,
+    "minHlsClearSceneRatio": 0.35
+  }
+}
