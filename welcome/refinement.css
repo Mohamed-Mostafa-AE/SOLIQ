@@ -1,0 +1,1740 @@
+:root {
+  --rust: #9fbd75;
+  --orange: #d0d98a;
+  --sand: #d9b77a;
+  --bronze: #83765b;
+  --teal: #5f9c84;
+  --green: #8dbb86;
+  --lime: #c9df91;
+  --line: rgba(190, 207, 163, .19);
+}
+
+body {
+  background: #070c09;
+}
+
+.earth-story {
+  background:
+    radial-gradient(ellipse at 74% 20%, rgba(48, 111, 80, .23), transparent 40%),
+    #070c09;
+}
+
+.topbar {
+  background: rgba(7, 12, 9, .91);
+  border-bottom-color: rgba(196, 218, 164, .13);
+}
+
+.brand-emblem {
+  filter: drop-shadow(0 0 13px rgba(166, 206, 121, .24));
+}
+
+.main-nav a::after,
+.eyebrow-line {
+  background: var(--lime);
+  box-shadow: 0 0 12px rgba(201, 223, 145, .36);
+}
+
+.eyebrow {
+  color: #d0d9a0;
+}
+
+.nav-cta {
+  border-color: rgba(169, 202, 130, .48);
+  color: #cde2a6;
+}
+
+.nav-cta:hover {
+  background: rgba(132, 172, 94, .13);
+  border-color: #c5df98;
+  color: #ecf4d7;
+}
+
+.hero-copy h1 em,
+.fact-panel h2 em,
+.section-head h2 em,
+.research-layout h2 em {
+  color: #c1d887;
+}
+
+.giant-title {
+  color: #e4ebdf;
+  text-shadow: 0 0 65px rgba(133, 177, 115, .08);
+}
+
+.button-primary {
+  color: #0a1109;
+  background: #b5cf7c;
+  box-shadow: 0 10px 30px rgba(100, 139, 73, .2);
+}
+
+.button-primary:hover {
+  color: #081007;
+  background: #d0e49a;
+}
+
+.button-quiet {
+  border-color: rgba(201, 223, 145, .3);
+}
+
+.button-quiet:hover,
+.text-link:hover {
+  color: #e5f3bd;
+  border-color: #c6df8f;
+}
+
+.panel-index,
+.challenge-signals span,
+.approach-list > div > b,
+.strategy-row > span {
+  color: #b7d47e;
+}
+
+.challenge-signals > div {
+  border-color: rgba(177, 202, 142, .19);
+  background: linear-gradient(145deg, rgba(125, 169, 94, .1), rgba(255, 255, 255, .012));
+}
+
+.scope-note {
+  border-color: rgba(191, 165, 105, .45);
+  background: rgba(201, 170, 100, .07);
+}
+
+.scope-indicator {
+  background: #d6b777;
+  box-shadow: 0 0 12px rgba(214, 183, 119, .5);
+}
+
+.scope-note strong,
+.data-note strong {
+  color: #d9c28d;
+}
+
+.method-section,
+.research-section {
+  background: #0b110d;
+}
+
+.data-section {
+  background:
+    radial-gradient(ellipse at 78% 18%, rgba(54, 113, 80, .17), transparent 46%),
+    #080d0a;
+}
+
+.data-status-bar {
+  border-color: rgba(132, 181, 112, .42);
+  background: rgba(97, 145, 78, .08);
+}
+
+.data-status-bar strong,
+.data-card small {
+  color: #c2d995;
+}
+
+.status-live {
+  background: #a9d58b;
+  box-shadow: 0 0 13px rgba(169, 213, 139, .72);
+}
+
+.data-card {
+  border-color: rgba(185, 205, 158, .17);
+}
+
+.data-card:hover {
+  border-color: rgba(194, 218, 145, .5);
+  background: linear-gradient(150deg, rgba(110, 154, 82, .16), transparent);
+}
+
+.data-code,
+.project-code {
+  color: #d5c18a;
+}
+
+.living-container {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(122, 155, 83, .2), transparent 54%),
+    #08100b;
+  border-color: rgba(182, 205, 151, .18);
+}
+
+.living-container::before {
+  opacity: .12;
+  background-image: radial-gradient(rgba(204, 226, 155, .75) .7px, transparent .7px);
+}
+
+.outlook-topline .eyebrow {
+  color: #d2e2a4;
+}
+
+.research-copy {
+  border-left-color: rgba(190, 207, 163, .22);
+}
+
+.text-link {
+  border-bottom-color: rgba(191, 212, 141, .58);
+  color: #c7dd94;
+}
+
+.project-section {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(50, 94, 65, .13), transparent 52%),
+    #070c09;
+}
+
+.project-grid {
+  gap: 14px;
+  border: 0;
+}
+
+.project-card {
+  min-height: 345px;
+  overflow: hidden;
+  border: 1px solid rgba(190, 207, 163, .19);
+  background: linear-gradient(155deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .008));
+  transition: border-color .25s, background .25s, transform .25s, box-shadow .25s;
+}
+
+.project-card:last-child {
+  border-right: 1px solid rgba(190, 207, 163, .19);
+}
+
+.project-card::before,
+.project-card::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.project-card::before {
+  top: -12px;
+  right: -13px;
+  width: 55%;
+  height: 175px;
+  opacity: .58;
+  mask-image: linear-gradient(180deg, #000 18%, transparent 100%);
+}
+
+.project-card::after {
+  top: 22px;
+  right: 22px;
+  width: 105px;
+  height: 105px;
+  border: 1px solid rgba(195, 220, 148, .2);
+  border-radius: 50%;
+  opacity: .55;
+}
+
+.project-app::before {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 17px, rgba(186, 216, 135, .2) 18px 19px),
+    linear-gradient(180deg, rgba(130, 170, 92, .2), transparent);
+}
+
+.project-app::after {
+  border-color: rgba(199, 224, 145, .35);
+  box-shadow: inset 0 0 0 12px rgba(199, 224, 145, .035), 0 0 34px rgba(134, 176, 91, .12);
+}
+
+.project-research::before {
+  background:
+    repeating-linear-gradient(0deg, transparent 0 15px, rgba(215, 190, 133, .22) 16px 17px),
+    linear-gradient(135deg, rgba(207, 183, 125, .16), transparent 70%);
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 85%);
+}
+
+.project-research::after {
+  border-radius: 2px;
+  transform: rotate(12deg);
+  border-color: rgba(216, 190, 131, .35);
+  box-shadow: 9px 8px 0 -1px rgba(7, 12, 9, .8), 9px 8px 0 0 rgba(216, 190, 131, .2);
+}
+
+.project-source::before {
+  background:
+    linear-gradient(rgba(128, 179, 148, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(128, 179, 148, .12) 1px, transparent 1px);
+  background-size: 17px 17px;
+  mask-image: linear-gradient(135deg, #000, transparent 72%);
+}
+
+.project-source::after {
+  border-radius: 2px;
+  transform: rotate(45deg);
+  border-color: rgba(133, 190, 156, .35);
+}
+
+.project-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.project-card:hover {
+  border-color: rgba(198, 221, 147, .55);
+  background: linear-gradient(155deg, rgba(113, 156, 82, .14), rgba(255, 255, 255, .012));
+  box-shadow: 0 22px 55px rgba(0, 0, 0, .2);
+  transform: translateY(-5px);
+}
+
+.project-icon {
+  border-color: rgba(191, 217, 143, .42);
+  color: #c9df91;
+  background: rgba(119, 156, 81, .07);
+}
+
+.project-card h3 {
+  max-width: 280px;
+}
+
+.project-card > b {
+  color: #c9df91;
+}
+
+.project-app {
+  background: linear-gradient(155deg, rgba(105, 148, 79, .13), rgba(255, 255, 255, .008));
+}
+
+.challenge-link {
+  border-top-color: rgba(190, 207, 163, .18);
+  color: #9da994;
+}
+
+.challenge-link a {
+  color: #d0df9e;
+}
+
+.site-footer {
+  background: #060a08;
+  border-top-color: rgba(190, 207, 163, .14);
+}
+
+.back-top {
+  color: #c7d995;
+}
+
+.field-bridge {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: 650px;
+  padding: clamp(90px, 11vw, 160px) var(--pad);
+  overflow: hidden;
+  border-block: 1px solid rgba(190, 207, 163, .16);
+  background:
+    radial-gradient(ellipse at 75% 50%, rgba(56, 111, 74, .24), transparent 45%),
+    linear-gradient(115deg, #0b140e 0%, #09110c 48%, #080d0a 100%);
+}
+
+.field-bridge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .15;
+  background-image:
+    linear-gradient(rgba(185, 214, 148, .14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(185, 214, 148, .14) 1px, transparent 1px);
+  background-size: 76px 76px;
+  mask-image: linear-gradient(90deg, transparent, #000 50%, #000);
+}
+
+.field-bridge-copy {
+  position: relative;
+  z-index: 2;
+  width: min(650px, 54%);
+}
+
+.field-bridge-copy h2 {
+  margin: 22px 0 20px;
+  color: #f0f1e8;
+  font: 600 clamp(3.2rem, 6.2vw, 6.25rem)/.94 var(--heading);
+  letter-spacing: -.07em;
+  text-wrap: balance;
+}
+
+.field-bridge-copy h2 em {
+  color: #c5dc8d;
+  font-style: normal;
+}
+
+.field-bridge-copy > p:not(.eyebrow) {
+  max-width: 555px;
+  margin: 0;
+  color: #a7b0a3;
+  font-size: .91rem;
+  line-height: 1.9;
+}
+
+.field-bridge-visual {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: -4%;
+  width: 66%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .9;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 24%, #000 88%, transparent 100%);
+}
+
+.field-map-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.field-map-halo {
+  fill: none;
+  stroke: rgba(178, 212, 133, .17);
+  stroke-width: 1;
+}
+
+.field-map-boundary {
+  fill: url(#field-map-fill);
+  stroke: rgba(202, 226, 151, .74);
+  stroke-width: 1.4;
+}
+
+.field-map-contour {
+  fill: none;
+  stroke: rgba(188, 215, 149, .28);
+  stroke-width: 1;
+}
+
+.field-map-parcel {
+  fill: rgba(114, 160, 96, .11);
+  stroke: rgba(192, 220, 147, .46);
+  stroke-width: 1.1;
+}
+
+.field-map-row {
+  fill: none;
+  stroke: rgba(207, 221, 161, .45);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.field-map-route {
+  fill: none;
+  stroke: #d4bd81;
+  stroke-width: 2;
+  stroke-dasharray: 6 10;
+  filter: drop-shadow(0 0 7px rgba(212, 189, 129, .55));
+  animation: field-route-flow 16s linear infinite;
+}
+
+.field-map-pin {
+  fill: #d5e8a3;
+  stroke: rgba(213, 232, 163, .28);
+  stroke-width: 8;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: field-pin-pulse 3.2s ease-in-out infinite;
+}
+
+.field-scan-line {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: 28%;
+  width: 1px;
+  background: linear-gradient(transparent, rgba(211, 231, 165, .78), transparent);
+  box-shadow: 0 0 24px rgba(190, 218, 145, .42);
+  transform: rotate(18deg);
+  transform-origin: center;
+  animation: field-scan 8s ease-in-out infinite;
+}
+
+.field-coordinate {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #96aa8c;
+  font: 600 .49rem/1.5 var(--mono);
+  letter-spacing: .12em;
+}
+
+.field-coordinate strong {
+  color: #d7d7b7;
+  font-size: .58rem;
+  font-weight: 600;
+}
+
+.field-coordinate-a {
+  top: 18%;
+  right: 25%;
+}
+
+.field-coordinate-b {
+  right: 10%;
+  bottom: 18%;
+  text-align: right;
+}
+
+.field-bridge-steps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 31px;
+  color: #cfdda9;
+  font: 700 .53rem/1.4 var(--mono);
+  letter-spacing: .1em;
+}
+
+.field-bridge-steps i {
+  width: clamp(18px, 3vw, 48px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(202, 223, 145, .7), rgba(202, 223, 145, .12));
+}
+
+.field-bridge-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(201, 223, 145, .5);
+  color: #d2e3a6;
+  font: 700 .59rem/1.4 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.field-bridge-cta:hover {
+  color: #f0f5d9;
+  border-color: #dbe9b4;
+}
+
+@keyframes field-route-flow {
+  to { stroke-dashoffset: -256; }
+}
+
+@keyframes field-pin-pulse {
+  0%, 100% { opacity: .75; transform: scale(.82); }
+  50% { opacity: 1; transform: scale(1.13); }
+}
+
+@keyframes field-scan {
+  0%, 100% { opacity: 0; transform: translateX(-90px) rotate(18deg); }
+  20%, 75% { opacity: .85; }
+  50% { transform: translateX(210px) rotate(18deg); }
+}
+
+@media (max-width: 760px) {
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .project-card,
+  .project-card:last-child {
+    min-height: 260px;
+    border: 1px solid rgba(190, 207, 163, .19);
+  }
+
+  .field-bridge {
+    min-height: 720px;
+    align-items: flex-start;
+    padding-top: 78px;
+    padding-bottom: 60px;
+  }
+
+  .field-bridge-copy {
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .field-bridge-copy h2 {
+    max-width: 520px;
+    font-size: clamp(2.9rem, 11vw, 4.5rem);
+  }
+
+  .field-bridge-copy > p:not(.eyebrow) {
+    max-width: 570px;
+    font-size: .84rem;
+  }
+
+  .field-bridge-visual {
+    top: auto;
+    right: -17%;
+    bottom: -7%;
+    width: 112%;
+    height: 58%;
+    opacity: .68;
+    mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 83%, transparent 100%);
+  }
+
+  .field-coordinate-a {
+    top: 20%;
+    right: 33%;
+  }
+
+  .field-coordinate-b {
+    right: 8%;
+    bottom: 13%;
+  }
+
+  .field-bridge-steps {
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: .46rem;
+  }
+
+  .field-bridge-steps i {
+    width: 18px;
+  }
+
+  .project-card::after {
+    width: 82px;
+    height: 82px;
+  }
+}
+
+@media (max-width: 420px) {
+  .field-bridge {
+    min-height: 760px;
+  }
+
+  .field-bridge-steps {
+    max-width: 300px;
+    line-height: 1.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-map-route,
+  .field-map-pin,
+  .field-scan-line {
+    animation: none !important;
+  }
+}
+
+/* Original botanical artwork and editorial finish */
+.field-bridge {
+  min-height: 690px;
+  padding-block: clamp(92px, 10vw, 145px);
+  background:
+    radial-gradient(ellipse at 78% 52%, rgba(85, 124, 72, .22), transparent 42%),
+    radial-gradient(ellipse at 22% 100%, rgba(160, 133, 77, .09), transparent 38%),
+    linear-gradient(112deg, #0a130d 0%, #0a120c 52%, #080e0a 100%);
+}
+
+.field-bridge::before {
+  opacity: .055;
+  background-size: 92px 92px;
+  mask-image: linear-gradient(90deg, transparent 12%, #000 72%, transparent);
+}
+
+.field-bridge-copy {
+  width: min(610px, 52%);
+}
+
+.field-bridge-copy h2 {
+  max-width: 600px;
+  font-size: clamp(3.05rem, 5.7vw, 5.9rem);
+  line-height: .97;
+}
+
+.field-bridge-copy > p:not(.eyebrow) {
+  max-width: 510px;
+}
+
+.field-artwork {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: -3%;
+  width: 65%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .94;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.26) 18%, #000 42%, #000 92%, transparent 100%);
+}
+
+.botanical-illustration {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.botanical-aura {
+  fill: rgba(155, 184, 115, .075);
+  filter: url(#botanical-glow);
+}
+
+.botanical-stem {
+  fill: none;
+  stroke: url(#stem-line);
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .88;
+}
+
+.leaf-blade {
+  fill: url(#leaf-fill);
+  stroke: rgba(190, 211, 143, .78);
+  stroke-width: 1.35;
+  stroke-linejoin: round;
+}
+
+.leaf-vein {
+  fill: none;
+  stroke: rgba(212, 220, 164, .58);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.grain-kernel {
+  fill: rgba(204, 192, 132, .42);
+  stroke: rgba(224, 210, 154, .8);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+.grain-awn {
+  fill: none;
+  stroke: rgba(210, 195, 142, .68);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.botanical-ground {
+  fill: none;
+  stroke: rgba(161, 180, 120, .28);
+  stroke-width: 1;
+}
+
+.botanical-plant {
+  transform-box: view-box;
+  transform-origin: 58% 98%;
+  animation: botanical-wind 8.2s cubic-bezier(.42, 0, .58, 1) infinite;
+}
+
+.plant-secondary {
+  opacity: .46;
+  animation-duration: 8.2s;
+}
+
+.plant-left {
+  transform-origin: 38% 98%;
+  animation-delay: 0s;
+}
+
+.plant-main {
+  transform-origin: 58% 98%;
+  animation-delay: .48s;
+}
+
+.plant-right {
+  transform-origin: 81% 98%;
+  animation-delay: .96s;
+}
+
+.botanical-leaf {
+  transform-box: fill-box;
+  transform-origin: 7% 90%;
+}
+
+.leaf-main-a { animation: leaf-response 5.3s ease-in-out -1.1s infinite; }
+.leaf-main-b { animation: leaf-response 4.8s ease-in-out -2.2s infinite; }
+.leaf-main-c { animation: leaf-response 5.7s ease-in-out -.6s infinite; }
+.leaf-main-d { animation: leaf-response 4.9s ease-in-out -3s infinite; }
+.leaf-main-e { animation: leaf-response 5.4s ease-in-out -1.7s infinite; }
+.leaf-main-f { animation: leaf-response 4.6s ease-in-out -2.7s infinite; }
+.leaf-left-a,.leaf-right-b { animation: leaf-response 6s ease-in-out -1.4s infinite; }
+.leaf-left-b,.leaf-right-c { animation: leaf-response 5.1s ease-in-out -3.2s infinite; }
+
+@keyframes botanical-wind {
+  0%, 100% { transform: rotate(-.7deg); }
+  18% { transform: rotate(.15deg); }
+  42% { transform: rotate(3.1deg); }
+  62% { transform: rotate(2deg); }
+  84% { transform: rotate(-.15deg); }
+}
+
+@keyframes leaf-response {
+  0%, 100% { transform: rotate(-.5deg); }
+  28% { transform: rotate(.45deg); }
+  54% { transform: rotate(3.1deg); }
+  76% { transform: rotate(1deg); }
+}
+
+.botanical-caption,
+.botanical-coordinate {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(173, 190, 145, .7);
+  font: 600 .48rem/1.5 var(--mono);
+  letter-spacing: .12em;
+}
+
+.botanical-caption {
+  top: 10%;
+  right: 12%;
+}
+
+.botanical-caption i {
+  width: 28px;
+  height: 1px;
+  background: rgba(194, 211, 150, .45);
+}
+
+.botanical-coordinate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.botanical-coordinate strong {
+  color: rgba(216, 215, 174, .86);
+  font-size: .53rem;
+  font-weight: 600;
+}
+
+.coordinate-one {
+  top: 29%;
+  right: 7%;
+}
+
+.coordinate-two {
+  right: 12%;
+  bottom: 14%;
+  align-items: flex-end;
+}
+
+.field-bridge-steps {
+  color: #cbdca0;
+}
+
+.field-bridge-steps i {
+  background: linear-gradient(90deg, rgba(202, 223, 145, .55), rgba(202, 223, 145, .08));
+}
+
+.field-bridge-cta {
+  color: #d3e2a7;
+}
+
+.site-footer-expanded {
+  display: block;
+  padding: 0 var(--pad);
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(74, 111, 68, .1), transparent 38%),
+    #060a08;
+  border-top: 1px solid rgba(190, 207, 163, .18);
+}
+
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(230px, 1.45fr) minmax(120px, .65fr) minmax(160px, .85fr) minmax(210px, 1.15fr);
+  gap: clamp(24px, 4vw, 64px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(48px, 6vw, 78px) 0;
+}
+
+.footer-brand-panel .footer-brand {
+  display: inline-flex;
+  gap: 13px;
+}
+
+.footer-brand-panel .footer-brand img {
+  width: 43px;
+  height: 43px;
+}
+
+.footer-brand-panel .footer-brand strong {
+  color: #f0efe3;
+  font-size: .86rem;
+  letter-spacing: .2em;
+}
+
+.footer-brand-panel .footer-brand small {
+  color: #8f9b83;
+  font-size: .48rem;
+  letter-spacing: .13em;
+}
+
+.footer-brand-panel > p {
+  max-width: 300px;
+  margin: 22px 0 22px;
+  color: #a1aa9a;
+  font: 400 .85rem/1.85 var(--body);
+  letter-spacing: 0;
+}
+
+.footer-project-tag {
+  display: inline-block;
+  padding: 7px 9px;
+  border: 1px solid rgba(181, 205, 142, .2);
+  color: #b6c58c;
+  font: 600 .46rem/1.5 var(--mono);
+  letter-spacing: .12em;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.footer-column h2 {
+  margin: 4px 0 9px;
+  color: #e0e6d5;
+  font: 600 .72rem/1.4 var(--heading);
+  letter-spacing: .04em;
+}
+
+.footer-column a {
+  color: #929d8e;
+  font: 400 .76rem/1.5 var(--body);
+  letter-spacing: 0;
+  transition: color .2s, transform .2s;
+}
+
+.footer-column a span {
+  color: #b5cc83;
+  font-size: .65rem;
+}
+
+.footer-column a:hover {
+  color: #d6e7a8;
+  transform: translateX(3px);
+}
+
+.footer-column-note p {
+  max-width: 285px;
+  margin: 0 0 4px;
+  color: #899486;
+  font: 400 .74rem/1.8 var(--body);
+  letter-spacing: 0;
+}
+
+.footer-column-note a {
+  color: #c6d895;
+  font-size: .67rem;
+}
+
+.footer-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 18px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 19px 0;
+  border-top: 1px solid rgba(190, 207, 163, .14);
+}
+
+.footer-bottom > span {
+  color: #768271;
+  font: 600 .47rem/1.7 var(--mono);
+  letter-spacing: .09em;
+}
+
+.footer-bottom > span:nth-child(2) {
+  text-align: center;
+}
+
+.footer-bottom .back-top {
+  grid-column: auto;
+  justify-self: end;
+  color: #c7d995;
+  font-size: .49rem;
+}
+
+.footer-note {
+  display: block;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px 0 22px;
+  border-top: 1px solid rgba(190, 207, 163, .08);
+  color: #687264;
+  font: 400 .68rem/1.7 var(--body);
+  letter-spacing: 0;
+}
+
+.text-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(2px);
+  transition:
+    opacity .82s cubic-bezier(.22,.72,.18,1),
+    transform .82s cubic-bezier(.22,.72,.18,1),
+    filter .82s cubic-bezier(.22,.72,.18,1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.text-reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.text-reveal-heading {
+  letter-spacing: -.045em;
+}
+
+@media (max-width: 1050px) {
+  .footer-main {
+    grid-template-columns: minmax(210px, 1.2fr) repeat(2, minmax(130px, .8fr));
+  }
+
+  .footer-column-note {
+    grid-column: 1 / -1;
+    max-width: 580px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(190, 207, 163, .12);
+  }
+
+  .field-bridge-copy {
+    width: 58%;
+  }
+
+  .field-artwork {
+    right: -10%;
+    width: 66%;
+  }
+}
+
+@media (max-width: 760px) {
+  .field-bridge {
+    min-height: 760px;
+    align-items: flex-start;
+    padding: 76px var(--pad) 54px;
+  }
+
+  .field-bridge-copy {
+    width: 100%;
+    max-width: 590px;
+  }
+
+  .field-bridge-copy h2 {
+    max-width: 520px;
+    font-size: clamp(2.8rem, 10.5vw, 4.3rem);
+  }
+
+  .field-bridge-copy > p:not(.eyebrow) {
+    max-width: 560px;
+    font-size: .84rem;
+  }
+
+  .field-artwork {
+    top: auto;
+    right: -16%;
+    bottom: -8%;
+    width: 112%;
+    height: 58%;
+    opacity: .82;
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 18%, #000 38%, #000 88%, transparent 100%);
+  }
+
+  .botanical-caption {
+    top: 18%;
+    right: 19%;
+    font-size: .42rem;
+  }
+
+  .coordinate-one {
+    top: 31%;
+    right: 12%;
+  }
+
+  .coordinate-two {
+    right: 17%;
+    bottom: 9%;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 34px 26px;
+    padding: 46px 0;
+  }
+
+  .footer-brand-panel,
+  .footer-column-note {
+    grid-column: 1 / -1;
+  }
+
+  .footer-brand-panel > p {
+    max-width: 420px;
+    margin: 15px 0;
+  }
+
+  .footer-bottom {
+    grid-template-columns: 1fr auto;
+    gap: 10px 20px;
+  }
+
+  .footer-bottom > span:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: left;
+  }
+
+  .footer-bottom .back-top {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 420px) {
+  .field-bridge {
+    min-height: 780px;
+  }
+
+  .field-bridge-steps {
+    max-width: 300px;
+    flex-wrap: wrap;
+    font-size: .45rem;
+    gap: 8px;
+  }
+
+  .botanical-caption {
+    right: 11%;
+    gap: 6px;
+    font-size: .38rem;
+  }
+
+  .botanical-coordinate {
+    font-size: .4rem;
+  }
+
+  .botanical-coordinate strong {
+    font-size: .44rem;
+  }
+
+  .footer-main {
+    gap: 30px 18px;
+  }
+
+  .footer-column h2 {
+    font-size: .67rem;
+  }
+
+  .footer-column a {
+    font-size: .71rem;
+  }
+
+  .footer-bottom > span {
+    font-size: .42rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .botanical-plant,
+  .botanical-leaf {
+    animation: none !important;
+  }
+
+  .text-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}
+
+
+/* Opening copy arrives in a deliberate editorial sequence. */
+.hero-copy > .eyebrow,
+.hero-copy > h1,
+.hero-copy > .hero-description,
+.hero-copy > .hero-actions,
+.hero-copy > .hero-disclaimer {
+  animation: hero-editorial-enter .9s cubic-bezier(.2,.72,.18,1) both;
+}
+
+.hero-copy > .eyebrow { animation-delay: .12s; }
+.hero-copy > h1 { animation-delay: .27s; }
+.hero-copy > .hero-description { animation-delay: .43s; }
+.hero-copy > .hero-actions { animation-delay: .59s; }
+.hero-copy > .hero-disclaimer { animation-delay: .74s; }
+
+.hero-copy h1 em {
+  display: inline-block;
+  animation: hero-accent-resolve .9s ease-out .82s both;
+}
+
+@keyframes hero-editorial-enter {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); filter: blur(5px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+
+@keyframes hero-accent-resolve {
+  from { opacity: .32; filter: blur(5px) brightness(.82); }
+  to { opacity: 1; filter: blur(0) brightness(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > .eyebrow,
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions,
+  .hero-copy > .hero-disclaimer,
+  .hero-copy h1 em {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+
+/* Planetary scrollytelling: keep the Earth as a single continuous scene beside the story. */
+html, body { overflow-x: clip; }
+
+.earth-story {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    radial-gradient(ellipse at 76% 18%, rgba(42, 104, 86, .17), transparent 38%),
+    #070c09;
+}
+
+.earth-story-grid {
+  grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr);
+  grid-template-rows: repeat(5, minmax(100svh, auto));
+  max-width: 1800px;
+  padding-inline: var(--pad);
+  gap: 0 clamp(15px, 2.5vw, 42px);
+}
+
+.story-panel {
+  grid-column: 1;
+  min-width: 0;
+  overflow: visible;
+  padding-inline: 0;
+}
+
+.hero-panel { overflow: visible; }
+
+.giant-title { display: none !important; }
+
+.hero-copy {
+  width: min(610px, 100%);
+  max-width: 100%;
+  padding-top: clamp(190px, 31vh, 360px);
+  margin-inline: 0;
+}
+
+.hero-copy h1 {
+  max-width: 590px;
+  font-size: clamp(2.9rem, 4.4vw, 5rem);
+  line-height: .97;
+  letter-spacing: -.075em;
+  text-wrap: balance;
+}
+
+.hero-description { max-width: 510px; }
+
+.planet-rail-global {
+  grid-column: 2;
+  grid-row: 1 / span 5;
+  top: 76px;
+  height: calc(100svh - 76px);
+  overflow: visible;
+  background:
+    radial-gradient(ellipse at 48% 45%, rgba(44, 104, 116, .13), transparent 58%),
+    transparent;
+}
+
+.planet-grid {
+  opacity: .055;
+  background-size: 86px 86px;
+}
+
+.earth-fallback {
+  width: min(76%, 66vh);
+  max-width: 620px;
+  background:
+    radial-gradient(ellipse at 36% 29%, rgba(126, 178, 193, .18), transparent 39%),
+    radial-gradient(circle at 35% 30%, #407c87 0%, #1a4b57 48%, #09202a 78%, #050d12 100%);
+  box-shadow:
+    inset -42px -16px 62px rgba(0,0,0,.66),
+    inset 10px 8px 22px rgba(219,241,242,.11),
+    0 0 86px rgba(72,157,172,.13);
+}
+
+#earth-canvas {
+  inset: 0;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.earth-glow {
+  inset: 7% 0 3%;
+  opacity: .45;
+  background: radial-gradient(ellipse at 50% 50%, transparent 33%, rgba(79,166,181,.07) 50%, transparent 70%);
+}
+
+.earth-label {
+  color: #c9d7d0;
+  font-size: .51rem;
+  letter-spacing: .13em;
+}
+
+.earth-label-top {
+  top: 5%;
+  left: 4%;
+}
+
+.earth-label strong {
+  color: #d1dfa9;
+  font-size: .58rem;
+  letter-spacing: .1em;
+}
+
+.earth-label .label-dot,
+.earth-legend .legend-pulse {
+  background: #a7ce8c;
+  box-shadow: 0 0 10px rgba(167,206,140,.65);
+}
+
+.earth-legend {
+  right: 4%;
+  bottom: 5%;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 270px;
+  justify-content: flex-end;
+  gap: 7px;
+  color: #a9b99f;
+  font-size: .46rem;
+  letter-spacing: .1em;
+  text-align: right;
+}
+
+.earth-legend small { display: none; }
+
+.earth-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.brand-wordmark {
+  display: block;
+  width: clamp(112px, 10vw, 140px);
+  height: auto;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.footer-brand img {
+  width: clamp(116px, 11vw, 140px);
+  height: auto;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.site-footer-expanded .footer-brand {
+  align-items: center;
+}
+
+@media (max-width: 1050px) {
+  .earth-story-grid {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: 0 18px;
+  }
+
+  .hero-copy h1 { font-size: clamp(2.65rem, 5.1vw, 4.2rem); }
+}
+
+@media (max-width: 760px) {
+  .earth-story-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    padding-inline: var(--pad);
+  }
+
+  .story-panels { display: contents; }
+
+  .story-panel {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 82svh;
+    padding-block: 90px 70px;
+  }
+
+  .hero-panel {
+    min-height: 86svh;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+
+  .hero-copy { padding-top: 0; width: min(100%, 600px); }
+  .hero-copy h1 { font-size: clamp(2.7rem, 10vw, 4.5rem); }
+
+  .planet-rail-global {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    top: auto;
+    height: min(78svh, 610px);
+    margin: 0 calc(var(--pad) * -1);
+    order: -1;
+  }
+
+  .earth-legend { right: var(--pad); bottom: 4%; }
+  .earth-label-top { left: var(--pad); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > .eyebrow,
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions,
+  .hero-copy > .hero-disclaimer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+
+/* Mars-style editorial hero: the planet name is a typographic layer, not a label. */
+.giant-title {
+  display: block !important;
+  position: absolute;
+  top: 17%;
+  left: -3.6vw;
+  width: calc(198% + 7vw);
+  z-index: 0;
+  overflow: visible;
+  white-space: nowrap;
+  text-align: center;
+  color: rgba(230, 236, 224, .94);
+  font: 500 clamp(5.8rem, 14vw, 14.8rem)/.84 var(--display);
+  letter-spacing: .045em;
+  pointer-events: none;
+  user-select: none;
+  opacity: .96;
+}
+
+.hero-copy { position: relative; z-index: 3; }
+.story-panel { position: relative; }
+
+.planet-rail-global {
+  background: transparent !important;
+}
+
+.planet-grid { z-index: 0; }
+
+.earth-starfield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .82;
+  mix-blend-mode: screen;
+}
+
+.earth-fallback {
+  z-index: 1;
+  transition: opacity .8s ease, visibility .8s ease;
+}
+
+.planet-rail-global.earth-ready .earth-fallback {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.earth-glow {
+  display: none !important;
+}
+
+/* Use the same one-time 1.2s cinematic entrance used on Mars Society Egypt. */
+.text-reveal {
+  opacity: 0;
+  transform: translate3d(-8px, 0, 0);
+  filter: none;
+  transition: none;
+  will-change: transform, opacity;
+}
+
+.text-reveal.is-revealed {
+  animation: text-reveal-cinematic 1200ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+.text-reveal-heading {
+  background-image: linear-gradient(90deg, rgba(195, 220, 141, .94), rgba(195, 220, 141, .94));
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 0 2px;
+  padding-bottom: .08em;
+}
+
+.text-reveal-heading.is-revealed {
+  animation:
+    text-reveal-cinematic 1200ms cubic-bezier(.22, .61, .36, 1) both,
+    text-reveal-underline 1200ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+@keyframes text-reveal-cinematic {
+  from { opacity: 0; transform: translate3d(-8px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes text-reveal-underline {
+  from { background-size: 0 2px; }
+  to { background-size: 100% 2px; }
+}
+
+@media (max-width: 760px) {
+  .giant-title {
+    top: 9%;
+    left: -2vw;
+    width: 100%;
+    text-align: left;
+    font-size: clamp(4.2rem, 17vw, 8rem);
+    opacity: .24;
+  }
+
+  .earth-starfield { opacity: .68; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-reveal,
+  .text-reveal.is-revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    will-change: auto;
+  }
+
+  .earth-fallback { transition: none; }
+}
+
+
+/* Final requested corrections only: supplied Soliq identity and cleaner Earth hero. */
+.brand-wordmark {
+  width: clamp(132px, 12vw, 168px);
+  max-height: 48px;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+.footer-brand img {
+  width: clamp(132px, 12vw, 168px);
+  max-height: 54px;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+/* Raise the background wordmark clear of the foreground headline. */
+.giant-title {
+  top: 2% !important;
+  left: -3.6vw;
+  z-index: 1;
+  font-size: clamp(5.4rem, 12.2vw, 12.8rem);
+  line-height: .78;
+  letter-spacing: .025em;
+  opacity: .78;
+}
+
+.hero-copy { z-index: 3; }
+
+@media (max-width: 760px) {
+  .giant-title {
+    top: 2% !important;
+    left: -2vw;
+    font-size: clamp(4rem, 15vw, 7.2rem);
+    opacity: .3;
+  }
+}
+
+/* The extra cyan rim was the atmosphere shell, not the surface map. */
+.planet-rail-global,
+.earth-story-grid {
+  background: transparent !important;
+}
+
+.planet-rail-global {
+  background-image: none !important;
+}
+
+.planet-grid {
+  opacity: .025 !important;
+}
+
+.earth-fallback,
+.earth-glow {
+  display: none !important;
+}
+
+/* Exact 1.2-second reveal duration across the hero's staggered sequence. */
+.hero-copy > .eyebrow,
+.hero-copy > h1,
+.hero-copy > .hero-description,
+.hero-copy > .hero-actions,
+.hero-copy > .hero-disclaimer {
+  animation-duration: 1200ms !important;
+}
+
+.hero-copy h1 em {
+  animation-duration: 1200ms !important;
+}
+
+
+/* Botanical joins: each blade pivots around its real stem-side attachment. */
+.botanical-leaf {
+  transform-box: fill-box;
+}
+
+/* Each pivot sits on the leaf's attachment point, not the centre of its blade. */
+.leaf-left-a { transform-origin: 100% 79%; }
+.leaf-left-b { transform-origin: 100% 66%; }
+.leaf-right-a { transform-origin: 0% 89%; }
+.leaf-main-a { transform-origin: 100% 72%; }
+.leaf-main-b { transform-origin: 0% 77%; }
+.leaf-main-c { transform-origin: 100% 69%; }
+.leaf-main-d { transform-origin: 0% 77%; }
+.leaf-main-e { transform-origin: 100% 69%; }
+.leaf-main-f { transform-origin: 0% 74%; }
+.leaf-right-b { transform-origin: 100% 79%; }
+.leaf-right-c { transform-origin: 0% 78%; }
+
+/* Global star field follows the same compositing order as Mars Society Egypt. */
+.site-starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 1.1s ease;
+}
+
+.topbar { z-index: 60; }
+.skip-link { z-index: 70; }
+
+#main-content > section > *,
+.site-footer-expanded > * {
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-starfield { transition: none; }
+}
+
+
+/* Final submission layout correction: keep copy left and botanical artwork right. */
+@media (min-width: 761px) {
+  .field-bridge {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    align-items: center;
+    column-gap: clamp(30px, 5vw, 82px);
+  }
+
+  .field-bridge-copy {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    width: 100%;
+    max-width: 610px;
+    margin: 0;
+    text-align: left;
+  }
+
+  .field-artwork {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    height: min(72vh, 650px);
+    min-height: 520px;
+    margin: 0;
+    opacity: .94;
+  }
+}
+
+
+/* Use the supplied transparent white-letter Soliq logo without cropping. */
+.brand-wordmark {
+  width: auto !important;
+  height: auto !important;
+  max-width: 124px;
+  max-height: 58px;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 0 !important;
+}
+
+.footer-brand img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 148px;
+  max-height: 92px;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 0 !important;
+}
+
+@media (max-width: 760px) {
+  .brand-wordmark {
+    max-width: 96px;
+    max-height: 64px;
+  }
+  .footer-brand img {
+    max-width: 132px;
+    max-height: 86px;
+  }
+}
+
+/* Keep the canonical Soil-IQ mark legible in both navigation and footer. */
+.brand-wordmark {
+  width: auto !important;
+  height: auto !important;
+  max-width: 148px;
+  max-height: 43px;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 0 !important;
+}
+.footer-brand img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 166px;
+  max-height: 48px;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 0 !important;
+}
+@media (max-width: 760px) {
+  .brand-wordmark { max-width: 116px; max-height: 34px; }
+  .footer-brand img { max-width: 142px; max-height: 41px; }
+}

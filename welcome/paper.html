@@ -1,1 +1,113 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Soliq research brief — working methods draft</title><link rel="stylesheet" href="site.css"><body><main class="paper"><a href="./">← Soliq</a><p class="eyebrow">WORKING RESEARCH BRIEF · NOT PEER REVIEWED</p><h1>When Does Better Evidence Change a Crop-Rotation Decision?</h1><p>Mohamed Mostafa, Youssef Mohamed, Aya Abdelnabi, and Mohamed Abdelrahman</p><p>NASA Space Apps project team, 6 October event; venue: Badr University in Cairo. Institutional affiliations and correspondence require author confirmation.</p><h2>Abstract</h2><p>We propose a framework for identifying fragile crop-rotation choices under limited environmental and management information. The current prototype combines historical NASA POWER point weather, declared soil storage, crop coefficients, and explicit feasibility checks. Eligible crop alternatives are compared using paired water-deficit scenarios. Decision reversals and maximum finite-scenario regret expose sensitivity that a single ranking conceals. A future evidence-acquisition module will test whether targeted measurements reduce decision loss more efficiently than untargeted data collection. No field outcomes or superiority claims are established here.</p><h2>Research question</h2><p>Under a fixed evidence-collection budget, can identifying which uncertain inputs change a rotation decision reduce held-out decision loss and inappropriate recommendations compared with point-estimate ranking and uniform evidence collection?</p><h2>Related work and contribution boundary</h2><p>Geoinformatics, stochastic optimization, crop suitability dashboards, remote-sensing rotation matrices, and value-of-information methods already exist. Their combination is not by itself a novelty claim. The proposed contribution is a jointly evaluated workflow connecting evidence provenance and spatial support to ranking reversals, selective abstention, and the next useful measurement. Its novelty remains a hypothesis requiring a systematic review.</p><ol><li><a href="https://www.sciencedirect.com/science/article/pii/S0168169922005282">Aggarwal et al., Integrated decision support for promoting crop rotation based sustainable agricultural management using geoinformatics and stochastic optimization (2022).</a> Verify bibliographic metadata before journal submission.</li><li><a href="https://www.sciencedirect.com/science/article/pii/S1161030123002174">AI- and data-driven pre-crop values and crop rotation matrices (2023).</a></li><li><a href="https://doi.org/10.2489/jswc.2023.0706A">Practical guidance for deciding whether to account for soil variability (2023).</a></li><li><a href="https://www.fao.org/4/x0490e/x0490e0b.htm">FAO Irrigation and Drainage Paper 56, Chapter 6.</a></li></ol><h2>Implemented method</h2><p>Six crop profiles use declared growth-stage durations and FAO-56 starting coefficients. A daily fixed-depth water bucket carries storage through the annual calendar. Four shared scenarios comprise reference inputs, 25% less rainfall (subject to the model's lower rainfall-scale bound), and ±15% crop coefficients within the comparison window. Local hard exclusions block simulation; missing checks and synthetic forcing prevent shortlisting.</p><p>For candidate c and scenario s, let L(c,s) be annual unmet modeled water demand in millimeters. Regret is R(c,s) = L(c,s) − min over eligible alternatives a of L(a,s). The displayed maximum is max over the four tested scenarios of R(c,s). A pair reverses when the sign of its loss difference changes across tested scenarios. Ties use a 10⁻⁶ mm numerical tolerance.</p><h2>Proposed evaluation</h2><table><tr><th>Experiment</th><th>Evidence needed</th></tr><tr><td>Historical replay with spatial and year holdouts</td><td>Field boundaries, management histories, measured soil and water outcomes</td></tr><tr><td>Targeted evidence acquisition versus equal-cost random acquisition</td><td>Measurement costs and progressively revealed independent observations</td></tr><tr><td>Satellite source ablation and coarse-grid support checks</td><td>QA-screened products, footprint metadata, ground references</td></tr><tr><td>Farmer and agronomist evaluation</td><td>Consented usability study and blinded feasibility review</td></tr></table><p>Report decision loss, constraint violations, abstention coverage, ranking stability, calibration where probabilities are modeled, and measurement cost. Include point-estimate and robust-planning baselines. Pre-register thresholds and splits. Software conservation tests do not establish crop performance.</p><h2>Limits and next work</h2><p>The prototype does not model yield, profit, soil carbon, nitrogen credits, salinity, flooded systems, crop-specific frost tolerance, or multi-year soil processes. Historical weather is not a seasonal forecast. SMAP, IMERG, Landsat, and ECOSTRESS fusion, spatial-support auditing, measurement acquisition, and multi-region field validation remain unimplemented. The full earlier manuscript is not included in this release; this brief documents the current implementation honestly and is not an IEEE JSTARS submission.</p><button onclick="print()">Print / save research brief as PDF</button></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#08090e">
+  <title>Soliq | Working research brief</title>
+  <link rel="icon" type="image/svg+xml" href="../soliq-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="refinement.css">
+  <style>
+    .paper-shell{max-width:1080px;margin:0 auto;padding:clamp(44px,7vw,100px) var(--pad)}
+    .paper-meta{display:flex;align-items:center;gap:10px;color:#d4a17e;font:700 .55rem/1.5 var(--mono);letter-spacing:.13em}
+    .paper-title{max-width:850px;margin:20px 0;font:600 clamp(2.8rem,6vw,5.5rem)/.98 var(--heading);letter-spacing:-.07em}
+    .paper-title em{color:var(--rust);font-style:normal}
+    .paper-authors{color:#e4ddd6;font:500 1rem/1.6 var(--heading)}
+    .paper-affiliation{color:#85838e;font-size:.78rem}
+    .paper-warning{display:flex;gap:13px;align-items:flex-start;margin:32px 0;padding:16px;border:1px solid #bb86635a;background:#f05a360a;color:#d9aa8b}
+    .paper-warning strong{display:block;font:700 .56rem/1.5 var(--mono);letter-spacing:.12em}
+    .paper-warning span{display:block;margin-top:4px;color:#a9a3a3;font-size:.78rem;line-height:1.65}
+    .paper-content{margin-top:55px;border-top:1px solid var(--line)}
+    .paper-content h2{margin:42px 0 14px;color:#f0ece7;font:600 1.55rem/1.2 var(--heading);letter-spacing:-.035em}
+    .paper-content p,.paper-content li{max-width:900px;color:#a8a5ae;font-size:.88rem;line-height:1.9}
+    .paper-content li{margin:8px 0}
+    .paper-content a{color:#e3aa87;text-decoration:underline;text-decoration-color:#e3aa8755;text-underline-offset:3px}
+    .paper-content a:hover{color:#ffd0ad}
+    .paper-content table{width:100%;border-collapse:collapse;margin:20px 0}
+    .paper-content th,.paper-content td{padding:13px 15px;border:1px solid var(--line);text-align:left;vertical-align:top;color:#a8a5ae;font-size:.79rem;line-height:1.7}
+    .paper-content th{color:#e0b391;font:700 .55rem/1.5 var(--mono);letter-spacing:.1em;background:#ffffff06}
+    .paper-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px}
+    @media(max-width:600px){.paper-content table{display:block;overflow-x:auto}.paper-meta{font-size:.49rem}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="./" class="brand" aria-label="Soliq home"><img class="brand-wordmark" src="../soliq-logo.svg" alt="Soliq" width="140" height="40"></a>
+    <nav class="main-nav"><a href="./#challenge">The challenge</a><a href="./#approach">How it works</a><a href="./#data">Earth data</a></nav>
+    <a class="nav-cta" href="../#analyzer">Open the app <span>↗</span></a>
+  </header>
+  <main class="paper-shell">
+    <p class="paper-meta"><span class="eyebrow-line"></span> WORKING RESEARCH BRIEF / SOLIQ</p>
+    <h1 class="paper-title">When Does Better Evidence Change a <em>Crop-Rotation Decision?</em></h1>
+    <p class="paper-authors">Mohamed Mostafa, Youssef Mohamed, Aya Abdelnabi, and Mohamed Abdelrahman</p>
+    <p class="paper-affiliation">NASA Space Apps project team · 2026</p>
+    <div class="paper-warning"><div><strong>RESEARCH STATUS / WORKING DRAFT</strong><span>This document describes the current prototype and proposed evaluation. It is not peer reviewed, does not establish field performance, and is not a submitted journal manuscript.</span></div></div>
+    <div class="paper-content">
+      <h2>Abstract</h2>
+      <p>We propose a framework for identifying fragile crop-rotation choices under limited environmental and management information. The current prototype combines historical NASA POWER point weather, declared soil storage, crop coefficients, and explicit feasibility checks. Eligible crop alternatives are compared using paired water-deficit scenarios. Decision reversals and maximum finite-scenario regret expose sensitivity that a single ranking conceals. A future evidence-acquisition module will test whether targeted measurements reduce decision loss more efficiently than untargeted data collection. No field outcomes or superiority claims are established here.</p>
+      <h2>Research question</h2>
+      <p>Under a fixed evidence-collection budget, can identifying which uncertain inputs change a rotation decision reduce held-out decision loss and inappropriate recommendations compared with point-estimate ranking and uniform evidence collection?</p>
+      <h2>Related work and contribution boundary</h2>
+      <p>Geoinformatics, stochastic optimization, crop suitability dashboards, remote-sensing rotation matrices, and value-of-information methods already exist. Their combination is not by itself a novelty claim. The proposed contribution is a jointly evaluated workflow connecting evidence provenance and spatial support to ranking reversals, selective abstention, and the next useful measurement. Its novelty remains a hypothesis requiring a systematic review.</p>
+      <ol>
+        <li><a href="https://www.sciencedirect.com/science/article/pii/S0168169922005282" target="_blank" rel="noopener noreferrer">Aggarwal et al., Integrated decision support for promoting crop rotation based sustainable agricultural management using geoinformatics and stochastic optimization (2022).</a> Verify bibliographic metadata before journal submission.</li>
+        <li><a href="https://www.sciencedirect.com/science/article/pii/S1161030123002174" target="_blank" rel="noopener noreferrer">AI- and data-driven pre-crop values and crop rotation matrices (2023).</a></li>
+        <li><a href="https://doi.org/10.2489/jswc.2023.0706A" target="_blank" rel="noopener noreferrer">Practical guidance for deciding whether to account for soil variability (2023).</a></li>
+        <li><a href="https://www.fao.org/4/x0490e/x0490e0b.htm" target="_blank" rel="noopener noreferrer">FAO Irrigation and Drainage Paper 56, Chapter 6.</a></li>
+      </ol>
+      <h2>Implemented method</h2>
+      <p>Six crop profiles use declared growth-stage durations and FAO-56 starting coefficients. A daily fixed-depth water bucket carries storage through the annual calendar. Four shared scenarios comprise reference inputs, 25% less rainfall (subject to the model's lower rainfall-scale bound), and ±15% crop coefficients within the comparison window. Local hard exclusions block simulation; missing checks and synthetic forcing prevent shortlisting.</p>
+      <p>For candidate c and scenario s, let L(c,s) be annual unmet modeled water demand in millimeters. Regret is R(c,s) = L(c,s) − min over eligible alternatives a of L(a,s). The displayed maximum is max over the four tested scenarios of R(c,s). A pair reverses when the sign of its loss difference changes across tested scenarios. Ties use a 10⁻⁶ mm numerical tolerance.</p>
+      <h2>Proposed evaluation</h2>
+      <table><thead><tr><th>EXPERIMENT</th><th>EVIDENCE NEEDED</th></tr></thead><tbody>
+        <tr><td>Historical replay with spatial and year holdouts</td><td>Field boundaries, management histories, measured soil and water outcomes</td></tr>
+        <tr><td>Targeted evidence acquisition versus equal-cost random acquisition</td><td>Measurement costs and progressively revealed independent observations</td></tr>
+        <tr><td>Satellite source ablation and coarse-grid support checks</td><td>QA-screened products, footprint metadata, ground references</td></tr>
+        <tr><td>Farmer and agronomist evaluation</td><td>Consented usability study and blinded feasibility review</td></tr>
+      </tbody></table>
+      <p>Report decision loss, constraint violations, abstention coverage, ranking stability, calibration where probabilities are modeled, and measurement cost. Include point-estimate and robust-planning baselines. Pre-register thresholds and splits. Software conservation tests do not establish crop performance.</p>
+      <h2>Limits and next work</h2>
+      <p>The prototype does not model yield, profit, soil carbon, nitrogen credits, salinity, flooded systems, crop-specific frost tolerance, or multi-year soil processes. Historical weather is not a seasonal forecast. SMAP, IMERG, Landsat, and ECOSTRESS fusion, spatial-support auditing, measurement acquisition, and multi-region field validation remain unimplemented. The full earlier manuscript is not included in this release; this brief documents the current implementation honestly and is not an IEEE JSTARS submission.</p>
+    </div>
+    <div class="paper-actions"><a class="button button-primary" href="../#analyzer">Open the app ↗</a><a class="button button-quiet" href="./">Back to Soliq ↗</a><button class="button button-quiet" type="button" onclick="window.print()">Print / save as PDF</button></div>
+  </main>
+  <footer class="site-footer site-footer-expanded">
+    <div class="footer-main">
+      <div class="footer-brand-panel">
+        <a href="./" class="footer-brand"><img src="../soliq-logo.svg" alt="Soliq" width="140" height="40"></a>
+        <p>Researching how environmental evidence can support more resilient crop-rotation decisions.</p>
+        <span class="footer-project-tag">WORKING RESEARCH BRIEF · 2026</span>
+      </div>
+      <div class="footer-column">
+        <h2>Explore</h2>
+        <a href="./#challenge">The challenge</a>
+        <a href="./#approach">How it works</a>
+        <a href="./#data">Earth data</a>
+        <a href="./#outlook">2026 Living Farm</a>
+      </div>
+      <div class="footer-column">
+        <h2>Project</h2>
+        <a href="../#analyzer">Open the application <span>↗</span></a>
+        <a href="paper.html">Research brief <span>↗</span></a>
+        <a href="https://github.com/Mohamed-Mostafa-AE/SOLIQ" target="_blank" rel="noopener noreferrer">GitHub repository <span>↗</span></a>
+        <a href="../benchmark.md" target="_blank" rel="noopener noreferrer">Benchmarks <span>↗</span></a>
+      </div>
+      <div class="footer-column footer-column-note">
+        <h2>Research status</h2>
+        <p>This is a working draft describing the prototype and proposed evaluation. It is not peer reviewed and does not establish field performance.</p>
+        <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA POWER data source ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 SOLIQ · WORKING RESEARCH BRIEF</span>
+      <span>NOT PEER REVIEWED · NO FIELD PERFORMANCE CLAIMS</span>
+      <a class="back-top" href="#top">BACK TO TOP ↑</a>
+    </div>
+    <small class="footer-note">NASA does not endorse non-U.S. Government entities. The research brief distinguishes calculations implemented in the prototype from proposed research and validation work.</small>
+  </footer>
+</body>
+</html>
