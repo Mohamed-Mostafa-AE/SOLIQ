@@ -58,10 +58,10 @@ function makeCloudTexture(THREE, mobile) {
     const v = y / (height - 1);
     for (let x = 0; x < width; x += 1) {
       const u = x / width;
-      const broad = noise(u, v, 7, 4);
-      const medium = noise(u, v, 15, 8);
-      const fine = noise(u, v, 31, 16);
-      const detail = noise(u, v, 63, 32);
+      const broad = noise(u, v, grids[0]);
+      const medium = noise(u, v, grids[1]);
+      const fine = noise(u, v, grids[2]);
+      const detail = noise(u, v, grids[3]);
       const field = broad * .48 + medium * .28 + fine * .16 + detail * .08;
       const coverage = smoothstep(.465, .615, field);
       const alpha = Math.round(coverage * 168);
@@ -78,7 +78,7 @@ function makeCloudTexture(THREE, mobile) {
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.ClampToEdgeWrapping;
-  texture.anisotropy = Math.min(4, 8);
+  texture.anisotropy = 4;
   return texture;
 }
 
