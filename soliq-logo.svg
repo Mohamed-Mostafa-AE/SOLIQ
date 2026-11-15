@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 160" role="img" aria-labelledby="title">
+  <title id="title">Soliq</title>
+  <rect width="560" height="160" rx="22" fill="#102d26"/>
+  <g transform="translate(36 32)"><circle cx="46" cy="46" r="34" fill="none" stroke="#e7eee4" stroke-width="8"/><path d="M21 37h50M19 48h54M22 59h48" stroke="#94b88c" stroke-width="5" stroke-linecap="round"/><path d="M62 70l23 23" stroke="#e7eee4" stroke-width="8" stroke-linecap="round"/><circle cx="45" cy="49" r="5" fill="#e0bc72"/></g>
+  <text x="160" y="110" font-family="Arial,Helvetica,sans-serif" font-size="87" font-weight="700" letter-spacing="-5" fill="#f2f2e8">soliq</text>
+</svg>
