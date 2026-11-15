@@ -250,7 +250,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   textureLoader.setCrossOrigin('anonymous');
   const sphereGeometry = new THREE.SphereGeometry(1, mobile ? 112 : 176, mobile ? 72 : 112);
   const fallbackMaterial = new THREE.MeshStandardMaterial({
-    color: 0x1b6579, roughness: .92, metalness: 0
+    color: 0x245e6c, roughness: .98, metalness: 0
   });
   const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
   earthTilt.add(earth);
@@ -259,7 +259,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     specular: new THREE.Color(0x263c4a),
     shininess: 9
   });
-  surfaceMaterial.normalScale.set(.34, .34);
+  surfaceMaterial.normalScale.set(.22, .22);
   const loadDetailMap = (url, applyTexture) => {
     textureLoader.load(url, texture => {
       if (cleanedUp) { texture.dispose(); return; }
@@ -318,10 +318,11 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   const cloudGroup = new THREE.Group();
   earthTilt.add(cloudGroup);
   const cloudGeometry = new THREE.SphereGeometry(1.014, mobile ? 96 : 144, mobile ? 64 : 96);
-  const cloudMaterial = new THREE.MeshLambertMaterial({
+  const cloudMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
     transparent: true,
-    opacity: .76,
+    opacity: .32,
+    alphaMap: null,
     depthWrite: false,
     side: THREE.FrontSide
   });
@@ -333,11 +334,13 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     THREE_EARTH_CLOUDS,
     texture => {
       if (cleanedUp) { texture.dispose(); return; }
-      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.colorSpace = THREE.NoColorSpace;
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
       texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 8);
-      cloudMaterial.map = texture;
+      cloudMaterial.alphaMap = texture;
       cloudMaterial.needsUpdate = true;
       disposable.push(texture);
     },
@@ -346,7 +349,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
       if (cleanedUp) return;
       const fallbackClouds = makeCloudTexture(THREE, mobile);
       if (!fallbackClouds) return;
-      cloudMaterial.map = fallbackClouds;
+      cloudMaterial.alphaMap = fallbackClouds;
       cloudMaterial.needsUpdate = true;
       disposable.push(fallbackClouds);
     }
@@ -383,21 +386,15 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   earthTilt.add(atmosphere);
 
   const orbitGroup = new THREE.Group();
-  orbitGroup.rotation.set(.76, .12, -.28);
+  orbitGroup.rotation.set(.66, .12, -.28);
   system.add(orbitGroup);
-  const orbitX = 1.55;
-  const orbitY = 1.18;
+  const orbitX = 1.78;
+  const orbitY = 1.58;
   orbitGroup.add(makeOrbit(THREE, orbitX, orbitY));
 
   const satellite = makeSatellite(THREE);
+  satellite.scale.setScalar(.34);
   orbitGroup.add(satellite);
-
-  const scanOrbit = new THREE.Mesh(
-    new THREE.TorusGeometry(1.085, .004, 6, 180),
-    new THREE.MeshBasicMaterial({ color: 0x88c6c1, transparent: true, opacity: .26 })
-  );
-  scanOrbit.rotation.x = Math.PI / 2.2;
-  earthTilt.add(scanOrbit);
 
   const resize = () => {
     const bounds = rail.getBoundingClientRect();
@@ -472,10 +469,9 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     earthTilt.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(7);
     earthTilt.rotation.z = -easedScrollProgress * THREE.MathUtils.degToRad(6);
     cloudGroup.rotation.y = -time * .012 + easedScrollProgress * .055;
-    scanOrbit.rotation.z = time * .045;
     orbitGroup.rotation.y = .12 + Math.sin(time * .16) * .05;
     const angle = (reducedMotion ? .85 : time * .42 + .85) + easedScrollProgress * .95;
-    satellite.position.set(Math.cos(angle) * orbitX, Math.sin(angle) * orbitY, Math.sin(angle * 1.1) * .12);
+    satellite.position.set(Math.cos(angle) * orbitX, Math.sin(angle) * orbitY, Math.sin(angle * 1.1) * .16);
     satellite.rotation.z = angle + Math.PI / 2;
     satellite.rotation.y = -.2 + Math.sin(time * .7) * .04;
 
