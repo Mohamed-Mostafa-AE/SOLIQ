@@ -25,7 +25,7 @@ export function createArgonChallenge(onEvent=()=>{}){
    turnOn:state.canalOn,pumpOn:state.pumpOn,seed:'argon-judge-exercise-v1'});
   const drainage=state.waterTableCm===null||state.espPct===null?'measurement_missing':
    state.waterTableCm<60||state.espPct>15?'request_professional_review':'screening_only';
-  return {water,demands,drainage,source:'illustrative_not_observed',decision:'comparison_only',
+  return {water,demands,drainage,source:'illustrative_not_observed',status:'comparison_only',
    assumptions:{farmAreaM2:1000,canalWindowHours:1,cropDemandFactors:'illustrative_not_calibrated',
    drainageThresholds:'teaching_screen_not_field_diagnosis'}};
  };
