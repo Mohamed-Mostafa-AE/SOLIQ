@@ -28,6 +28,6 @@ form.onsubmit=async event=>{
   const results=await Promise.all([inference(question),evidence]);last=results[0];report=results[1];renderGuidance(last);
   document.querySelector('#report').textContent=report.text+'\n\n'+report.scope+'\nEvidence SHA-256: '+report.evidenceId;
   status.textContent=text('Complete: real model inference, cited guidance and NASA-backed evidence.','اكتمل: تشغيل فعلي للنموذج وإرشادات بمصادر وأدلة مبنية على ناسا.');
- }catch(error){status.textContent=text('Demo could not complete: ','تعذر إكمال التجربة: ')+error.message;}
+ }catch(error){worker?.terminate();worker=null;pending=null;status.textContent=text('Demo could not complete: ','تعذر إكمال التجربة: ')+error.message;}
  finally{running=false;button.disabled=false;document.querySelector('#language').disabled=false;}
 };
