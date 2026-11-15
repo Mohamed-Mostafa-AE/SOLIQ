@@ -1,89 +1,5 @@
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-const NASA_EARTH_TEXTURE = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/february/world.200402.3x5400x2700.jpg';
-const THREE_EARTH_FALLBACK = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/january/world.200401.3x5400x2700.jpg';
-const THREE_EARTH_CLOUDS = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_clouds_1024.png';
-const THREE_EARTH_NORMAL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_normal_2048.jpg';
-const THREE_EARTH_SPECULAR = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_specular_2048.jpg';
-
-function makeCloudTexture(THREE, mobile) {
-  const canvas = document.createElement('canvas');
-  canvas.width = mobile ? 1024 : 2048;
-  canvas.height = canvas.width / 2;
-  const context = canvas.getContext('2d');
-  if (!context) return null;
-
-  const width = canvas.width;
-  const height = canvas.height;
-  const image = context.createImageData(width, height);
-  const fract = value => value - Math.floor(value);
-  const smooth = value => value * value * (3 - 2 * value);
-
-  const hash = (x, y) => {
-    const value = Math.sin(x * 127.1 + y * 311.7 + 19.19) * 43758.5453123;
-    return fract(value);
-  };
-
-  const grids = [[7, 4], [15, 8], [31, 16], [63, 32]].map(([columns, rows]) => {
-    const values = new Float32Array(columns * rows);
-    for (let row = 0; row < rows; row += 1) {
-      for (let column = 0; column < columns; column += 1) {
-        values[row * columns + column] = hash(column, row);
-      }
-    }
-    return { columns, rows, values };
-  });
-
-  const noise = (u, v, grid) => {
-    const { columns, rows, values } = grid;
-    const x = u * columns;
-    const y = v * rows;
-    const x0 = Math.floor(x);
-    const y0 = Math.floor(y);
-    const x1 = (x0 + 1) % columns;
-    const y1 = Math.min(y0 + 1, rows - 1);
-    const sx = smooth(x - x0);
-    const sy = smooth(y - y0);
-    const a0 = values[y0 * columns + x0];
-    const a1 = values[y0 * columns + x1];
-    const b0 = values[y1 * columns + x0];
-    const b1 = values[y1 * columns + x1];
-    const a = a0 * (1 - sx) + a1 * sx;
-    const b = b0 * (1 - sx) + b1 * sx;
-    return a * (1 - sy) + b * sy;
-  };
-
-  const smoothstep = (edgeA, edgeB, value) => {
-    const t = Math.max(0, Math.min(1, (value - edgeA) / (edgeB - edgeA)));
-    return t * t * (3 - 2 * t);
-  };
-
-  for (let y = 0; y < height; y += 1) {
-    const v = y / (height - 1);
-    for (let x = 0; x < width; x += 1) {
-      const u = x / width;
-      const broad = noise(u, v, grids[0]);
-      const medium = noise(u, v, grids[1]);
-      const fine = noise(u, v, grids[2]);
-      const detail = noise(u, v, grids[3]);
-      const field = broad * .48 + medium * .28 + fine * .16 + detail * .08;
-      const coverage = smoothstep(.465, .615, field);
-      const alpha = Math.round(coverage * 168);
-      const offset = (y * width + x) * 4;
-      image.data[offset] = 244;
-      image.data[offset + 1] = 249;
-      image.data[offset + 2] = 250;
-      image.data[offset + 3] = alpha;
-    }
-  }
-
-  context.putImageData(image, 0, 0);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.ClampToEdgeWrapping;
-  texture.anisotropy = 4;
-  return texture;
-}
+const EARTH_SURFACE_ATLAS = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/february/world.200402.3x5400x2700.jpg';
 
 function makeStars(THREE, count, extent, seedStart) {
   let seed = seedStart;
@@ -230,7 +146,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
   // Match the Mars Society globe lighting: one warm directional key,
   // restrained hemisphere fill, and only a faint far-side lift.
-  const hemisphere = new THREE.HemisphereLight(0xb3b2c4, 0x160e0a, .54);
+  const hemisphere = new THREE.HemisphereLight(0xb3b2c4, 0x160e0a, .38);
   scene.add(hemisphere);
   const sun = new THREE.DirectionalLight(0xffd5b5, 2.25);
   sun.position.set(-2.7, 2.35, 6.4);
@@ -244,27 +160,23 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
   const system = new THREE.Group();
   scene.add(system);
-  const earthTilt = new THREE.Group();
-  earthTilt.rotation.z = THREE.MathUtils.degToRad(-23.4);
-  system.add(earthTilt);
+  // Use the Mars Society Egypt planetary body structure: a dense, opaque sphere
+  // with a rough MeshStandardMaterial. NASA Blue Marble supplies its Earth appearance.
+  const marsAxis = new THREE.Group();
+  marsAxis.rotation.z = THREE.MathUtils.degToRad(-23.4);
+  system.add(marsAxis);
 
   const textureLoader = new THREE.TextureLoader();
   textureLoader.setCrossOrigin('anonymous');
-  const sphereGeometry = new THREE.SphereGeometry(1, mobile ? 320 : 512, mobile ? 160 : 256);
-  // Match Mars Society Egypt's solid planetary globe: a dense sphere and
-  // opaque MeshStandardMaterial carrying one complete global surface texture.
-  const fallbackMaterial = new THREE.MeshStandardMaterial({
-    color: 0x355d68,
+  const marsGeometry = new THREE.SphereGeometry(1, mobile ? 320 : 512, mobile ? 160 : 256);
+  const marsFallbackMaterial = new THREE.MeshStandardMaterial({
+    color: 0x204a64,
     roughness: 0.975,
     metalness: 0,
     transparent: false,
     opacity: 1
   });
-  const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
-  earth.castShadow = false;
-  earth.receiveShadow = false;
-  earthTilt.add(earth);
-  const surfaceMaterial = new THREE.MeshStandardMaterial({
+  const marsMaterial = new THREE.MeshStandardMaterial({
     map: null,
     roughness: 0.975,
     metalness: 0,
@@ -272,10 +184,13 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     transparent: false,
     opacity: 1
   });
-  let surfaceReady = false;
-  let earthTexture = null;
+  const marsMesh = new THREE.Mesh(marsGeometry, marsFallbackMaterial);
+  marsMesh.castShadow = false;
+  marsMesh.receiveShadow = false;
+  marsAxis.add(marsMesh);
 
-  const useSurface = (texture, source) => {
+  let surfaceReady = false;
+  const useEarthSurface = texture => {
     if (cleanedUp) { texture.dispose(); return; }
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.wrapS = THREE.RepeatWrapping;
@@ -285,41 +200,32 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 16);
     texture.offset.x = 0;
     texture.needsUpdate = true;
-    surfaceMaterial.map = texture;
-    surfaceMaterial.color.set(0xffffff);
-    surfaceMaterial.needsUpdate = true;
-    earth.material = surfaceMaterial;
-    earthTexture = texture;
+    marsMaterial.map = texture;
+    marsMaterial.color.set(0xffffff);
+    marsMaterial.needsUpdate = true;
+    marsMesh.material = marsMaterial;
     disposable.push(texture);
     surfaceReady = true;
-    if (status) status.textContent = source + ' surface · illustrative satellite orbit · drag to rotate';
+    if (status) status.textContent = 'NASA Blue Marble Earth surface · conceptual satellite orbit · drag to rotate';
     rail.classList.add('earth-ready');
   };
 
   textureLoader.load(
-    NASA_EARTH_TEXTURE,
-    texture => useSurface(texture, 'NASA Blue Marble'),
+    EARTH_SURFACE_ATLAS,
+    useEarthSurface,
     undefined,
     () => {
       if (cleanedUp || surfaceReady) return;
-      textureLoader.load(
-        THREE_EARTH_FALLBACK,
-        texture => useSurface(texture, 'Earth surface atlas'),
-        undefined,
-        () => {
-          if (!cleanedUp && status) status.textContent = 'Earth texture unavailable · procedural globe active';
-        }
-      );
+      if (status) status.textContent = 'Earth atlas unavailable · opaque planetary fallback active';
+      rail.classList.add('earth-ready');
     }
   );
 
-  // NASA Blue Marble already carries a coherent global cloud pattern.
-  // A second, independently registered cloud mask created the grey misalignment seen
-  // over continents, so the surface atlas remains the only cloud source.
-
   const atmosphereMaterial = new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, side: THREE.BackSide,
-    blending: THREE.AdditiveBlending,
+    transparent: true,
+    depthWrite: false,
+    side: THREE.BackSide,
+    blending: THREE.NormalBlending,
     vertexShader: `
       varying vec3 vNormal;
       varying vec3 vViewPosition;
@@ -336,28 +242,33 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
       void main() {
         vec3 N = normalize(vNormal);
         vec3 V = normalize(vViewPosition);
-        float rim = pow(1.0 - max(dot(N, V), 0.0), 3.0);
-        float alpha = rim * 0.14;
-        vec3 atmosphere = vec3(0.22, 0.48, 0.48);
+        float rim = pow(1.0 - max(dot(N, V), 0.0), 3.2);
+        float alpha = rim * 0.16;
+        vec3 atmosphere = vec3(0.22, 0.48, 0.88);
         gl_FragColor = vec4(atmosphere, alpha);
       }
     `
   });
-  // No outer cyan atmosphere shell: keep the Earth silhouette clean and photographic.
+  const atmosphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1.014, mobile ? 100 : 144, mobile ? 64 : 96),
+    atmosphereMaterial
+  );
+  atmosphere.renderOrder = 3;
+  marsAxis.add(atmosphere);
 
   // Keep the orbital plane independent of the globe's drag rotation. The track
   // and spacecraft sit on the far side of the Earth, so neither is drawn across
   // the textured surface when the satellite completes its orbit.
   const orbitGroup = new THREE.Group();
-  orbitGroup.position.z = -.88;
-  orbitGroup.rotation.set(.35, .12, -.28);
+  orbitGroup.position.z = -.12;
+  orbitGroup.rotation.set(.54, .10, -.12);
   scene.add(orbitGroup);
-  const orbitX = 1.82;
-  const orbitY = 1.5;
+  const orbitX = 1.52;
+  const orbitY = 1.34;
   orbitGroup.add(makeOrbit(THREE, orbitX, orbitY, 0x8db9b5, .3));
 
   const satellite = makeSatellite(THREE);
-  satellite.scale.setScalar(.23);
+  satellite.scale.setScalar(.30);
   orbitGroup.add(satellite);
 
   const resize = () => {
@@ -429,9 +340,9 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     system.position.set(.08, Math.sin(time * .55) * .025, 0);
     system.rotation.y = currentDragY + time * .025 + easedScrollProgress * .7;
     system.rotation.x = currentDragX;
-    earthTilt.rotation.y = time * .075 + easedScrollProgress * THREE.MathUtils.degToRad(16);
-    earthTilt.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(7);
-    earthTilt.rotation.z = -easedScrollProgress * THREE.MathUtils.degToRad(6);
+    marsAxis.rotation.y = time * .075 + easedScrollProgress * THREE.MathUtils.degToRad(16);
+    marsAxis.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(7);
+    marsAxis.rotation.z = THREE.MathUtils.degToRad(-23.4) - easedScrollProgress * THREE.MathUtils.degToRad(6);
     orbitGroup.rotation.y = .12 + Math.sin(time * .16) * .05;
     const angle = (reducedMotion ? .85 : time * .42 + .85) + easedScrollProgress * .95;
     satellite.position.set(Math.cos(angle) * orbitX, Math.sin(angle) * orbitY, Math.sin(angle * 1.1) * .16);
@@ -486,7 +397,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
   resize();
   updateScrollProgress();
-  if (status && !surfaceReady) status.textContent = 'Loading NASA Blue Marble surface and cloud layer…';
+  if (status && !surfaceReady) status.textContent = 'Loading NASA Blue Marble on the Mars Society planetary model…';
   if (!reducedMotion) frameId = requestAnimationFrame(render);
   else {
     renderer.render(scene, camera);

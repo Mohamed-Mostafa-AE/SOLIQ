@@ -15,15 +15,12 @@ delivered from the provider with resizing parameters rather than redistributed
 as scientific figures or field records.
 
 
-## 3D Earth scene
+## 3D planetary scene
 
-- Earth surface: NASA Blue Marble: Next Generation global mosaic, served from NASA Goddard Earth Observatory. The surface is a static Earth visualization, not a live satellite feed: https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/
-- Cloud atlas, terrain-normal map, and ocean-specular map: Three.js r160 planet example textures, used only as rendering maps for the 3D globe. They do not represent current cloud conditions or live Earth-observation measurements:
-  - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_clouds_1024.png
-  - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_normal_2048.jpg
-  - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_specular_2048.jpg
-
+- Planet rendering follows the Mars Society Egypt InteractivePlanet implementation: a dense 512 × 256 desktop sphere (320 × 160 on mobile), opaque MeshStandardMaterial, sRGB global texture, mipmapped filtering, high anisotropy, and matching warm key / restrained fill lighting.
+- Earth surface: NASA Blue Marble: Next Generation global mosaic, served from NASA Goddard Earth Observatory. It is a static Earth visualization, not a live satellite feed: https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-map/
+- The orbit and spacecraft are a conceptual in-scene illustration, not a real spacecraft track or live telemetry.
 
 ## Brand asset
 
-- Header and footer use `soliq-logo-white.png`, the supplied white-letter, transparent-background Soliq artwork. The logo image is used as provided and is not recolored or redrawn.
+- Header and footer use soliq-logo.svg, the canonical Soil-IQ identity from the main branch: the field-analysis mark and lowercase Soliq wordmark.

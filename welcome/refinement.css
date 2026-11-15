@@ -1714,3 +1714,27 @@ html, body { overflow-x: clip; }
     max-height: 86px;
   }
 }
+
+/* Keep the canonical Soil-IQ mark legible in both navigation and footer. */
+.brand-wordmark {
+  width: auto !important;
+  height: auto !important;
+  max-width: 148px;
+  max-height: 43px;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 0 !important;
+}
+.footer-brand img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 166px;
+  max-height: 48px;
+  object-fit: contain !important;
+  object-position: center;
+  border-radius: 0 !important;
+}
+@media (max-width: 760px) {
+  .brand-wordmark { max-width: 116px; max-height: 34px; }
+  .footer-brand img { max-width: 142px; max-height: 41px; }
+}
