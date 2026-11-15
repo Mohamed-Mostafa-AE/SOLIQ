@@ -111,7 +111,7 @@
             <h3>Physical metrics versus preference score</h3>
             <p>For each sequence, Soliq reports potential ET demand, modeled actual ET, unmet modeled demand, irrigation use, drainage, final storage and planned crop-cover days. The seasonal research view also exposes daily storage traces and mass-balance residuals.</p>
             <p>The overview preference score combines modeled water adequacy and the fraction of days assigned to a non-fallow crop, using the weights selected by the user.</p>
-            <div class="guide-equation"><code>Score = 100 × [w₁ × (1 − min(1, deficit ÷ demand)) + w₂ × (planned crop days ÷ days in year)]</code><code>w₁ = water weight ÷ (water weight + cover weight)</code><code>w₂ = cover weight ÷ (water weight + cover weight)</code></div>
+            <div class="guide-equation"><code>Score = 100 × [w₁ × (1 − min(1, deficit ÷ max(1, demand))) + w₂ × (planned crop days ÷ days in year)]</code><code>w₁ = water weight ÷ (water weight + cover weight)</code><code>w₂ = cover weight ÷ (water weight + cover weight)</code></div>
             <p>It is a preference index for navigating scenarios—not a yield, profitability, sustainability or agronomic suitability score. Changing weights does not change the physical water calculations. A lower modeled deficit can reflect lower modeled crop demand; it does not quantify the production trade-off.</p>
           </section>
 
