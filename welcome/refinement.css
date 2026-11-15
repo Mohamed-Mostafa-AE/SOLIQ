@@ -1529,3 +1529,73 @@ html, body { overflow-x: clip; }
 
   .earth-fallback { transition: none; }
 }
+
+
+/* Final requested corrections only: supplied Soliq identity and cleaner Earth hero. */
+.brand-wordmark {
+  width: clamp(132px, 12vw, 168px);
+  max-height: 48px;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+.footer-brand img {
+  width: clamp(132px, 12vw, 168px);
+  max-height: 54px;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+/* Raise the background wordmark clear of the foreground headline. */
+.giant-title {
+  top: 2% !important;
+  left: -3.6vw;
+  z-index: 1;
+  font-size: clamp(5.4rem, 12.2vw, 12.8rem);
+  line-height: .78;
+  letter-spacing: .025em;
+  opacity: .78;
+}
+
+.hero-copy { z-index: 3; }
+
+@media (max-width: 760px) {
+  .giant-title {
+    top: 2% !important;
+    left: -2vw;
+    font-size: clamp(4rem, 15vw, 7.2rem);
+    opacity: .3;
+  }
+}
+
+/* The extra cyan rim was the atmosphere shell, not the surface map. */
+.planet-rail-global,
+.earth-story-grid {
+  background: transparent !important;
+}
+
+.planet-rail-global {
+  background-image: none !important;
+}
+
+.planet-grid {
+  opacity: .025 !important;
+}
+
+.earth-fallback,
+.earth-glow {
+  display: none !important;
+}
+
+/* Exact 1.2-second reveal duration across the hero's staggered sequence. */
+.hero-copy > .eyebrow,
+.hero-copy > h1,
+.hero-copy > .hero-description,
+.hero-copy > .hero-actions,
+.hero-copy > .hero-disclaimer {
+  animation-duration: 1200ms !important;
+}
+
+.hero-copy h1 em {
+  animation-duration: 1200ms !important;
+}
