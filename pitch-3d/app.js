@@ -30,7 +30,7 @@ document.addEventListener('keydown',event=>{if(event.target.closest('button,a,in
 window.addEventListener('resize',fit);new ResizeObserver(fit).observe(document.querySelector('#viewport'));show(current);fit();
 function notice(text){const target=document.querySelector('#export-status');target.style.display='block';target.textContent=text;}
 let libraryPromise;
-function pptxLibrary(){if(window.pptxgen)return Promise.resolve(window.pptxgen);if(!libraryPromise)libraryPromise=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';script.onload=()=>resolve(window.pptxgen);script.onerror=()=>reject(Error('Unable to download the PowerPoint export library.'));document.head.append(script);});return libraryPromise;}
+function pptxLibrary(){if(window.PptxGenJS)return Promise.resolve(window.PptxGenJS);if(!libraryPromise)libraryPromise=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js';script.onload=()=>resolve(window.PptxGenJS);script.onerror=()=>reject(Error('Unable to download the PowerPoint export library.'));document.head.append(script);});return libraryPromise;}
 async function pngArt(mode){
  const img=new Image();img.src='data:image/svg+xml;base64,'+btoa(farmSVG(mode));await img.decode();const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=1040;canvas.getContext('2d').drawImage(img,0,0,1280,1040);return canvas.toDataURL('image/png');
 }

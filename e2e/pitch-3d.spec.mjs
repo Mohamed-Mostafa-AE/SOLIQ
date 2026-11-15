@@ -16,7 +16,7 @@ test('3D pitch navigates, preserves evidence and exports an eight-slide PowerPoi
  }
  await page.locator('#slide-nav button').nth(5).click();await expect(page.locator('.slide.active')).toContainText('48.14 mm');await expect(page.locator('.slide.active')).toContainText('112');
  await page.locator('#slide-nav button').nth(6).click();await expect(page.locator('.slide.active')).toContainText('20.32 mm');await expect(page.locator('.slide.active')).toContainText('15.29 mm');
- const [download]=await Promise.all([page.waitForEvent('download',{timeout:60000}),page.locator('#export-pptx').click()]);
+ const pendingDownload=page.waitForEvent('download',{timeout:60000});await page.locator('#export-pptx').click();await expect(page.locator('#export-status')).not.toContainText('Export could not complete:',{timeout:1000});const download=await pendingDownload;
  const output='test-results/Soil-IQ_3D_Pitch.pptx';await download.saveAs(output);expect((await readFile(output)).length).toBeGreaterThan(20000);
  const result=JSON.parse(execFileSync('python3',['-c','import zipfile,re,json; z=zipfile.ZipFile("'+output+'"); print(json.dumps({"slides":len([n for n in z.namelist() if re.fullmatch(r"ppt/slides/slide[0-9]+.xml",n)]),"notes":len([n for n in z.namelist() if re.fullmatch(r"ppt/notesSlides/notesSlide[0-9]+.xml",n)])}))'],{encoding:'utf8'}));
  expect(result.slides).toBe(8);expect(result.notes).toBe(8);
