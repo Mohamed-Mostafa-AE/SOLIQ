@@ -228,12 +228,21 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   camera.position.set(.08, .04, 4.8);
   camera.lookAt(0, 0, 0);
 
-  const hemisphere = new THREE.HemisphereLight(0xc9e3ec, 0x07120f, .82);
+  const hemisphere = new THREE.HemisphereLight(0xc9e3ec, 0x23352e, .76);
   scene.add(hemisphere);
-  const sun = new THREE.DirectionalLight(0xffe4c3, 2.2);
-  sun.position.set(-3.1, 2.3, 5.2);
+
+  // Keep the visible Earth hemisphere illuminated, as on the Mars reference.
+  // The main key light provides directional relief; a soft near-camera fill
+  // prevents the lower/front hemisphere from disappearing into the page.
+  const sun = new THREE.DirectionalLight(0xffe4c3, 2.15);
+  sun.position.set(-2.7, 2.35, 6.4);
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0x7eaa9a, .42);
+
+  const frontalFill = new THREE.DirectionalLight(0xdbe7df, .92);
+  frontalFill.position.set(0, -.15, 6.5);
+  scene.add(frontalFill);
+
+  const fill = new THREE.DirectionalLight(0x7eaa9a, .12);
   fill.position.set(3, -.8, -3);
   scene.add(fill);
 
