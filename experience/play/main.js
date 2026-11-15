@@ -68,6 +68,10 @@ class SeventhFieldGame {
     // Otherwise ArcRotateCamera's origin target shows empty soil even though
     // Nada starts at (-16,0,3), making the game look like a featureless map.
     cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0,1.38,0)));
+    // ArcRotateCamera.setTarget preserves eye position and therefore silently
+    // expands the radius; restore the intended human-scale follow framing.
+    cameras.follow.radius=8.5;
+    cameras.follow.beta=1.20;
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
