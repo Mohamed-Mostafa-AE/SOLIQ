@@ -40,8 +40,8 @@ export class Chapter0Mission {
       category: 'Mission Briefing',
       dataClass: 'simulated',
       timestamp: new Date().toISOString(),
-      detailsAr: 'فُتحت نوبة الري في مسقة القرية. يجب التنسيق مع عم حسن ومريم قبل تشغيل طلمبة الديزل لتفادي عجز الأحواض الأخيرة.',
-      detailsEn: 'Canal irrigation window opened. Coordinate with Hassan and Maryam before pump operation to avoid tail-end shortages.',
+      detailsAr: 'بدأت نوبة ري افتراضية. عند توفر المياه والسعة الكافية يستطيع أصحاب الغيطان الستة الري معًا؛ افحص الظروف قبل تشغيل الطلمبة.',
+      detailsEn: 'A fictional canal turn has begun. With adequate water and capacity, all six farms can irrigate; inspect the scenario before pumping.',
     });
   }
 
@@ -76,8 +76,8 @@ export class Chapter0Mission {
       return {
         speakerAr: 'عم حسن (مزارع قمح)',
         speakerEn: 'Uncle Hassan (Wheat Farmer)',
-        textAr: 'يا أهلاً يا باشمهندسة ندى! المية وصلت أخيرًا في المسقة بعد غياب تلات أيام. القمح بتاعي في طور النمو وعطشان، بس لو شغلنا الطلمبة بأقصى سحب ومريم فتحت بوابتها في نفس الدقيقة، الضغط هيسقط والأحواض اللي في الديل هتعطش!',
-        textEn: 'Welcome Eng. Nada! The canal water arrived at dawn after 3 days. My wheat needs irrigation, but if we pull max water simultaneously with Maryam, pressure will collapse and tail fields will starve!',
+        textAr: 'يا أهلاً يا باشمهندسة ندى! المية وصلت. لو التصرف والسعة كافيين كلنا ممكن نروي. خلينا نفحص الطلمبة ووقت النوبة؛ العطل أو ضعف الضغط احتمال مش قاعدة ثابتة.',
+        textEn: 'Welcome, Nada! The turn has begun. If canal and pump capacity are sufficient we can all irrigate. Let us inspect this turn rather than assume a fault or tail shortage.',
         emotion: EMOTIONS.EXPLAINING,
         choices: [
           {
@@ -135,8 +135,8 @@ export class Chapter0Mission {
     return {
       speakerAr: 'مريم (مزارعة برسيم)',
       speakerEn: 'Maryam (Clover Farmer)',
-      textAr: 'صباح الخير يا ندى. البرسيم عندي محتاج رية خفيفة وسريعة، مش غمر كامل. الدفاتر اللي معايا بتقول إن سحب الطلمبة محدود بـ 180 متر مكعب. لو قسمناها بالنسبة والتناسب، كل الغيطان هترتوي بالعدل.',
-      textEn: 'Good morning Nada. My berseem needs light, controlled water, not heavy flooding. The pump capacity is capped at 180 m³. If we use proportional allocation, all six plots receive water fairly.',
+      textAr: 'صباح الخير يا ندى. البرسيم عندي محتاج رية محسوبة. قدامنا مثالين افتراضيين: سعة تكفي الستة، أو سعة أقل من الطلب. لازم نحسب النتيجة من نافذة الري نفسها.',
+      textEn: 'Good morning, Nada. The lesson compares a sufficient-supply turn with a limited-capacity turn; we should calculate the actual water delivered in each window.',
       emotion: EMOTIONS.EXPLAINING,
       choices: [
         {
@@ -174,8 +174,8 @@ export class Chapter0Mission {
     return {
       speakerAr: 'طلمبة الديزل وبوابات المسقة',
       speakerEn: 'Diesel Pump & Canal Regulator',
-      textAr: 'الطلمبة جاهزة للتشغيل. المورد المائي المتاح حاليًا في المسقة: 180 وحدة. اختر سياسة توزيع المياه ثم شغّل الموتور:',
-      textEn: 'Diesel pump is primed. Available canal water supply: 180 units. Select allocation policy then engage starter:',
+      textAr: 'الطلمبة جاهزة. اختر حالة افتراضية (سعة كافية أو محدودة أو تأجيل للفحص)، والنتيجة ستأتي من محرك الري الزمني:',
+      textEn: 'The pump is ready. Choose a fictional adequate-capacity turn, a limited-capacity turn, or evidence deferral; the time-window solver computes the outcome.',
       emotion: EMOTIONS.NEUTRAL,
       choices: [
         {
@@ -186,8 +186,8 @@ export class Chapter0Mission {
           },
         },
         {
-          labelAr: '2. سحب متزامن كامل بأقصى ضخ (Outcome 2: Hydraulic Bottleneck)',
-          labelEn: '2. Simultaneous Full Draw (Outcome 2: Bottleneck Overload)',
+          labelAr: '2. نافذة بسعة ضخ محدودة (Outcome 2: Capacity-limited turn)',
+          labelEn: '2. Capacity-limited canal turn (Outcome 2: Bottleneck)',
           onSelect: () => {
             this.executeOutcome(OUTCOMES.BOTTLENECK);
           },
@@ -222,14 +222,14 @@ export class Chapter0Mission {
 
   executeOutcome(outcome) {
     this.activeOutcome = outcome;
-    this.flags.pumpStarted = true;
+    this.flags.pumpStarted = outcome !== OUTCOMES.DEFERRAL;
 
     const demands = [35, 45, 60, 40, 25, 30]; // 6 fields
 
     if (outcome === OUTCOMES.EQUILIBRIUM) {
       // Outcome 1: Proportional Fair Allocation
       this.waterEngine.setPumpState(true, false);
-      const res = this.waterEngine.runSimulation(180, demands, 'proportional');
+      const res = this.waterEngine.runSimulation(235, demands, 'proportional');
       this.waterEngine.applySimulationToWorld(res);
 
       this.village.setGateOpen('gate_head', true);
@@ -247,8 +247,8 @@ export class Chapter0Mission {
         category: 'Mission Resolution',
         dataClass: 'simulated',
         timestamp: new Date().toISOString(),
-        detailsAr: `تم توزيع 180 م³ على الـ 6 غيطان بنسبة عدالة Jain بلغت ${(res.fairness * 100).toFixed(1)}%. وصلت المياه لجميع الحقول دون اختناق في الطلمبة.`,
-        detailsEn: `Distributed 180 m³ across 6 fields with Jain fairness index of ${(res.fairness * 100).toFixed(1)}%. All plots received water without pump cavitation.`,
+        detailsAr: `في محاكاة افتراضية وصلت ${res.deliveredTotal.toFixed(1)} م³ للحقول الستة خلال ساعة الإمداد ON، وسجل المحرك ${(res.fairness * 100).toFixed(1)}% كمؤشر عدالة. لا توجد معايرة ميدانية.`,
+        detailsEn: `In this fictional 1-hour ON turn, the solver delivered ${res.deliveredTotal.toFixed(1)} m³ to six plots, Jain fairness ${(res.fairness * 100).toFixed(1)}%. Not calibrated to any farm.`,
       });
 
       sharedEvents.emit('outcome_achieved', {
@@ -258,9 +258,9 @@ export class Chapter0Mission {
       });
     } else if (outcome === OUTCOMES.BOTTLENECK) {
       // Outcome 2: Simultaneous Max Draw - Sputtering Pump, Tail Starved
-      this.waterEngine.setPumpState(true, true); // Overload smoke & sound
-      // Priority allocation simulates head fields grabbing water first
-      const res = this.waterEngine.runSimulation(120, demands, 'priority');
+      this.waterEngine.setPumpState(true, false); // Limited supply is not proof of pump cavitation
+      // Time-sliced solver handles a capacity-limited turn without invented head/tail priority
+      const res = this.waterEngine.runSimulation(120, demands, 'capacity_limited');
       this.waterEngine.applySimulationToWorld(res);
 
       this.village.setGateOpen('gate_head', true);
@@ -273,8 +273,8 @@ export class Chapter0Mission {
 
       this.addReceipt({
         id: 'OUTCOME_2_BOTTLENECK',
-        titleAr: 'النتيجة 2: اختناق هيدروليكي وعجز الأحواض الأخيرة',
-        titleEn: 'Outcome 2: Hydraulic Bottleneck & Tail Starvation',
+        titleAr: 'النتيجة 2: سعة محدودة وعجز لبعض الحقول',
+        titleEn: 'Outcome 2: Limited Turn Capacity',
         category: 'Mission Resolution',
         dataClass: 'simulated',
         timestamp: new Date().toISOString(),
@@ -295,8 +295,8 @@ export class Chapter0Mission {
 
       this.addReceipt({
         id: 'OUTCOME_3_DEFERRAL',
-        titleAr: 'النتيجة 3: التحقق الميداني وتأجيل الري غير الضروري',
-        titleEn: 'Outcome 3: Evidence-First Verification & Prudent Deferral',
+        titleAr: 'النتيجة 3: تأجيل القرار لحين القياس',
+        titleEn: 'Outcome 3: Deferral Until Field Measurement',
         category: 'Mission Resolution',
         dataClass: 'simulated',
         timestamp: new Date().toISOString(),
