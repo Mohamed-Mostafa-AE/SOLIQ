@@ -15,7 +15,7 @@ export function cmrQuery({product,lat,lon,start,end}={}){
  if(!Object.hasOwn(CMR_PRODUCT,product))throw new TypeError('Unknown NASA CMR product');
  const latitude=Number(lat),longitude=Number(lon);
  if(!Number.isFinite(latitude)||!Number.isFinite(longitude)||latitude < -90||latitude >90||longitude < -180||longitude>180)throw new TypeError('Invalid coordinates');
- for(const d of [start,end])if(typeof d!=='string'||!/^20\d{2}-\d{2}-\d{2}$/.test(d)||Number.isNaN(new Date(d+'T00:00:00Z').getTime()))throw new TypeError('Invalid ISO date');
+ for(const d of [start,end]){const parsed=new Date(String(d)+'T00:00:00Z');if(typeof d!=='string'||!/^20\d{2}-\d{2}-\d{2}$/.test(d)||Number.isNaN(parsed.getTime())||parsed.toISOString().slice(0,10)!==d)throw new TypeError('Invalid ISO date');}
  const startTime=new Date(start+'T00:00:00Z').getTime();
  const endTime=new Date(end+'T00:00:00Z').getTime();
  if(endTime<startTime||endTime-startTime>120*86400000)throw new TypeError('Select a period of up to 120 days');
