@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { allocateWater } from './engine.js';
+import { runGameWaterWindow } from '../game/core/water-window-adapter.js';
 import { sharedEvents, EMOTIONS, GESTURES, OUTCOMES, GameEventManager } from '../game/core/events.js';
 import { Chapter0Mission } from '../game/mission/chapter0.js';
 import { TimeEchoSystem } from '../game/world/time-echo.js';
@@ -119,7 +120,7 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   };
   const mockWater = {
     setPumpState: () => {},
-    runSimulation: (supply, demands, policy) => allocateWater(demands, supply, policy),
+    runSimulation: (supply, demands, policy) => runGameWaterWindow({supplyM3h:supply,demandsM3:demands}),
     applySimulationToWorld: () => {},
   };
   const mockAudio = {

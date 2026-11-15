@@ -391,7 +391,7 @@ export class GameHUD {
         <div class="receipt-header">
           <span class="receipt-class class-${r.dataClass}">${r.dataClass.toUpperCase()}</span>
           <span class="receipt-category">${r.category}</span>
-          <span class="receipt-hash">SHA: ${r.hash}</span>
+          <span class="receipt-hash">${r.hashKind === 'noncryptographic_display_id' ? 'SIM ID' : 'SHA'}: ${r.hash}</span>
         </div>
         <h4 class="receipt-title">${title}</h4>
         <p class="receipt-details">${details}</p>
@@ -411,6 +411,7 @@ export class GameHUD {
     }
 
     const { totalDemand, supply, delivered, shortfall, fairness, mode } = simResult;
+    const fairnessText = Number.isFinite(fairness) ? (fairness * 100).toFixed(1) + '%' : 'غير محسوب';
     w.innerHTML = `
       <div class="ledger-stats-grid">
         <div class="stat-box">
@@ -423,10 +424,10 @@ export class GameHUD {
         </div>
         <div class="stat-box">
           <span class="stat-lbl">مؤشر العدالة (Jain):</span>
-          <span class="stat-val">${(fairness * 100).toFixed(1)}%</span>
+          <span class="stat-val">${fairnessText}</span>
         </div>
         <div class="stat-box">
-          <span class="stat-lbl">السياسة الهيدروليكية:</span>
+          <span class="stat-lbl">حالة المحاكاة:</span>
           <span class="stat-val">${mode}</span>
         </div>
       </div>
