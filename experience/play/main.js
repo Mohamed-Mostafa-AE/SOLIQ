@@ -7,6 +7,7 @@
 import { RenderSetup } from '../../game/render/engine-setup.js';
 import { DeltaVillage } from '../../game/world/village.js';
 import {installFieldVegetation,installVillageDetails} from '../../game/world/visual-polish.js';
+import {applyDetailedSoil} from '../../game/world/delta-procedural-textures.js';
 import {addCharacterDetails} from '../../game/world/character-detail.js';
 import { CharacterSystem } from '../../game/world/characters.js';
 import { PlayerController } from '../../game/world/controls.js';
@@ -53,6 +54,7 @@ class SeventhFieldGame {
     // 2. Build 3D Delta Village Environment
     this.village = new DeltaVillage(scene, shadowGenerator);
     this.visualArtReport = {
+      realisticSurfaces: applyDetailedSoil(this.village,{quality:this.renderSetup.quality}),
       plants: installFieldVegetation(this.village, this.renderSetup.quality),
       details: installVillageDetails(this.village),
     };
