@@ -100,6 +100,11 @@ test('Guided and Research views have distinct navigation and landing pages',asyn
  await expect(page.locator('#workspace-nav [data-view="rotations"]')).toBeVisible();
  await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeHidden();
  await expect(page.locator('#audience-banner-label')).toContainText('FARMERS & CLIENTS');
+ await page.locator('#workspace-nav [data-view="rotations"]').click();
+ await expect(page.locator('[data-crop]')).toHaveCount(36);
+ await page.locator('#guided-review-plans').click();
+ await page.locator('#guided-mode').click();
+ await expect(page.locator('.journey-steps')).toContainText('Done');
  await page.locator('#research-mode').click();
  await expect(page.getByRole('heading',{name:'Research dashboard',exact:true})).toBeVisible();
  await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeVisible();
