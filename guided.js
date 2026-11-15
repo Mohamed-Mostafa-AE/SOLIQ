@@ -41,7 +41,8 @@ export function guidedRotations(state, helpers) {
     '<section class="panel guided-plan-help"><h2>How to use your crop plans</h2>' +
     '<p>Choose the crops you expect to grow in each month. The first row is your current plan. The other rows let you compare different choices.</p>' +
     '<p>The water estimates are based on the weather and field details entered in Soliq. They do not predict harvest size or income.</p>' +
-    '<button class="button quiet" data-go="overview">Back to my field overview</button></section>';
+    '<div class="form-actions"><button class="button primary" id="guided-review-plans">I have checked my crop plans ✓</button><button class="button quiet" data-go="overview">Back to my field overview</button></div>' +
+    '<p class="note">Checking your plans here does not mean they are approved for your farm. Ask a local farm expert about crop suitability.</p></section>';
 }
 
 export function guidedOverview(state, helpers) {
