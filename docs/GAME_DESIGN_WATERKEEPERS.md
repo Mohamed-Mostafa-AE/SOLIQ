@@ -1,3 +1,5 @@
+> **V2 SUPERSEDES THIS FIRST DRAFT.** Read [GAME_DESIGN_WATERKEEPERS_V2.md](./GAME_DESIGN_WATERKEEPERS_V2.md) for the research-grounded ON/OFF supply model, a non-forced human conflict, full SOLIQ storyline, realistic character art pipeline, corrected 2026 asset licensing and W01–W12 acceptance. This v1 file is retained solely as design history.
+
 # SOLIQ — حكاية المسقة | THE WATERKEEPERS
 ## Game Design Bible · GDD v1.0 · 15 November 2026
 
