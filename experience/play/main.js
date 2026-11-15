@@ -6,6 +6,8 @@
 
 import { RenderSetup } from '../../game/render/engine-setup.js';
 import { DeltaVillage } from '../../game/world/village.js';
+import {installFieldVegetation,installVillageDetails} from '../../game/world/visual-polish.js';
+import {addCharacterDetails} from '../../game/world/character-detail.js';
 import { CharacterSystem } from '../../game/world/characters.js';
 import { PlayerController } from '../../game/world/controls.js';
 import { DeltaAudioSynthesizer } from '../../game/world/audio.js';
@@ -49,11 +51,16 @@ class SeventhFieldGame {
 
     // 2. Build 3D Delta Village Environment
     this.village = new DeltaVillage(scene, shadowGenerator);
+    this.visualArtReport = {
+      plants: installFieldVegetation(this.village, this.renderSetup.quality),
+      details: installVillageDetails(this.village),
+    };
 
     this._updateProgress(60, 'تجهيز الشخصيات البشرية وحركات الهيكل العظمي...');
 
     // 3. Rigged Characters (Nada, Uncle Hassan, Maryam)
     this.characters = new CharacterSystem(scene, shadowGenerator);
+    this.visualArtReport.characters = addCharacterDetails(this.characters,{preset:this.renderSetup.quality});
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
