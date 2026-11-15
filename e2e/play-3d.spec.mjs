@@ -15,7 +15,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
 
   test('3D scene loads, renders canvas and advances past splash screen', async ({ page }) => {
     await page.goto('/experience/play/');
-    await expect(page).toHaveTitle(/الأرض السابعة/);
+    await expect(page).toHaveTitle(/The Seventh Field/);
 
     const canvas = page.locator('#renderCanvas');
     await expect(canvas).toBeAttached();
@@ -26,7 +26,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     });
 
     const objective = page.locator('#hud-objective-title');
-    await expect(objective).toContainText('المهمة: المية وصلت!');
+    await expect(objective).toContainText('Mission: The Water Has Arrived!');
   });
 
   test('Player Nada locomotion and camera mode toggle', async ({ page }) => {
@@ -67,6 +67,20 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
 
   test('Mesqa water simulation executes all three outcomes and updates evidence receipts', async ({ page }) => {
     await startSession(page);
+
+    // Unsafe startup is blocked; the player must complete three meaningful
+    // training steps before selecting the powered-pump branch.
+    const blocked = await page.evaluate(() => window.__seventhFieldGame.mission.executeOutcome('equilibrium'));
+    expect(blocked).toBe(false);
+    const training = await page.evaluate(() => {
+      const g = window.__seventhFieldGame;
+      for (const id of ['pumpInspected', 'canalAccessSecured', 'heatPrecautionsReviewed']) {
+        g.mission.completeSafetyTraining(id);
+      }
+      return { checks: g.mission.flags, receipts: g.mission.notebookReceipts.length };
+    });
+    expect(training.checks.heatPrecautionsReviewed).toBe(true);
+    expect(training.receipts).toBeGreaterThanOrEqual(4);
 
     // Outcome 1: Proportional Fair Equilibrium
     const res1 = await page.evaluate(() => {
@@ -119,7 +133,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     const toast = page.locator('#telemetry-toast');
     await expect(toast).toBeVisible();
     await expect(toast).toContainText('NASA POWER');
-    await expect(toast).toContainText('الرصد غير متاح');
+    await expect(toast).toContainText('source not loaded in game');
 
     // Click Future Mode
     await page.locator('[data-lens="future"]').click();
@@ -165,7 +179,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
 
     // Verify initial receipt
     await expect(page.locator('.receipt-card').first()).toBeVisible();
-    await expect(page.locator('.receipt-title').first()).toContainText('المية وصلت!');
+    await expect(page.locator('.receipt-title').first()).toContainText('The Water Has Arrived!');
 
     // Close Notebook
     await page.locator('#btn-close-notebook').click();
@@ -190,4 +204,47 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await page.locator('#btn-close-settings').click();
     await expect(settingsModal).toBeHidden();
   });
+  test('English-first HUD and Arabic subtitle option remain usable', async ({ page }) => {
+    await startSession(page);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('#hud-objective-title')).toContainText('Mission:');
+    await expect(page.locator('#btn-earth-lens .label')).toHaveText('Earth Lens');
+    await page.locator('#btn-settings').click();
+    await expect(page.locator('#select-lang')).toHaveValue('en');
+    await page.locator('#select-lang').selectOption('ar');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+    await expect(page.locator('#hud-objective-title')).toContainText('المهمة');
+    await page.locator('#select-lang').selectOption('en');
+    await expect(page.locator('#hud-objective-title')).toContainText('Mission:');
+  });
+
+  test('Pump mission requires player safety checks before irrigation and logs SDG learning', async ({ page }) => {
+    await startSession(page);
+    for (let step = 0; step < 3; step++) {
+      await page.evaluate(() => {
+        const g = window.__seventhFieldGame;
+        g.hud.showDialogue(g.mission.getDialogueForTarget({ id: 'pumpStation' }));
+      });
+      await expect(page.locator('#dialogue-speaker')).toHaveText('Safety Check — Before the Pump');
+      await page.locator('.dialogue-choice-btn').first().click();
+    }
+    const state = await page.evaluate(() => {
+      const g = window.__seventhFieldGame;
+      return {
+        ready: g.mission.flags.pumpInspected && g.mission.flags.canalAccessSecured && g.mission.flags.heatPrecautionsReviewed,
+        speaker: g.mission.getDialogueForTarget({ id: 'pumpStation' }).speakerEn,
+        options: g.mission.getDialogueForTarget({ id: 'pumpStation' }).choices.length,
+      };
+    });
+    expect(state.ready).toBe(true);
+    expect(state.speaker).toBe('Diesel Pump & Canal Regulator');
+    expect(state.options).toBe(3);
+
+    await page.evaluate(() => window.__seventhFieldGame.mission.executeOutcome('equilibrium'));
+    await page.locator('#btn-notebook').click();
+    await expect(page.locator('#receipts-list')).toContainText('Sustainability trade-offs');
+    await expect(page.locator('#receipts-list')).toContainText('SDG Learning');
+    await expect(page.locator('#receipts-list')).toContainText('NOT real-world operational clearance');
+  });
+
 });
