@@ -4,41 +4,132 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Soliq helps farmers compare crop rotations using historical NASA weather and local farm knowledge.">
-  <meta name="theme-color" content="#0b1714">
+  <meta name="theme-color" content="#08120f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Soliq | See the season before you choose">
+  <meta property="og:description" content="Explore the weather, water and crop trade-offs behind a field-specific rotation decision.">
   <title>Soliq | See the season before you choose</title>
   <link rel="icon" type="image/svg+xml" href="../soliq-mark.svg">
-  <link rel="stylesheet" href="site.css"><link rel="stylesheet" href="../outlook.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="../outlook.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="Soliq home"><img src="../soliq-mark.svg" width="38" height="38" alt=""><span>SOLIQ<small>EARTH OBSERVATIONS / GROUND DECISIONS</small></span></a>
-    <nav aria-label="Main navigation"><a href="#problem">THE PROBLEM</a><a href="#living-farm">LIVING FARM / 2026</a><a href="#method">OUR APPROACH</a><a href="#links">PROJECT</a></nav>
-    <a class="nav-action" href="../#analyzer">OPEN APP ↗</a>
+    <a class="brand" href="#top" aria-label="Soliq home">
+      <img src="../soliq-mark.svg" width="40" height="40" alt="">
+      <span class="brand-copy"><strong>SOLIQ</strong><small>EARTH OBSERVATIONS / GROUND DECISIONS</small></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span>
+    </button>
+    <nav id="primary-nav" aria-label="Main navigation">
+      <a href="#problem">THE PROBLEM</a>
+      <a href="#living-farm">2026 OUTLOOK</a>
+      <a href="#method">OUR APPROACH</a>
+      <a href="#links">PROJECT</a>
+    </nav>
+    <a class="nav-action" href="../#analyzer"><span>OPEN APP</span><b>↗</b></a>
   </header>
-  <main id="top">
-    <section class="hero" aria-labelledby="hero-heading">
+
+  <main id="main-content">
+    <section class="hero" id="top" aria-labelledby="hero-heading">
+      <div class="field-art" aria-hidden="true">
+        <div class="sky-grid"></div>
+        <div class="sun"></div>
+        <div class="sun-orbit"></div>
+        <div class="ridge ridge-back"></div>
+        <div class="ridge ridge-mid"></div>
+        <div class="ridge ridge-front"></div>
+        <div class="rows"></div>
+        <div class="field-contours"></div>
+        <div class="shoots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="field-hud">
+          <div class="hud-top"><span class="live-dot"></span><span>FIELD INTELLIGENCE / 2026</span><span>01—03</span></div>
+          <div class="hud-main"><strong>SEE THE<br>WHOLE SEASON.</strong><span>WEATHER<br>WATER<br>SOIL</span></div>
+          <div class="hud-rule"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="hud-foot"><span>NASA POWER</span><span>LOCAL CONTEXT</span><span>CROP SCENARIOS</span></div>
+        </div>
+        <div class="scene-note"><span>FIELD MODEL / ILLUSTRATIVE</span><i></i><span>OBSERVE · COMPARE · DECIDE</span></div>
+      </div>
+
       <div class="hero-copy">
-        <p class="kicker">NASA SPACE APPS / 2026 LIVING FARM</p>
+        <p class="kicker"><span class="kicker-mark"></span> NASA SPACE APPS / 2026 LIVING FARM</p>
         <h1 id="hero-heading">SEE THE SEASON.<br><em>THEN CHOOSE.</em></h1>
         <p class="lede">A crop rotation is a decision about water, soil, and what comes next. Soliq makes the trade-offs visible for a specific field.</p>
-        <div class="hero-actions"><a class="primary" href="#living-farm">WATCH THE SEASON <span>↗</span></a><a class="quiet-link" href="#problem">UNDERSTAND THE PROJECT ↓</a></div>
+        <div class="hero-actions">
+          <a class="primary" href="#living-farm">EXPLORE THE 2026 OUTLOOK <span>↗</span></a>
+          <a class="quiet-link" href="#problem">UNDERSTAND THE PROJECT <span>↓</span></a>
+        </div>
+        <div class="hero-footnote"><span class="footnote-line"></span><span>FIELD-SPECIFIC DECISIONS, GROUNDED IN VISIBLE EVIDENCE.</span></div>
       </div>
-      <div class="field-art" aria-hidden="true"><div class="sun"></div><div class="ridge ridge-back"></div><div class="ridge ridge-front"></div><div class="rows"></div><div class="shoots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-      <div class="hero-bottom"><span>01 / OBSERVE</span><span>02 / COMPARE</span><span>03 / DECIDE</span></div>
+      <div class="hero-bottom" aria-label="Soliq process">
+        <span><b>01</b> OBSERVE</span><span><b>02</b> COMPARE</span><span><b>03</b> DECIDE</span>
+      </div>
+      <a class="scroll-cue" href="#living-farm" aria-label="Scroll to the 2026 outlook"><span>SCROLL TO EXPLORE</span><i></i></a>
     </section>
-    <section class="living-container" id="living-farm" aria-label="2026 crop-rotation outlook"><div id="living-outlook"></div></section>
+
+    <section class="living-container" id="living-farm" aria-label="2026 crop-rotation outlook">
+      <div class="outlook-topline"><span class="kicker">LIVE FIELD OUTLOOK</span><span>2026 / WEATHER + HISTORICAL SCENARIOS</span></div>
+      <div id="living-outlook"></div>
+    </section>
+
     <section class="story" id="problem">
-      <p class="kicker">01 / THE PROBLEM</p>
-      <div class="story-grid"><h2>THE NEXT CROP<br>ISN’T A GUESS.</h2><div><p>Rainfall shifts. Heat builds. Water is limited. A crop that protects one field may be impractical in another because of planting dates, equipment, soil, or market access.</p><p>Farmers need a way to compare their existing rotation with alternatives using evidence they can inspect and local constraints they can actually confirm.</p></div></div>
+      <div class="section-index" aria-hidden="true">01</div>
+      <p class="kicker"><span class="kicker-mark"></span> THE PROBLEM</p>
+      <div class="story-grid">
+        <h2>THE NEXT CROP<br>ISN’T A GUESS.</h2>
+        <div class="story-copy">
+          <p class="story-lede">Rainfall shifts. Heat builds. Water is limited. A crop that protects one field may be impractical in another because of planting dates, equipment, soil, or market access.</p>
+          <p>Farmers need a way to compare their existing rotation with alternatives using evidence they can inspect and local constraints they can actually confirm.</p>
+          <div class="signal-tags"><span>WATER AVAILABILITY</span><span>SOIL CONDITIONS</span><span>FIELD CONSTRAINTS</span></div>
+        </div>
+      </div>
     </section>
+
     <section class="method" id="method">
-      <p class="kicker">02 / OUR APPROACH</p>
-      <div class="story-grid"><h2>FROM ORBIT<br>TO THE FIELD.</h2><div><p>Soliq combines NASA POWER weather available in 2026, historical weather from 2016–2025, declared soil-water conditions, crop characteristics, and farmer priorities. It compares your editable current calendar with two alternatives using declared soil evidence, practical constraints and your priorities. Water demand, planned fallow windows and daily modeled storage make the trade-offs visible.</p><p>Missing local evidence stays visible. The closest historical weather years supply conditional scenarios for the remainder of 2026. Kimi Pro and DeepSeek can explain these results. The prototype is a decision aid; its crop outcomes still need field validation.</p><a class="inline-link" href="../#overview">WATCH THE SEASON IN THE APP ↗</a></div></div>
-      <div class="method-line"><span>NASA WEATHER</span><b>+</b><span>LOCAL SOIL & CONSTRAINTS</span><b>+</b><span>CROP SCENARIOS</span><b>→</b><span>EXPLAINED COMPARISON</span></div>
+      <div class="section-index" aria-hidden="true">02</div>
+      <p class="kicker"><span class="kicker-mark"></span> OUR APPROACH</p>
+      <div class="story-grid">
+        <h2>FROM ORBIT<br><em>TO THE FIELD.</em></h2>
+        <div class="story-copy">
+          <p class="story-lede">Soliq combines NASA POWER weather available in 2026, historical weather from 2016–2025, declared soil-water conditions, crop characteristics, and farmer priorities.</p>
+          <p>It compares your editable current calendar with two alternatives using declared soil evidence, practical constraints and your priorities. Water demand, planned fallow windows and daily modeled storage make the trade-offs visible.</p>
+          <p>Missing local evidence stays visible. The closest historical weather years supply conditional scenarios for the remainder of 2026. Kimi Pro and DeepSeek can explain these results. The prototype is a decision aid; its crop outcomes still need field validation.</p>
+          <a class="inline-link" href="../#overview">EXPLORE THE SEASON IN THE APP <span>↗</span></a>
+        </div>
+      </div>
+      <div class="method-line" aria-label="Soliq process">
+        <div><span>01</span><strong>NASA WEATHER</strong></div><b>+</b>
+        <div><span>02</span><strong>LOCAL SOIL & CONSTRAINTS</strong></div><b>+</b>
+        <div><span>03</span><strong>CROP SCENARIOS</strong></div><b>→</b>
+        <div><span>04</span><strong>EXPLAINED COMPARISON</strong></div>
+      </div>
     </section>
-    <section class="project" id="links"><p class="kicker">03 / EXPLORE THE WORK</p><h2>FOLLOW THE EVIDENCE.</h2><div class="link-list"><a href="../#analyzer"><span>01</span><strong>TRY THE APP</strong><small>Crop analyzer and animated season</small><b>↗</b></a><a href="https://github.com/Mohamed-Mostafa-AE/SOLIQ"><span>02</span><strong>GITHUB SOURCE</strong><small>Private development repository; access required</small><b>↗</b></a><a href="paper.html"><span>03</span><strong>RESEARCH BRIEF</strong><small>Question, methods, and validation plan</small><b>↗</b></a><a href="https://github.com/Mohamed-Mostafa-AE/SOLIQ/actions"><span>04</span><strong>TESTS & BENCHMARKS</strong><small>Reproducible software checks</small><b>↗</b></a></div></section>
+
+    <section class="project" id="links">
+      <div class="section-index" aria-hidden="true">03</div>
+      <p class="kicker"><span class="kicker-mark"></span> EXPLORE THE WORK</p>
+      <div class="project-heading"><h2>FOLLOW THE<br><em>EVIDENCE.</em></h2><p>Explore the working prototype, its research notes, and the checks behind the software.</p></div>
+      <div class="link-list">
+        <a href="../#analyzer"><span class="link-number">01</span><strong>TRY THE APP</strong><small>Crop analyzer and animated season</small><b>↗</b></a>
+        <a href="https://github.com/Mohamed-Mostafa-AE/SOLIQ"><span class="link-number">02</span><strong>GITHUB SOURCE</strong><small>Private development repository; access required</small><b>↗</b></a>
+        <a href="paper.html"><span class="link-number">03</span><strong>RESEARCH BRIEF</strong><small>Question, methods, and validation plan</small><b>↗</b></a>
+        <a href="https://github.com/Mohamed-Mostafa-AE/SOLIQ/actions"><span class="link-number">04</span><strong>TESTS & BENCHMARKS</strong><small>Reproducible software checks</small><b>↗</b></a>
+      </div>
+    </section>
   </main>
-  <footer><span>SOLIQ / NASA SPACE APPS 6 OCTOBER</span><span>Mohamed Mostafa · Youssef Mohamed · Aya Abdelnabi · Mohamed Abdelrahman</span><a href="#top">BACK TO TOP ↑</a><small>BUC is the event venue. No institutional endorsement implied.</small></footer>
+
+  <footer class="site-footer">
+    <a class="footer-brand" href="#top"><img src="../soliq-mark.svg" width="34" height="34" alt=""><span><strong>SOLIQ</strong><small>EARTH OBSERVATIONS / GROUND DECISIONS</small></span></a>
+    <span class="footer-team">MOHAMED MOSTAFA · YOUSSEF MOHAMED · AYA ABDELNABI · MOHAMED ABDELRAHMAN</span>
+    <a class="back-top" href="#top">BACK TO TOP ↑</a>
+    <small class="footer-note">NASA Space Apps 2026 · BUC is the event venue. No institutional endorsement implied.</small>
+  </footer>
+
   <script type="module" src="site.js"></script>
 </body>
 </html>
