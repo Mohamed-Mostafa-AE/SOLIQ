@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { guidedOverview } from './guided.js';
+import { guidedOverview, guidedRotations } from './guided.js';
 import { DEFAULTS, STRATEGIES } from './engine.js';
 
 function sampleDaily(year) {
@@ -53,5 +53,27 @@ test('Guided view uses short everyday labels and keeps research terms out of the
 
   for (const term of ['Hargreaves', 'evapotranspiration', 'phenology', 'Kc =']) {
     assert.ok(!html.includes(term), 'Research wording leaked into Guided view: ' + term);
+  }
+});
+
+test('Guided crop-plan editor is farmer-facing and exposes all monthly crop choices', () => {
+  const months = Array.from({ length: 12 }, (_, i) =>
+    new Date(Date.UTC(2024, i, 1)).toLocaleString('en', { month: 'long', timeZone: 'UTC' }));
+  const html = guidedRotations({
+    config: { ...DEFAULTS, year: 2024, name: 'Test field' },
+    source: { kind: 'synthetic' },
+    output: { results: [] },
+    strategies: STRATEGIES,
+    months,
+  }, {
+    esc: value => String(value).replace(/[&<>"']/g, ''),
+    fmt: value => Number(value).toFixed(1),
+  });
+
+  assert.ok(html.includes('Choose what you plan to grow.'));
+  assert.ok(html.includes('How to use your crop plans'));
+  assert.equal((html.match(/data-crop=/g) || []).length, 36);
+  for (const term of ['Hargreaves', 'evapotranspiration', 'phenology', 'boundary conditions', 'Kc =']) {
+    assert.ok(!html.includes(term), 'Research wording leaked into Guided crop plans: ' + term);
   }
 });
