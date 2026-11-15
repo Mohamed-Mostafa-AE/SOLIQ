@@ -311,6 +311,26 @@ entries.push(
  ['Crop plan','خطة المحاصيل'],
  ['Alternative plan','خطة بديلة']
 );
+entries.push(
+ ['CROP PLAN','خطة المحاصيل'],
+ ['Your current plan','خطتك الحالية'],
+ ['Alternative plan','خطة بديلة'],
+ ['No other months change.','لن تتغير المحاصيل في الأشهر الأخرى.'],
+ ['Now:','حالياً:'],
+ ['Next:','التالي:'],
+ ['The crop stays the same this month','المحصول هو نفسه هذا الشهر'],
+ ['A different crop is planned this month','تم اختيار محصول مختلف لهذا الشهر'],
+ ['What changes if you choose another plan?','ما الذي يتغير إذا اخترت خطة أخرى؟'],
+ ['The estimated water need is the same as your plan.','احتياج المياه المقدّر هو نفسه في خطتك.'],
+ ['mm more water may be needed than with your plan.','مم من المياه الإضافية قد تكون مطلوبة مقارنة بخطتك.'],
+ ['mm less water may be needed than with your plan.','مم من المياه الأقل قد تكون مطلوبة مقارنة بخطتك.'],
+ ['MSc & PhD','الماجستير والدكتوراه'],
+ ['RESEARCH RUN','تشغيل بحثي'],
+ ['RESEARCH DASHBOARD','لوحة البحث العلمي'],
+ ['METEOROLOGICAL FORCING','مدخلات الأرصاد الجوية'],
+ ['CROSS-STRATEGY OUTPUTS','نتائج مقارنة الاستراتيجيات'],
+ ['STATE TRAJECTORIES','مسارات الحالة']
+);
 const dictionary = new Map(entries);
 const replacements = [...dictionary].sort((a,b)=>b[0].length-a[0].length).map(([english,translation])=>{
   const escaped=english.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
