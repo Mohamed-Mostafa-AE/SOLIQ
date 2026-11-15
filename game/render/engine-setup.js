@@ -45,7 +45,7 @@ export class RenderSetup {
     // Atmospheric Nile Delta dawn fog
     this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
     this.scene.fogColor = new BABYLON.Color3(0.85, 0.88, 0.91);
-    this.scene.fogDensity = 0.005;
+    this.scene.fogDensity = 0.002; // don't wash the village in a grey veil
 
     this.scene.collisionsEnabled = true;
 
@@ -71,7 +71,7 @@ export class RenderSetup {
       this.scene
     );
     this.sunLight.position = new BABYLON.Vector3(50, 70, -40);
-    this.sunLight.intensity = 1.8;
+    this.sunLight.intensity = 1.32; // avoid washed-out, toy-like flat lighting
     this.sunLight.diffuse = new BABYLON.Color3(1.0, 0.92, 0.78); // Golden dawn
     this.sunLight.specular = new BABYLON.Color3(0.5, 0.45, 0.35);
 
@@ -81,7 +81,7 @@ export class RenderSetup {
       new BABYLON.Vector3(0, 1, 0),
       this.scene
     );
-    this.ambientLight.intensity = 0.75;
+    this.ambientLight.intensity = 0.58; // keep material depth without losing readability
     this.ambientLight.diffuse = new BABYLON.Color3(0.72, 0.82, 0.92); // Sky tint
     this.ambientLight.groundColor = new BABYLON.Color3(0.38, 0.32, 0.22); // Nile silt reflection
 
@@ -90,7 +90,7 @@ export class RenderSetup {
     this.shadowGenerator.usePoissonSampling = true;
     this.shadowGenerator.bias = 0.002;
     this.shadowGenerator.normalBias = 0.01;
-    this.shadowGenerator.darkness = 0.45;
+    this.shadowGenerator.darkness = 0.48;
   }
 
   _setupCameras() {
@@ -98,8 +98,8 @@ export class RenderSetup {
     const followCam = new BABYLON.ArcRotateCamera(
       'followCam',
       -Math.PI / 2,
-      Math.PI / 3.2,
-      12.0,
+      1.20, // lower, human-height view: foreground actor and canal are legible
+      8.5,
       new BABYLON.Vector3(0, 1.5, 0),
       this.scene
     );
