@@ -1,0 +1,41 @@
+{
+  "site": "https://soliq-delta.vercel.app",
+  "recordedAt": "2026-11-15T19:03:34.082Z",
+  "durationSeconds": 29,
+  "realBrowserFootage": true,
+  "fictionalScenario": true,
+  "NASAObservedPixelsClaimed": false,
+  "description": "Real footage captured from the public SOLIQ game using scripted mouse/keyboard and genuine game engine methods",
+  "chapters": [
+    "village walk",
+    "farmer dialogue",
+    "calculated water ledger",
+    "NASA evidence boundary",
+    "modeled future"
+  ],
+  "log": [
+    {
+      "name": "Launch Chromium real-screen capture",
+      "at": "2026-11-15T19:02:49.307Z"
+    },
+    {
+      "name": "Open the actual publicly deployed game https://soliq-delta.vercel.app",
+      "at": "2026-11-15T19:02:51.330Z"
+    },
+    {
+      "name": "Start useful gameplay footage 1.84s into raw recording",
+      "at": "2026-11-15T19:02:53.170Z"
+    },
+    {
+      "name": "capture",
+      "site": "https://soliq-delta.vercel.app",
+      "trimStart": 1.84,
+      "contentDuration": 35.376999999999995,
+      "pageErrors": []
+    },
+    {
+      "name": "Capture completed: 35.4s content",
+      "at": "2026-11-15T19:03:28.547Z"
+    }
+  ]
+}
