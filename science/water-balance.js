@@ -387,6 +387,10 @@ export function simulateSeasonWaterBalance(params = {}) {
     harvestDate,
     totalSeasonDays,
     missingForcingDays,
+    // Missing rain or ET0 may be imputed with zero only inside a diagnostic trajectory;
+    // this NEVER authorizes a real field recommendation.
+    modelDataStatus: missingForcingDays ? 'illustrative_incomplete_forcing' : 'calculated_from_supplied_inputs',
+    canIssueFieldAdvice: false,
     forcingCoverageRatio: Number(forcingCoverageRatio.toFixed(4)),
     hlsAssimilatedDays,
     totalsMm: {
