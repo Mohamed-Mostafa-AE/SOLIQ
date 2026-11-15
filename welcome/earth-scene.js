@@ -314,46 +314,9 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     }
   );
 
-  // A separate cloud atlas sits just above the surface and drifts independently.
-  const cloudGroup = new THREE.Group();
-  earthTilt.add(cloudGroup);
-  const cloudGeometry = new THREE.SphereGeometry(1.014, mobile ? 96 : 144, mobile ? 64 : 96);
-  const cloudMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    transparent: true,
-    opacity: .32,
-    alphaMap: null,
-    depthWrite: false,
-    side: THREE.FrontSide
-  });
-  const cloudShell = new THREE.Mesh(cloudGeometry, cloudMaterial);
-  cloudShell.renderOrder = 2;
-  cloudGroup.add(cloudShell);
-
-  textureLoader.load(
-    THREE_EARTH_CLOUDS,
-    texture => {
-      if (cleanedUp) { texture.dispose(); return; }
-      texture.colorSpace = THREE.NoColorSpace;
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-      texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 8);
-      cloudMaterial.alphaMap = texture;
-      cloudMaterial.needsUpdate = true;
-      disposable.push(texture);
-    },
-    undefined,
-    () => {
-      if (cleanedUp) return;
-      const fallbackClouds = makeCloudTexture(THREE, mobile);
-      if (!fallbackClouds) return;
-      cloudMaterial.alphaMap = fallbackClouds;
-      cloudMaterial.needsUpdate = true;
-      disposable.push(fallbackClouds);
-    }
-  );
+  // NASA Blue Marble already carries a coherent global cloud pattern.
+  // A second, independently registered cloud mask created the grey misalignment seen
+  // over continents, so the surface atlas remains the only cloud source.
 
   const atmosphereMaterial = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, side: THREE.BackSide,
@@ -375,8 +338,8 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
         vec3 N = normalize(vNormal);
         vec3 V = normalize(vViewPosition);
         float rim = pow(1.0 - max(dot(N, V), 0.0), 3.0);
-        float alpha = rim * 0.28;
-        vec3 atmosphere = vec3(0.25, 0.68, 0.76);
+        float alpha = rim * 0.14;
+        vec3 atmosphere = vec3(0.22, 0.48, 0.48);
         gl_FragColor = vec4(atmosphere, alpha);
       }
     `
@@ -472,7 +435,6 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     earthTilt.rotation.y = time * .075 + easedScrollProgress * THREE.MathUtils.degToRad(16);
     earthTilt.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(7);
     earthTilt.rotation.z = -easedScrollProgress * THREE.MathUtils.degToRad(6);
-    cloudGroup.rotation.y = -time * .012 + easedScrollProgress * .055;
     orbitGroup.rotation.y = .12 + Math.sin(time * .16) * .05;
     const angle = (reducedMotion ? .85 : time * .42 + .85) + easedScrollProgress * .95;
     satellite.position.set(Math.cos(angle) * orbitX, Math.sin(angle) * orbitY, Math.sin(angle * 1.1) * .16);
@@ -529,7 +491,10 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   updateScrollProgress();
   if (status && !surfaceReady) status.textContent = 'Loading NASA Blue Marble surface and cloud layer…';
   if (!reducedMotion) frameId = requestAnimationFrame(render);
-  else renderer.render(scene, camera);
+  else {
+    renderer.render(scene, camera);
+    rail.classList.add('earth-ready');
+  }
 
   return () => {
     cleanedUp = true;
