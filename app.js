@@ -17,11 +17,11 @@ function updateLanguage(){document.documentElement.lang=language;document.docume
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(n,d=0)=>Number(n).toLocaleString(language==='ar'?'ar-EG':'en',{maximumFractionDigits:d});
 const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-let selectedMonth=5,cropPlan=null,cropReport=null;
+let selectedMonth=5,selectedStrategy=1,guidedEditingStrategy=1,cropPlan=null,cropReport=null;
 try{cropPlan=JSON.parse(localStorage.getItem('soliq-crop-plan-v1'));}catch{}
 
 let flags={fieldSaved:false,calendarReviewed:false,exported:false};
-let config={...DEFAULTS},strategies=structuredClone(STRATEGIES),view=location.hash?'overview':'outlook',weather,source,output,busy=false;
+let config={...DEFAULTS},strategies=structuredClone(STRATEGIES),view=location.hash?location.hash.slice(1):(audience==='research'?'research':'overview'),weather,source,output,busy=false;
 try{const saved=JSON.parse(localStorage.getItem('fieldshift-project-v1'));if(saved){validateConfig(saved.config);if(saved.strategies?.length===3){analyze(demoWeather(saved.config.year),saved.config,saved.strategies);config=saved.config;strategies=saved.strategies;flags={...flags,...saved.flags,exported:false};}}}catch{/* An invalid or unavailable local draft must not prevent a fresh workspace. */}
 function useDemo(){weatherRevision++;flags.exported=false;weather=demoWeather(config.year);source={kind:'synthetic',label:'Illustrative weather',location:{lat:config.lat,lon:config.lon},year:config.year,description:'Deterministic seasonal example. These are not NASA observations or field measurements.'};}
 useDemo();
@@ -112,7 +112,41 @@ function cropAnalysisPage(){
  try{cropReport=screenCrops(weather,config,cropPlan,strategies[0],source.kind);}catch{cropPlan=synchronizeScreeningPlan(null,config);cropReport=screenCrops(weather,config,cropPlan,strategies[0],source.kind);}
  return cropAnalyzerView({config,plan:cropPlan,report:cropReport,language},{esc,fmt});
 }
-function renderWorkspace(){recompute();$('#page').innerHTML=(view==='overview'&&audience==='guided')?guidedOverview({config,source,output,strategies,selectedMonth,selectedStrategy,months},{esc,fmt,progressPanel}):({overview,rotations,evidence,research,settings,analyzer:cropAnalysisPage,outlook:()=>'<div id="living-outlook"></div>'})[view]();const names={outlook:'2026 Living Farm',analyzer:'Crop analyzer',overview:'Field overview',rotations:'Explore rotations',evidence:'Data & evidence',research:'Research workspace',settings:'Field & assumptions'};$('#crumb').textContent=names[view];$('#source-pill').textContent=view==='outlook'?'2026 evidence':label();$('#source-pill').classList.toggle('amber',view!=='outlook'&&source.kind==='synthetic');document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);b.setAttribute('aria-current',b.dataset.view===view?'page':'false');});if(view==='research')loadBenchmarks();if(view==='evidence')fingerprint(weather).then(hash=>{if($('#weather-hash'))$('#weather-hash').textContent=hash;});bindPage();$('#guided-mode').setAttribute('aria-pressed',String(audience==='guided'));$('#research-mode').setAttribute('aria-pressed',String(audience==='research'));$('#language-toggle').lang=language==='ar'?'en':'ar';$('#language-toggle').textContent=language==='ar'?'English':'\u0627\u0644\u0639\u0631\u0628\u064a\u0629';updateLanguage();document.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.style.visibility='hidden';}));}
+function renderWorkspace(){
+ const guidedViews=['overview','rotations','settings'];
+ if(audience==='guided'&&!guidedViews.includes(view))view='overview';
+ recompute();
+ const pages=audience==='guided'
+  ?{overview:()=>guidedOverview({config,source,output,strategies,selectedMonth,selectedStrategy,months},{esc,fmt,progressPanel:guidedJourneyPanel}),rotations:guidedRotations,settings:guidedSettings}
+  :{overview,rotations,evidence,research,settings,analyzer:cropAnalysisPage,outlook:()=>'<div id="living-outlook"></div>'};
+ $('#page').innerHTML=pages[view]();
+ const names=audience==='guided'
+  ?{overview:'Overview',rotations:'Crop plans',settings:'Field setup'}
+  :{outlook:'2026 Living Farm',analyzer:'Crop analyzer',overview:'Field overview',rotations:'Explore rotations',evidence:'Data & evidence',research:'Research workspace',settings:'Field & assumptions'};
+ $('#crumb').textContent=names[view];
+ $('#workspace-label').textContent=audience==='guided'?'FARMER & CLIENT WORKSPACE':'RESEARCH WORKSPACE';
+ $('#audience-banner-label').textContent=audience==='guided'?'GUIDED VIEW / FARMERS & CLIENTS':"RESEARCH VIEW / MASTER'S & PhD STUDENTS";
+ $('#audience-banner-copy').textContent=audience==='guided'?'Simple crop plans, field details and clear water estimates.':'Detailed methods, model assumptions, evidence, sensitivity analysis and reproducible results.';
+ $('#side-footer-label').textContent=audience==='guided'?'Farmer planning workspace':'Research demonstrator';
+ $('#side-footer-detail').textContent=audience==='guided'?'Clear estimates · Local advice matters':'Version 0.1 · Exploratory model';
+ document.querySelectorAll('#workspace-nav button[data-audience]').forEach(b=>{
+  const visible=b.dataset.audience==='both'||b.dataset.audience===audience;
+  b.hidden=!visible;
+  b.classList.toggle('active',visible&&b.dataset.view===view);
+  b.setAttribute('aria-current',visible&&b.dataset.view===view?'page':'false');
+ });
+ $('#source-pill').textContent=view==='outlook'?'2026 evidence':label();
+ $('#source-pill').classList.toggle('amber',view!=='outlook'&&source.kind==='synthetic');
+ if(view==='research')loadBenchmarks();
+ if(view==='evidence')fingerprint(weather).then(hash=>{if($('#weather-hash'))$('#weather-hash').textContent=hash;});
+ bindPage();
+ $('#guided-mode').setAttribute('aria-pressed',String(audience==='guided'));
+ $('#research-mode').setAttribute('aria-pressed',String(audience==='research'));
+ $('#language-toggle').lang=language==='ar'?'en':'ar';
+ $('#language-toggle').textContent=language==='ar'?'English':'\u0627\u0644\u0639\u0631\u0628\u064a\u0629';
+ updateLanguage();
+ document.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.style.visibility='hidden';}));
+}
 let stopSeasonMotion=()=>{},stopOutlook=()=>{};
 function render(){
  stopSeasonMotion();stopOutlook();renderWorkspace();
@@ -123,7 +157,7 @@ function render(){
   stopSeasonMotion=mountSeasonMotion($('#page'),{results,capacity:config.capacity,language,sourceKind:source.kind});
  }
 }
-function go(next){if(next==='research'){audience='research';saveDisplay();}view=next;location.hash=next;render();window.scrollTo({top:0,behavior:'smooth'});}
+function go(next){if(next==='research'||(audience==='guided'&&!['overview','rotations','settings'].includes(next)))audience='research';view=next;saveDisplay();location.hash=next;render();window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)go(b.dataset.view);});
 $('#page').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go);});
 async function fingerprint(value){if(!globalThis.crypto?.subtle)return 'SHA-256 unavailable in this browser context';const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)));return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,'0')).join('');}
@@ -140,6 +174,7 @@ function bindPage(){
  on('#export-crop-analysis','click',async()=>{const bundle={project:'Soliq',exportedAt:new Date().toISOString(),config,source,weatherSHA256:await fingerprint(weather),weather,baselineCalendar:strategies[0],plan:cropPlan,analysis:cropReport};download('soliq-crop-analysis.json',JSON.stringify(bundle,null,2),'application/json');});
 
  on('#compare-strategy','change',event=>{selectedStrategy=Number(event.target.value);render();});
+ on('#guided-editor-strategy','change',event=>{guidedEditingStrategy=Number(event.target.value);if(guidedEditingStrategy>0)selectedStrategy=guidedEditingStrategy;render();});
  on('#open-research','click',()=>go('research'));
 
  document.querySelectorAll('[data-month]').forEach(button=>button.addEventListener('click',()=>{selectedMonth=Number(button.dataset.month);const position=window.scrollY;render();window.scrollTo({top:position});}));
@@ -159,13 +194,14 @@ function bindPage(){
 async function loadPower(){if(busy)return;busy=true;const requestRevision=++weatherRevision;const requestConfig={...config};const request=powerUrl(requestConfig);render();notify('Requesting daily weather from NASA POWER. Existing results remain available.');try{const response=await fetch(request,{signal:AbortSignal.timeout(45000)});if(!response.ok)throw Error(`NASA returned HTTP ${response.status}`);const json=await response.json();const rows=parsePower(json,requestConfig.year);if(requestRevision!==weatherRevision||requestConfig.year!==config.year||requestConfig.lat!==config.lat||requestConfig.lon!==config.lon)throw Error('Weather or field inputs changed during retrieval. Load again if needed.');flags.exported=false;weather=rows;source={kind:'nasa',label:'NASA POWER daily API',description:'Gridded meteorological estimates for the requested point, not direct field measurements.',request,retrievedAt:new Date().toISOString(),header:json.header,parameters:json.parameters,location:{lat:config.lat,lon:config.lon},year:config.year};notify('NASA POWER data loaded successfully. All calculations now use the retrieved year.');}catch(error){notify(`Weather was not replaced: ${error.message}. You can open the request and import its JSON response.`,true);}finally{busy=false;render();}}
 $('#weather-file').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>8_000_000)throw Error('Please import a file smaller than 8 MB');const text=await file.text();const isJson=file.name.toLowerCase().endsWith('.json');const json=isJson?JSON.parse(text):null;const rows=isJson?parsePower(json,config.year):parseCSV(text,config.year);if(isJson&&Array.isArray(json.geometry?.coordinates)){const [lon,lat]=json.geometry.coordinates;if(Math.abs(lat-config.lat)>0.01||Math.abs(lon-config.lon)>0.01)throw Error('POWER file coordinates differ from the selected field. Update the field first.');}weatherRevision++;flags.exported=false;weather=rows;source={kind:'import',label:isJson?'Imported NASA POWER JSON':'User-provided daily CSV',description:'Imported by user; verify source, location and measurement units before interpretation.',fileName:file.name,importedAt:new Date().toISOString(),location:{lat:config.lat,lon:config.lon},year:config.year,fileSHA256:await fingerprint(text)};render();notify('Complete weather year imported. Calculations updated; imported data remain user-verified.');}catch(error){notify(error.message,true);}e.target.value='';});
 $('#save-report').addEventListener('click',()=>{if(view==='outlook'){$('[data-download]')?.click();return;}view='overview';render();window.print();});
-$('#guide').addEventListener('click',()=>$('#help').showModal());$('#close-help').addEventListener('click',()=>$('#help').close());$('#start-help').addEventListener('click',()=>{$('#help').close();go('settings');});
+$('#guide').addEventListener('click',()=>{audience='research';view='research';saveDisplay();location.hash='research';render();$('#help').showModal();});$('#close-help').addEventListener('click',()=>$('#help').close());$('#start-help').addEventListener('click',()=>{$('#help').close();go('settings');});
 const initialKc=Object.fromEntries(Object.entries(CROPS).map(([k,v])=>[k,v.kc]));
-window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(['overview','rotations','evidence','research','settings','analyzer','outlook'].includes(next)&&next!==view){view=next;render();}});
+window.addEventListener('hashchange',()=>{const next=location.hash.slice(1);if(['overview','rotations','evidence','research','settings','analyzer','outlook'].includes(next)&&next!==view){if(['evidence','research','settings','analyzer','outlook'].includes(next)&&audience==='guided'&&!['overview','rotations','settings'].includes(next))audience='research';view=next;saveDisplay();render();}});
 if(['overview','rotations','evidence','research','settings','analyzer','outlook'].includes(location.hash.slice(1)))view=location.hash.slice(1);
+if(audience==='guided'&&!['overview','rotations','settings'].includes(view))view='overview';
 $('#language-toggle').addEventListener('click',()=>{language=language==='en'?'ar':'en';saveDisplay();render();});
-$('#guided-mode').addEventListener('click',()=>{audience='guided';if(view==='research')view='overview';saveDisplay();render();});
-$('#research-mode').addEventListener('click',()=>{audience='research';saveDisplay();render();});
+$('#guided-mode').addEventListener('click',()=>{audience='guided';view='overview';saveDisplay();location.hash='overview';render();window.scrollTo({top:0,behavior:'smooth'});});
+$('#research-mode').addEventListener('click',()=>{audience='research';view='research';saveDisplay();location.hash='research';render();window.scrollTo({top:0,behavior:'smooth'});});
 render();
 
 async function loadBenchmarks(){
