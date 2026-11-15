@@ -9,6 +9,6 @@ if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduc
 document.getElementById('language').addEventListener('click',()=>{
  const ar=document.documentElement.lang!=='ar';document.documentElement.lang=ar?'ar':'en';document.documentElement.dir=ar?'rtl':'ltr';
  document.getElementById('language').textContent=ar?'English':'العربية';
- document.querySelector('h1').innerHTML=ar?'كل موسم<br>يشكّل ما يليه.':'Every season<br>shapes the next.';
+ document.querySelector('h1').innerHTML=ar?'حقل واحد.<br>مستقبل متعدد.':'One field.<br>Many futures.';
  document.getElementById('intro').textContent=ar?'استكشف ما تزرعه تالياً وفق مياهك وتربتك وأولوياتك. الواجهة العربية الكاملة متاحة داخل التطبيق.':'Explore what to grow next—with your water, your soil, and your priorities in view.';
 });

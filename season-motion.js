@@ -28,9 +28,9 @@ export function mountSeasonMotion(host,{results,capacity,language='en',sourceKin
    const plants=section.querySelector(`[data-plants="${i}"]`);
    if(plants.dataset.crop!==day.crop){plants.dataset.crop=day.crop;plants.style.setProperty('--crop-color',crop?.color||'#749651');plants.innerHTML=bare?'<span class="bare-ground">'+text('Planned bare period','فترة تربة مكشوفة مخطّطة')+'</span>':Array.from({length:9},(_,j)=>`<span class="scene-plant" style="--n:${j}"><i></i><i></i><i></i></span>`).join('');}
    section.querySelector(`[data-water="${i}"]`).style.height=day.waterPercent+'%';
-   section.querySelector(`[data-storage="${i}"]`).textContent=number(day.storage)+' mm';
+   section.querySelector(`[data-storage="${i}"]`).textContent=number(day.storage)+' '+text('mm','مم');
    section.querySelector(`[data-rain="${i}"]`).classList.toggle('raining',day.rain>0);
-   section.querySelector(`[data-metrics="${i}"]`).innerHTML=`<span>${text('Rain','مطر')}<b>${number(day.rain)} mm</b></span><span>${text('Modeled ET','البخر والنتح المقدّر')}<b>${number(day.et)} mm</b></span><span>${text('Irrigation','الري')}<b>${number(day.irrigation)} mm</b></span>`;
+   section.querySelector(`[data-metrics="${i}"]`).innerHTML=`<span>${text('Rain','مطر')}<b>${number(day.rain)} ${text('mm','مم')}</b></span><span>${text('Modeled ET','البخر والنتح المقدّر')}<b>${number(day.et)} ${text('mm','مم')}</b></span><span>${text('Irrigation','الري')}<b>${number(day.irrigation)} ${text('mm','مم')}</b></span>`;
   });
  }
  function pause(){clearInterval(timer);timer=null;play.setAttribute('aria-pressed','false');play.textContent='▶ '+text('Play season','تشغيل الموسم');section.classList.remove('playing');}
