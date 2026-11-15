@@ -104,7 +104,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
       };
     });
     expect(res3.outcome).toBe('deferral');
-    expect(res3.receipt.dataClass).toBe('observed');
+    expect(res3.receipt.dataClass).toBe('simulated');
   });
 
   test('Earth Lens toggles between Ground, NASA observed, and Modelled Future with disclaimer', async ({ page }) => {
@@ -119,6 +119,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     const toast = page.locator('#telemetry-toast');
     await expect(toast).toBeVisible();
     await expect(toast).toContainText('NASA POWER');
+    await expect(toast).toContainText('الرصد غير متاح');
 
     // Click Future Mode
     await page.locator('[data-lens="future"]').click();
@@ -135,8 +136,8 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
 
     expect(comparison.notice).toBe('SIMULATION — NOT SATELLITE OBSERVATION');
     expect(comparison.certificate.status).toBe('comparison_only');
-    expect(comparison.baseline.waterDemand).toContain('480');
-    expect(comparison.alternative.waterDemand).toContain('360');
+    expect(comparison.baseline.waterDemand).toContain('not calculated');
+    expect(comparison.alternative.waterDemand).toContain('not calculated');
   });
 
   test('Mobile 360px viewport responsiveness, touch joystick and zero overflow', async ({ page }) => {

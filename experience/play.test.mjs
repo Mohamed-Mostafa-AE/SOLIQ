@@ -69,7 +69,9 @@ test('Time Echo correctly validates Seventh Field boundaries and uncertainty cer
 
   assert.equal(comparison.notice, 'SIMULATION — NOT SATELLITE OBSERVATION');
   assert.equal(comparison.certificate.status, 'comparison_only');
-  assert.match(comparison.certificate.reasonAr, /تداخل فترات عدم اليقين/);
+  assert.match(comparison.certificate.reasonAr, /لا توجد فترات عدم يقين محسوبة/);
+  assert.match(comparison.baseline.waterDemand, /not calculated/);
+  assert.match(comparison.alternative.waterDemand, /not calculated/);
 
   // Bounds test
   assert.equal(echo.checkPlayerInside({ x: 68, y: 0, z: 0 }), true, 'Inside field 7');
@@ -89,9 +91,10 @@ test('Earth Lens System toggles modes and reports faithful NASA telemetry', () =
   // NASA mode
   const nasa = lens.setMode('nasa');
   assert.equal(nasa.mode, 'nasa');
-  assert.equal(nasa.telemetry.dataClass, 'observed');
+  assert.equal(nasa.telemetry.dataClass, 'unavailable');
   assert.match(nasa.telemetry.station, /Sakha/);
-  assert.match(nasa.telemetry.annual_rain, /68.4/);
+  assert.match(nasa.telemetry.annual_rain, /unavailable/);
+  assert.equal(nasa.telemetry.rawSha256, null);
 
   // Future mode
   const future = lens.setMode('future');
@@ -162,5 +165,5 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   assert.equal(mission.activeOutcome, OUTCOMES.DEFERRAL);
   const r3 = mission.notebookReceipts.find(r => r.id === 'OUTCOME_3_DEFERRAL');
   assert.ok(r3, 'Outcome 3 receipt generated');
-  assert.equal(r3.dataClass, 'observed');
+  assert.equal(r3.dataClass, 'simulated');
 });

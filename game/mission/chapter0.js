@@ -38,7 +38,7 @@ export class Chapter0Mission {
       titleAr: 'نداء الفجر: المية وصلت!',
       titleEn: 'Dawn Call: The Water Has Arrived!',
       category: 'Mission Briefing',
-      dataClass: 'observed',
+      dataClass: 'simulated',
       timestamp: new Date().toISOString(),
       detailsAr: 'فُتحت نوبة الري في مسقة القرية. يجب التنسيق مع عم حسن ومريم قبل تشغيل طلمبة الديزل لتفادي عجز الأحواض الأخيرة.',
       detailsEn: 'Canal irrigation window opened. Coordinate with Hassan and Maryam before pump operation to avoid tail-end shortages.',
@@ -48,7 +48,8 @@ export class Chapter0Mission {
   addReceipt(receipt) {
     this.notebookReceipts.unshift({
       ...receipt,
-      hash: Math.random().toString(16).substring(2, 10).toUpperCase(),
+      hash: `SIM-${String(this.notebookReceipts.length + 1).padStart(4, '0')}`, // Display receipt ID, NOT SHA-256 evidence hash
+      hashKind: 'noncryptographic_display_id',
     });
     this.audio.playNotebookChime();
   }
@@ -90,7 +91,7 @@ export class Chapter0Mission {
                 titleAr: 'شهادة عم حسن: الاتفاق على تنظيم الأدوار',
                 titleEn: "Hassan's Testimony: Turn-Coordination Agreement",
                 category: 'Farmer Consultation',
-                dataClass: 'observed',
+                dataClass: 'simulated',
                 timestamp: new Date().toISOString(),
                 detailsAr: 'وافق عم حسن على الري المتناوب بنسبة الاحتياج الفعلي لحماية باقي مزارعي المسقة.',
                 detailsEn: 'Hassan agreed to coordinated proportional turns to preserve downstream water.',
@@ -109,10 +110,10 @@ export class Chapter0Mission {
                 titleAr: 'فحص عينة التربة: غيط القمح',
                 titleEn: 'Soil Core Sample: Wheat Plot',
                 category: 'Field Evidence',
-                dataClass: 'observed',
+                dataClass: 'simulated',
                 timestamp: new Date().toISOString(),
-                detailsAr: 'رطوبة الطبقة السطحية 24%، مما يتيح تأجيل الري لساعات إضافية دون إجهاد المحصول.',
-                detailsEn: 'Root-zone moisture measured at 24%, enabling safe irrigation deferral without crop stress.',
+                detailsAr: 'في هذا السيناريو التعليمي فقط، نفترض قراءة رطوبة 24%؛ لا تُعد قياسًا حقليًا ولا تثبت أمان تأجيل الري الحقيقي.',
+                detailsEn: 'This fictional teaching scenario assumes a 24% moisture reading; it is not a verified field measurement or safe-irrigation advice.',
               });
             },
           },
@@ -150,10 +151,10 @@ export class Chapter0Mission {
               titleAr: 'سجل مريم: سعة طلمبة المسقة',
               titleEn: "Maryam's Ledger: Mesqa Hydraulic Capacity",
               category: 'Water Ledger',
-              dataClass: 'observed',
+              dataClass: 'simulated',
               timestamp: new Date().toISOString(),
-              detailsAr: 'تأكيد السعة القصوى لطلمبة الديزل بـ 180 م³ والاتفاق على معادلة العدالة النسبية.',
-              detailsEn: 'Confirmed pump throughput ceiling of 180 m³ and agreed on proportional sharing.',
+              detailsAr: 'السعة 180 وحدة هي افتراض محاكاة، وليست قياسًا حقيقيًا لقدرة طلمبة المسقة.',
+              detailsEn: 'The 180-unit supply is a declared game scenario parameter, not a verified pump throughput measurement.',
             });
           },
         },
@@ -277,8 +278,8 @@ export class Chapter0Mission {
         category: 'Mission Resolution',
         dataClass: 'simulated',
         timestamp: new Date().toISOString(),
-        detailsAr: 'تسبب السحب غير المنسق في انخفاض ضغط الطلمبة وجفاف أحواض نهاية المسقة. تجربة تثبت أهمية الإدارة التعاونية للمياه.',
-        detailsEn: 'Uncoordinated simultaneous draw caused pump cavitation and dried out tail plots. Demonstrates necessity of cooperative mesqa management.',
+        detailsAr: 'في سيناريو افتراضي بإمداد 120 وحدة، التوزيع بالأولوية سبّب عجزًا في بعض الحقول؛ لم يتم قياس انهيار ضغط الطلمبة ميدانيًا.',
+        detailsEn: 'In this illustrative 120-unit scenario, priority allocation left tail plots short; pump cavitation was not physically simulated or measured.',
       });
 
       sharedEvents.emit('outcome_achieved', {
@@ -297,15 +298,15 @@ export class Chapter0Mission {
         titleAr: 'النتيجة 3: التحقق الميداني وتأجيل الري غير الضروري',
         titleEn: 'Outcome 3: Evidence-First Verification & Prudent Deferral',
         category: 'Mission Resolution',
-        dataClass: 'observed',
+        dataClass: 'simulated',
         timestamp: new Date().toISOString(),
-        detailsAr: 'أثبتت عينات التربة احتفاظ الجذور بالرطوبة الكافية. تم توفير وقود الديزل وحفظ مياه النوبة للأيام الأكثر حرارة.',
-        detailsEn: 'Soil cores confirmed adequate root-zone water. Conserved diesel fuel and preserved canal water for peak heat period.',
+        detailsAr: 'أجّل اللاعب الري في سيناريو تعليمي لحين إجراء قياس ميداني حقيقي؛ لم يتم إثبات توفير المياه أو الوقود في الحقل.',
+        detailsEn: 'In this illustrative mission, irrigation was deferred pending a real field measurement; fuel and water savings have not been independently demonstrated.',
       });
 
       sharedEvents.emit('outcome_achieved', {
         outcome: OUTCOMES.DEFERRAL,
-        fairness: 1.0,
+        fairness: null, // No water distribution occurred in the deferral branch
         titleAr: 'تحقق علمي وتأجيل مسؤول',
       });
     }
