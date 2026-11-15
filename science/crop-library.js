@@ -1,573 +1,333 @@
 /**
  * @file science/crop-library.js
- * @description Referenced FAO-56 & Egyptian Nile Delta (Zankalon, Sharkia) Crop Library,
- * Growth-Stage Crop Coefficients (Kc_ini, Kc_mid, Kc_end), Root Depth Progression,
- * Salinity Thresholds (Maas-Hoffman ECe), Nitrogen Carry-Over Parameters,
- * and Independent Multi-Region Pilot Configuration Loader.
+ * @description Sourced Egyptian agronomic crop library (FAO-56 dual Kc, rooting depth,
+ * depletion fraction p, FAO-29 salinity threshold & slope, yield response Ky) and pilot loader.
  *
- * Scientific References:
- * 1. Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). FAO Irrigation and Drainage Paper No. 56
- *    (Tables 11, 12, 17, 22: Crop stage lengths, Kc values, rooting depths, depletion fraction p, salinity tolerance).
- * 2. Ayyad, S., Karimi, P., Ribbe, L., & Becker, M. (2024). Potential Improvements in Crop Production in Egypt
- *    and Implications for Future Water and Land Demand: The Zankalon Region Benchmark Case Study.
- * 3. Abd El Baki, H. M., Fujimaki, H., et al. (2021). Irrigation scheme & Zankalon hydraulic parameters. Water, 13(16), 2181.
- * 4. Nile Delta Eddy Covariance ET Consortium (2017). Crop evapotranspiration in the Nile Delta under different
- *    irrigation methods (rice, maize, cotton, sugar beet, berseem, wheat, fava beans).
- *
- * Calibration Notice:
- * Parameters are literature-derived from FAO-56 and published Zankalon/Nile Delta field studies.
- * They do NOT claim independent field-level agronomic calibration without human verification.
+ * Calibration & Evidence Policy (Requirement 5):
+ * Every literature-derived crop entry and pilot soil/water configuration without a cryptographic
+ * wet-lab/lysimeter calibration receipt is explicitly tagged with:
+ *   evidenceStatus: "ASSUMED"
+ *   evidenceKind: "assumed"
+ *   calibrationStatus: "ASSUMED_UNCALIBRATED_LITERATURE"
+ *   isFieldCalibrated: false
+ *   canIssueCalibratedFieldAdvice: false
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  normalizeCropParameterAssumptions,
+  normalizePilotSoilAndWaterAssumptions
+} from './crop-soil-assumptions-audit.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const CROP_LIBRARY = Object.freeze({
+const RAW_CROP_LIBRARY = {
   wheat: {
     cropId: 'wheat',
-    nameEn: 'Bread Wheat (Sakha 95 / Giza 171)',
+    nameEn: 'Bread Wheat (Triticum aestivum)',
     nameAr: 'قمح الخبز الشتوي',
     botanicalFamily: 'Poaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'winter',
-    typicalSowingMonthDay: '11-15',
-    stagesDays: {
-      initial: 30,
-      development: 45,
-      midSeason: 55,
-      lateSeason: 35,
-      total: 165
-    },
-    kc: {
-      ini: 0.35,
-      mid: 1.15,
-      end: 0.25
-    },
-    rootDepthM: {
-      ini: 0.25,
-      max: 1.20
-    },
+    seasonCategory: 'winter',
+    isNitrogenFixer: false,
+    nitrogenBalanceKgHa: -45,
+    stagesDays: { initial: 30, development: 45, midSeason: 55, lateSeason: 35, total: 165 },
+    kcb: { initial: 0.15, mid: 1.1, end: 0.25 },
+    rootDepthM: { initial: 0.2, max: 1.2 },
     depletionFractionP: 0.55,
-    yieldResponseFactorKy: 1.05,
-    salinityTolerance: {
-      thresholdEcDsm: 6.0,
-      slopePctPerDsm: 7.1
-    },
-    heatStressThresholdC: 32.0,
-    nitrogenBalanceKgHa: -95.0, // Net soil N extraction without legume precede
-    pestHostGroup: 'winter_cereal_aphid_rust',
-    referenceBaselineYieldTonHa: 6.3, // Ayyad et al. (2024) Zankalon 5-yr average
-    referenceWaterProductivityKgM3: 1.05,
-    grossMarginAnchorUsdHa: 1420,
-    citations: ['fao56_allen_1998', 'ayyad_2024_zankalon']
+    yieldResponseKy: 1.05,
+    salinityFao29: { thresholdEcDsm: 6.0, slopePctPerDsm: 7.1 },
+    maxHeightM: 1.0,
+    referenceBaselineYieldTonHa: 6.8,
+    referenceWaterProductivityKgM3: 1.35,
+    grossMarginAnchorUsdHa: 1150,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985', 'ayyad_2024_zankalon']
   },
-
-  berseem_clover: {
-    cropId: 'berseem_clover',
-    nameEn: 'Egyptian Berseem Clover (Multi-cut Forage)',
-    nameAr: 'برسيم مصري مسقاوي (بقولي مثبت للنيتروجين)',
-    botanicalFamily: 'Fabaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'winter',
-    typicalSowingMonthDay: '10-25',
-    stagesDays: {
-      initial: 25,
-      development: 35,
-      midSeason: 75,
-      lateSeason: 30,
-      total: 165
-    },
-    kc: {
-      ini: 0.40,
-      mid: 1.05,
-      end: 0.85
-    },
-    rootDepthM: {
-      ini: 0.20,
-      max: 0.90
-    },
-    depletionFractionP: 0.50,
-    yieldResponseFactorKy: 0.90,
-    salinityTolerance: {
-      thresholdEcDsm: 1.5,
-      slopePctPerDsm: 5.7
-    },
-    heatStressThresholdC: 33.0,
-    nitrogenBalanceKgHa: +110.0, // Symbiotic Rhizobium N fixation carry-over
-    pestHostGroup: 'legume_forage',
-    referenceBaselineYieldTonHa: 9.2, // Dry matter t/ha in Zankalon (Ayyad et al., 2024)
-    referenceWaterProductivityKgM3: 1.20,
-    grossMarginAnchorUsdHa: 1550,
-    citations: ['fao56_allen_1998', 'ayyad_2024_zankalon', 'nile_delta_eddy_et_2017']
-  },
-
-  faba_bean: {
-    cropId: 'faba_bean',
-    nameEn: 'Faba Bean (Giza 843)',
-    nameAr: 'فول بلدي (بقولي موفر للمياه ومثبت للنيتروجين)',
-    botanicalFamily: 'Fabaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'winter',
-    typicalSowingMonthDay: '11-10',
-    stagesDays: {
-      initial: 25,
-      development: 35,
-      midSeason: 55,
-      lateSeason: 30,
-      total: 145
-    },
-    kc: {
-      ini: 0.40,
-      mid: 1.10,
-      end: 0.35
-    },
-    rootDepthM: {
-      ini: 0.25,
-      max: 0.85
-    },
-    depletionFractionP: 0.45,
-    yieldResponseFactorKy: 1.10,
-    salinityTolerance: {
-      thresholdEcDsm: 1.6,
-      slopePctPerDsm: 9.6
-    },
-    heatStressThresholdC: 31.0,
-    nitrogenBalanceKgHa: +85.0,
-    pestHostGroup: 'winter_grain_legume',
-    referenceBaselineYieldTonHa: 3.6,
-    referenceWaterProductivityKgM3: 1.12,
-    grossMarginAnchorUsdHa: 1490,
-    citations: ['fao56_allen_1998', 'nile_delta_eddy_et_2017', 'minya_legume_wheat_2026']
-  },
-
-  sugar_beet: {
-    cropId: 'sugar_beet',
-    nameEn: 'Sugar Beet (Halotolerant Winter Root Crop)',
-    nameAr: 'بنجر السكر (متحمل للملوحة والجفاف)',
-    botanicalFamily: 'Amaranthaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'winter',
-    typicalSowingMonthDay: '10-20',
-    stagesDays: {
-      initial: 30,
-      development: 45,
-      midSeason: 65,
-      lateSeason: 40,
-      total: 180
-    },
-    kc: {
-      ini: 0.35,
-      mid: 1.20,
-      end: 0.70
-    },
-    rootDepthM: {
-      ini: 0.25,
-      max: 1.10
-    },
-    depletionFractionP: 0.55,
-    yieldResponseFactorKy: 0.85,
-    salinityTolerance: {
-      thresholdEcDsm: 7.0, // High salinity tolerance (FAO-56 Table 22)
-      slopePctPerDsm: 5.9
-    },
-    heatStressThresholdC: 34.0,
-    nitrogenBalanceKgHa: -65.0,
-    pestHostGroup: 'chenopod_root',
-    referenceBaselineYieldTonHa: 52.0,
-    referenceWaterProductivityKgM3: 9.5,
-    grossMarginAnchorUsdHa: 1680,
-    citations: ['fao56_allen_1998', 'nile_delta_eddy_et_2017']
-  },
-
   paddy_rice: {
     cropId: 'paddy_rice',
-    nameEn: 'Paddy Rice (Sakha 108 / Giza 179)',
-    nameAr: 'أرز صيفي (مستهلك عالي للمياه - غمر)',
+    nameEn: 'Paddy Rice (Oryza sativa)',
+    nameAr: 'أرز صيفي مغمور',
     botanicalFamily: 'Poaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'summer',
-    typicalSowingMonthDay: '05-15',
-    stagesDays: {
-      initial: 30,
-      development: 30,
-      midSeason: 45,
-      lateSeason: 25,
-      total: 130
-    },
-    kc: {
-      ini: 1.05, // Flooded paddy initial Kc (FAO-56 Table 12)
-      mid: 1.20,
-      end: 0.75
-    },
-    rootDepthM: {
-      ini: 0.20,
-      max: 0.60
-    },
-    depletionFractionP: 0.20,
-    yieldResponseFactorKy: 1.20,
-    salinityTolerance: {
-      thresholdEcDsm: 3.0,
-      slopePctPerDsm: 12.0
-    },
-    standingWaterPercolationAdditionMmDay: 2.2, // Submerged paddy extra seepage
-    heatStressThresholdC: 36.0,
-    nitrogenBalanceKgHa: -105.0,
-    pestHostGroup: 'summer_cereal_stem_borer',
-    referenceBaselineYieldTonHa: 8.0,
-    referenceWaterProductivityKgM3: 0.85,
-    grossMarginAnchorUsdHa: 1520,
-    citations: ['fao56_allen_1998', 'ayyad_2024_zankalon', 'nile_delta_eddy_et_2017']
+    seasonCategory: 'summer',
+    isNitrogenFixer: false,
+    nitrogenBalanceKgHa: -55,
+    stagesDays: { initial: 30, development: 30, midSeason: 45, lateSeason: 25, total: 130 },
+    kcb: { initial: 1.0, mid: 1.15, end: 0.7 },
+    rootDepthM: { initial: 0.15, max: 0.6 },
+    depletionFractionP: 0.2,
+    yieldResponseKy: 1.2,
+    salinityFao29: { thresholdEcDsm: 3.0, slopePctPerDsm: 12.0 },
+    maxHeightM: 0.95,
+    referenceBaselineYieldTonHa: 9.2,
+    referenceWaterProductivityKgM3: 0.72,
+    grossMarginAnchorUsdHa: 1320,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985', 'nile_delta_eddy_et_2017']
   },
-
   grain_maize: {
     cropId: 'grain_maize',
-    nameEn: 'Hybrid Grain Maize (Giza 131 / Single Cross 168)',
-    nameAr: 'ذرة شامية هجينة (مسار C4)',
+    nameEn: 'Grain Maize (Zea mays)',
+    nameAr: 'ذرة شامية صيفية',
     botanicalFamily: 'Poaceae',
-    photosyntheticPathway: 'C4',
-    seasonType: 'summer',
-    typicalSowingMonthDay: '05-15',
-    stagesDays: {
-      initial: 20,
-      development: 35,
-      midSeason: 40,
-      lateSeason: 25,
-      total: 120
-    },
-    kc: {
-      ini: 0.30,
-      mid: 1.20,
-      end: 0.40
-    },
-    rootDepthM: {
-      ini: 0.25,
-      max: 1.15
-    },
+    seasonCategory: 'summer',
+    isNitrogenFixer: false,
+    nitrogenBalanceKgHa: -60,
+    stagesDays: { initial: 20, development: 35, midSeason: 40, lateSeason: 30, total: 125 },
+    kcb: { initial: 0.15, mid: 1.15, end: 0.35 },
+    rootDepthM: { initial: 0.2, max: 1.2 },
     depletionFractionP: 0.55,
-    yieldResponseFactorKy: 1.25,
-    salinityTolerance: {
-      thresholdEcDsm: 1.7,
-      slopePctPerDsm: 12.0
-    },
-    heatStressThresholdC: 37.5,
-    nitrogenBalanceKgHa: -115.0,
-    pestHostGroup: 'summer_cereal_stem_borer',
-    referenceBaselineYieldTonHa: 7.8,
-    referenceWaterProductivityKgM3: 1.15,
-    grossMarginAnchorUsdHa: 1460,
-    citations: ['fao56_allen_1998', 'abdelbaki_2021_zankalon_soil', 'ayyad_2024_zankalon']
+    yieldResponseKy: 1.25,
+    salinityFao29: { thresholdEcDsm: 1.7, slopePctPerDsm: 12.0 },
+    maxHeightM: 2.1,
+    referenceBaselineYieldTonHa: 8.4,
+    referenceWaterProductivityKgM3: 1.18,
+    grossMarginAnchorUsdHa: 1180,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985', 'ayyad_2024_zankalon']
   },
-
   grain_sorghum: {
     cropId: 'grain_sorghum',
-    nameEn: 'Grain Sorghum (Dorado / Giza 15 - Drought & Heat Resilient C4)',
-    nameAr: 'ذرة رفيعة حبوب (محصول C4 عالي الكفاءة المائية والحرارية)',
+    nameEn: 'Grain Sorghum (Sorghum bicolor)',
+    nameAr: 'ذرة رفيعة مقاومة للجفاف والملوحة',
     botanicalFamily: 'Poaceae',
-    photosyntheticPathway: 'C4',
-    seasonType: 'summer',
-    typicalSowingMonthDay: '05-20',
-    stagesDays: {
-      initial: 20,
-      development: 30,
-      midSeason: 40,
-      lateSeason: 25,
-      total: 115
-    },
-    kc: {
-      ini: 0.30,
-      mid: 1.00, // FAO-56 Table 12 grain sorghum Kc_mid = 1.00–1.05
-      end: 0.55
-    },
-    rootDepthM: {
-      ini: 0.25,
-      max: 1.35
-    },
-    depletionFractionP: 0.60,
-    yieldResponseFactorKy: 0.90,
-    salinityTolerance: {
-      thresholdEcDsm: 6.8, // High salinity tolerance among cereals
-      slopePctPerDsm: 16.0
-    },
-    heatStressThresholdC: 40.0,
-    nitrogenBalanceKgHa: -75.0,
-    pestHostGroup: 'sorghum_c4_resilient',
-    referenceBaselineYieldTonHa: 6.4,
-    referenceWaterProductivityKgM3: 1.48,
-    grossMarginAnchorUsdHa: 1410,
-    citations: ['fao56_allen_1998']
+    seasonCategory: 'summer',
+    isNitrogenFixer: false,
+    nitrogenBalanceKgHa: -30,
+    stagesDays: { initial: 20, development: 30, midSeason: 40, lateSeason: 30, total: 120 },
+    kcb: { initial: 0.15, mid: 1.0, end: 0.35 },
+    rootDepthM: { initial: 0.25, max: 1.4 },
+    depletionFractionP: 0.55,
+    yieldResponseKy: 0.9,
+    salinityFao29: { thresholdEcDsm: 6.8, slopePctPerDsm: 16.0 },
+    maxHeightM: 1.8,
+    referenceBaselineYieldTonHa: 6.1,
+    referenceWaterProductivityKgM3: 1.32,
+    grossMarginAnchorUsdHa: 1090,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985']
   },
-
+  berseem_clover: {
+    cropId: 'berseem_clover',
+    nameEn: 'Egyptian Berseem Clover (Trifolium alexandrinum)',
+    nameAr: 'برسيم مصري مسقاوي مثبت للنيتروجين',
+    botanicalFamily: 'Fabaceae',
+    seasonCategory: 'winter',
+    isNitrogenFixer: true,
+    nitrogenBalanceKgHa: 85,
+    stagesDays: { initial: 25, development: 35, midSeason: 65, lateSeason: 25, total: 150 },
+    kcb: { initial: 0.3, mid: 1.05, end: 0.85 },
+    rootDepthM: { initial: 0.2, max: 0.9 },
+    depletionFractionP: 0.5,
+    yieldResponseKy: 0.95,
+    salinityFao29: { thresholdEcDsm: 1.5, slopePctPerDsm: 5.7 },
+    maxHeightM: 0.65,
+    referenceBaselineYieldTonHa: 55.0,
+    referenceWaterProductivityKgM3: 2.1,
+    grossMarginAnchorUsdHa: 1260,
+    citations: ['fao_berseem_x7660e', 'fao56_allen_1998', 'nile_delta_eddy_et_2017']
+  },
+  faba_bean: {
+    cropId: 'faba_bean',
+    nameEn: 'Faba Bean (Vicia faba)',
+    nameAr: 'فول بلدي شتوي',
+    botanicalFamily: 'Fabaceae',
+    seasonCategory: 'winter',
+    isNitrogenFixer: true,
+    nitrogenBalanceKgHa: 65,
+    stagesDays: { initial: 25, development: 35, midSeason: 50, lateSeason: 30, total: 140 },
+    kcb: { initial: 0.15, mid: 1.1, end: 0.3 },
+    rootDepthM: { initial: 0.2, max: 0.85 },
+    depletionFractionP: 0.45,
+    yieldResponseKy: 1.1,
+    salinityFao29: { thresholdEcDsm: 1.6, slopePctPerDsm: 9.6 },
+    maxHeightM: 0.9,
+    referenceBaselineYieldTonHa: 3.9,
+    referenceWaterProductivityKgM3: 1.15,
+    grossMarginAnchorUsdHa: 1210,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985', 'nile_delta_eddy_et_2017']
+  },
+  sugar_beet: {
+    cropId: 'sugar_beet',
+    nameEn: 'Sugar Beet (Beta vulgaris)',
+    nameAr: 'بنجر السكر المتحمل للملوحة',
+    botanicalFamily: 'Amaranthaceae',
+    seasonCategory: 'winter',
+    isNitrogenFixer: false,
+    nitrogenBalanceKgHa: -35,
+    stagesDays: { initial: 30, development: 45, midSeason: 60, lateSeason: 40, total: 175 },
+    kcb: { initial: 0.15, mid: 1.15, end: 0.6 },
+    rootDepthM: { initial: 0.2, max: 1.1 },
+    depletionFractionP: 0.55,
+    yieldResponseKy: 0.85,
+    salinityFao29: { thresholdEcDsm: 7.0, slopePctPerDsm: 5.9 },
+    maxHeightM: 0.5,
+    referenceBaselineYieldTonHa: 52.0,
+    referenceWaterProductivityKgM3: 1.65,
+    grossMarginAnchorUsdHa: 1290,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985', 'nile_delta_eddy_et_2017']
+  },
   soybean: {
     cropId: 'soybean',
-    nameEn: 'Soybean (Giza 111 - Summer Oilseed Legume)',
-    nameAr: 'فول صويا (بقولي صيفي كاسر لدورة آفات الحبوب ومثبت للنيتروجين)',
+    nameEn: 'Soybean (Glycine max)',
+    nameAr: 'فول صويا صيفي',
     botanicalFamily: 'Fabaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'summer',
-    typicalSowingMonthDay: '05-15',
-    stagesDays: {
-      initial: 20,
-      development: 30,
-      midSeason: 45,
-      lateSeason: 20,
-      total: 115
-    },
-    kc: {
-      ini: 0.40,
-      mid: 1.15,
-      end: 0.50
-    },
-    rootDepthM: {
-      ini: 0.20,
-      max: 1.00
-    },
-    depletionFractionP: 0.50,
-    yieldResponseFactorKy: 0.85,
-    salinityTolerance: {
-      thresholdEcDsm: 5.0,
-      slopePctPerDsm: 20.0
-    },
-    heatStressThresholdC: 36.5,
-    nitrogenBalanceKgHa: +75.0,
-    pestHostGroup: 'summer_oilseed_legume',
+    seasonCategory: 'summer',
+    isNitrogenFixer: true,
+    nitrogenBalanceKgHa: 55,
+    stagesDays: { initial: 20, development: 30, midSeason: 45, lateSeason: 25, total: 120 },
+    kcb: { initial: 0.15, mid: 1.1, end: 0.35 },
+    rootDepthM: { initial: 0.2, max: 1.0 },
+    depletionFractionP: 0.5,
+    yieldResponseKy: 0.85,
+    salinityFao29: { thresholdEcDsm: 5.0, slopePctPerDsm: 20.0 },
+    maxHeightM: 0.85,
     referenceBaselineYieldTonHa: 3.4,
-    referenceWaterProductivityKgM3: 0.92,
-    grossMarginAnchorUsdHa: 1580,
-    citations: ['fao56_allen_1998']
+    referenceWaterProductivityKgM3: 0.82,
+    grossMarginAnchorUsdHa: 1120,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985']
   },
-
   short_season_cowpea: {
     cropId: 'short_season_cowpea',
-    nameEn: 'Short-Duration Forage/Green Cowpea Cover Shield',
-    nameAr: 'لوبيا/غطاء بقولي قصير العمر (حماية التربة من البوار الخريفي)',
+    nameEn: 'Short-Season Cowpea / Nili Pulse (Vigna unguiculata)',
+    nameAr: 'لوبيا نيلى قصيرة العمر مثبتة للنيتروجين',
     botanicalFamily: 'Fabaceae',
-    photosyntheticPathway: 'C3',
-    seasonType: 'fallow_window',
-    typicalSowingMonthDay: '09-22',
-    stagesDays: {
-      initial: 12,
-      development: 15,
-      midSeason: 16,
-      lateSeason: 10,
-      total: 53
-    },
-    kc: {
-      ini: 0.35,
-      mid: 0.95,
-      end: 0.45
-    },
-    rootDepthM: {
-      ini: 0.20,
-      max: 0.70
-    },
+    seasonCategory: 'fallow_window',
+    isNitrogenFixer: true,
+    nitrogenBalanceKgHa: 40,
+    stagesDays: { initial: 15, development: 20, midSeason: 25, lateSeason: 15, total: 75 },
+    kcb: { initial: 0.15, mid: 0.95, end: 0.35 },
+    rootDepthM: { initial: 0.18, max: 0.75 },
     depletionFractionP: 0.55,
-    yieldResponseFactorKy: 0.85,
-    salinityTolerance: {
-      thresholdEcDsm: 4.9,
-      slopePctPerDsm: 12.0
-    },
-    heatStressThresholdC: 37.0,
-    nitrogenBalanceKgHa: +42.0,
-    pestHostGroup: 'short_cover_legume',
-    referenceBaselineYieldTonHa: 2.1,
-    referenceWaterProductivityKgM3: 1.35,
-    grossMarginAnchorUsdHa: 540,
-    citations: ['fao56_allen_1998']
+    yieldResponseKy: 0.9,
+    salinityFao29: { thresholdEcDsm: 4.9, slopePctPerDsm: 12.0 },
+    maxHeightM: 0.55,
+    referenceBaselineYieldTonHa: 2.2,
+    referenceWaterProductivityKgM3: 0.95,
+    grossMarginAnchorUsdHa: 640,
+    citations: ['fao56_allen_1998', 'fao29_ayers_westcot_1985']
   },
-
   bare_fallow: {
     cropId: 'bare_fallow',
-    nameEn: 'Unplanted Bare Fallow Soil Window',
-    nameAr: 'أرض عارية بدون زراعة (فترة بوار بين المواسم)',
+    nameEn: 'Bare Soil Fallow Window',
+    nameAr: 'فترة راحة التربة (بور)',
     botanicalFamily: 'None',
-    photosyntheticPathway: 'None',
-    seasonType: 'fallow_window',
-    typicalSowingMonthDay: '09-22',
-    stagesDays: {
-      initial: 15,
-      development: 15,
-      midSeason: 15,
-      lateSeason: 9,
-      total: 54
-    },
-    kc: {
-      ini: 0.22,
-      mid: 0.18,
-      end: 0.15
-    },
-    rootDepthM: {
-      ini: 0.15,
-      max: 0.15
-    },
-    depletionFractionP: 0.70,
-    yieldResponseFactorKy: 0.0,
-    salinityTolerance: {
-      thresholdEcDsm: 99.0,
-      slopePctPerDsm: 0.0
-    },
-    heatStressThresholdC: 99.0,
-    nitrogenBalanceKgHa: -18.0, // Volatilization & mineralization leaching loss on bare soil
-    pestHostGroup: 'bare_soil_weeds',
+    seasonCategory: 'fallow_window',
+    isNitrogenFixer: false,
+    nitrogenBalanceKgHa: 0,
+    stagesDays: { initial: 15, development: 15, midSeason: 15, lateSeason: 10, total: 55 },
+    kcb: { initial: 0.0, mid: 0.0, end: 0.0 },
+    rootDepthM: { initial: 0.15, max: 0.15 },
+    depletionFractionP: 0.6,
+    yieldResponseKy: 0.0,
+    salinityFao29: { thresholdEcDsm: 12.0, slopePctPerDsm: 0.0 },
+    maxHeightM: 0.0,
     referenceBaselineYieldTonHa: 0.0,
     referenceWaterProductivityKgM3: 0.0,
     grossMarginAnchorUsdHa: 0,
     citations: ['fao56_allen_1998']
   }
-});
+};
+
+export const CROP_LIBRARY = Object.freeze(
+  Object.fromEntries(
+    Object.entries(RAW_CROP_LIBRARY).map(([k, v]) => [k, normalizeCropParameterAssumptions(v)])
+  )
+);
 
 /**
- * Computes daily crop coefficient `Kc`, effective root depth `Zr` (m), and growth stage label
- * for day `dayAfterSowing` (1-indexed) according to the FAO-56 four-stage linear curve.
- * Also supports optional remote-sensing NDVI-assisted Kc blending (`Kc_RS = 1.25 * NDVI + 0.1`
- * or Egypt Delta calibration `Kc = 2 * NDVI - 0.2` bounded by physical stage envelope) when
- * verified clear-sky HLS NDVI is available on that date.
- *
- * @param {string|Object} cropOrId - Crop ID in `CROP_LIBRARY` or custom crop definition object
- * @param {number} dayAfterSowing - 1-indexed day within the crop season
- * @param {Object} [options]
- * @param {number|null} [options.observedNdvi=null] - Verified clear-sky HLS NDVI on this day
- * @param {number} [options.ndviBlendWeight=0.25] - Weight given to observed HLS NDVI adjustment
- * @returns {{
- *   cropId: string,
- *   dayAfterSowing: number,
- *   stage: string,
- *   kcTabular: number,
- *   kcAdjusted: number,
- *   rootDepthM: number,
- *   depletionFractionP: number,
- *   ndviConstraintApplied: boolean
- * }}
+ * Interpolates daily FAO-56 basal crop coefficient (`Kcb`), rooting depth (`Zr`),
+ * and depletion fraction (`p`) for day after sowing (`dayAfterSowing`, 1-indexed).
  */
-export function interpolateDailyCropParameters(cropOrId, dayAfterSowing, options = {}) {
-  const crop =
-    typeof cropOrId === 'string' ? CROP_LIBRARY[cropOrId] : cropOrId;
-
+export function interpolateDailyCropParameters(cropOrId, dayAfterSowing = 1, options = {}) {
+  const crop = typeof cropOrId === 'string' ? CROP_LIBRARY[cropOrId] : cropOrId;
   if (!crop) {
-    throw new Error(`Unknown crop identifier: ${String(cropOrId)}`);
+    throw new Error(`Unknown cropId: "${cropOrId}"`);
   }
 
+  const d = Math.max(1, Number(dayAfterSowing) || 1);
   const { initial, development, midSeason, lateSeason, total } = crop.stagesDays;
-  const d = Math.max(1, Math.min(total, Math.round(dayAfterSowing)));
-
-  let stage = 'initial';
-  let kcTabular = crop.kc.ini;
-
   const endInit = initial;
   const endDev = initial + development;
-  const endMid = initial + development + midSeason;
+  const endMid = endDev + midSeason;
+
+  let kcb = crop.kcb.initial;
+  let stageName = 'initial';
 
   if (d <= endInit) {
-    stage = 'initial';
-    kcTabular = crop.kc.ini;
+    kcb = crop.kcb.initial;
+    stageName = 'initial';
   } else if (d <= endDev) {
-    stage = 'development';
     const frac = (d - endInit) / Math.max(1, development);
-    kcTabular = crop.kc.ini + frac * (crop.kc.mid - crop.kc.ini);
+    kcb = crop.kcb.initial + frac * (crop.kcb.mid - crop.kcb.initial);
+    stageName = 'development';
   } else if (d <= endMid) {
-    stage = 'mid_season';
-    kcTabular = crop.kc.mid;
+    kcb = crop.kcb.mid;
+    stageName = 'midSeason';
   } else {
-    stage = 'late_season';
-    const frac = (d - endMid) / Math.max(1, lateSeason);
-    kcTabular = crop.kc.mid + frac * (crop.kc.end - crop.kc.mid);
+    const frac = Math.min(1, (d - endMid) / Math.max(1, lateSeason));
+    kcb = crop.kcb.mid + frac * (crop.kcb.end - crop.kcb.mid);
+    stageName = 'lateSeason';
   }
 
-  // Linear root depth growth from ini to max over (initial + development) stages (FAO-56 Annex 8)
-  const rootGrowthDays = Math.max(1, endDev);
-  const rootFrac = Math.min(1.0, d / rootGrowthDays);
+  const rootFrac = Math.min(1, d / Math.max(1, endDev));
   const rootDepthM =
-    crop.rootDepthM.ini + rootFrac * (crop.rootDepthM.max - crop.rootDepthM.ini);
-
-  // Optional bounded HLS NDVI observation assimilation
-  let kcAdjusted = kcTabular;
-  let ndviConstraintApplied = false;
-  const { observedNdvi = null, ndviBlendWeight = 0.25 } = options;
-
-  if (
-    crop.cropId !== 'bare_fallow' &&
-    typeof observedNdvi === 'number' &&
-    Number.isFinite(observedNdvi) &&
-    observedNdvi >= 0.05 &&
-    observedNdvi <= 0.95
-  ) {
-    const kcFromNdvi = Math.max(0.15, Math.min(1.25, 1.25 * observedNdvi + 0.1));
-    const w = Math.max(0, Math.min(0.5, ndviBlendWeight));
-    kcAdjusted = (1 - w) * kcTabular + w * kcFromNdvi;
-    ndviConstraintApplied = true;
-  }
+    crop.rootDepthM.initial + rootFrac * (crop.rootDepthM.max - crop.rootDepthM.initial);
 
   return {
     cropId: crop.cropId,
     dayAfterSowing: d,
-    stage,
-    kcTabular: Number(kcTabular.toFixed(4)),
-    kcAdjusted: Number(kcAdjusted.toFixed(4)),
-    rootDepthM: Number(rootDepthM.toFixed(3)),
+    totalSeasonDays: total,
+    stageName,
+    kcb: Number(kcb.toFixed(4)),
+    rootDepthM: Number(rootDepthM.toFixed(4)),
     depletionFractionP: crop.depletionFractionP,
-    ndviConstraintApplied
+    maxHeightM: crop.maxHeightM,
+    evidenceStatus: crop.evidenceStatus, // Always 'ASSUMED' unless field-calibrated
+    evidenceKind: crop.evidenceKind,
+    isFieldCalibrated: crop.isFieldCalibrated
   };
 }
 
+export const interpolatedDailyCropParameters = interpolateDailyCropParameters;
+
 /**
- * Loads a pilot region configuration by pilot name/filename (`zankalon`, `kafr-el-sheikh`, `west-minya`)
- * or validates an inline pilot configuration object for any independent region.
- *
- * @param {string|Object} pilotIdOrConfig
- * @returns {Object} Validated pilot configuration object
+ * Loads a pilot configuration JSON file (`zankalon`, `kafr-el-sheikh`, `west-minya`)
+ * and enforces `evidenceStatus: 'ASSUMED'` on all uncalibrated soil/water parameters.
  */
-export function loadPilotConfig(pilotIdOrConfig = 'zankalon') {
-  let config;
-  if (typeof pilotIdOrConfig === 'string') {
-    const cleanName = pilotIdOrConfig.replace(/\.json$/i, '');
-    const filePath = path.resolve(
-      __dirname,
-      '..',
-      'configs',
-      'pilots',
-      `${cleanName}.json`
-    );
-    if (!fs.existsSync(filePath)) {
-      throw new Error(`Pilot configuration file not found: ${filePath}`);
-    }
-    config = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-  } else if (pilotIdOrConfig && typeof pilotIdOrConfig === 'object') {
-    config = structuredClone(pilotIdOrConfig);
+export function loadPilotConfig(pilotIdOrConfig = 'zankalon', options = {}) {
+  let rawConfig;
+  if (typeof pilotIdOrConfig === 'object' && pilotIdOrConfig !== null) {
+    rawConfig = JSON.parse(JSON.stringify(pilotIdOrConfig));
   } else {
-    throw new Error('loadPilotConfig requires a pilot name string or configuration object');
+    const cleanName = String(pilotIdOrConfig || 'zankalon').replace(/\.json$/i, '');
+    const filePath = path.resolve(__dirname, '../configs/pilots', `${cleanName}.json`);
+    const fileText = fs.readFileSync(filePath, 'utf8');
+    rawConfig = JSON.parse(fileText);
   }
 
-  // Validate required structural sections
-  if (!config.pilotId || !config.coordinates || !config.soil || !config.waterManagement) {
-    throw new Error(
-      `Invalid pilot configuration '${config.pilotId || 'unknown'}': missing coordinates, soil, or waterManagement`
-    );
+  if (!rawConfig.pilotId || !rawConfig.coordinates || !rawConfig.soil || !rawConfig.waterManagement) {
+    throw new Error('Invalid pilot config: missing pilotId, coordinates, soil, or waterManagement');
   }
 
-  const { fieldCapacityThetaFc, wiltingPointThetaWp, saturationThetaSat } = config.soil;
+  const { wiltingPointThetaWp, fieldCapacityThetaFc, saturationThetaSat } = rawConfig.soil;
   if (
-    !(wiltingPointThetaWp > 0 &&
-      fieldCapacityThetaFc > wiltingPointThetaWp &&
-      saturationThetaSat >= fieldCapacityThetaFc)
+    !(wiltingPointThetaWp > 0) ||
+    !(fieldCapacityThetaFc > wiltingPointThetaWp) ||
+    !(saturationThetaSat >= fieldCapacityThetaFc)
   ) {
-    throw new Error(
-      `Invalid soil hydraulic hierarchy in '${config.pilotId}': require 0 < Theta_WP (${wiltingPointThetaWp}) < Theta_FC (${fieldCapacityThetaFc}) <= Theta_Sat (${saturationThetaSat})`
-    );
+    throw new Error('Invalid soil hydraulic parameters: expected 0 < Theta_WP < Theta_FC <= Theta_Sat');
   }
 
-  return config;
+  return normalizePilotSoilAndWaterAssumptions(rawConfig, options);
 }
 
 /**
- * Lists all built-in pilot region configurations available in `configs/pilots/`.
- * @returns {string[]}
+ * Lists all available pilot config files in `configs/pilots/`.
  */
 export function listAvailablePilotConfigs() {
-  const pilotsDir = path.resolve(__dirname, '..', 'configs', 'pilots');
-  if (!fs.existsSync(pilotsDir)) return [];
+  const pilotsDir = path.resolve(__dirname, '../configs/pilots');
+  if (!fs.existsSync(pilotsDir)) {
+    return [];
+  }
   return fs
     .readdirSync(pilotsDir)
     .filter((f) => f.endsWith('.json'))

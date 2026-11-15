@@ -6,9 +6,18 @@
 export {
   CROP_LIBRARY,
   interpolateDailyCropParameters,
+  interpolatedDailyCropParameters,
   loadPilotConfig,
   listAvailablePilotConfigs
 } from './crop-library.js';
+
+export {
+  ASSUMED_CALIBRATION_TAG,
+  hasVerifiedFieldCalibrationReceipt,
+  normalizeCropParameterAssumptions,
+  normalizePilotSoilAndWaterAssumptions,
+  auditCropAndSoilAssumptions
+} from './crop-soil-assumptions-audit.js';
 
 export {
   computeScsRunoffMm,
