@@ -23,15 +23,17 @@
       <span class="brandmark"><img src="soliq-mark.svg" alt=""></span>
       <span>Soliq<small>EARTH OBSERVATIONS. GROUNDED DECISIONS.</small></span>
     </a>
-    <div class="workspace-label">YOUR WORKSPACE</div>
-    <nav aria-label="Workspace">
-      <button data-view="outlook"><span>◷</span>2026 Living Farm</button>
-      <button data-view="analyzer"><span>&#10047;</span>Crop analyzer</button>
-      <button data-view="overview" class="active"><span>◈</span>Field overview</button>
-      <button data-view="rotations"><span>↻</span>Explore rotations</button>
-      <button data-view="evidence"><span>◎</span>Data & evidence</button>
-      <button data-view="research"><span>⌘</span>Research workspace</button>
-      <button data-view="settings"><span>⚙</span>Field & assumptions</button>
+    <div class="workspace-label" id="workspace-label">FARMER & CLIENT WORKSPACE</div>
+    <nav id="workspace-nav" aria-label="Workspace">
+      <button data-view="overview" data-audience="both" class="active"><span>⌂</span>Overview</button>
+      <button data-view="rotations" data-audience="guided"><span>↻</span>Crop plans</button>
+      <button data-view="settings" data-audience="guided"><span>⚙</span>Field setup</button>
+      <button data-view="outlook" data-audience="research"><span>◷</span>2026 Living Farm</button>
+      <button data-view="analyzer" data-audience="research"><span>&#10047;</span>Crop analyzer</button>
+      <button data-view="rotations" data-audience="research"><span>↻</span>Explore rotations</button>
+      <button data-view="evidence" data-audience="research"><span>◎</span>Data & evidence</button>
+      <button data-view="research" data-audience="research"><span>⌘</span>Research workspace</button>
+      <button data-view="settings" data-audience="research"><span>⚙</span>Field & assumptions</button>
     </nav>
     <div class="side-note">
       <span class="tiny-leaf">↗</span>
@@ -39,11 +41,11 @@
       <p>Explore the trade-offs before changing what you grow.</p>
       <button id="guide" class="text-btn">How to use Soliq ↗</button>
     </div>
-    <div class="side-footer"><span class="dot"></span> Research demonstrator <small>Version 0.1 · Support, not prescription</small></div>
+    <div class="side-footer"><span class="dot"></span><span id="side-footer-label">Farm planning workspace</span><small id="side-footer-detail">Clear estimates · Local review matters</small></div>
   </aside>
   <div class="workspace">
     <header>
-      <div class="breadcrumb">Workspace <span>/</span> <b id="crumb">Field overview</b></div>
+      <div class="breadcrumb">Workspace <span>/</span> <b id="crumb">Overview</b></div>
       <div class="header-actions">
         <div class="audience-switch" role="group" aria-label="Choose your view">
           <button id="guided-mode" aria-pressed="true">Guided view</button>
@@ -55,6 +57,10 @@
       </div>
     </header>
     <main id="content" tabindex="-1">
+      <div class="audience-banner" id="audience-banner">
+        <span class="audience-banner-label" id="audience-banner-label">GUIDED VIEW / FARMERS & CLIENTS</span>
+        <span id="audience-banner-copy">Simple crop plans, field details and clear water estimates.</span>
+      </div>
       <div id="notice" role="status"></div>
       <div id="page"></div>
       <footer>Soliq · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer>
