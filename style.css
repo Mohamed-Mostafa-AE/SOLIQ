@@ -20,4 +20,9 @@ html[dir=rtl] .plan-year-strip{direction:rtl}
 
 .crop-placement{display:flex;gap:3px;height:18px;margin-top:20px;direction:ltr}.crop-placement>span{flex:1;min-width:0;position:relative;border-radius:2px}.crop-placement i{font-size:8px;font-style:normal;position:absolute;inset:0;display:grid;place-items:center;color:#18372a;text-shadow:0 0 3px white}html[dir=rtl] .crop-placement{direction:rtl}
 
-.brandmark{font-size:0!important;background:#153e34 url('soliq-mark.svg') center/contain no-repeat!important;border-radius:12px;display:inline-block;min-width:40px;min-height:40px}
+.brand{width:100%;justify-content:flex-start;gap:0}
+.brand>span:last-child{display:none}
+.brandmark{font-size:0!important;background:#102d26!important;border-radius:9px!important;display:block;width:100%;max-width:198px;height:auto;min-width:0;min-height:0;padding:4px;overflow:hidden}
+.brandmark img{display:block;width:100%;height:auto;object-fit:contain}
+@media(max-width:900px){.brand{justify-content:center}.brandmark{width:50px;max-width:50px;padding:2px;border-radius:7px!important}}
+@media(max-width:600px){.brand{display:none}}
