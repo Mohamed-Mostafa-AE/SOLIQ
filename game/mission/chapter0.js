@@ -5,6 +5,7 @@
  */
 
 import { sharedEvents, EMOTIONS, GESTURES, OUTCOMES } from '../core/events.js';
+import { SAFETY_CHECKS, assessPumpReadiness, completeSafetyCheck, sustainabilityLesson } from '../core/safety-sustainability.js';
 
 export class Chapter0Mission {
   constructor(village, characters, waterEngine, audio) {
@@ -20,6 +21,9 @@ export class Chapter0Mission {
       talkedToHassan: false,
       talkedToMaryam: false,
       inspectedSoil: false,
+      pumpInspected: false,
+      canalAccessSecured: false,
+      heatPrecautionsReviewed: false,
       pumpStarted: false,
       selectedPolicy: 'proportional',
     };
@@ -170,7 +174,50 @@ export class Chapter0Mission {
     };
   }
 
+  completeSafetyTraining(stepId) {
+    const step = SAFETY_CHECKS.find((item) => item.id === stepId);
+    if (!step) throw new RangeError('Unknown safety training step');
+    if (this.flags[stepId] === true) return assessPumpReadiness(this.flags);
+    this.flags = completeSafetyCheck(this.flags, stepId);
+    this.addReceipt({
+      id: 'SAFETY_' + stepId,
+      titleAr: step.titleAr,
+      titleEn: step.titleEn,
+      category: 'Safety Awareness (Fictional Training)',
+      dataClass: 'simulated',
+      timestamp: new Date().toISOString(),
+      detailsAr: step.lessonAr + ' — هذه خطوة تعليمية داخل اللعبة وليست تصريح تشغيل حقيقي.',
+      detailsEn: step.lessonEn + ' This is a game learning step, NOT real-world operational clearance.',
+    });
+    const assessment = assessPumpReadiness(this.flags);
+    sharedEvents.emit('safety_checked', { completed: assessment.completed, total: assessment.total });
+    return assessment;
+  }
+
   _getPumpDialogue() {
+    const safety = assessPumpReadiness(this.flags);
+    if (!safety.readyForFictionalMission) {
+      const next = safety.missing[0];
+      return {
+        speakerAr: 'مراجعة السلامة قبل تشغيل الطلمبة',
+        speakerEn: 'Safety Check — Before the Pump',
+        textAr: `قبل تجربة تشغيل الطلمبة، راجع السلامة (${safety.completed}/${safety.total}). لا يعني إكمال المهمة تصريحًا لتشغيل معدات حقيقية.`,
+        textEn: `Before the simulated pump turn, review the safety steps (${safety.completed}/${safety.total}). This is training, not permission to operate real equipment.`,
+        emotion: EMOTIONS.NEUTRAL,
+        choices: [
+          {
+            labelAr: next.titleAr,
+            labelEn: next.titleEn,
+            onSelect: () => this.completeSafetyTraining(next.id),
+          },
+          {
+            labelAr: 'أجّل التشغيل واطلب فحصًا ميدانيًا',
+            labelEn: 'Defer the turn and request a qualified inspection',
+            onSelect: () => this.executeOutcome(OUTCOMES.DEFERRAL),
+          },
+        ],
+      };
+    }
     return {
       speakerAr: 'طلمبة الديزل وبوابات المسقة',
       speakerEn: 'Diesel Pump & Canal Regulator',
@@ -221,6 +268,25 @@ export class Chapter0Mission {
   }
 
   executeOutcome(outcome) {
+    // The fictional mission cannot run a powered pump until all educational
+    // safety checks are complete. Deferral remains possible at any time.
+    if (outcome !== OUTCOMES.DEFERRAL && !assessPumpReadiness(this.flags).readyForFictionalMission) {
+      this.addReceipt({
+        id: 'SAFETY_GATE_BLOCKED',
+        titleAr: 'تم منع تشغيل الطلمبة قبل مراجعة السلامة',
+        titleEn: 'Pump operation blocked pending safety checks',
+        category: 'Safety Awareness (Fictional Training)',
+        dataClass: 'simulated',
+        timestamp: new Date().toISOString(),
+        detailsAr: 'أكمل مراجعة الطلمبة والقناة والحر أولًا. لا تعد محاكاة اللعبة تصريحًا تشغيليًا حقيقيًا.',
+        detailsEn: 'Review pump, canal and heat precautions first. No game action certifies real equipment safety.',
+      });
+      sharedEvents.emit('safety_checked', {
+        completed: assessPumpReadiness(this.flags).completed,
+        total: SAFETY_CHECKS.length,
+      });
+      return false;
+    }
     this.activeOutcome = outcome;
     this.flags.pumpStarted = outcome !== OUTCOMES.DEFERRAL;
 
@@ -310,5 +376,27 @@ export class Chapter0Mission {
         titleAr: 'تحقق علمي وتأجيل مسؤول',
       });
     }
+
+    // The sustainability teaching card is linked to the existing solver's
+    // outcome. It claims no verified field impact or UN endorsement.
+    const lesson = sustainabilityLesson(
+      outcome,
+      outcome === OUTCOMES.DEFERRAL ? null : this.waterEngine.currentSimulation
+    );
+    this.addReceipt({
+      id: 'SDG_LEARNING_' + outcome,
+      titleAr: lesson.titleAr,
+      titleEn: lesson.titleEn,
+      category: 'SDG Learning — 2 / 6 / 12 / 13',
+      dataClass: lesson.evidenceClass,
+      timestamp: new Date().toISOString(),
+      detailsAr: lesson.textAr,
+      detailsEn: lesson.textEn,
+    });
+    sharedEvents.emit('safety_checked', {
+      completed: assessPumpReadiness(this.flags).completed,
+      total: SAFETY_CHECKS.length,
+    });
+    return true;
   }
 }
