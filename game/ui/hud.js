@@ -3,11 +3,13 @@
  * Responsive bilingual interface, evidence notebook drawer, virtual touch joystick.
  */
 
+import { localizeGameUi } from './localization.js';
+
 export class GameHUD {
   constructor(containerElement, callbacks = {}) {
     this.container = containerElement;
     this.callbacks = callbacks;
-    this.lang = 'ar'; // 'ar' | 'en'
+    this.lang = 'en'; // game defaults to English; Arabic remains available
 
     this.elements = {};
     this.isNotebookOpen = false;
@@ -15,6 +17,7 @@ export class GameHUD {
 
     this._buildHUD();
     this._setupTouchJoystick();
+    this.setLanguage('en');
   }
 
   _buildHUD() {
@@ -128,8 +131,8 @@ export class GameHUD {
               <label>
                 لغة الحوار والترجمة (Language):
                 <select id="select-lang">
-                  <option value="ar" selected>العربية (اللهجة المصرية + ترجمة فصحى)</option>
-                  <option value="en">English (Official Subtitles)</option>
+                  <option value="ar">العربية (اللهجة المصرية + ترجمة فصحى)</option>
+                  <option value="en" selected>English (Official Subtitles)</option>
                 </select>
               </label>
               <label class="checkbox-label">
@@ -320,7 +323,7 @@ export class GameHUD {
       return;
     }
     const name = this.lang === 'ar' ? target.nameAr || target.id : target.nameEn || target.id;
-    this.elements.promptText.textContent = `اضغط [E] أو انقر للتفاعل مع ${name}`;
+    this.elements.promptText.textContent = this.lang === 'ar' ? `اضغط [E] أو انقر للتفاعل مع ${name}` : `Press [E] or tap to interact with ${name}`;
     this.elements.prompt.hidden = false;
   }
 
@@ -330,6 +333,7 @@ export class GameHUD {
       return;
     }
 
+    this.activeDialogue = dialogue;
     const el = this.elements;
     el.dialogueSpeaker.textContent = this.lang === 'ar' ? dialogue.speakerAr : dialogue.speakerEn;
     el.dialogueText.textContent = this.lang === 'ar' ? dialogue.textAr : dialogue.textEn;
@@ -351,6 +355,7 @@ export class GameHUD {
   }
 
   hideDialogue() {
+    this.activeDialogue = null;
     this.elements.dialogueBox.hidden = true;
   }
 
@@ -382,6 +387,7 @@ export class GameHUD {
   }
 
   updateNotebookReceipts(receipts) {
+    this.lastReceipts = receipts;
     const list = this.elements.receiptsList;
     list.innerHTML = '';
 
@@ -408,62 +414,53 @@ export class GameHUD {
   }
 
   updateWaterLedger(simResult) {
+    this.lastSimulation = simResult;
     const w = this.elements.waterLedger;
+    const isEn = this.lang === 'en';
     if (!simResult) {
-      w.innerHTML = '<p>لم يتم تشغيل محاكاة المسقة بعد. شغّل طلمبة الري لمعاينة التوزيع.</p>';
+      w.textContent = isEn
+        ? 'No canal turn simulated yet. Review safety training and choose a fictional water-allocation scenario.'
+        : 'لم يتم تشغيل محاكاة المسقة بعد. راجع السلامة واختر سيناريو افتراضيًا للري.';
       return;
     }
 
     const { totalDemand, supply, delivered, shortfall, fairness, mode } = simResult;
-    const fairnessText = Number.isFinite(fairness) ? (fairness * 100).toFixed(1) + '%' : 'غير محسوب';
+    const fairnessText = Number.isFinite(fairness) ? (fairness * 100).toFixed(1) + '%' : (isEn ? 'N/A' : 'غير محسوب');
+    const terms = isEn
+      ? { demand: 'Total demand', supply: 'Available supply', fairness: 'Jain fairness', mode: 'Scenario status',
+          field: 'Field', demanded: 'Demand', delivered: 'Delivered', shortage: 'Shortfall' }
+      : { demand: 'إجمالي الطلب', supply: 'المورد المتاح', fairness: 'مؤشر العدالة (Jain)', mode: 'حالة المحاكاة',
+          field: 'الحقل', demanded: 'الطلب', delivered: 'المسلّم', shortage: 'العجز' };
     w.innerHTML = `
       <div class="ledger-stats-grid">
-        <div class="stat-box">
-          <span class="stat-lbl">إجمالي الطلب:</span>
-          <span class="stat-val">${totalDemand} م³</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-lbl">المورد المتاح:</span>
-          <span class="stat-val">${supply} م³</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-lbl">مؤشر العدالة (Jain):</span>
-          <span class="stat-val">${fairnessText}</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-lbl">حالة المحاكاة:</span>
-          <span class="stat-val">${mode}</span>
-        </div>
+        <div class="stat-box"><span class="stat-lbl">${terms.demand}:</span><span class="stat-val">${totalDemand} m³</span></div>
+        <div class="stat-box"><span class="stat-lbl">${terms.supply}:</span><span class="stat-val">${supply} m³</span></div>
+        <div class="stat-box"><span class="stat-lbl">${terms.fairness}:</span><span class="stat-val">${fairnessText}</span></div>
+        <div class="stat-box"><span class="stat-lbl">${terms.mode}:</span><span class="stat-val">${mode}</span></div>
       </div>
       <table class="ledger-table">
-        <thead>
-          <tr>
-            <th>الحقل</th>
-            <th>الطلب</th>
-            <th>المسلّم</th>
-            <th>العجز</th>
-          </tr>
-        </thead>
+        <thead><tr><th>${terms.field}</th><th>${terms.demanded}</th><th>${terms.delivered}</th><th>${terms.shortage}</th></tr></thead>
         <tbody>
-          ${delivered
-            .map(
-              (amt, i) => `
-            <tr>
-              <td>غيط ${i + 1}</td>
-              <td>${amt + shortfall[i]}</td>
-              <td>${amt.toFixed(1)}</td>
-              <td class="${shortfall[i] > 0 ? 'text-deficit' : 'text-ok'}">${shortfall[i].toFixed(1)}</td>
-            </tr>
-          `
-            )
-            .join('')}
+          ${delivered.map((amt,i)=>`<tr>
+            <td>${isEn ? 'Field' : 'غيط'} ${i + 1}</td>
+            <td>${(amt + shortfall[i]).toFixed(1)}</td>
+            <td>${amt.toFixed(1)}</td>
+            <td class="${shortfall[i] > 0 ? 'text-deficit' : 'text-ok'}">${shortfall[i].toFixed(1)}</td>
+          </tr>`).join('')}
         </tbody>
       </table>
+      <p class="ledger-note">${isEn ? 'Fictional water allocation — not a verified farm measurement.' : 'توزيع مياه افتراضي — ليس قياسًا حقليًا موثقًا.'}</p>
     `;
   }
 
   setLanguage(lang) {
-    this.lang = lang;
-    this.elements.root.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    this.lang = lang === 'ar' ? 'ar' : 'en';
+    document.documentElement.lang = this.lang;
+    document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+    this.elements.selectLang.value = this.lang;
+    localizeGameUi(this.container, this.lang);
+    if (this.lastReceipts) this.updateNotebookReceipts(this.lastReceipts);
+    if (this.lastSimulation !== undefined) this.updateWaterLedger(this.lastSimulation);
+    if (this.activeDialogue) this.showDialogue(this.activeDialogue);
   }
 }
