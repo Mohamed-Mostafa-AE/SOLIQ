@@ -21,7 +21,9 @@ test('guided calendar explains the actual planned crop change',async({page},info
 
 test('Arabic crop analyzer has RTL controls and a bounded mobile layout',async({page},info)=>{
   await page.setViewportSize({width:390,height:844});
-  await page.goto('/#analyzer');
+  await page.goto('/');
+  await page.locator('#research-mode').click();
+  await page.locator('#workspace-nav [data-view="analyzer"]').click();
   await page.locator('#language-toggle').click();
   await expect(page.locator('html')).toHaveAttribute('lang','ar');
   await expect(page.locator('html')).toHaveAttribute('dir','rtl');
@@ -32,7 +34,9 @@ test('Arabic crop analyzer has RTL controls and a bounded mobile layout',async({
 });
 
 test('an explicit market restriction removes a crop from modeled comparisons',async({page})=>{
-  await page.goto('/#analyzer');
+  await page.goto('/');
+  await page.locator('#research-mode').click();
+  await page.locator('#workspace-nav [data-view="analyzer"]').click();
   await page.locator('[name="maize.market"]').selectOption('no');
   await page.getByRole('button',{name:/Analyze crop options/}).click();
   const maize=page.locator('.crop-candidate').filter({has:page.getByRole('heading',{name:'Grain maize',exact:true})});
@@ -42,7 +46,9 @@ test('an explicit market restriction removes a crop from modeled comparisons',as
 });
 
 test('user-declared evidence enables a conditional list without claiming a best crop',async({page})=>{
-  await page.goto('/#evidence');
+  await page.goto('/');
+  await page.locator('#research-mode').click();
+  await page.locator('#workspace-nav [data-view="evidence"]').click();
   const weather=demoWeather(2024);
   const csv='date,tmin,tmax,rain\n'+weather.map(row=>[row.date,row.tmin,row.tmax,row.rain].join(',')).join('\n');
   await page.locator('#weather-file').setInputFiles({name:'synthetic-test-fixture.csv',mimeType:'text/csv',buffer:Buffer.from(csv)});
@@ -58,7 +64,9 @@ test('user-declared evidence enables a conditional list without claiming a best 
 });
 
 test('unsupported processes block all candidate simulations',async({page})=>{
-  await page.goto('/#analyzer');
+  await page.goto('/');
+  await page.locator('#research-mode').click();
+  await page.locator('#workspace-nav [data-view="analyzer"]').click();
   await page.locator('[name="unsupportedProcesses"]').check();
   await page.getByRole('button',{name:/Analyze crop options/}).click();
   await expect(page.locator('.crop-candidate .crop-result-number')).toHaveCount(0);
@@ -66,16 +74,39 @@ test('unsupported processes block all candidate simulations',async({page})=>{
 });
 
 test('language and audience changes preserve the exported scientific results',async({page})=>{
-  await page.goto('/#analyzer');
+  await page.goto('/');
+  await page.locator('#research-mode').click();
+  await page.locator('#workspace-nav [data-view="analyzer"]').click();
   async function exportReport(){
     const wait=page.waitForEvent('download');await page.locator('#export-crop-analysis').click();
     const file=await wait;return JSON.parse(await readFile(await file.path(),'utf8'));
   }
   const before=await exportReport();
   await page.locator('#language-toggle').click();
+  await page.locator('#guided-mode').click();
+  await expect(page.locator('#workspace-nav [data-view="analyzer"]')).toBeHidden();
+  await expect(page.getByRole('heading',{name:'Plan what to grow next.',exact:true})).toBeVisible();
   await page.locator('#research-mode').click();
+  await page.locator('#workspace-nav [data-view="analyzer"]').click();
   const after=await exportReport();
   expect(after.analysis).toEqual(before.analysis);
   expect(after.weatherSHA256).toEqual(before.weatherSHA256);
 });
 
+
+test('Guided and Research views have distinct navigation and landing pages',async({page})=>{
+ await page.goto('/');
+ await expect(page.getByRole('heading',{name:'Plan what to grow next.',exact:true})).toBeVisible();
+ await expect(page.locator('#workspace-nav [data-view="rotations"]')).toBeVisible();
+ await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeHidden();
+ await expect(page.locator('#audience-banner-label')).toContainText('FARMERS & CLIENTS');
+ await page.locator('#research-mode').click();
+ await expect(page.getByRole('heading',{name:'Research dashboard',exact:true})).toBeVisible();
+ await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeVisible();
+ await expect(page.locator('#workspace-nav [data-view="analyzer"]')).toBeVisible();
+ await expect(page.locator('.research-results-panel')).toContainText('Seasonal water-balance comparison');
+ await expect(page.locator('#audience-banner-label')).toContainText('MSc & PhD');
+ await page.locator('#guided-mode').click();
+ await expect(page.getByRole('heading',{name:'Plan what to grow next.',exact:true})).toBeVisible();
+ await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeHidden();
+});
