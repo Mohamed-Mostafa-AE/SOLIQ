@@ -334,11 +334,11 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     currentDragY += (targetDragY - currentDragY) * (1 - Math.exp(-8 * delta));
 
     system.position.set(.08, Math.sin(time * .55) * .025, 0);
-    system.rotation.y = currentDragY + time * .025 + easedScrollProgress * .48;
+    system.rotation.y = currentDragY + time * .025 + easedScrollProgress * .7;
     system.rotation.x = currentDragX;
-    earthTilt.rotation.y = time * .075 + easedScrollProgress * THREE.MathUtils.degToRad(12);
-    earthTilt.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(5);
-    earthTilt.rotation.z = -easedScrollProgress * THREE.MathUtils.degToRad(4);
+    earthTilt.rotation.y = time * .075 + easedScrollProgress * THREE.MathUtils.degToRad(16);
+    earthTilt.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(7);
+    earthTilt.rotation.z = -easedScrollProgress * THREE.MathUtils.degToRad(6);
     cloudGroup.rotation.y = -time * .035 + easedScrollProgress * .09;
     scanOrbit.rotation.z = time * .045;
     orbitGroup.rotation.y = .12 + Math.sin(time * .16) * .05;
@@ -349,7 +349,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
     // The camera backs away and the globe twists as the reader progresses through
     // the story, echoing the Mars Society site's persistent planetary scroll scene.
-    camera.position.set(.08, .04, 4.75 + easedScrollProgress * 1.35);
+    camera.position.set(.08, .04, 4.75 + easedScrollProgress * 1.75);
     camera.lookAt(system.position.x, system.position.y, 0);
 
     try {
