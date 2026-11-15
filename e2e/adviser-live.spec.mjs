@@ -1,9 +1,12 @@
 import {test,expect} from '@playwright/test';
 test('real open model inference plus real NASA evidence, English and Arabic',async({page})=>{
  test.setTimeout(240000);
+ page.on('console',message=>{if(message.type()==='error')console.log('Browser error:',message.text());});
+ page.on('requestfailed',request=>console.log('Request failed:',request.url(),request.failure()?.errorText));
  await page.goto('/adviser/');
  await page.locator('#run').click();
- await expect(page.locator('#status')).toHaveText('Complete: real model inference, cited guidance and NASA-backed evidence.',{timeout:180000});
+ await expect(page.locator('#status')).toContainText(/Complete:|Demo could not complete:/,{timeout:180000});
+ await expect(page.locator('#status')).toHaveText('Complete: real model inference, cited guidance and NASA-backed evidence.');
  await expect(page.locator('#proof')).toContainText('384 dimensions');
  await expect(page.locator('#guidance article')).toHaveCount(3);
  await expect(page.locator('#report')).toContainText('NASA POWER weather');
