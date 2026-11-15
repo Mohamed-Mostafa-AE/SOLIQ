@@ -1,4 +1,5 @@
 import { screenCrops, synchronizeScreeningPlan } from './crop-analysis.js';
+import { mountSeasonMotion } from './season-motion.js';
 import { cropAnalyzerView } from './crop-analysis-view.js';
 import { localize } from './i18n.js';
 import { guidedOverview } from './guided.js';
@@ -48,7 +49,15 @@ function cropAnalysisPage(){
  try{cropReport=screenCrops(weather,config,cropPlan,strategies[0],source.kind);}catch{cropPlan=synchronizeScreeningPlan(null,config);cropReport=screenCrops(weather,config,cropPlan,strategies[0],source.kind);}
  return cropAnalyzerView({config,plan:cropPlan,report:cropReport,language},{esc,fmt});
 }
-function render(){recompute();$('#page').innerHTML=(view==='overview'&&audience==='guided')?guidedOverview({config,source,output,strategies,selectedMonth,selectedStrategy,months},{esc,fmt,progressPanel}):({overview,rotations,evidence,research,settings,analyzer:cropAnalysisPage})[view]();const names={analyzer:'Crop analyzer',overview:'Field overview',rotations:'Explore rotations',evidence:'Data & evidence',research:'Research workspace',settings:'Field & assumptions'};$('#crumb').textContent=names[view];$('#source-pill').textContent=label();$('#source-pill').classList.toggle('amber',source.kind==='synthetic');document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);b.setAttribute('aria-current',b.dataset.view===view?'page':'false');});if(view==='research')loadBenchmarks();if(view==='evidence')fingerprint(weather).then(hash=>{if($('#weather-hash'))$('#weather-hash').textContent=hash;});bindPage();$('#guided-mode').setAttribute('aria-pressed',String(audience==='guided'));$('#research-mode').setAttribute('aria-pressed',String(audience==='research'));$('#language-toggle').lang=language==='ar'?'en':'ar';$('#language-toggle').textContent=language==='ar'?'English':'\u0627\u0644\u0639\u0631\u0628\u064a\u0629';updateLanguage();document.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.style.visibility='hidden';}));}
+function renderWorkspace(){recompute();$('#page').innerHTML=(view==='overview'&&audience==='guided')?guidedOverview({config,source,output,strategies,selectedMonth,selectedStrategy,months},{esc,fmt,progressPanel}):({overview,rotations,evidence,research,settings,analyzer:cropAnalysisPage})[view]();const names={analyzer:'Crop analyzer',overview:'Field overview',rotations:'Explore rotations',evidence:'Data & evidence',research:'Research workspace',settings:'Field & assumptions'};$('#crumb').textContent=names[view];$('#source-pill').textContent=label();$('#source-pill').classList.toggle('amber',source.kind==='synthetic');document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);b.setAttribute('aria-current',b.dataset.view===view?'page':'false');});if(view==='research')loadBenchmarks();if(view==='evidence')fingerprint(weather).then(hash=>{if($('#weather-hash'))$('#weather-hash').textContent=hash;});bindPage();$('#guided-mode').setAttribute('aria-pressed',String(audience==='guided'));$('#research-mode').setAttribute('aria-pressed',String(audience==='research'));$('#language-toggle').lang=language==='ar'?'en':'ar';$('#language-toggle').textContent=language==='ar'?'English':'\u0627\u0644\u0639\u0631\u0628\u064a\u0629';updateLanguage();document.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.style.visibility='hidden';}));}
+let stopSeasonMotion=()=>{};
+function render(){
+ stopSeasonMotion();renderWorkspace();
+ if(['overview','rotations','analyzer'].includes(view)){
+  const results=view==='analyzer'&&cropReport?cropReport.results.filter(r=>r.metrics).map(r=>({id:r.id,name:language==='ar'?r.profile.ar:r.profile.name,daily:r.metrics.daily})):output.results;
+  stopSeasonMotion=mountSeasonMotion($('#page'),{results,capacity:config.capacity,language,sourceKind:source.kind});
+ }
+}
 function go(next){if(next==='research'){audience='research';saveDisplay();}view=next;location.hash=next;render();window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelector('nav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)go(b.dataset.view);});
 $('#page').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go);});
@@ -101,3 +110,4 @@ async function loadBenchmarks(){
  updateLanguage();
  }catch{const target=$('#benchmark-results');if(target)target.textContent='Recorded snapshot is unavailable. See the GitHub workflow and downloadable source to reproduce the checks.';}
 }
+
