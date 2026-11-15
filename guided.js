@@ -86,12 +86,12 @@ export function guidedOverview(state, helpers) {
       <button class="button" data-go="settings">Edit field details</button>
     </div>
     <div class="form-actions" style="margin:0 0 20px">
-      <button class="button primary" data-go="analyzer">Find crops for my field →</button>
+      <button class="button primary" data-go="rotations">View my crop plans →</button>
     </div>
     <section class="guided-hero">
       <div class="guided-hero-art" aria-hidden="true">${cropFieldSVG('wheat', { kind: 'banner' })}</div>
       <div><span class="eyebrow">Your field</span><h2 data-user-content>${esc(config.name)}</h2><p>${heroDescription}</p>
-        <button class="button" data-go="evidence">${source.kind === 'synthetic' ? 'Add local weather' : 'Check the data'}</button>
+        <button class="button" data-go="settings">${source.kind === 'synthetic' ? 'Add weather for my field' : 'Review field details'}</button>
       </div>
     </section>
     ${progressPanel()}
@@ -135,7 +135,7 @@ export function guidedOverview(state, helpers) {
       <article class="panel next-step-card">
         <div class="eyebrow">Before you decide</div>
         <h3>Check planting dates, local seed types, water supply, tools and buyers with a local farm expert.</h3>
-        <button class="text-btn" id="open-research">See more details and downloads ↗</button>
+        <button class="text-btn" data-go="settings">Check my field details ↗</button>
       </article>
     </div>
     <details class="panel glossary">
