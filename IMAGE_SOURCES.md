@@ -22,3 +22,8 @@ as scientific figures or field records.
   - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_clouds_1024.png
   - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_normal_2048.jpg
   - https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_specular_2048.jpg
+
+
+## Brand asset
+
+- Header and footer use `soliq-logo-white.png`, the supplied white-letter, transparent-background Soliq artwork. The logo image is used as provided and is not recolored or redrawn.
