@@ -1,3 +1,4 @@
+import { adviserPrompt } from '../lib/adviser-prompt.js';
 import { getOutlook } from '../lib/outlook-service.js';
 const models={kimi:'moonshotai/kimi-k3.1-pro',deepseek:'deepseek/deepseek-v4.1-flash'};
 const memo=new Map(),requests=new Map();
@@ -9,7 +10,7 @@ export default async function handler(req,res) {
   if (req.method!=='POST') return res.status(405).json({error:'Use POST'});
   const origin=req.headers.origin;
   if(origin) {try {if(new URL(origin).host!==req.headers.host)return res.status(403).json({error:'Same-origin requests required'});}catch{return res.status(400).json({error:'Invalid origin'});}}
-  if (!req.body||JSON.stringify(req.body).length>4000) return res.status(400).json({error:'Invalid request size'});
+  if (!req.body||JSON.stringify(req.body).length>16000) return res.status(400).json({error:'Invalid request size'});
   const model=models[req.body.model];
   if (!model) return res.status(400).json({error:'Select Kimi or DeepSeek'});
   const language=req.body.language==='ar'?'Arabic':'English';
@@ -23,7 +24,7 @@ export default async function handler(req,res) {
     const data=await getOutlook(req.body),key=data.evidenceId+model+language;
     const cached=memo.get(key);
     if(cached&&now-cached.created<3600000)return res.status(200).json(cached.value);
-    const response=await fetch('https://ai-gateway.vercel.sh/v1/chat/completions',{method:'POST',signal:AbortSignal.timeout(45000),headers:{Authorization:'Bearer '+credential,'Content-Type':'application/json'},body:JSON.stringify({model,max_tokens:2000,messages:[{role:'system',content:`You explain a crop-rotation research demonstrator in ${language}. Use only the supplied evidence. Write no more than 220 words in four short paragraphs: observed conditions; conditional rotation trade-offs; uncertainty and hindcast performance; local checks needed. Call scenario ranges historical scenarios, never calibrated confidence or forecast probabilities. Do not predict yield, profit, pests, nitrogen, or soil carbon. Do not invent facts, references, crop suitability or numerical values. Do not claim NASA endorsement. Do not rank crops as best when suitability is unknown. If the analogue MAE exceeds the climatology baseline, state this weakness. All quantitative evidence comes from a deterministic water model, not from you. Respect decisionCards status: excluded options cannot be recommended; needs_review options cannot be ranked. Crop-trait mechanisms are qualitative opportunities, not measured soil-health improvements. Avoid instructions about irrigation application rates.`},{role:'user',content:JSON.stringify(explanationEvidence(data))}]})});
+    const response=await fetch('https://ai-gateway.vercel.sh/v1/chat/completions',{method:'POST',signal:AbortSignal.timeout(45000),headers:{Authorization:'Bearer '+credential,'Content-Type':'application/json'},body:JSON.stringify({model,max_tokens:2000,messages:[{role:'system',content:adviserPrompt(language)},{role:'user',content:JSON.stringify(explanationEvidence(data))}]})});
     if(!response.ok) {const code=response.status;return res.status(code===429?429:503).json({error:code===402||code===403?'AI Gateway needs account activation or credits. The numerical outlook remains available.':'The AI provider is unavailable. Try the other model; numerical results are unchanged.',code:'provider_'+code});}
     const result=await response.json(),text=result.choices?.[0]?.message?.content;
     if(typeof text!=='string'||!text.trim())throw Error('The provider returned no explanation');
