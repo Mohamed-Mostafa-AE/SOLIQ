@@ -1,35 +1,38 @@
 import { adviserPrompt } from '../lib/adviser-prompt.js';
+import { evidenceReport } from '../lib/evidence-report.js';
 import { getOutlook } from '../lib/outlook-service.js';
 const models={kimi:'moonshotai/kimi-k3.1-pro',deepseek:'deepseek/deepseek-v4.1-flash'};
-const memo=new Map(),requests=new Map();
 export function explanationEvidence(data) {
-  return {evidenceId:data.evidenceId,coverage:data.coverage,location:{lat:data.config.lat,lon:data.config.lon},contextStatus:{baselineConfirmed:data.config.context?.baselineConfirmed,soilOrigin:data.config.context?.soil.origin,soilEvidencePresent:Boolean(data.config.context?.soil.source&&data.config.context?.soil.date),domain:data.config.context?.domain},assumptions:{capacityMm:data.config.capacity,initialMm:data.config.initial,irrigationBudgetMm:data.config.irrigation},observed:data.observed,decisionCards:data.decisionCards,conditionalComparison:data.conditionalComparison,projection:{method:data.projection.method,years:data.projection.analogueYears,rangeMeaning:data.projection.rangeMeaning,results:data.projection.results.map(({daily,...r})=>r)},hindcast:data.hindcast,limitations:data.limitations};
+ return {evidenceId:data.evidenceId,coverage:data.coverage,assumptions:{capacityMm:data.config.capacity,initialMm:data.config.initial,irrigationBudgetMm:data.config.irrigation},observed:data.observed,decisionCards:data.decisionCards,conditionalComparison:data.conditionalComparison,projection:{method:data.projection.method,years:data.projection.analogueYears,results:data.projection.results.map(({daily,...r})=>r)},hindcast:data.hindcast,limitations:data.limitations};
 }
-export default async function handler(req,res) {
+export function createExplanationHandler({outlook=getOutlook,providerFetch=fetch,credential=()=>process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN}={}) {
+ const requests=new Map();let providerBlockedUntil=0;
+ return async function handler(req,res) {
   res.setHeader('Cache-Control','no-store');
-  if (req.method!=='POST') return res.status(405).json({error:'Use POST'});
-  const origin=req.headers.origin;
-  if(origin) {try {if(new URL(origin).host!==req.headers.host)return res.status(403).json({error:'Same-origin requests required'});}catch{return res.status(400).json({error:'Invalid origin'});}}
-  if (!req.body||JSON.stringify(req.body).length>16000) return res.status(400).json({error:'Invalid request size'});
-  const model=models[req.body.model];
-  if (!model) return res.status(400).json({error:'Select Kimi or DeepSeek'});
+  if(req.method!=='POST')return res.status(405).json({error:'Use POST'});
+  const origin=req.headers?.origin;
+  if(origin){try{if(new URL(origin).host!==req.headers.host)return res.status(403).json({error:'Same-origin requests required'});}catch{return res.status(400).json({error:'Invalid origin'});}}
+  if(!req.body||typeof req.body!=='object'||Array.isArray(req.body)||JSON.stringify(req.body).length>16000)return res.status(400).json({error:'Invalid request size'});
+  const choice=req.body.model||'evidence';
+  if(choice!=='evidence'&&!models[choice])return res.status(400).json({error:'Select evidence, Kimi or DeepSeek'});
   const language=req.body.language==='ar'?'Arabic':'English';
-  const credential=process.env.AI_GATEWAY_API_KEY||req.headers['x-vercel-oidc-token']||process.env.VERCEL_OIDC_TOKEN;
-  if (!credential) return res.status(503).json({error:'AI access is not configured. Numerical scenarios are available without AI.',code:'ai_not_configured'});
-  const ip=String(req.headers['x-forwarded-for']||'unknown').split(',')[0],now=Date.now();
+  let data;
+  try{data=await outlook(req.body);}catch(error){return res.status(/Invalid|must|required|capacity|Provide|calendars/.test(error.message)?400:502).json({error:'Evidence could not be loaded: '+error.message,replacedWithDemo:false});}
+  const fallback=reason=>res.status(200).json(evidenceReport(data,language,reason));
+  if(choice==='evidence')return fallback('requested');
+  const key=credential();if(!key)return fallback('not_configured');
+  const now=Date.now();if(now<providerBlockedUntil)return fallback('provider_temporarily_unavailable');
+  const ip=String(req.headers?.['x-forwarded-for']||'unknown').split(',')[0];
   const recent=(requests.get(ip)||[]).filter(t=>now-t<60000);
-  if(recent.length>=3)return res.status(429).json({error:'Please wait one minute before requesting another explanation.'});
+  if(recent.length>=3)return fallback('provider_rate_limited');
   requests.set(ip,[...recent,now]);if(requests.size>2000)requests.clear();
-  try {
-    const data=await getOutlook(req.body),key=data.evidenceId+model+language;
-    const cached=memo.get(key);
-    if(cached&&now-cached.created<3600000)return res.status(200).json(cached.value);
-    const response=await fetch('https://ai-gateway.vercel.sh/v1/chat/completions',{method:'POST',signal:AbortSignal.timeout(45000),headers:{Authorization:'Bearer '+credential,'Content-Type':'application/json'},body:JSON.stringify({model,max_tokens:2000,messages:[{role:'system',content:adviserPrompt(language)},{role:'user',content:JSON.stringify(explanationEvidence(data))}]})});
-    if(!response.ok) {const code=response.status;return res.status(code===429?429:503).json({error:code===402||code===403?'AI Gateway needs account activation or credits. The numerical outlook remains available.':'The AI provider is unavailable. Try the other model; numerical results are unchanged.',code:'provider_'+code});}
-    const result=await response.json(),text=result.choices?.[0]?.message?.content;
-    if(typeof text!=='string'||!text.trim())throw Error('The provider returned no explanation');
-    const value={text,model:result.model||model,requestedModel:model,evidenceId:data.evidenceId,generatedAt:new Date().toISOString(),scope:'AI explanation of conditional numerical scenarios; not an independent crop prediction',usage:result.usage};
-    if(memo.size>100)memo.clear();memo.set(key,{value,created:now});
-    return res.status(200).json(value);
-  } catch(error) {return res.status(/Invalid/.test(error.message)?400:502).json({error:error.message});}
+  try{
+   const response=await providerFetch('https://ai-gateway.vercel.sh/v1/chat/completions',{method:'POST',signal:AbortSignal.timeout(10000),headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:models[choice],max_tokens:1400,messages:[{role:'system',content:adviserPrompt(language)},{role:'user',content:JSON.stringify(explanationEvidence(data))}]})});
+   if(!response.ok){if([401,402,403].includes(response.status))providerBlockedUntil=now+300000;return fallback('provider_'+response.status);}
+   const result=await response.json(),text=result.choices?.[0]?.message?.content;
+   if(typeof text!=='string'||!text.trim()||result.choices[0].finish_reason==='length')return fallback('provider_incomplete');
+   return res.status(200).json({text,mode:'language_model',model:result.model||models[choice],requestedModel:models[choice],evidenceId:data.evidenceId,generatedAt:new Date().toISOString(),scope:'AI interpretation; verify against the evidence. Crop outcomes need local validation.'});
+  }catch{return fallback('provider_unavailable');}
+ };
 }
+export default createExplanationHandler();

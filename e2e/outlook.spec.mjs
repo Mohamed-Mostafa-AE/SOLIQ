@@ -3,6 +3,7 @@ import { readOptions } from '../lib/outlook-service.js';
 import { contextStrategies, rotationDecisionCards, conditionalOrder } from '../rotation-context.js';
 import { projectSeason, summarizeWeather, hindcast } from '../outlook-core.js';
 import { DEFAULTS, demoWeather } from '../engine.js';
+import { evidenceReport } from '../lib/evidence-report.js';
 const history=Object.fromEntries(Array.from({length:10},(_,i)=>[2016+i,demoWeather(2016+i)]));
 const current=demoWeather(2026).slice(0,200),projection=projectSeason(current,history,DEFAULTS);
 const fixture={evidenceId:'test-fixture-not-observations',config:DEFAULTS,coverage:{start:'2026-01-01',through:current.at(-1).date,requestedThrough:current.at(-1).date,validDays:200,calendarDays:365},observed:summarizeWeather(current),samePeriodBaseline:{rainMedian:75},projection,hindcast:hindcast(history,'07-19'),sources:[{request:'https://power.larc.nasa.gov/',retrievedAt:'2026-07-22T00:00:00Z'}]};
@@ -17,6 +18,23 @@ async function mock(page){
   }catch(error){return route.fulfill({status:400,json:{error:error.message}});}
  });
 }
+
+for(const language of ['en','ar'])test('adviser report is visibly labeled and evidence-bound: '+language,async({page})=>{
+ await mock(page);
+ await page.route('**/api/explain',async route=>{
+  const input=route.request().postDataJSON(),config=readOptions(input);
+  const projection=projectSeason(current,history,config,contextStrategies(config.context));
+  const decisionCards=rotationDecisionCards(current,projection,config.context);
+  const report=evidenceReport({...fixture,config,projection,decisionCards,conditionalComparison:{priority:config.context.priority,eligibleOrder:[]}},language==='ar'?'Arabic':'English','provider_403');
+  await route.fulfill({json:report});
+ });
+ await page.goto('/outlook/');
+ if(language==='ar')await page.locator('#lang').click();
+ await page.locator('[data-ai="evidence"]').click();
+ await expect(page.locator('.living-ai-output')).toContainText(language==='ar'?'تقرير الأدلة':'Soil-IQ evidence report');
+ await expect(page.locator('.living-ai-output')).toContainText(language==='ar'?'ليس إجابة مولدة':'not a language-model-generated');
+ await expect(page.locator('.living-ai-output')).toContainText('test-fixture');
+});
 
 test('living farm shows cutoff and changes provenance while scrubbing without changing evidence',async({page})=>{
  await mock(page);await page.goto('/welcome/');

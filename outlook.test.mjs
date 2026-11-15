@@ -50,5 +50,5 @@ test('AI cannot accept an arbitrary model or cross-origin request',async()=>{
  let code,body;const res={setHeader(){},status(c){code=c;return this;},json(b){body=b;return this;}};
  await explain({method:'POST',headers:{host:'soliq.test',origin:'https://other.test'},body:{model:'kimi'}},res);assert.equal(code,403);
  await explain({method:'POST',headers:{host:'soliq.test'},body:{model:'untrusted'}},res);assert.equal(code,400);
- assert.equal(body.error,'Select Kimi or DeepSeek');
+ assert.equal(body.error,'Select evidence, Kimi or DeepSeek');
 });

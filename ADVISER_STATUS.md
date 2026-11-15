@@ -1,0 +1,7 @@
+# Soil-IQ adviser: submission build
+
+The adviser offers a deterministic **Read evidence report** in English and Arabic. It formats the server-recomputed NASA weather, water-model results, eligibility gates, uncertainty and local checks. It explicitly identifies itself as an evidence report, not a language-model answer. No credentials are required for this mode; NASA availability is required.
+
+Optional Kimi/DeepSeek requests attempt the configured AI Gateway for at most ten seconds after evidence retrieval. Authentication/billing failures, capacity limits, timeouts, incomplete responses and missing credentials return the labeled evidence report instead of a broken adviser. Language-model responses carry a different mode and scope. The last real model request returned HTTP 403 because account activation/credits were required; this release does not claim that a model generated its fallback text or that the AI has professional credentials.
+
+Tests cover values and units, Arabic, excluded options, conditional ordering, a worse-than-baseline hindcast, cross-origin rejection, arbitrary model rejection, missing credentials, provider errors and timeouts, and NASA failure without synthetic substitution. Browser checks exercise the visible report label in both languages using labeled test fixtures. These are software checks, not an agronomic validation study or a guarantee of language-model factual accuracy.
