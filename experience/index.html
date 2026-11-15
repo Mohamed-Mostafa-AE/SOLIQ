@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#163e35">
+  <meta name="description" content="SOLIQ OMNI-EARTH: interactive agricultural evidence and scenario lab">
+  <title>SOLIQ OMNI-EARTH · Experience Lab</title>
+  <link rel="icon" href="../soliq-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="mast">
+ <a href="../" class="home">← SOLIQ الرئيسي</a>
+ <div class="eyebrow">NASA Space Apps · SOLIQ OMNI-EARTH</div>
+ <h1>الأرض بتحكي. والقرار بإيدك.</h1>
+ <p>رحلة تفاعلية تجمع بيانات الأرض واستكشاف التغيرات ومحاكاة القرارات. كل قسم يوضح بجلاء إن كانت البيانات حقيقية، أو حسابات مشتقة، أو سيناريو تعليمي.</p>
+ <div class="legend"><span>● NASA: عند توفر اتصال موثّق</span><span>◇ Simulated: تجربة تعليمية</span><span>△ Unavailable: بيانات لم تصل</span></div>
+</header>
+<nav id="tabs" aria-label="مساحات SOLIQ">
+ <button type="button" data-tab="farm">Living Farm</button>
+ <button type="button" data-tab="trend">Trend Detective</button>
+ <button type="button" data-tab="sar">SAR Explorer</button>
+ <button type="button" data-tab="decision">Rotation Lab</button>
+ <button type="button" data-tab="water">Mesqa Challenge</button>
+ <button type="button" data-tab="time">Time Machine</button>
+ <button type="button" data-tab="detective">Stress Detective</button>
+ <button type="button" data-tab="safety">Safety Shield</button>
+ <button type="button" data-tab="assistant">Assistant</button>
+</nav>
+<main>
+ <section class="panel" id="farm">
+  <div class="scene-head"><div><span class="tag">Earth-to-Farm</span><h2>Living Farm & Soil Memory</h2></div><span class="status">مواقع دراسية — ليست حدود مزارع مؤكدة</span></div>
+  <p>ابدأ من إقليم دراسي ثم ارجع للتطبيق الرئيسي لتأكيد موقع أرضك. المنطقة لا تحدد تلقائيًا مساحة الحقل أو قياسات التربة.</p>
+  <div class="cards" id="regions"></div>
+  <p>اختر حالة للعرض، واعرف ما الذي يلزم إثباته: حدود القطعة، التاريخ الزراعي، التربة، وتوقيت الري. <a href="../#settings">إعداد المزرعة في التطبيق الأساسي</a>.</p>
+ </section>
+ <section class="panel" id="trend" hidden>
+  <div class="scene-head"><div><span class="tag">NASA POWER</span><h2>Trend Detective</h2></div><span class="status">السلسلة التاريخية تتطلب مصدرًا حقيقيًا</span></div>
+  <p>بحث في سجلات POWER السنوية وتحليل Mann–Kendall وTheil–Sen عند توفر بيانات مكتملة. الإحصاء استكشافي، غير مصحح للارتباط الزمني.</p>
+  <div class="form-grid"><label>المنطقة<select id="trend-region"></select></label><label>المتغير<select id="trend-var"><option value="T2M">متوسط درجة حرارة الهواء</option><option value="PRECTOTCORR">مجموع الأمطار</option></select></label><label>من سنة<input type="number" id="trend-start" value="2016" min="1981" max="2022"></label><label>إلى سنة<input type="number" id="trend-end" value="2025" min="1984" max="2025"></label></div>
+  <button type="button" id="trend-fetch">اطلب بيانات NASA</button>
+  <div id="trend-result" class="result" role="status" aria-live="polite">لم يبدأ الطلب.</div>
+ </section>
+ <section class="panel" id="sar" hidden>
+  <div class="scene-head"><div><span class="tag">ASF Earthdata</span><h2>SAR Explorer</h2></div><span class="status">كتالوج مشاهد، وليس معالجة بكسلات</span></div>
+  <p>استكشف مشاهد NISAR أو Sentinel-1 الحقيقية في كتالوج ASF. تحليل الرادار يتطلب زوجًا متوافقًا وQA قبل عرض تغير ميداني.</p>
+  <div class="form-grid"><label>القمر<select id="sar-mission"><option value="NISAR">NISAR</option><option value="SENTINEL-1">Sentinel-1</option></select></label><label>المنطقة<select id="sar-region"></select></label><label>من<input type="date" id="sar-start" value="2026-01-01"></label><label>إلى<input type="date" id="sar-end" value="2026-11-15"></label></div>
+  <button type="button" id="sar-fetch">ابحث عن مشاهد SAR</button>
+  <div id="sar-result" class="result" role="status" aria-live="polite">لم يبدأ الطلب. لا توجد صور SAR متحققة في هذه الشاشة.</div>
+ </section>
+ <section class="panel" id="decision" hidden>
+  <div class="scene-head"><div><span class="tag">Scenario exploration</span><h2>Rotation Lab</h2></div><span class="status">سيناريوهات محاصيل توضيحية</span></div>
+  <p>المدخلات قابلة للتغيير، لكن المقارنة التالية لا تفسر نتائج الحقل ولا تمنح توصية زراعية؛ معاملات المحاصيل المحلية تتطلب مصادر ومراجعة.</p>
+  <div class="form-grid"><label>رصيد N عند البداية<input id="n-initial" type="number" value="50" min="0"></label><label>سماد N افتراضي<input id="n-fertilizer" type="number" value="20" min="0"></label><label>تثبيت N افتراضي<input id="n-fixation" type="number" value="10" min="0"></label><label>التمعدن<input id="n-mineralization" type="number" value="5" min="0"></label><label>امتصاص النبات<input id="n-uptake" type="number" value="65" min="0"></label><label>الفقد<input id="n-loss" type="number" value="8" min="0"></label></div>
+  <button type="button" id="n-calc">احسب ميزان النيتروجين التعليمي</button>
+  <div id="n-result" class="result" aria-live="polite"></div>
+  <h3>Decision Certificate — قاعدة فصل القرار من الورقة البحثية</h3>
+  <p>اختبار حسابي على جدول R0/R1/R2 الاصطناعي في الورقة (ليس بيانات زراعية أو NASA). وسّع عدم اليقين بنفسك وشاهد متى تتحول النتيجة من بديل مميز إلى مقارنة فقط.</p>
+  <div class="form-grid">
+   <label>نصف عرض عدم اليقين h <input id="regret-width" type="range" min="0" max="0.04" step="0.001" value="0.005"><output id="regret-width-label">0.005</output></label>
+   <label>هامش الفصل العملي δ <input id="regret-tolerance" type="range" min="0" max="0.03" step="0.001" value="0"><output id="regret-tolerance-label">0</output></label>
+  </div>
+  <button type="button" id="regret-run">اختبر فصل القرار</button>
+  <div id="regret-result" class="result" aria-live="polite"></div>
+  <p><a href="../#rotations">افتح مقارنة الدورات في التطبيق الأساسي</a> لتجربة تقاويم ومياه المحاصيل.</p>
+ </section>
+ <section class="panel" id="water" hidden>
+  <div class="scene-head"><div><span class="tag">Cooperative water</span><h2>لعبة المسقة — 6 مزارع</h2></div><span class="status">محاكاة قابلة للحساب</span></div>
+  <p>غيّر الطلب والتوريد والسياسة ثم شاهد العجز والعدالة. الوحدات تجريبية مشتركة، وليست قياسًا حقيقيًا لتصرف المسقة.</p>
+  <div class="form-grid"><label>المياه المتاحة<input id="water-supply" type="number" min="0" value="150"></label><label>طريقة التوزيع<select id="water-policy"><option value="proportional">تناسبي</option><option value="priority">أولوية من أول المسقة</option></select></label></div>
+  <div class="form-grid" id="water-demands"></div>
+  <button type="button" id="water-calc">احسب توزيع المياه</button>
+  <div id="water-result" class="result" aria-live="polite"></div>
+ </section>
+ <section class="panel" id="time" hidden>
+  <div class="scene-head"><div><span class="tag">Replay</span><h2>Time Machine</h2></div><span class="status">إعادة حساب سيناريو محلي</span></div>
+  <p>اختَر شهرًا وأعِد تشغيل سيناريو المياه المُدخل في اللعبة. الزمن هنا وسيلة تعليمية، وليس توقع محصول أو نموذج مستقبل.</p>
+  <label>الموسم <input id="month" type="range" min="1" max="12" value="1"></label><output id="month-label"></output>
+  <button type="button" id="time-replay">أعِد تشغيل السيناريو</button>
+  <div id="time-result" class="result" aria-live="polite"></div>
+ </section>
+ <section class="panel" id="detective" hidden>
+  <div class="scene-head"><div><span class="tag">Differential diagnosis</span><h2>6-Path Stress Detective</h2></div><span class="status">احتمالات، لا تشخيص</span></div>
+  <p>نفس مظهر الإجهاد قد ينتج عن أكثر من سبب؛ الأقمار الصناعية وحدها لا تثبت الملوحة أو الأمراض أو سبب انخفاض الغطاء.</p>
+  <div class="cards" id="detective-cards"></div>
+ </section>
+ <section class="panel" id="safety" hidden>
+  <div class="scene-head"><div><span class="tag">Farmer care</span><h2>Safety Shield</h2></div><span class="status">توعية عامة فقط</span></div>
+  <p>معلومات وقائية عامة. لا تُستخدم درجات حرارة الأقمار باعتبارها WBGT طبيًا، ولا تصدر وصفات علاجية.</p>
+  <div class="cards" id="safety-cards"></div>
+ </section>
+ <section class="panel" id="assistant" hidden>
+  <div class="scene-head"><div><span class="tag">Evidence explainer</span><h2>مساعد المزارع</h2></div><span class="status">نماذج ردود تعليمية</span></div>
+  <p>هذه الإجابات قوالب محلية وليست اتصال AI Gateway أو رسالة WhatsApp مرسلة. المساعد الفعلي في التطبيق الرئيسي منفصل.</p>
+  <label>السؤال<select id="question"><option value="water">لماذا يوجد عجز مياه؟</option><option value="radar">هل الرادار يقيس الملوحة مباشرة؟</option><option value="trend">هل اتجاه سنوات قليلة يثبت تغير المناخ؟</option></select></label>
+  <button type="button" id="ask">اشرح</button><div id="answer" class="result" aria-live="polite"></div>
+  <div class="chat"><label>رسالة ضمن المحاكاة<input id="message" value="الري عندي غير كافٍ"></label><button type="button" id="send">رد محاكاة</button><div id="thread"></div></div>
+ </section>
+</main>
+<footer><span>Experience Lab · Prototype, not validated farm recommendation</span><button type="button" id="download">تصدير مدخلات اللعبة JSON</button><a href="../">العودة إلى SOLIQ</a></footer>
+<script type="module" src="app.js"></script>
+</body>
+</html>
