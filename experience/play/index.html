@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#163e35">
+  <title>SOLIQ · الأرض السابعة (The Seventh Field) · 3D World</title>
+  <link rel="icon" href="../../soliq-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Loading Splash Screen -->
+  <div id="game-loader" class="game-loader">
+    <div class="loader-content">
+      <img src="../../soliq-logo.svg" alt="SOLIQ Logo" class="loader-logo">
+      <h2 class="loader-title">الأرض السابعة · The Seventh Field</h2>
+      <p class="loader-sub">جاري تهيئة قرية الدلتا ونظام الري ثلاثي الأبعاد...</p>
+      <div class="loader-progress-bar"><div id="loader-bar" class="loader-bar"></div></div>
+      <button id="btn-start-game" class="btn-start" hidden>ادخل القرية (ابدأ المهمة) 🌾</button>
+      <p class="loader-note">Babylon.js PBR Engine · NASA POWER Context · Real Mesqa Simulation</p>
+    </div>
+  </div>
+
+  <!-- 3D WebGL Canvas -->
+  <canvas id="renderCanvas" touch-action="none"></canvas>
+
+  <!-- In-Game UI Layer -->
+  <div id="game-ui-container"></div>
+
+  <!-- Fallback Babylon Scripts (Local Vendored with CDN Fallback) -->
+  <script src="../../game/assets/vendor/babylon.js"></script>
+  <script src="../../game/assets/vendor/babylonjs.loaders.min.js"></script>
+  <script>
+    if (typeof BABYLON === 'undefined') {
+      document.write('<script src="https://cdn.babylonjs.com/babylon.js"><\\/script>');
+      document.write('<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"><\\/script>');
+    }
+  </script>
+
+  <!-- Main Game Orchestrator Script -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -8,7 +8,12 @@ test('season playback advances, scrubbing stops playback, and project links work
  await scene.locator('[data-play]').click();await expect(date).not.toHaveText(initial);await scene.locator('[data-play]').click();
  await slider.focus();await slider.press('End');await expect(scene.locator('[data-play]')).toHaveAttribute('aria-pressed','false');
  await expect(date).not.toHaveText(initial);await scene.locator('[data-reset]').click();await expect(date).toHaveText(initial);
- await scene.getByRole('link').click();await expect(page.locator('#links .link-list a')).toHaveCount(4);
- await expect(page.locator('#problem h2')).toContainText('THE NEXT CROP');
- await expect(page.locator('#method')).toContainText('NASA POWER');
+ await scene.getByRole('link').click();await expect(page).toHaveURL(/\/welcome\/$/);
+ const projects=page.locator('a.project-card');await expect(projects).toHaveCount(4);
+ await expect(page.locator('#method-details')).toContainText('NASA POWER');
+ await expect(page.locator('a.project-app')).toHaveAttribute('href','../#analyzer');
+ await page.locator('a.project-app').click();await expect(page).toHaveURL(/\/#analyzer$/);
+ await expect(page.locator('#research-mode')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#crumb')).toHaveText('Crop analyzer');
 });
+
