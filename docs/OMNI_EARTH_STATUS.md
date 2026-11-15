@@ -36,3 +36,8 @@ The earlier 56 partial / 9 not done tally is a task status heuristic. A partial 
 3. npm run dev and open http://127.0.0.1:4173/experience/
 4. Validate /api/trends and /api/radar-scenes against live providers and record actual data and QA.
 Mocked parser tests do not verify live provider integration.
+## Paper-derived research engine (added in this branch)
+
+- science/interval-regret.js implements conservative lower/upper regret enclosures and the strict sufficient separation rule from manuscript equations (13)–(15), with tests referencing synthetic Table III.
+- The Experience Lab lets judges widen synthetic utility intervals and watch a conditional R2 distinction become comparison_only.
+- The numerical proof is conditional on **justified interval bounds**, eligibility and normalization. It does NOT certify real crop efficacy or make actual field recommendations. Local crop and uncertainty calibration still unfinished.
