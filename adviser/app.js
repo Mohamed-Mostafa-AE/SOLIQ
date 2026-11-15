@@ -2,6 +2,8 @@ import {GUIDANCE,MODEL} from './knowledge.js';
 const form=document.querySelector('form'),status=document.querySelector('#status'),button=document.querySelector('#run');
 let language='en',worker,pending,report=null,last=null,running=false;
 const isAr=()=>language==='ar';
+const locationParams=new URLSearchParams(location.search);
+for(const [key,min,max] of [['lat',-60,60],['lon',-180,180]]){const raw=locationParams.get(key),value=Number(raw);if(raw!==null&&raw.trim()&&Number.isFinite(value)&&value>=min&&value<=max)form.elements[key].value=String(value);}
 const text=(en,ar)=>isAr()?ar:en;
 function add(tag,value,parent){const el=document.createElement(tag);el.textContent=value;parent.append(el);return el;}
 function renderGuidance(result){
