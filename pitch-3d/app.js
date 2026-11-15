@@ -1,3 +1,4 @@
+import {withFadeTransition} from './transitions.js';
 import {slides,LINKS} from './content.js';
 import {farmSVG} from './art.js';
 const stage=document.querySelector('#stage'),nav=document.querySelector('#slide-nav');
@@ -20,7 +21,35 @@ slides.forEach((s,i)=>{
  const b=document.createElement('button');b.textContent=i+1;b.setAttribute('aria-label','Show slide '+(i+1));b.onclick=()=>show(i);nav.append(b);
 });
 let current=Math.max(0,Math.min(slides.length-1,Number(location.hash.slice(1))-1||0));
-function show(index){current=Math.max(0,Math.min(slides.length-1,index));stage.querySelectorAll('.slide').forEach((el,i)=>{el.classList.toggle('active',i===current);el.setAttribute('aria-hidden',String(i!==current));});nav.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));document.querySelector('#counter').textContent=(current+1)+' / '+slides.length;document.querySelector('#previous').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;document.querySelector('#speaker-notes p').textContent=slides[current].notes;history.replaceState(null,'','#'+(current+1));}
+
+// Short, directional transitions keep the slides readable while giving the scenes depth.
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let motionRevision=0,animations=[];
+function show(index){
+ const nextIndex=Math.max(0,Math.min(slides.length-1,index)),outgoing=stage.querySelector('.slide.active');
+ if(outgoing&&nextIndex===current)return;
+ const direction=nextIndex>=current?1:-1,ticket=++motionRevision;
+ animations.forEach(a=>a.cancel());animations=[];
+ stage.querySelectorAll('.slide').forEach(el=>el.classList.remove('leaving'));
+ current=nextIndex;
+ stage.querySelectorAll('.slide').forEach((el,i)=>{el.classList.toggle('active',i===current);el.setAttribute('aria-hidden',String(i!==current));});
+ nav.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
+ document.querySelector('#counter').textContent=(current+1)+' / '+slides.length;
+ document.querySelector('#previous').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;
+ document.querySelector('#speaker-notes p').textContent=slides[current].notes;history.replaceState(null,'','#'+(current+1));
+ const incoming=stage.querySelector('.slide.active');
+ if(reducedMotion.matches)return;
+ const animate=(el,frames,options)=>{const a=el.animate(frames,options);animations.push(a);return a;};
+ if(outgoing){
+  outgoing.classList.add('leaving');
+  animate(outgoing,[{opacity:1,transform:'translateX(0) scale(1)'},{opacity:0,transform:'translateX('+(-direction*28)+'px) scale(.994)'}],{duration:430,easing:'cubic-bezier(.22,.61,.36,1)'}).finished.then(()=>{if(ticket===motionRevision)outgoing.classList.remove('leaving');}).catch(()=>{});
+ }
+ animate(incoming,[{opacity:0,transform:'translateX('+(direction*38)+'px)'},{opacity:1,transform:'translateX(0)'}],{duration:550,easing:'cubic-bezier(.22,.61,.36,1)'});
+ const pieces=[incoming.querySelector('.overline'),incoming.querySelector('h1'),incoming.querySelector('.lead'),...incoming.querySelectorAll('.step,.need,.rotation,.stat,.bar-row,.actions,.authors')].filter(Boolean);
+ pieces.forEach((el,i)=>animate(el,[{opacity:0,transform:'translateY(13px)'},{opacity:1,transform:'translateY(0)'}],{duration:510,delay:Math.min(45+i*65,430),easing:'cubic-bezier(.22,.61,.36,1)',fill:'backwards'}));
+ const scene=incoming.querySelector('.scene');
+ if(scene)animate(scene,[{opacity:0,transform:'perspective(1400px) translateY(26px) rotateY(-15deg) rotateX(6deg)'},{opacity:1,transform:'perspective(1400px) translateY(0) rotateY(-8deg) rotateX(3deg)'}],{duration:900,delay:70,easing:'cubic-bezier(.22,.61,.36,1)',fill:'backwards'});
+}
 function fit(){const viewport=document.querySelector('#viewport'),scale=Math.min(viewport.clientWidth/1280,viewport.clientHeight/720);stage.style.transform='scale('+scale+')';}
 function toggleNotes(){const notes=document.querySelector('#speaker-notes');notes.hidden=!notes.hidden;document.querySelector('#notes-toggle').setAttribute('aria-pressed',String(!notes.hidden));}
 document.querySelector('#previous').onclick=()=>show(current-1);document.querySelector('#next').onclick=()=>show(current+1);document.querySelector('#notes-toggle').onclick=toggleNotes;
@@ -58,7 +87,7 @@ export async function exportPowerPoint(){
     text(slide,title,x,y,w,29,21,'C0D794');text(slide,body,x,y+32,w,horizontal?90:48,17,'C7D0C0');
    });
    if(s.kind==='ai'){slide.addShape(pptx.ShapeType.rect,{x:8,y:2.5,w:3.55,h:2.7,fill:{color:'183328'},line:{color:'718D5A',width:1}});text(slide,'5 / 5',795,258,290,100,78,'C0D794',{fontFace:'Georgia'});text(slide,'Expected source in top three',795,365,290,65,23);text(slide,'Five predefined English queries.\nSix reviewed passages.\nNot general agronomic accuracy.',795,445,290,70,15,'B5C2B2');}
-   if(s.kind==='benchmark'){s.items.forEach(([value,label],j)=>{let x=[62,260,560][j];text(slide,value,x,360,j===1?275:210,75,54,'EFF3E4',{fontFace:'Georgia'});text(slide,label,x,444,195,70,20,'C7D0C0');});text(slide,'15 scenario runs passed water-balance checks.\nIllustrative calendars and soil assumptions; no validated farm outcomes.',62,560,610,60,17,'C0D794');}
+   if(s.kind==='benchmark'){s.items.forEach(([value,label],j)=>{let x=62+j*225;text(slide,value,x,360,215,75,54,'EFF3E4',{fontFace:'Georgia'});text(slide,label,x,444,195,70,20,'C7D0C0');});text(slide,'15 scenario runs passed water-balance checks.\nIllustrative calendars and soil assumptions; no validated farm outcomes.',62,560,610,60,17,'C0D794');}
    if(s.kind==='honesty'){s.items.forEach(([name,value],j)=>{let y=370+j*85;text(slide,name,62,y,245,40,22);slide.addShape(pptx.ShapeType.rect,{x:3.3,y:y/96,w:value/25*5.05,h:.35,fill:{color:j===0?'D6AD64':'C0D794'},line:{color:j===0?'D6AD64':'C0D794',transparency:100}});text(slide,value.toFixed(2)+' mm',835,y-2,220,40,27);});text(slide,'Rainfall MAE · lower is better · four chronological holdouts (2022–2025).\nThe analog method was worse than climatology in this small test.',62,560,1100,65,20,'C7D0C0');}
    if(s.kind==='close'){text(slide,'Mohamed Mostafa · Youssef Mohamed · Aya Abdelnabi · Mohamed Abdelrahman',62,580,1060,27,16,'C7D0C0');text(slide,'NASA Space Apps 6 October · Event venue: Badr University in Cairo',62,615,1060,25,14,'B5C2B2');}
    const link=s.kind==='ai'?LINKS.ai:s.kind==='benchmark'||s.kind==='honesty'?LINKS.benchmark:s.kind==='close'?LINKS.app:null;
@@ -67,7 +96,7 @@ export async function exportPowerPoint(){
    text(slide,String(i+1).padStart(2,'0')+' / 08',1130,681,100,18,10,'AABB9F');
    slide.addNotes(s.notes+'\n\nSources and live evidence: '+LINKS.benchmark+' ; '+LINKS.github+' ; https://doi.org/10.3389/fpls.2023.1165113 . Field artwork is a conceptual illustration.');
   }
-  await pptx.writeFile({fileName:'Soil-IQ_3D_Pitch.pptx'});notice('PowerPoint downloaded. Use the live deck for animated 3D transitions.');
+  const raw=await pptx.write({outputType:'blob'});const zip=await window.JSZip.loadAsync(await raw.arrayBuffer());for(const path of Object.keys(zip.files).filter(p=>/^ppt\/slides\/slide\d+\.xml$/.test(p))){zip.file(path,withFadeTransition(await zip.file(path).async('string')));}const blob=await zip.generateAsync({type:'blob'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='Soil-IQ_Animated_Pitch.pptx';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);notice('PowerPoint downloaded with 0.6-second fade transitions.');
  }catch(error){notice('Export could not complete: '+error.message+'. The live presentation and Print / PDF remain available.');}
  finally{btn.disabled=false;}
 }

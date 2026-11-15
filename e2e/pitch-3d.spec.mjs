@@ -20,9 +20,23 @@ test('3D pitch navigates, preserves evidence and exports an eight-slide PowerPoi
  const output='test-results/Soil-IQ_3D_Pitch.pptx';await download.saveAs(output);expect((await readFile(output)).length).toBeGreaterThan(20000);
  const result=JSON.parse(execFileSync('python3',['-c','import zipfile,re,json; z=zipfile.ZipFile("'+output+'"); print(json.dumps({"slides":len([n for n in z.namelist() if re.fullmatch(r"ppt/slides/slide[0-9]+.xml",n)]),"notes":len([n for n in z.namelist() if re.fullmatch(r"ppt/notesSlides/notesSlide[0-9]+.xml",n)])}))'],{encoding:'utf8'}));
  expect(result.slides).toBe(8);expect(result.notes).toBe(8);
+ const fadeCount=Number(execFileSync('python3',['-c','import zipfile,re,xml.etree.ElementTree as E; z=zipfile.ZipFile("'+output+'"); ns={"p":"http://schemas.openxmlformats.org/presentationml/2006/main"}; roots=[E.fromstring(z.read(n)) for n in z.namelist() if re.fullmatch(r"ppt/slides/slide[0-9]+.xml",n)]; print(sum(r.find("p:transition/p:fade",ns) is not None for r in roots))'],{encoding:'utf8'}).trim());expect(fadeCount).toBe(8);
  await page.emulateMedia({media:'print',reducedMotion:'reduce'});await page.pdf({path:'test-results/Soil-IQ_3D_Pitch.pdf',printBackground:true,preferCSSPageSize:true});
  const pdfPages=Number(execFileSync('python3',['-c','import re; b=open("test-results/Soil-IQ_3D_Pitch.pdf","rb").read(); print(len(re.findall(rb"/Type\\s*/Page(?!s)",b)))'],{encoding:'utf8'}).trim());expect(pdfPages).toBe(8);
  await page.emulateMedia({media:'screen',reducedMotion:'reduce'});
  await page.setViewportSize({width:390,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.keyboard.press('Home');await expect(page.locator('#counter')).toHaveText('1 / 8');
+});
+
+test('slide motion is directional, settles after quick navigation and honors reduced motion',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});await page.emulateMedia({reducedMotion:'no-preference'});await page.goto('/pitch-3d/');
+ await page.keyboard.press('ArrowRight');
+ expect(await page.locator('#stage').evaluate(el=>el.getAnimations({subtree:true}).some(a=>a.playState==='running'))).toBe(true);
+ await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowLeft');await expect(page.locator('#counter')).toHaveText('2 / 8');
+ await expect(page.locator('.slide.leaving')).toHaveCount(0,{timeout:2000});
+ await expect.poll(()=>page.locator('#stage').evaluate(el=>el.getAnimations({subtree:true}).filter(a=>a.playState==='running').length),{timeout:2000}).toBe(0);
+ await expect(page.locator('.slide.active')).toHaveCount(1);
+ await page.screenshot({path:'test-results/pitch-motion-settled.png',fullPage:true});
+ await page.emulateMedia({reducedMotion:'reduce'});await page.keyboard.press('ArrowRight');
+ expect(await page.locator('#stage').evaluate(el=>el.getAnimations({subtree:true}).filter(a=>a.playState==='running').length)).toBe(0);
 });
