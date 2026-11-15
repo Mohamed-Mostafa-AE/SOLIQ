@@ -228,12 +228,12 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   camera.position.set(.08, .04, 4.8);
   camera.lookAt(0, 0, 0);
 
-  const hemisphere = new THREE.HemisphereLight(0xc9e3ec, 0x07120f, .48);
+  const hemisphere = new THREE.HemisphereLight(0xc9e3ec, 0x07120f, .82);
   scene.add(hemisphere);
   const sun = new THREE.DirectionalLight(0xffe4c3, 2.2);
   sun.position.set(-3.1, 2.3, 5.2);
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0x5b94b0, .16);
+  const fill = new THREE.DirectionalLight(0x7eaa9a, .42);
   fill.position.set(3, -.8, -3);
   scene.add(fill);
 
@@ -257,7 +257,11 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   const surfaceMaterial = new THREE.MeshPhongMaterial({
     color: 0xffffff,
     specular: new THREE.Color(0x263c4a),
-    shininess: 9
+    shininess: 9,
+    transparent: false,
+    opacity: 1,
+    emissive: new THREE.Color(0x26372f),
+    emissiveIntensity: .34
   });
   surfaceMaterial.normalScale.set(.22, .22);
   const loadDetailMap = (url, applyTexture) => {
