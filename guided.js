@@ -11,6 +11,39 @@ function cropDrawing(cropKey) {
   return cropBotanicalSVG(cropKey, CROPS[cropKey].name + ' plant illustration');
 }
 
+export function guidedRotations(state, helpers) {
+  const { config, source, strategies, months } = state;
+  const { esc } = helpers;
+  const calendars = strategies.map((strategy, index) => {
+    const controls = strategy.crops.map((crop, monthIndex) => {
+      const options = Object.entries(CROPS).map(([key, item]) =>
+        '<option value="' + key + '"' + (key === crop ? ' selected' : '') + '>' + esc(item.name) + '</option>'
+      ).join('');
+      return '<label class="guided-month"><span>' + esc(months[monthIndex]) + '</span>' +
+        '<select data-crop="' + index + ',' + monthIndex + '" aria-label="' +
+        esc(strategy.name || ('Plan ' + (index + 1))) + ' ' + esc(months[monthIndex]) + ' crop">' +
+        options + '</select></label>';
+    }).join('');
+    return '<section class="panel guided-calendar-card">' +
+      '<div class="guided-calendar-heading"><div><span class="eyebrow">CROP PLAN ' + (index + 1) +
+      '</span><h2>' + esc(strategy.name || ('Plan ' + (index + 1))) + '</h2></div>' +
+      '<span class="pill">' + (index === 0 ? 'Your current plan' : 'Alternative plan') + '</span></div>' +
+      '<div class="guided-month-grid">' + controls + '</div></section>';
+  }).join('');
+  const weatherNote = source.kind === 'synthetic'
+    ? 'You are using example weather. Add weather for your area in Field setup to make this comparison more useful.'
+    : 'Weather is loaded. Check that it matches your field before using the estimates.';
+  return '<div class="page-title"><div><div class="eyebrow">CROP PLANS / ' + esc(config.year) +
+    '</div><h1>Choose what you plan to grow.</h1><p class="sub">Select a crop for each month. You can change your plans at any time.</p></div>' +
+    '<button class="button" data-go="settings">Field setup</button></div>' +
+    '<div class="callout guided-weather-note">' + weatherNote + '</div>' +
+    '<div class="guided-calendar-list">' + calendars + '</div>' +
+    '<section class="panel guided-plan-help"><h2>How to use your crop plans</h2>' +
+    '<p>Choose the crops you expect to grow in each month. The first row is your current plan. The other rows let you compare different choices.</p>' +
+    '<p>The water estimates are based on the weather and field details entered in Soliq. They do not predict harvest size or income.</p>' +
+    '<button class="button quiet" data-go="overview">Back to my field overview</button></section>';
+}
+
 export function guidedOverview(state, helpers) {
   const { config, source, output, strategies, selectedMonth, selectedStrategy, months } = state;
   const { esc, fmt, progressPanel } = helpers;
