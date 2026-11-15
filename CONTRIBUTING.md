@@ -40,8 +40,14 @@ rather than replacing missing observations with synthetic data.
 
 ## Code and interface conventions
 
-- Keep the Guided view in short, everyday language. Put equations, model
-  terminology and detailed assumptions in the Research workspace.
+- Keep Guided view limited to farmers and clients: overview, crop plans and
+  field setup, with short everyday labels and practical next steps.
+- Keep Research view as a separate graduate workspace for MSc/PhD use. It may
+  expose equations, physical metrics, sensitivity methods, QA diagnostics,
+  uncertainty, data provenance and reproducibility exports.
+- Do not expose research-only screens or controls in Guided navigation. Mode
+  switching must open the corresponding workspace dashboard, not only change
+  a preference flag.
 - Keep English and Arabic interface copy together in `i18n.js` or in the
   relevant bilingual view catalogue. Preserve RTL behavior.
 - Use the shared Soliq design tokens and responsive layouts. Avoid adding a
