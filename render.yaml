@@ -3,11 +3,12 @@ services:
     name: soliq-web
     runtime: node
     plan: free
+    region: frankfurt
     branch: main
     buildCommand: npm install
     startCommand: HOST=0.0.0.0 node dev-server.mjs
     healthCheckPath: /welcome/
-    autoDeploy: true
+    autoDeployTrigger: commit
     envVars:
       - key: NODE_VERSION
         value: "22"
