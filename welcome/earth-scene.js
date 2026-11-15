@@ -1,6 +1,6 @@
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-const NASA_EARTH_TEXTURE = 'https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73967/world.200402.3x5400x2700.jpg';
-const THREE_EARTH_FALLBACK = 'https://raw.githubusercontent.com/mrdoob/three.js/r160/examples/textures/planets/earth_atmos_2048.jpg';
+const NASA_EARTH_TEXTURE = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/february/world.200402.3x5400x2700.jpg';
+const THREE_EARTH_FALLBACK = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/january/world.200401.3x5400x2700.jpg';
 const THREE_EARTH_CLOUDS = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_clouds_1024.png';
 const THREE_EARTH_NORMAL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_normal_2048.jpg';
 const THREE_EARTH_SPECULAR = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_specular_2048.jpg';
@@ -216,21 +216,21 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   let lastPointerY = 0;
   const disposable = [];
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.55));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.65));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.1;
   renderer.shadowMap.enabled = false;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(37, 1, .05, 100);
-  camera.position.set(.08, .04, 4.8);
+  const camera = new THREE.PerspectiveCamera(39, 1, 0.05, 120);
+  camera.position.set(0.12, 0.02, 5.15);
   camera.lookAt(0, 0, 0);
 
   // Match the Mars Society globe lighting: one warm directional key,
   // restrained hemisphere fill, and only a faint far-side lift.
-  const hemisphere = new THREE.HemisphereLight(0xb3b2c4, 0x160e0a, .38);
+  const hemisphere = new THREE.HemisphereLight(0xb3b2c4, 0x160e0a, .54);
   scene.add(hemisphere);
   const sun = new THREE.DirectionalLight(0xffd5b5, 2.25);
   sun.position.set(-2.7, 2.35, 6.4);
@@ -251,23 +251,26 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   const textureLoader = new THREE.TextureLoader();
   textureLoader.setCrossOrigin('anonymous');
   const sphereGeometry = new THREE.SphereGeometry(1, mobile ? 320 : 512, mobile ? 160 : 256);
-  // Mars's supplied global atlas has its lighting baked into the color map.
-  // Use an opaque, unlit color-map surface for Earth too: a directional light
-  // was turning the far half of the globe nearly black, which looked transparent.
-  const fallbackMaterial = new THREE.MeshBasicMaterial({
-    color: 0x456b70,
+  // Match Mars Society Egypt's solid planetary globe: a dense sphere and
+  // opaque MeshStandardMaterial carrying one complete global surface texture.
+  const fallbackMaterial = new THREE.MeshStandardMaterial({
+    color: 0x355d68,
+    roughness: 0.975,
+    metalness: 0,
     transparent: false,
-    opacity: 1,
-    depthWrite: true
+    opacity: 1
   });
   const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
+  earth.castShadow = false;
+  earth.receiveShadow = false;
   earthTilt.add(earth);
-  const surfaceMaterial = new THREE.MeshBasicMaterial({
+  const surfaceMaterial = new THREE.MeshStandardMaterial({
     map: null,
+    roughness: 0.975,
+    metalness: 0,
     color: 0xffffff,
     transparent: false,
-    opacity: 1,
-    depthWrite: true
+    opacity: 1
   });
   let surfaceReady = false;
   let earthTexture = null;
@@ -277,7 +280,11 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 12);
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 16);
+    texture.offset.x = 0;
+    texture.needsUpdate = true;
     surfaceMaterial.map = texture;
     surfaceMaterial.color.set(0xffffff);
     surfaceMaterial.needsUpdate = true;
