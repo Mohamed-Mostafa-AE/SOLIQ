@@ -2,7 +2,7 @@ import importlib.util
 import pathlib
 import unittest
 
-MODULE_PATH = pathlib.Path(__file__).resolve().parents[1] / 'tools' / 'nasa_hls_ingest.py'
+MODULE_PATH = pathlib.Path(__file__).resolve().parents[2] / 'tools' / 'nasa_hls_ingest.py'
 spec=importlib.util.spec_from_file_location('nasa_hls_ingest',MODULE_PATH)
 mod=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
