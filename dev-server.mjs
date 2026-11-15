@@ -9,7 +9,7 @@ import trends from "./api/trends.js";
 import radar from "./api/radar-scenes.js";
 
 const ROOT=resolve(fileURLToPath(new URL(".",import.meta.url)));
-const TYPES={".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png"};
+const TYPES={".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".glb":"model/gltf-binary",".gltf":"model/gltf+json",".bin":"application/octet-stream",".mp3":"audio/mpeg",".wav":"audio/wav",".webp":"image/webp"};
 const APP_ASSETS=new Set(["index.html","app.js","style.css","season-motion.css","outlook.css","soliq-logo.svg","soliq-mark.svg","crop-analysis-view.js","crop-analysis.js","decision-audit.js","engine.js","farm-context-view.js","guided.js","i18n.js","location-picker.js","outlook-core.js","outlook-view.js","rotation-context.js","season-motion.js","team-regions.js","visuals.js"]);
 const STATIC=new Set([...APP_ASSETS,"welcome/index.html","welcome/paper.html","welcome/site.css","welcome/site.js","outlook/index.html","adviser/index.html","adviser/app.js","adviser/worker.js","adviser/knowledge.js","adviser/style.css","experience/index.html","experience/app.js","experience/engine.js","experience/style.css","science/interval-regret.js","pitch-3d/index.html","pitch-3d/app.js","pitch-3d/style.css","pitch-3d/content.js","pitch-3d/art.js","pitch-3d/transitions.js"]);
 const API=new Map([["/api/outlook",outlook],["/api/explain",explain],["/api/trends",trends],["/api/radar-scenes",radar]]);
@@ -19,7 +19,7 @@ export function resolvePublicPath(pathname){
  try{path=decodeURIComponent(pathname).replace(/^\/+/,"");}catch{return null;}
  if(path.includes("\0")||path.includes("\\")||path.split("/").some(x=>x.startsWith(".")||x===".."))return null;
  if(!path||path.endsWith("/"))path+="index.html";
- if(!STATIC.has(path))return null;
+ if(!STATIC.has(path)&&!path.startsWith("experience/play/")&&!path.startsWith("game/"))return null;
  const abs=resolve(ROOT,path);
  return abs.startsWith(ROOT+sep)?abs:null;
 }
