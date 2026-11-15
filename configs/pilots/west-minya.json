@@ -1,0 +1,107 @@
+{
+  "pilotId": "west-minya-reclamation-eg",
+  "regionName": "West El-Minya Desert Reclamation Zone, New Nile Valley, Middle Egypt",
+  "regionNameAr": "منطقة استصلاح غرب المنيا - الأراضي الرملية الجيرية المستصلحة",
+  "calibrationStatus": "literature_parameterized_requires_human_field_verification",
+  "coordinates": {
+    "latitude": 28.2847,
+    "longitude": 30.5279,
+    "elevationM": 128.0,
+    "mgrsTile": "36RQN",
+    "imergGridCenter": {
+      "lat": 28.25,
+      "lon": 30.55
+    }
+  },
+  "soil": {
+    "textureClass": "Calcareous Sandy Loam (Typic Torripsamments)",
+    "clayFractionPct": 11.0,
+    "siltFractionPct": 17.0,
+    "sandFractionPct": 72.0,
+    "bulkDensityGcm3": 1.54,
+    "fieldCapacityThetaFc": 0.19,
+    "wiltingPointThetaWp": 0.08,
+    "saturationThetaSat": 0.39,
+    "saturatedHydraulicConductivityMmDay": 520.0,
+    "drainageCoefficientTauDay": 0.58,
+    "scsCurveNumberGroup": "A",
+    "scsCurveNumberDefault": 68,
+    "readilyEvaporableWaterRewMm": 6.0,
+    "totalEvaporableWaterTewMm": 14.0,
+    "topsoilEvaporationLayerDepthM": 0.10,
+    "baselineSoilSalinityEcDsm": 3.1,
+    "subsurfaceTileDrainageDepthM": 2.50
+  },
+  "waterManagement": {
+    "primarySource": "Nubian / Moghra Eocene Groundwater Aquifer Wells",
+    "irrigationSystem": "pressurized_center_pivot_and_drip",
+    "applicationEfficiency": 0.82,
+    "irrigationWaterSalinityEcDsm": 1.10,
+    "seasonalWaterQuotaMm": 1050.0,
+    "summerPeakCanalCapMmDay": 9.0,
+    "leachingFractionRequirement": 0.10
+  },
+  "currentBaselineRotation": {
+    "rotationId": "west_minya_baseline_wheat_maize",
+    "name": "Continuous Cereal Rotation on Calcareous Sandy Soil (Wheat -> Grain Maize -> Bare Fallow)",
+    "nameAr": "دورة الحبوب المستمرة في الأراضي الرملية (قمح -> ذرة شامية -> بوار)",
+    "sequence": [
+      {
+        "season": "winter",
+        "cropId": "wheat",
+        "sowingDate": "2025-11-15",
+        "harvestDate": "2026-04-29"
+      },
+      {
+        "season": "summer",
+        "cropId": "grain_maize",
+        "sowingDate": "2026-05-15",
+        "harvestDate": "2026-09-11"
+      },
+      {
+        "season": "fallow_window",
+        "cropId": "bare_fallow",
+        "sowingDate": "2026-09-12",
+        "harvestDate": "2026-11-14"
+      }
+    ]
+  },
+  "constraints": {
+    "maxAnnualWaterUseMm": 1050.0,
+    "maxAllowableSoilSalinityEcDsm": 3.8,
+    "requirePestHostBreak": true,
+    "requirePositiveOrNeutralNitrogenTrend": true,
+    "allowedCrops": [
+      "wheat",
+      "sugar_beet",
+      "faba_bean",
+      "berseem_clover",
+      "grain_sorghum",
+      "soybean",
+      "grain_maize",
+      "short_season_cowpea"
+    ]
+  },
+  "UncertaintyBoundsConfig": {
+    "et0RelativeUncertainty": 0.10,
+    "kcRelativeUncertainty": 0.08,
+    "imergPrecipRelativeUncertainty": 0.20,
+    "hlsNdviAbsoluteUncertainty": 0.03,
+    "soilAvailableWaterRelativeUncertainty": 0.12,
+    "minMetCoverageRatio": 0.85,
+    "minImergCoverageRatio": 0.80,
+    "minHlsClearSceneRatio": 0.35
+  },
+  "references": [
+    {
+      "id": "minya_legume_wheat_2026",
+      "citation": "Frontiers in Sustainable Food Systems (2026). Regenerative benefits of legume–wheat intercropping and rotation systems on calcareous soils in El-Minia Governorate, Middle Egypt (28.2847°N, 30.5279°E).",
+      "url": "https://www.frontiersin.org/journals/sustainable-food-systems/articles/10.3389/fsufs.2026.1923296/full"
+    },
+    {
+      "id": "fao56_allen_1998",
+      "citation": "Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). Crop Evapotranspiration: Guidelines for Computing Crop Water Requirements. FAO Irrigation and Drainage Paper 56.",
+      "url": "http://www.climasouth.eu/sites/default/files/FAO%2056.pdf"
+    }
+  ]
+}
