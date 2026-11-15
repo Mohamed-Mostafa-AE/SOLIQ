@@ -4,7 +4,9 @@ document.querySelectorAll('[data-game]').forEach(button=>button.addEventListener
 }));
 if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('reveal-arrive');observer.unobserve(entry.target);}}),{threshold:.12});
- document.querySelectorAll('.hub-grid>a,.steps article,.games article').forEach(element=>observer.observe(element));
+ document.querySelectorAll('.hub-grid>a,.steps article,.games article,main .section h2,main .section .eyebrow').forEach(element=>observer.observe(element));
+ const headingObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');headingObserver.unobserve(entry.target);}}),{threshold:.12});
+ document.querySelectorAll('main .section h2,main .section .eyebrow').forEach(element=>headingObserver.observe(element));
 }
 document.getElementById('language').addEventListener('click',()=>{
  const ar=document.documentElement.lang!=='ar';document.documentElement.lang=ar?'ar':'en';document.documentElement.dir=ar?'rtl':'ltr';
