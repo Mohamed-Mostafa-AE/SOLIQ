@@ -66,6 +66,8 @@ export function runGameWaterWindow({
   const ordered = ids.map(id => byId.get(id));
   return {
     supply: physical.ledger.canalAvailableM3,
+    totalDemand: demandsM3.reduce((a,b)=>a+b,0),
+    mode: 'time-sliced ON/OFF — fictional scenario',
     delivered: ordered.map(f => f.deliveredM3),
     shortfall: ordered.map(f => f.unmetM3),
     deliveredTotal: physical.ledger.effectiveM3,
