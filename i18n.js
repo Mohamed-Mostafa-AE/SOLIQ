@@ -1,5 +1,6 @@
 /** Reviewed interface copy. Scientific identifiers and exported field names stay stable. */
 const entries = [
+ ['2026 Living Farm','المزرعة الحية ٢٠٢٦'],['2026 evidence','أدلة ٢٠٢٦'],
  ['Soliq','سوليق'],['My field','حقلي'],['English','English'],['العربية','العربية'],
  ['Guided view','العرض المبسط'],['Research view','العرض البحثي'],['Choose your view','اختر طريقة العرض'],
  ['Plan your next crop.','خطّط لمحصولك القادم.'],['See what changes before you change what you grow.','شاهد الفرق قبل أن تغيّر ما تزرعه.'],
@@ -172,3 +173,4 @@ export function localize(root,language) {
     }
   }
 }
+

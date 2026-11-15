@@ -58,3 +58,24 @@ jobs:
             test-results/
           if-no-files-found: error
           retention-days: 90
+
+
+  live-nasa:
+    name: Live 2026 NASA coverage and scenario check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Retrieve real NASA data and check the 2026 pipeline
+        run: node outlook-benchmark.mjs
+      - name: Preserve dated evidence and hindcast report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: soliq-nasa-2026-${{ github.sha }}
+          path: artifacts/
+          if-no-files-found: warn
+          retention-days: 90

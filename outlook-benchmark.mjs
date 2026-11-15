@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { getOutlook } from './lib/outlook-service.js';
+const started=performance.now();
+const report=await getOutlook({lat:30.05,lon:31.23});
+assert.equal(report.coverage.start,'2026-01-01');
+assert.ok(report.coverage.validDays>=60);
+assert.equal(report.weather.length,report.coverage.validDays);
+assert.ok(report.sources.every(s=>s.header.time_standard==='UTC'));
+assert.ok(report.projection.results.every(r=>r.maxResidual<1e-9));
+assert.ok(report.projection.analogueYears.every(a=>a.year<2026));
+const checks={type:'Live NASA pipeline smoke check, not crop validation',passed:true,requestElapsedMs:performance.now()-started,run:process.env.GITHUB_RUN_ID||null,sha:process.env.GITHUB_SHA||null};
+await mkdir('artifacts',{recursive:true});
+await writeFile('artifacts/outlook-2026-evidence.json',JSON.stringify({checks,...report},null,2));
+const h=report.hindcast.metrics;
+const markdown=`# 2026 NASA outlook check\n\n${checks.type}.\n\n- NASA coverage: ${report.coverage.start} through ${report.coverage.through}; ${report.coverage.validDays} daily rows.\n- Point: ${report.config.lat}, ${report.config.lon}; regional NASA POWER grid, not field observations.\n- Evidence SHA-256: ${report.evidenceId}.\n- Donor years: ${report.projection.analogueYears.map(a=>a.year).join(', ')}.\n- Retrospective rainfall MAE: analogue ${h.analogue.rainMAE.toFixed(2)} mm; climatology ${h.climatology.rainMAE.toFixed(2)} mm.\n- Held-out years: ${report.hindcast.folds}. Folds may use later historical years; this is not forward validation.\n- Largest water-budget residual: ${Math.max(...report.projection.results.map(r=>r.maxResidual)).toExponential(3)} mm.\n\nNo crop growth, yield, soil health improvement or farmer outcome has been independently validated. Scenario percentiles are not calibrated confidence intervals.\n`;
+await writeFile('artifacts/outlook-2026-check.md',markdown);
+console.log(markdown);
