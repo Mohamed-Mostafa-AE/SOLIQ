@@ -6,3 +6,13 @@
 .slide.active .left,.slide.active .scene,.slide.active .bar-fill{animation:none}
 @media(prefers-reduced-motion:reduce){.slide.leaving{display:none}}
 @media print{.slide.leaving{display:block!important;transform:none!important}}
+
+/* The same field moves through the story, and fully exits on text-only slides. */
+.slide{background:transparent}
+.slide .scene,.slide .scene-caption{display:none!important}
+#stage{background:radial-gradient(ellipse at 82% 50%,#2c453160,transparent 65%),#10271f}
+.continuous-field{position:absolute;left:600px;top:112px;width:660px;height:500px;z-index:1;pointer-events:none;transform:perspective(1400px) rotateY(-8deg) rotateX(3deg);transition:left 1050ms cubic-bezier(.22,.61,.36,1),top 1050ms cubic-bezier(.22,.61,.36,1),width 1050ms cubic-bezier(.22,.61,.36,1),height 1050ms cubic-bezier(.22,.61,.36,1),transform 1050ms cubic-bezier(.22,.61,.36,1),opacity 900ms ease;will-change:transform}
+.continuous-field svg{width:100%;height:100%;filter:drop-shadow(0 28px 25px #0005)}
+.field-caption{position:absolute;bottom:5px;right:25px;font:11px Arial,sans-serif;letter-spacing:1.6px;color:#aabb9f}
+@media(prefers-reduced-motion:reduce){.continuous-field{transition:none}}
+@media print{.continuous-field{display:none!important}.slide .scene,.slide .scene-caption{display:block!important}.slide{background:#10271f}}
