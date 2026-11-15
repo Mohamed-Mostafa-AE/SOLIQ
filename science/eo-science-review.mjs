@@ -184,7 +184,7 @@ export function computeTieCorrectedMannKendall(annualRecords, valueKey = 'T2M_MA
 // ============================================================================
 // 3. PATHWAY 2: GPM IMERG V07 FINAL PRECIPITATION ADAPTER & QA
 // ============================================================================
-export function validateImergPrecipitationSubset(records, { productVersion = 'V07B_FINAL', sourceUnits = null, sourceVerified = false } = {}) {
+export function validateImergPrecipitationSubset(records, { productVersion = 'V07B_FINAL', sourceUnits = null } = {}) {
   if (!Array.isArray(records) || records.length === 0) {
     return { status: 'UNAVAILABLE', reason: 'Empty IMERG subset' };
   }
@@ -202,7 +202,7 @@ export function validateImergPrecipitationSubset(records, { productVersion = 'V0
     }
   }
   return {
-    status: validated.length > missingCount ? (sourceVerified?'PARSED_VERIFIED_SOURCE':'PARSED_SOURCE_UNVERIFIED') : 'UNUSABLE_PRECIP_SUBSET',
+    status: validated.length > missingCount ? 'PARSED_SOURCE_UNVERIFIED' : 'UNUSABLE_PRECIP_SUBSET',
     product: 'GPM_3IMERGDF',
     product_version: productVersion,
     spatial_support: '0.1 deg (~10 km) grid; not a field rain gauge',
@@ -309,6 +309,9 @@ export function evaluateSarScenePairOrUnavailability(sceneRef, sceneSec) {
   if (sceneRef.partial_file || sceneSec.partial_file) {
     errors.push('Quarantined partial HDF5 download cannot be ingested as valid SAR observations');
   }
+  if (sceneRef.scene_id && sceneRef.scene_id === sceneSec.scene_id) errors.push('SAR before/after scene IDs must differ');
+  if (sceneRef.product && sceneSec.product && sceneRef.product !== sceneSec.product) errors.push('SAR processing product mismatch');
+  if (!Number.isFinite(sceneRef.incidence_deg) || !Number.isFinite(sceneSec.incidence_deg)) errors.push('Invalid SAR incidence angles');
   if (sceneRef.band !== sceneSec.band) {
     errors.push(`Wavelength band mismatch (${sceneRef.band} vs ${sceneSec.band})`);
   }
