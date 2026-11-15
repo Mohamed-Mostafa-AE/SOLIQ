@@ -27,6 +27,8 @@ jobs:
           echo "$GITHUB_WORKSPACE/.eo-test-venv/bin" >> "$GITHUB_PATH"
       - name: Run automated tests
         run: npm test
+      - name: Test NASA HLS authenticated downloader safeguards
+        run: python3 -m unittest discover -s tests/nasa -v
       - name: Run benchmark matrix
         run: npm run benchmark
       - name: Check application syntax
