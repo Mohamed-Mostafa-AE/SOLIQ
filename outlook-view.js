@@ -71,7 +71,7 @@ export function mountOutlook(root,{language='en',config={},strategies}={}) {
     let params;try{farmContext=contextFromForm(form);const capacity=soilCapacity(farmContext);if(capacity!==null)form.elements.capacity.value=String(capacity);const values=new FormData(form);params=new URLSearchParams(['lat','lon','capacity','initial','irrigation'].map(key=>[key,values.get(key)]));params.set('context',JSON.stringify(farmContext));}catch(error){status.textContent=error.message;return;}
     status.textContent=t.loading;content.innerHTML='';root.querySelector('.living-location strong').textContent=params.get('lat')==='30.05'&&params.get('lon')==='31.23'?t.example:(ar?'الموقع المختار':'Selected location')+' · '+params.get('lat')+'°, '+params.get('lon')+'°';form.querySelector('[type=submit]').disabled=true;
     try {
-      const response=await fetch('/api/outlook?'+params,{signal:controller.signal});
+      const response=await fetch('/api/outlook',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(params)),signal:controller.signal});
       const result=await response.json();if(!response.ok)throw Error(result.error||t.failure);
       if(disposed||ticket!==revision)return;data=result;day=result.coverage.validDays-1;status.textContent='';renderResults();
     }catch(error){if(!disposed&&error.name!=='AbortError')errorText(status,t.failure+' '+error.message);}

@@ -8,9 +8,9 @@ const current=demoWeather(2026).slice(0,200),projection=projectSeason(current,hi
 const fixture={evidenceId:'test-fixture-not-observations',config:DEFAULTS,coverage:{start:'2026-01-01',through:current.at(-1).date,requestedThrough:current.at(-1).date,validDays:200,calendarDays:365},observed:summarizeWeather(current),samePeriodBaseline:{rainMedian:75},projection,hindcast:hindcast(history,'07-19'),sources:[{request:'https://power.larc.nasa.gov/',retrievedAt:'2026-07-22T00:00:00Z'}]};
 async function mock(page){
  await page.route('https://**',route=>route.abort());
- await page.route('**/api/outlook?*',route=>{
+ await page.route('**/api/outlook**',route=>{
   try{
-   const config=readOptions(Object.fromEntries(new URL(route.request().url()).searchParams));
+   const config=readOptions(route.request().method()==='POST'?route.request().postDataJSON():Object.fromEntries(new URL(route.request().url()).searchParams));
    const projection=projectSeason(current,history,config,contextStrategies(config.context));
    const decisionCards=rotationDecisionCards(current,projection,config.context);
    return route.fulfill({json:{...fixture,config,projection,decisionCards,conditionalComparison:{eligibleOrder:conditionalOrder(decisionCards,projection,config.context.priority)}}});
@@ -37,7 +37,7 @@ test('Arabic outlook and unavailable AI remain clear without fake provider resul
  await expect(page.locator('[data-ai="kimi"]')).toBeEnabled();
 });
 test('API failure stays visible and does not display invented 2026 metrics',async({page})=>{
- await page.route('**/api/outlook?*',route=>route.fulfill({status:502,json:{error:'NASA unavailable'}}));
+ await page.route('**/api/outlook**',route=>route.fulfill({status:502,json:{error:'NASA unavailable'}}));
  await page.goto('/outlook/');await expect(page.locator('.living-status')).toContainText('NASA unavailable');
  await expect(page.locator('.living-metrics')).toHaveCount(0);
 });

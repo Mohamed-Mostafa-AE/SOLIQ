@@ -48,3 +48,10 @@ test('six-part cards and Arabic fields preserve unknowns and escape soil source 
  for(const label of ['Why it appears','Supporting evidence','Possible soil benefits','Information gaps','Risks and limits','Review with an agronomist'])assert.ok(rendered.includes(label));
  assert.ok(rendered.includes('not confirmed bare ground'));
 });
+
+test('farm-context API disables public response caching and rejects oversized requests',async()=>{
+ const {default:outlook}=await import('./api/outlook.js');
+ let code,body;const headers={};const res={setHeader(k,v){headers[k]=v;},status(c){code=c;return this;},json(value){body=value;return this;}};
+ await outlook({method:'POST',body:{context:'x'.repeat(17000)}},res);
+ assert.equal(code,400);assert.equal(headers['Cache-Control'],'no-store');assert.equal(body.error,'Invalid outlook request');
+});
