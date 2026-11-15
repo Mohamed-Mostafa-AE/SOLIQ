@@ -1,6 +1,9 @@
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 const NASA_EARTH_TEXTURE = 'https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73967/world.200402.3x5400x2700.jpg';
 const THREE_EARTH_FALLBACK = 'https://raw.githubusercontent.com/mrdoob/three.js/r160/examples/textures/planets/earth_atmos_2048.jpg';
+const THREE_EARTH_CLOUDS = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_clouds_1024.png';
+const THREE_EARTH_NORMAL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_normal_2048.jpg';
+const THREE_EARTH_SPECULAR = 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/textures/planets/earth_specular_2048.jpg';
 
 function makeCloudTexture(THREE, mobile) {
   const canvas = document.createElement('canvas');
@@ -251,7 +254,30 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   });
   const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
   earthTilt.add(earth);
-  const surfaceMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .94, metalness: 0 });
+  const surfaceMaterial = new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    specular: new THREE.Color(0x263c4a),
+    shininess: 9
+  });
+  surfaceMaterial.normalScale.set(.34, .34);
+  const loadDetailMap = (url, applyTexture) => {
+    textureLoader.load(url, texture => {
+      if (cleanedUp) { texture.dispose(); return; }
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 8);
+      applyTexture(texture);
+      disposable.push(texture);
+    }, undefined, () => {});
+  };
+  loadDetailMap(THREE_EARTH_NORMAL, texture => {
+    surfaceMaterial.normalMap = texture;
+    surfaceMaterial.needsUpdate = true;
+  });
+  loadDetailMap(THREE_EARTH_SPECULAR, texture => {
+    surfaceMaterial.specularMap = texture;
+    surfaceMaterial.needsUpdate = true;
+  });
   let surfaceReady = false;
   let earthTexture = null;
 
@@ -288,23 +314,43 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     }
   );
 
-  // A softly animated, procedural cloud mask adds depth without pretending to be live weather.
+  // A separate cloud atlas sits just above the surface and drifts independently.
   const cloudGroup = new THREE.Group();
   earthTilt.add(cloudGroup);
-  const cloudTexture = makeCloudTexture(THREE, mobile);
-  if (cloudTexture) disposable.push(cloudTexture);
-  const cloudGeometry = new THREE.SphereGeometry(1.012, mobile ? 88 : 128, mobile ? 56 : 88);
-  const cloudMaterial = new THREE.MeshBasicMaterial({
-    color: 0xf3f7f6,
-    map: cloudTexture || null,
+  const cloudGeometry = new THREE.SphereGeometry(1.014, mobile ? 96 : 144, mobile ? 64 : 96);
+  const cloudMaterial = new THREE.MeshLambertMaterial({
+    color: 0xffffff,
     transparent: true,
-    opacity: cloudTexture ? .72 : .1,
+    opacity: .76,
     depthWrite: false,
     side: THREE.FrontSide
   });
   const cloudShell = new THREE.Mesh(cloudGeometry, cloudMaterial);
   cloudShell.renderOrder = 2;
   cloudGroup.add(cloudShell);
+
+  textureLoader.load(
+    THREE_EARTH_CLOUDS,
+    texture => {
+      if (cleanedUp) { texture.dispose(); return; }
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 8);
+      cloudMaterial.map = texture;
+      cloudMaterial.needsUpdate = true;
+      disposable.push(texture);
+    },
+    undefined,
+    () => {
+      if (cleanedUp) return;
+      const fallbackClouds = makeCloudTexture(THREE, mobile);
+      if (!fallbackClouds) return;
+      cloudMaterial.map = fallbackClouds;
+      cloudMaterial.needsUpdate = true;
+      disposable.push(fallbackClouds);
+    }
+  );
 
   const atmosphereMaterial = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, side: THREE.BackSide,
