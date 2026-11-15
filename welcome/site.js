@@ -73,21 +73,20 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
 }
 
 
-// A restrained, code-generated star field behind the persistent Earth scene.
-// Motion is slow and layered; it pauses off-screen and respects reduced-motion settings.
+// Full-page star field: ported from Mars Society Egypt so the atmosphere
+// remains continuous while moving between Soliq sections.
 function mountEarthStarfield(canvas) {
   if (!canvas) return;
   const context = canvas.getContext('2d', { alpha: true });
   if (!context) return;
 
-  const rail = canvas.parentElement;
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const mobile = matchMedia('(max-width: 760px)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobile = window.matchMedia('(max-width: 760px)');
   let width = 0;
   let height = 0;
   let dpr = 1;
   let stars = [];
-  let frame = 0;
+  let raf = 0;
   let lastTime = 0;
   let visible = false;
   let disposed = false;
@@ -98,103 +97,129 @@ function mountEarthStarfield(canvas) {
     return seed / 4294967296;
   };
 
-  const draw = time => {
-    if (!context || disposed) return;
-    context.clearRect(0, 0, width, height);
-    for (const star of stars) {
-      const shimmer = reducedMotion.matches ? 1 : 1 + Math.sin(time * .00055 + star.phase) * star.twinkle;
-      const alpha = Math.max(.12, Math.min(.9, star.alpha * shimmer));
-      context.beginPath();
-      context.fillStyle = star.warm
-        ? `rgba(231, 222, 190, ${alpha})`
-        : `rgba(220, 235, 232, ${alpha})`;
-      context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-      context.fill();
-    }
-  };
-
   const resize = () => {
-    const bounds = rail.getBoundingClientRect();
-    width = Math.max(1, bounds.width);
-    height = Math.max(1, bounds.height);
-    dpr = Math.min(window.devicePixelRatio || 1, mobile.matches ? 1.1 : 1.35);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, mobile.matches ? 1.15 : 1.5);
     canvas.width = Math.max(1, Math.floor(width * dpr));
     canvas.height = Math.max(1, Math.floor(height * dpr));
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
     seed = 73129;
-    const count = mobile.matches ? 220 : 390;
-    stars = Array.from({ length: count }, () => {
-      const layer = Math.floor(random() * 3);
+    const count = mobile.matches ? 260 : Math.min(900, Math.max(520, Math.round(width * height / 2200)));
+    stars = Array.from({ length: count }, (_, index) => {
+      const layer = index % 3;
       return {
         x: random() * width,
         y: random() * height,
-        radius: layer === 0 ? .45 + random() * .4 : layer === 1 ? .65 + random() * .65 : .9 + random() * .8,
-        alpha: .34 + random() * (layer === 2 ? .56 : .4),
+        radius: layer === 0 ? .38 + random() * .46 : layer === 1 ? .5 + random() * .7 : .72 + random() * 1.0,
+        alpha: .23 + random() * (layer === 2 ? .52 : .34),
         phase: random() * Math.PI * 2,
-        twinkle: .08 + random() * .22,
-        speedX: (random() - .5) * (.75 + layer * .48),
-        speedY: (.16 + random() * .22) * (layer + 1)
+        twinkle: .1 + random() * .26,
+        speedX: (random() - .5) * (1.1 + layer * .75),
+        speedY: (.45 + random() * .9) * (layer + 1) * .38,
+        warm: random() > .78,
+        layer
       };
     });
-    draw(performance.now());
+    draw(0);
   };
 
+  const draw = time => {
+    if (disposed) return;
+    context.clearRect(0, 0, width, height);
+    for (const star of stars) {
+      const shimmer = reducedMotion.matches ? 1 : 1 + Math.sin(time * .00055 + star.phase) * star.twinkle;
+      const opacity = Math.max(.10, Math.min(.96, star.alpha * shimmer));
+      context.beginPath();
+      context.fillStyle = star.warm
+        ? `rgba(255, 204, 170, ${opacity})`
+        : `rgba(237, 242, 255, ${opacity})`;
+      context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      context.fill();
+      if (star.layer === 2 && star.radius > 1.2) {
+        context.strokeStyle = `rgba(255, 218, 190, ${opacity * .16})`;
+        context.lineWidth = .5;
+        context.beginPath();
+        context.moveTo(star.x - 3.5, star.y);
+        context.lineTo(star.x + 3.5, star.y);
+        context.moveTo(star.x, star.y - 3.5);
+        context.lineTo(star.x, star.y + 3.5);
+        context.stroke();
+      }
+    }
+  };
+
+  const shouldShow = () => true;
+
   const render = time => {
-    frame = 0;
+    raf = 0;
     if (disposed || !visible || document.hidden) return;
     const delta = lastTime ? Math.min((time - lastTime) / 1000, .05) : 0;
     lastTime = time;
     if (!reducedMotion.matches) {
       for (const star of stars) {
-        star.x += star.speedX * delta;
-        star.y += star.speedY * delta;
-        if (star.x < -3) star.x = width + 3;
-        if (star.x > width + 3) star.x = -3;
-        if (star.y > height + 3) star.y = -3;
+        star.x += star.speedX * delta * (2.0 + star.layer * 1.4);
+        star.y += star.speedY * delta * (2.0 + star.layer * 1.4);
+        if (star.x < -5) star.x = width + 5;
+        if (star.x > width + 5) star.x = -5;
+        if (star.y > height + 5) star.y = -5;
       }
     }
     draw(time);
-    if (!reducedMotion.matches) frame = requestAnimationFrame(render);
+    if (!reducedMotion.matches) raf = requestAnimationFrame(render);
   };
 
-  const onVisibility = () => {
-    if (document.hidden) {
-      if (frame) cancelAnimationFrame(frame);
-      frame = 0;
-    } else if (visible && !reducedMotion.matches && !frame) {
+  const updateVisibility = () => {
+    const nextVisible = shouldShow();
+    canvas.style.opacity = nextVisible ? '.91' : '0';
+    if (nextVisible && !visible) {
+      visible = true;
       lastTime = 0;
-      frame = requestAnimationFrame(render);
-    } else if (visible) draw(performance.now());
-  };
-
-  const observer = new IntersectionObserver(entries => {
-    visible = entries.some(entry => entry.isIntersecting);
-    if (!visible) {
-      if (frame) cancelAnimationFrame(frame);
-      frame = 0;
-    } else if (!reducedMotion.matches && !document.hidden && !frame) {
-      lastTime = 0;
-      frame = requestAnimationFrame(render);
-    } else {
       draw(performance.now());
+      if (!reducedMotion.matches && !document.hidden && !raf) raf = requestAnimationFrame(render);
+    } else if (!nextVisible && visible) {
+      visible = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
     }
-  }, { rootMargin: '100px' });
+  };
 
-  observer.observe(rail);
-  const resizeObserver = new ResizeObserver(resize);
-  resizeObserver.observe(rail);
-  document.addEventListener('visibilitychange', onVisibility);
-  reducedMotion.addEventListener?.('change', onVisibility);
-  mobile.addEventListener?.('change', resize);
+  const onMotionPreference = () => {
+    if (reducedMotion.matches) {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      draw(performance.now());
+    } else if (visible && !document.hidden && !raf) {
+      raf = requestAnimationFrame(render);
+    }
+  };
+
+  const onVisibilityChange = () => {
+    if (document.hidden) {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    } else if (visible && !reducedMotion.matches && !raf) {
+      raf = requestAnimationFrame(render);
+    }
+  };
+
   resize();
+  updateVisibility();
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('scroll', updateVisibility, { passive: true });
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  reducedMotion.addEventListener?.('change', onMotionPreference);
+  mobile.addEventListener?.('change', resize);
 
   return () => {
     disposed = true;
-    if (frame) cancelAnimationFrame(frame);
-    observer.disconnect();
-    resizeObserver.disconnect();
-    document.removeEventListener('visibilitychange', onVisibility);
-    reducedMotion.removeEventListener?.('change', onVisibility);
+    if (raf) cancelAnimationFrame(raf);
+    window.removeEventListener('resize', resize);
+    window.removeEventListener('scroll', updateVisibility);
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+    reducedMotion.removeEventListener?.('change', onMotionPreference);
     mobile.removeEventListener?.('change', resize);
     context.clearRect(0, 0, width, height);
   };
