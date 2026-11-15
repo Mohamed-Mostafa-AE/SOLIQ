@@ -393,10 +393,7 @@ export class Chapter0Mission {
       detailsAr: lesson.textAr,
       detailsEn: lesson.textEn,
     });
-    sharedEvents.emit('safety_checked', {
-      completed: assessPumpReadiness(this.flags).completed,
-      total: SAFETY_CHECKS.length,
-    });
+    sharedEvents.emit('mission_receipts_updated');
     return true;
   }
 }
