@@ -1604,18 +1604,20 @@ html, body { overflow-x: clip; }
 /* Botanical joins: each blade pivots around its real stem-side attachment. */
 .botanical-leaf {
   transform-box: fill-box;
-  transform-origin: 0% 50%;
 }
 
-.leaf-left-a,
-.leaf-left-b,
-.leaf-right-a,
-.leaf-main-a,
-.leaf-main-c,
-.leaf-main-e,
-.leaf-right-b {
-  transform-origin: 100% 50%;
-}
+/* Each pivot sits on the leaf's attachment point, not the centre of its blade. */
+.leaf-left-a { transform-origin: 100% 79%; }
+.leaf-left-b { transform-origin: 100% 66%; }
+.leaf-right-a { transform-origin: 0% 89%; }
+.leaf-main-a { transform-origin: 100% 72%; }
+.leaf-main-b { transform-origin: 0% 77%; }
+.leaf-main-c { transform-origin: 100% 69%; }
+.leaf-main-d { transform-origin: 0% 77%; }
+.leaf-main-e { transform-origin: 100% 69%; }
+.leaf-main-f { transform-origin: 0% 74%; }
+.leaf-right-b { transform-origin: 100% 79%; }
+.leaf-right-c { transform-origin: 0% 78%; }
 
 /* Global star field follows the same compositing order as Mars Society Egypt. */
 .site-starfield {
