@@ -1,0 +1,28 @@
+name: NASA Real Public Source Sample (POWER CMR GIBS)
+on:
+  push:
+    branches:
+      - demo/spaceapps-30s-real-gameplay-20261115
+    paths:
+      - tools/collect-nasa-public-evidence.mjs
+      - .github/workflows/nasa-public-evidence.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fetch-public-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tools/collect-nasa-public-evidence.mjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soliq-real-public-nasa-evidence
+          path: demo/nasa-public-evidence/
+          if-no-files-found: error
+          retention-days: 30
