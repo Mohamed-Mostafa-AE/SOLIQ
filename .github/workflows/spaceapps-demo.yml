@@ -25,8 +25,11 @@ jobs:
         run: npm install --no-save --package-lock=false @playwright/test@1.65.1
       - name: Install headless Chromium and fonts
         run: npx playwright install --with-deps chromium
-      - name: Verify FFmpeg
-        run: ffmpeg -version | head -3
+      - name: Install and verify FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -3
       - name: Record real public SOLIQ browser gameplay and export 29-second MP4
         env:
           DEMO_BASE_URL: https://soliq-delta.vercel.app
