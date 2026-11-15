@@ -183,6 +183,7 @@ entries.push(
  ['The crop stays the same this month','سيبقى المحصول كما هو هذا الشهر'],
  ['A different crop is planned this month','تم اختيار محصول مختلف لهذا الشهر'],
  ['months change','أشهر ستتغير'],
+ ['Months with a different crop:','أشهر بها محصول مختلف:'],
  ['No other months change.','لن تتغير المحاصيل في الأشهر الأخرى.'],
  ['This month:','هذا الشهر:'],
  ['Next month:','الشهر القادم:'],
