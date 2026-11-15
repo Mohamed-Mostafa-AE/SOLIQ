@@ -207,8 +207,8 @@ export class Chapter0Mission {
     return {
       speakerAr: 'الأرض السابعة (صدى الزمن)',
       speakerEn: 'The Seventh Field (Time Echo)',
-      textAr: 'هذه الأرض لم تُزرع بعد. "صدى الزمن" يعرض محاكاة مستقبلية قائمة على الدورة الزراعية المقترحة مقارنة بالزراعة الأحادية التقليدية. لاحظ أن النظام يرفض إعطاء توصية جازمة بسبب تداخل هوامش عدم اليقين (comparison_only).',
-      textEn: 'This field has not been planted yet. "Time Echo" projects future crop rotation versus traditional monoculture. Notice that the system conservatively refrains from declaring a winner due to uncertainty overlap (comparison_only).',
+      textAr: 'الأرض السابعة مساحة تخيلية للمقارنة. لا توجد حتى الآن نتائج محاكاة محصولين موثقتين لحساب توفير مياه أو نيتروجين، ولذلك النظام يعرض comparison_only بدل اختراع فائز.',
+      textEn: 'The seventh field is an illustrative future. No paired crop-model runs or verified uncertainty intervals are loaded; the system reports comparison_only instead of inventing benefits.',
       emotion: EMOTIONS.HOPEFUL,
       choices: [
         {
@@ -265,7 +265,7 @@ export class Chapter0Mission {
 
       this.village.setGateOpen('gate_head', true);
       this.village.setGateOpen('gate_hassan', true);
-      this.village.setGateOpen('gate_maryam', false);
+      this.village.setGateOpen('gate_maryam', true); // all six example valves request; actual source capacity limits delivery
       this.audio.playGateTurnSFX();
 
       this.characters.setActorEmotion('hassan', EMOTIONS.CONCERNED);
@@ -278,14 +278,14 @@ export class Chapter0Mission {
         category: 'Mission Resolution',
         dataClass: 'simulated',
         timestamp: new Date().toISOString(),
-        detailsAr: 'في سيناريو افتراضي بإمداد 120 وحدة، التوزيع بالأولوية سبّب عجزًا في بعض الحقول؛ لم يتم قياس انهيار ضغط الطلمبة ميدانيًا.',
-        detailsEn: 'In this illustrative 120-unit scenario, priority allocation left tail plots short; pump cavitation was not physically simulated or measured.',
+        detailsAr: `في سيناريو افتراضي بسعة 120 م³/ساعة، وصل ${res.deliveredTotal.toFixed(1)} م³ خلال ساعة ON وبقي عجز مقداره ${res.shortfall.reduce((a,b)=>a+b,0).toFixed(1)} م³. ده قيد سعة مفترض، مش انهيار ضغط مقاس.`,
+        detailsEn: `Fictional 120 m³/h ON turn delivered ${res.deliveredTotal.toFixed(1)} m³ and left ${res.shortfall.reduce((a,b)=>a+b,0).toFixed(1)} m³ unmet. Limited capacity is assumed; no cavitation was measured.`,
       });
 
       sharedEvents.emit('outcome_achieved', {
         outcome: OUTCOMES.BOTTLENECK,
         fairness: res.fairness,
-        titleAr: 'اختناق هيدروليكي',
+        titleAr: 'إمداد محدود',
       });
     } else if (outcome === OUTCOMES.DEFERRAL) {
       // Outcome 3: Conservative Soil Deferral
