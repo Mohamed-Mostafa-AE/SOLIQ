@@ -193,6 +193,9 @@ class SeventhFieldGame {
         'simulated'
       );
     });
+    sharedEvents.on('mission_receipts_updated', () => {
+      this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
+    });
     sharedEvents.on('safety_checked', ({ completed, total }) => {
       this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
       this.hud.showTelemetryToast(
