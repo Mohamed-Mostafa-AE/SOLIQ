@@ -26,3 +26,28 @@ html[dir=rtl] .plan-year-strip{direction:rtl}
 .brandmark img{display:block;width:100%;height:auto;object-fit:contain}
 @media(max-width:900px){.brand{justify-content:center}.brandmark{width:50px;max-width:50px;padding:2px;border-radius:7px!important}}
 @media(max-width:600px){.brand{display:none}}
+
+
+/* Use only the approved transparent Soil-IQ logo in the app sidebar. */
+.brand { gap: 0 !important; }
+.brand > span:last-child { display: none !important; }
+.brandmark {
+  display: block !important;
+  width: 170px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  font-size: 0 !important;
+}
+.brandmark img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+@media (max-width: 900px) {
+  .brandmark { width: 48px !important; }
+}
