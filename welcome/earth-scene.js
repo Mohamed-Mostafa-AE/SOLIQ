@@ -385,15 +385,19 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   atmosphere.renderOrder = 3;
   earthTilt.add(atmosphere);
 
+  // Keep the orbital plane independent of the globe's drag rotation. The track
+  // and spacecraft sit on the far side of the Earth, so neither is drawn across
+  // the textured surface when the satellite completes its orbit.
   const orbitGroup = new THREE.Group();
-  orbitGroup.rotation.set(.66, .12, -.28);
-  system.add(orbitGroup);
-  const orbitX = 1.78;
-  const orbitY = 1.58;
-  orbitGroup.add(makeOrbit(THREE, orbitX, orbitY));
+  orbitGroup.position.z = -.88;
+  orbitGroup.rotation.set(.35, .12, -.28);
+  scene.add(orbitGroup);
+  const orbitX = 1.82;
+  const orbitY = 1.5;
+  orbitGroup.add(makeOrbit(THREE, orbitX, orbitY, 0x8db9b5, .3));
 
   const satellite = makeSatellite(THREE);
-  satellite.scale.setScalar(.34);
+  satellite.scale.setScalar(.2);
   orbitGroup.add(satellite);
 
   const resize = () => {
