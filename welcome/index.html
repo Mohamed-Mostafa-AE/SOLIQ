@@ -124,54 +124,64 @@
 
 
     <section class="field-bridge" id="field-context" aria-labelledby="field-bridge-title">
-      <div class="field-bridge-visual" aria-hidden="true">
-        <svg class="field-map-svg" viewBox="0 0 900 680" preserveAspectRatio="xMidYMid slice">
+      <div class="field-artwork" aria-hidden="true">
+        <div class="botanical-caption"><span>BOTANICAL STUDY / 01</span><i></i><span>GROWTH · WATER · RESILIENCE</span></div>
+        <svg class="botanical-illustration" viewBox="0 0 900 700" role="presentation">
           <defs>
-            <linearGradient id="field-map-fill" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#789c62" stop-opacity=".33"/>
-              <stop offset=".55" stop-color="#375b42" stop-opacity=".48"/>
-              <stop offset="1" stop-color="#1a3429" stop-opacity=".18"/>
+            <linearGradient id="leaf-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#dce8a9" stop-opacity=".32"/>
+              <stop offset=".55" stop-color="#a8c779" stop-opacity=".13"/>
+              <stop offset="1" stop-color="#6c9669" stop-opacity=".04"/>
             </linearGradient>
+            <linearGradient id="stem-line" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0" stop-color="#8ea86a"/>
+              <stop offset=".55" stop-color="#d4d99b"/>
+              <stop offset="1" stop-color="#b6c77b"/>
+            </linearGradient>
+            <filter id="botanical-glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="12"/>
+            </filter>
           </defs>
-          <circle class="field-map-halo" cx="555" cy="345" r="280"/>
-          <circle class="field-map-halo" cx="555" cy="345" r="225"/>
-          <circle class="field-map-halo" cx="555" cy="345" r="165"/>
-          <path class="field-map-contour" d="M185 190 C290 76 510 72 698 148 S865 354 747 489 435 600 240 500 75 310 185 190Z"/>
-          <path class="field-map-contour" d="M229 206 C324 119 493 109 657 170 S811 354 713 457 441 553 266 475 136 302 229 206Z"/>
-          <path class="field-map-contour" d="M270 226 C350 152 487 147 620 194 S759 350 682 426 454 508 290 448 194 309 270 226Z"/>
-          <path class="field-map-boundary" d="M350 118 L710 162 L788 364 L632 540 L326 490 L236 298Z"/>
-          <path class="field-map-parcel" d="M350 118 L472 133 L438 285 L236 298Z"/>
-          <path class="field-map-parcel" d="M472 133 L710 162 L645 306 L438 285Z"/>
-          <path class="field-map-parcel" d="M236 298 L438 285 L420 506 L326 490Z"/>
-          <path class="field-map-parcel" d="M438 285 L645 306 L632 540 L420 506Z"/>
-          <path class="field-map-parcel" d="M645 306 L788 364 L632 540Z"/>
-          <g class="field-map-row">
-            <path d="M270 262 C332 201 375 179 447 164"/>
-            <path d="M275 274 C337 215 380 191 450 176"/>
-            <path d="M280 286 C342 229 386 205 453 188"/>
-            <path d="M484 153 C557 169 624 190 684 213"/>
-            <path d="M477 169 C553 184 613 204 674 227"/>
-            <path d="M470 186 C545 202 604 220 664 243"/>
-            <path d="M259 325 C318 322 365 318 421 313"/>
-            <path d="M257 341 C316 338 366 334 420 330"/>
-            <path d="M254 357 C313 354 365 350 419 347"/>
-            <path d="M450 312 C518 328 578 344 644 363"/>
-            <path d="M448 329 C515 345 576 362 643 380"/>
-            <path d="M446 346 C514 362 574 379 642 397"/>
-            <path d="M437 375 C497 391 558 409 638 431"/>
-            <path d="M436 392 C496 408 556 426 633 448"/>
+          <ellipse class="botanical-aura" cx="560" cy="390" rx="245" ry="260"/>
+          <g class="botanical-plant plant-secondary plant-left">
+            <path class="botanical-stem" d="M340 680 C350 570 308 475 340 365 S365 222 330 145"/>
+            <g class="botanical-leaf leaf-left-a"><path class="leaf-blade" d="M340 505 C291 449 239 437 180 453 C221 496 278 523 340 505Z"/><path class="leaf-vein" d="M340 505 Q263 463 190 456"/></g>
+            <g class="botanical-leaf leaf-left-b"><path class="leaf-blade" d="M329 405 C278 359 226 355 179 376 C223 415 278 431 329 405Z"/><path class="leaf-vein" d="M329 405 Q253 373 188 378"/></g>
+            <g class="botanical-leaf leaf-right-a"><path class="leaf-blade" d="M339 565 C383 505 433 490 484 503 C448 550 399 574 339 565Z"/><path class="leaf-vein" d="M339 565 Q410 511 475 506"/></g>
           </g>
-          <path class="field-map-route" d="M284 441 C374 388 407 238 517 227 S650 341 696 371"/>
-          <circle class="field-map-pin" cx="517" cy="227" r="7"/>
+          <g class="botanical-plant plant-main">
+            <path class="botanical-stem" d="M525 682 C492 574 555 489 526 390 C503 309 526 213 565 92"/>
+            <g class="botanical-leaf leaf-main-a"><path class="leaf-blade" d="M526 555 C457 491 384 481 312 506 C367 567 449 584 526 555Z"/><path class="leaf-vein" d="M526 555 Q420 505 324 510"/></g>
+            <g class="botanical-leaf leaf-main-b"><path class="leaf-blade" d="M531 493 C587 424 660 403 735 422 C693 492 610 520 531 493Z"/><path class="leaf-vein" d="M531 493 Q635 429 724 426"/></g>
+            <g class="botanical-leaf leaf-main-c"><path class="leaf-blade" d="M518 411 C454 353 397 345 335 365 C378 423 447 441 518 411Z"/><path class="leaf-vein" d="M518 411 Q425 365 346 369"/></g>
+            <g class="botanical-leaf leaf-main-d"><path class="leaf-blade" d="M525 334 C581 272 647 254 708 273 C670 334 602 358 525 334Z"/><path class="leaf-vein" d="M525 334 Q616 276 697 278"/></g>
+            <g class="botanical-leaf leaf-main-e"><path class="leaf-blade" d="M548 245 C496 203 456 193 410 207 C443 249 490 268 548 245Z"/><path class="leaf-vein" d="M548 245 Q475 209 420 211"/></g>
+            <g class="botanical-leaf leaf-main-f"><path class="leaf-blade" d="M557 174 C596 133 638 120 680 130 C655 173 612 193 557 174Z"/><path class="leaf-vein" d="M557 174 Q622 133 672 134"/></g>
+            <g class="botanical-head">
+              <path d="M565 105 C570 79 570 60 558 37" fill="none" stroke="url(#stem-line)" stroke-width="3" stroke-linecap="round"/>
+              <path d="M558 40 Q526 24 526 3 Q550 11 558 40Z" class="grain-kernel"/>
+              <path d="M560 48 Q583 15 607 13 Q592 39 560 48Z" class="grain-kernel"/>
+              <path d="M558 60 Q524 52 509 31 Q540 33 558 60Z" class="grain-kernel"/>
+              <path d="M563 69 Q592 50 618 57 Q594 76 563 69Z" class="grain-kernel"/>
+              <path d="M560 77 Q535 79 520 61 Q545 55 560 77Z" class="grain-kernel"/>
+              <path d="M560 42 L548 -1 M562 52 L615 25 M559 64 L503 20 M563 75 L628 57" class="grain-awn"/>
+            </g>
+          </g>
+          <g class="botanical-plant plant-secondary plant-right">
+            <path class="botanical-stem" d="M720 682 C690 565 750 484 718 382 S708 233 755 160"/>
+            <g class="botanical-leaf leaf-right-b"><path class="leaf-blade" d="M719 526 C668 473 620 458 565 470 C602 523 658 544 719 526Z"/><path class="leaf-vein" d="M719 526 Q640 477 576 475"/></g>
+            <g class="botanical-leaf leaf-right-c"><path class="leaf-blade" d="M727 421 C772 368 822 351 874 365 C842 419 784 441 727 421Z"/><path class="leaf-vein" d="M727 421 Q806 370 863 370"/></g>
+          </g>
+          <path class="botanical-ground" d="M140 674 C330 648 600 648 820 672"/>
+          <path class="botanical-ground" d="M215 687 C402 665 602 665 756 686"/>
         </svg>
-        <div class="field-scan-line"></div>
-        <div class="field-coordinate field-coordinate-a"><span>FIELD CONTEXT / LOCAL SCALE</span><strong>SOIL · WATER · CROP</strong></div>
-        <div class="field-coordinate field-coordinate-b"><span>OBSERVATION → DECISION</span><strong>ILLUSTRATIVE FIELD MODEL</strong></div>
+        <div class="botanical-coordinate coordinate-one"><span>FIELD NOTE / 01</span><strong>ROOTED IN LOCAL CONDITIONS</strong></div>
+        <div class="botanical-coordinate coordinate-two"><span>BOTANICAL FORM</span><strong>ILLUSTRATIVE ARTWORK</strong></div>
       </div>
       <div class="field-bridge-copy">
         <p class="eyebrow"><span class="eyebrow-line"></span> GLOBAL SIGNALS. LOCAL DECISIONS.</p>
         <h2 id="field-bridge-title">The view starts in orbit.<br>The decision belongs to the <em>field.</em></h2>
-        <p>NASA POWER weather is the current environmental input. Declared soil-water conditions, crop calendars and farmer priorities add the local context. Other Earth-observation missions and soil datasets are documented as future evidence layers—not presented as live integrations.</p>
+        <p>NASA Earth observations help describe changing environmental conditions. Soil information, crop characteristics and farmer priorities bring that wider view down to the realities of an individual field.</p>
         <div class="field-bridge-steps" aria-label="Soliq workflow">
           <span>01 / OBSERVE</span><i></i><span>02 / ADD CONTEXT</span><i></i><span>03 / COMPARE</span>
         </div>
@@ -264,11 +274,39 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <a href="#home" class="footer-brand"><img src="../soliq-mark.svg" alt="" width="36" height="36"><span><strong>SOLIQ</strong><small>EARTH OBSERVATIONS / GROUND DECISIONS</small></span></a>
-    <span class="footer-team">MOHAMED MOSTAFA · YOUSSEF MOHAMED · AYA ABDELNABI · MOHAMED ABDELRAHMAN</span>
-    <a class="back-top" href="#home">BACK TO TOP ↑</a>
-    <small class="footer-note">NASA does not endorse non-U.S. Government entities. Earth imagery credit: NASA Blue Marble: Next Generation / MODIS. The 3D satellite is an illustrative concept, not live mission tracking.</small>
+  <footer class="site-footer site-footer-expanded">
+    <div class="footer-main">
+      <div class="footer-brand-panel">
+        <a href="#home" class="footer-brand"><img src="../soliq-mark.svg" alt="" width="42" height="42"><span><strong>SOLIQ</strong><small>EARTH OBSERVATIONS / GROUND DECISIONS</small></span></a>
+        <p>Turning Earth observations and local farm context into clearer crop-rotation decisions.</p>
+        <span class="footer-project-tag">NASA SPACE APPS PROJECT · 2026</span>
+      </div>
+      <div class="footer-column">
+        <h2>Explore</h2>
+        <a href="#challenge">The challenge</a>
+        <a href="#approach">How it works</a>
+        <a href="#data">Earth data</a>
+        <a href="#outlook">2026 Living Farm</a>
+      </div>
+      <div class="footer-column">
+        <h2>Project</h2>
+        <a href="../#analyzer">Open the application <span>↗</span></a>
+        <a href="paper.html">Research brief <span>↗</span></a>
+        <a href="https://github.com/Mohamed-Mostafa-AE/SOLIQ" target="_blank" rel="noopener noreferrer">GitHub repository <span>↗</span></a>
+        <a href="../benchmark.md" target="_blank" rel="noopener noreferrer">Benchmarks <span>↗</span></a>
+      </div>
+      <div class="footer-column footer-column-note">
+        <h2>Built on evidence</h2>
+        <p>NASA POWER weather is the current environmental input. Other missions and soil datasets are presented as potential future evidence layers where integration is not yet implemented.</p>
+        <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA POWER data source ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 SOLIQ · BUILT FOR MORE RESILIENT FARMING</span>
+      <span>MOHAMED MOSTAFA · YOUSSEF MOHAMED · AYA ABDELNABI · MOHAMED ABDELRAHMAN</span>
+      <a class="back-top" href="#home">BACK TO TOP ↑</a>
+    </div>
+    <small class="footer-note">NASA does not endorse non-U.S. Government entities. Earth imagery credit: NASA Blue Marble: Next Generation / MODIS. The orbital satellite is an illustrative concept, not live mission tracking. Botanical artwork is an original illustrative element.</small>
   </footer>
 
   <script type="module" src="site.js"></script>
