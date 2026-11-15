@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="../outlook.css">
 </head>
 <body>
+  <canvas class="site-starfield" id="earth-stars" aria-hidden="true"></canvas>
   <a class="skip-link" href="#main-content">Skip to content</a>
 
   <header class="topbar">
@@ -103,7 +104,6 @@
 
         <aside class="planet-rail-global" aria-label="Interactive three-dimensional Earth with a conceptual satellite orbit">
           <div class="planet-grid" aria-hidden="true"></div>
-          <canvas class="earth-starfield" id="earth-stars" aria-hidden="true"></canvas>
           <div class="earth-fallback" aria-hidden="true"></div>
           <canvas id="earth-canvas" aria-label="Interactive 3D Earth. Drag to rotate the globe."></canvas>
           <div class="earth-glow" aria-hidden="true"></div>
@@ -140,18 +140,18 @@
           <ellipse class="botanical-aura" cx="560" cy="390" rx="245" ry="260"/>
           <g class="botanical-plant plant-secondary plant-left">
             <path class="botanical-stem" d="M340 680 C350 570 308 475 340 365 S365 222 330 145"/>
-            <g class="botanical-leaf leaf-left-a"><path class="leaf-blade" d="M340 505 C291 449 239 437 180 453 C221 496 278 523 340 505Z"/><path class="leaf-vein" d="M340 505 Q263 463 190 456"/></g>
-            <g class="botanical-leaf leaf-left-b"><path class="leaf-blade" d="M329 405 C278 359 226 355 179 376 C223 415 278 431 329 405Z"/><path class="leaf-vein" d="M329 405 Q253 373 188 378"/></g>
-            <g class="botanical-leaf leaf-right-a"><path class="leaf-blade" d="M339 565 C383 505 433 490 484 503 C448 550 399 574 339 565Z"/><path class="leaf-vein" d="M339 565 Q410 511 475 506"/></g>
+            <g class="botanical-leaf leaf-left-a"><path class="leaf-blade" d="M330 505 C291 449 239 437 180 453 C221 496 278 523 330 505Z"/><path class="leaf-vein" d="M330 505 Q263 463 190 456"/></g>
+            <g class="botanical-leaf leaf-left-b"><path class="leaf-blade" d="M331 405 C278 359 226 355 179 376 C223 415 278 431 331 405Z"/><path class="leaf-vein" d="M331 405 Q253 373 188 378"/></g>
+            <g class="botanical-leaf leaf-right-a"><path class="leaf-blade" d="M336 565 C383 505 433 490 484 503 C448 550 399 574 336 565Z"/><path class="leaf-vein" d="M336 565 Q410 511 475 506"/></g>
           </g>
           <g class="botanical-plant plant-main">
-            <path class="botanical-stem" d="M525 682 C492 574 555 489 526 390 C503 309 526 213 565 92"/>
-            <g class="botanical-leaf leaf-main-a"><path class="leaf-blade" d="M526 555 C457 491 384 481 312 506 C367 567 449 584 526 555Z"/><path class="leaf-vein" d="M526 555 Q420 505 324 510"/></g>
-            <g class="botanical-leaf leaf-main-b"><path class="leaf-blade" d="M531 493 C587 424 660 403 735 422 C693 492 610 520 531 493Z"/><path class="leaf-vein" d="M531 493 Q635 429 724 426"/></g>
-            <g class="botanical-leaf leaf-main-c"><path class="leaf-blade" d="M518 411 C454 353 397 345 335 365 C378 423 447 441 518 411Z"/><path class="leaf-vein" d="M518 411 Q425 365 346 369"/></g>
-            <g class="botanical-leaf leaf-main-d"><path class="leaf-blade" d="M525 334 C581 272 647 254 708 273 C670 334 602 358 525 334Z"/><path class="leaf-vein" d="M525 334 Q616 276 697 278"/></g>
-            <g class="botanical-leaf leaf-main-e"><path class="leaf-blade" d="M548 245 C496 203 456 193 410 207 C443 249 490 268 548 245Z"/><path class="leaf-vein" d="M548 245 Q475 209 420 211"/></g>
-            <g class="botanical-leaf leaf-main-f"><path class="leaf-blade" d="M557 174 C596 133 638 120 680 130 C655 173 612 193 557 174Z"/><path class="leaf-vein" d="M557 174 Q622 133 672 134"/></g>
+            <path class="botanical-stem" d="M525 682 C492 574 555 489 526 390 C503 309 526 213 565 105"/>
+            <g class="botanical-leaf leaf-main-a"><path class="leaf-blade" d="M520 555 C457 491 384 481 312 506 C367 567 449 584 520 555Z"/><path class="leaf-vein" d="M520 555 Q420 505 324 510"/></g>
+            <g class="botanical-leaf leaf-main-b"><path class="leaf-blade" d="M530 493 C587 424 660 403 735 422 C693 492 610 520 530 493Z"/><path class="leaf-vein" d="M530 493 Q635 429 724 426"/></g>
+            <g class="botanical-leaf leaf-main-c"><path class="leaf-blade" d="M531 411 C454 353 397 345 335 365 C378 423 447 441 531 411Z"/><path class="leaf-vein" d="M531 411 Q425 365 346 369"/></g>
+            <g class="botanical-leaf leaf-main-d"><path class="leaf-blade" d="M517 334 C581 272 647 254 708 273 C670 334 602 358 517 334Z"/><path class="leaf-vein" d="M517 334 Q616 276 697 278"/></g>
+            <g class="botanical-leaf leaf-main-e"><path class="leaf-blade" d="M524 245 C496 203 456 193 410 207 C443 249 490 268 524 245Z"/><path class="leaf-vein" d="M524 245 Q475 209 420 211"/></g>
+            <g class="botanical-leaf leaf-main-f"><path class="leaf-blade" d="M540 174 C596 133 638 120 680 130 C655 173 612 193 540 174Z"/><path class="leaf-vein" d="M540 174 Q622 133 672 134"/></g>
             <g class="botanical-head">
               <path d="M565 105 C570 79 570 60 558 37" fill="none" stroke="url(#stem-line)" stroke-width="3" stroke-linecap="round"/>
               <path d="M558 40 Q526 24 526 3 Q550 11 558 40Z" class="grain-kernel"/>
@@ -164,8 +164,8 @@
           </g>
           <g class="botanical-plant plant-secondary plant-right">
             <path class="botanical-stem" d="M720 682 C690 565 750 484 718 382 S708 233 755 160"/>
-            <g class="botanical-leaf leaf-right-b"><path class="leaf-blade" d="M719 526 C668 473 620 458 565 470 C602 523 658 544 719 526Z"/><path class="leaf-vein" d="M719 526 Q640 477 576 475"/></g>
-            <g class="botanical-leaf leaf-right-c"><path class="leaf-blade" d="M727 421 C772 368 822 351 874 365 C842 419 784 441 727 421Z"/><path class="leaf-vein" d="M727 421 Q806 370 863 370"/></g>
+            <g class="botanical-leaf leaf-right-b"><path class="leaf-blade" d="M720 526 C668 473 620 458 565 470 C602 523 658 544 720 526Z"/><path class="leaf-vein" d="M720 526 Q640 477 576 475"/></g>
+            <g class="botanical-leaf leaf-right-c"><path class="leaf-blade" d="M726 421 C772 368 822 351 874 365 C842 419 784 441 726 421Z"/><path class="leaf-vein" d="M726 421 Q806 370 863 370"/></g>
           </g>
           <path class="botanical-ground" d="M140 674 C330 648 600 648 820 672"/>
           <path class="botanical-ground" d="M215 687 C402 665 602 665 756 686"/>
