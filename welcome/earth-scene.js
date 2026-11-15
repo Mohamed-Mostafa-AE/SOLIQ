@@ -2,6 +2,71 @@ const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module
 const NASA_EARTH_TEXTURE = 'https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73967/world.200402.3x5400x2700.jpg';
 const THREE_EARTH_FALLBACK = 'https://raw.githubusercontent.com/mrdoob/three.js/r160/examples/textures/planets/earth_atmos_2048.jpg';
 
+function makeCloudTexture(THREE, mobile) {
+  const canvas = document.createElement('canvas');
+  canvas.width = mobile ? 1024 : 2048;
+  canvas.height = canvas.width / 2;
+  const context = canvas.getContext('2d');
+  if (!context) return null;
+
+  const width = canvas.width;
+  const height = canvas.height;
+  const image = context.createImageData(width, height);
+  const fract = value => value - Math.floor(value);
+  const smooth = value => value * value * (3 - 2 * value);
+
+  const hash = (x, y) => {
+    const value = Math.sin(x * 127.1 + y * 311.7 + 19.19) * 43758.5453123;
+    return fract(value);
+  };
+
+  const noise = (u, v, columns, rows) => {
+    const x = u * columns;
+    const y = v * rows;
+    const x0 = Math.floor(x);
+    const y0 = Math.floor(y);
+    const x1 = (x0 + 1) % columns;
+    const y1 = Math.min(y0 + 1, rows);
+    const sx = smooth(x - x0);
+    const sy = smooth(y - y0);
+    const a = hash(x0, y0) * (1 - sx) + hash(x1, y0) * sx;
+    const b = hash(x0, y1) * (1 - sx) + hash(x1, y1) * sx;
+    return a * (1 - sy) + b * sy;
+  };
+
+  const smoothstep = (edgeA, edgeB, value) => {
+    const t = Math.max(0, Math.min(1, (value - edgeA) / (edgeB - edgeA)));
+    return t * t * (3 - 2 * t);
+  };
+
+  for (let y = 0; y < height; y += 1) {
+    const v = y / (height - 1);
+    for (let x = 0; x < width; x += 1) {
+      const u = x / width;
+      const broad = noise(u, v, 7, 4);
+      const medium = noise(u, v, 15, 8);
+      const fine = noise(u, v, 31, 16);
+      const detail = noise(u, v, 63, 32);
+      const field = broad * .48 + medium * .28 + fine * .16 + detail * .08;
+      const coverage = smoothstep(.465, .615, field);
+      const alpha = Math.round(coverage * 168);
+      const offset = (y * width + x) * 4;
+      image.data[offset] = 244;
+      image.data[offset + 1] = 249;
+      image.data[offset + 2] = 250;
+      image.data[offset + 3] = alpha;
+    }
+  }
+
+  context.putImageData(image, 0, 0);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.anisotropy = Math.min(4, 8);
+  return texture;
+}
+
 function makeStars(THREE, count, extent, seedStart) {
   let seed = seedStart;
   const random = () => {
@@ -145,12 +210,12 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   camera.position.set(.08, .04, 4.8);
   camera.lookAt(0, 0, 0);
 
-  const hemisphere = new THREE.HemisphereLight(0xb8dce0, 0x071017, .7);
+  const hemisphere = new THREE.HemisphereLight(0xc9e3ec, 0x07120f, .48);
   scene.add(hemisphere);
   const sun = new THREE.DirectionalLight(0xffe4c3, 2.2);
   sun.position.set(-3.1, 2.3, 5.2);
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0x4c8fbc, .28);
+  const fill = new THREE.DirectionalLight(0x5b94b0, .16);
   fill.position.set(3, -.8, -3);
   scene.add(fill);
 
@@ -171,7 +236,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   });
   const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
   earthTilt.add(earth);
-  const surfaceMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .96, metalness: 0 });
+  const surfaceMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .94, metalness: 0 });
   let surfaceReady = false;
   let earthTexture = null;
 
@@ -208,16 +273,22 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     }
   );
 
-  // A low-opacity cloud layer and thin atmospheric rim add depth without implying
-  // that this scene is showing live weather or current satellite measurements.
+  // A softly animated, procedural cloud mask adds depth without pretending to be live weather.
   const cloudGroup = new THREE.Group();
   earthTilt.add(cloudGroup);
-  const cloudGeometry = new THREE.SphereGeometry(1.009, mobile ? 72 : 104, mobile ? 48 : 72);
+  const cloudTexture = makeCloudTexture(THREE, mobile);
+  if (cloudTexture) disposable.push(cloudTexture);
+  const cloudGeometry = new THREE.SphereGeometry(1.012, mobile ? 88 : 128, mobile ? 56 : 88);
   const cloudMaterial = new THREE.MeshBasicMaterial({
-    color: 0xa8d3dd, transparent: true, opacity: .08, depthWrite: false,
-    blending: THREE.AdditiveBlending, side: THREE.DoubleSide
+    color: 0xf3f7f6,
+    map: cloudTexture || null,
+    transparent: true,
+    opacity: cloudTexture ? .72 : .1,
+    depthWrite: false,
+    side: THREE.FrontSide
   });
   const cloudShell = new THREE.Mesh(cloudGeometry, cloudMaterial);
+  cloudShell.renderOrder = 2;
   cloudGroup.add(cloudShell);
 
   const atmosphereMaterial = new THREE.ShaderMaterial({
@@ -339,7 +410,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     earthTilt.rotation.y = time * .075 + easedScrollProgress * THREE.MathUtils.degToRad(16);
     earthTilt.rotation.x = .08 + easedScrollProgress * THREE.MathUtils.degToRad(7);
     earthTilt.rotation.z = -easedScrollProgress * THREE.MathUtils.degToRad(6);
-    cloudGroup.rotation.y = -time * .035 + easedScrollProgress * .09;
+    cloudGroup.rotation.y = -time * .012 + easedScrollProgress * .055;
     scanOrbit.rotation.z = time * .045;
     orbitGroup.rotation.y = .12 + Math.sin(time * .16) * .05;
     const angle = (reducedMotion ? .85 : time * .42 + .85) + easedScrollProgress * .95;
@@ -395,7 +466,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
   resize();
   updateScrollProgress();
-  if (status && !surfaceReady) status.textContent = 'Loading NASA Blue Marble surface…';
+  if (status && !surfaceReady) status.textContent = 'Loading NASA Blue Marble surface and cloud layer…';
   if (!reducedMotion) frameId = requestAnimationFrame(render);
   else renderer.render(scene, camera);
 
