@@ -1,5 +1,5 @@
 const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-const EARTH_SURFACE_ATLAS = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-base/february/world.200402.3x5400x2700.jpg';
+const EARTH_SURFACE_ATLAS = 'https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-topography-bathymetry/february/world.topo.bathy.200402.3x5400x2700.jpg';
 
 function makeStars(THREE, count, extent, seedStart) {
   let seed = seedStart;
@@ -172,30 +172,22 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   const textureLoader = new THREE.TextureLoader();
   textureLoader.setCrossOrigin('anonymous');
   const marsGeometry = new THREE.SphereGeometry(1, mobile ? 320 : 512, mobile ? 160 : 256);
-  const marsFallbackMaterial = new THREE.MeshStandardMaterial({
-    color: 0x204a64,
-    roughness: 0.975,
-    metalness: 0,
+  // NASA's global atlas includes its own surface shading. Keep it unlit
+  // so a second lighting pass does not crush the visible oceans and continents.
+  const marsFallbackMaterial = new THREE.MeshBasicMaterial({
+    color: 0x456b70,
     transparent: false,
     opacity: 1,
     depthWrite: true,
-    depthTest: true,
-    alphaTest: 0,
-    side: THREE.FrontSide
+    toneMapped: false
   });
-  const marsMaterial = new THREE.MeshStandardMaterial({
+  const marsMaterial = new THREE.MeshBasicMaterial({
     map: null,
-    roughness: 0.975,
-    metalness: 0,
     color: 0xffffff,
-    emissive: 0x0a1722,
-    emissiveIntensity: .18,
     transparent: false,
     opacity: 1,
     depthWrite: true,
-    depthTest: true,
-    alphaTest: 0,
-    side: THREE.FrontSide
+    toneMapped: false
   });
   const marsMesh = new THREE.Mesh(marsGeometry, marsFallbackMaterial);
   marsMesh.castShadow = false;
@@ -211,7 +203,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
     texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 16);
-    texture.offset.x = 0;
+    texture.offset.x = 0.25;
     texture.needsUpdate = true;
     marsMaterial.map = texture;
     marsMaterial.color.set(0xffffff);
