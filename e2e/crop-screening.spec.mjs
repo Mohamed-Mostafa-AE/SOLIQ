@@ -10,7 +10,7 @@ test.beforeEach(async({page})=>{
 test('guided calendar explains the actual planned crop change',async({page},info)=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/#overview');
-  await expect(page.getByRole('heading',{name:'Plan your next crop.',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Plan what to grow next.',exact:true})).toBeVisible();
   await page.locator('[data-month="5"]').click();
   await expect(page.locator('.baseline-plan h3')).toHaveText('Maize');
   await expect(page.locator('.alternative-plan h3')).toHaveText('Grain legume');
@@ -85,7 +85,7 @@ test('language and audience changes preserve the exported scientific results',as
   await page.locator('#language-toggle').click();
   await page.locator('#guided-mode').click();
   await expect(page.locator('#workspace-nav [data-view="analyzer"]')).toBeHidden();
-  await expect(page.getByRole('heading',{name:'Plan what to grow next.',exact:true})).toBeVisible();
+  await expect(page.locator('body')).toHaveAttribute('data-audience','guided');
   await page.locator('#research-mode').click();
   await page.locator('#workspace-nav [data-view="analyzer"]').click();
   const after=await exportReport();
@@ -97,7 +97,7 @@ test('language and audience changes preserve the exported scientific results',as
 test('Guided and Research views have distinct navigation and landing pages',async({page})=>{
  await page.goto('/');
  await expect(page.getByRole('heading',{name:'Plan what to grow next.',exact:true})).toBeVisible();
- await expect(page.locator('#workspace-nav [data-view="rotations"]')).toBeVisible();
+ await expect(page.locator('#workspace-nav [data-view="rotations"][data-audience="guided"]')).toBeVisible();
  await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeHidden();
  await expect(page.locator('#audience-banner-label')).toContainText('FARMERS & CLIENTS');
  await page.locator('#workspace-nav [data-view="rotations"]').click();
