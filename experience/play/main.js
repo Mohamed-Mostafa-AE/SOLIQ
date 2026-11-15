@@ -124,8 +124,10 @@ class SeventhFieldGame {
 
     if (this.hud) {
       this.hud.showTelemetryToast(
-        'المية وصلت في المسقة!',
-        'تحرك واستكشف القرية، وتحدث مع عم حسن ومريم قبل تشغيل طلمبة الري. المشهد افتراضي.',
+        this.hud.lang === 'en' ? 'The canal water turn has begun!' : 'المية وصلت في المسقة!',
+        this.hud.lang === 'en'
+          ? 'Explore the fictional village. Talk to Uncle Hassan and Maryam, then check safety before operating the simulated pump.'
+          : 'تحرك واستكشف القرية وتحدث مع عم حسن ومريم. راجع السلامة قبل تشغيل الطلمبة الافتراضية.',
         'simulated'
       );
     }
@@ -142,14 +144,18 @@ class SeventhFieldGame {
         else this.nasaBrowseOverlay?.hide();
         if (mode === 'nasa') {
           this.hud.showTelemetryToast(
-            'NASA POWER — الرصد غير متاح داخل اللعبة',
-            'لم يتم تحميل سجل NASA موثق بالتاريخ وSHA256 لهذه الجلسة. ألوان المشهد توضيحية وليست صور أقمار صناعية.',
+            this.hud.lang === 'en' ? 'NASA POWER — source not loaded in game' : 'NASA POWER — الرصد غير متاح داخل اللعبة',
+            this.hud.lang === 'en'
+              ? 'No dated, SHA-256-receipted NASA POWER record is loaded for this game session. Scene colors are illustrations, not satellite measurements.'
+              : 'لم يتم تحميل سجل NASA موثق بالتاريخ وSHA256 لهذه الجلسة. ألوان المشهد توضيحية وليست صور أقمار صناعية.',
             'unavailable'
           );
         } else if (mode === 'future') {
           this.hud.showTelemetryToast(
-            'محاكاة مستقبلية للدورة الزراعية',
-            'SIMULATION — NOT SATELLITE OBSERVATION: لا توجد مقارنة حسابية موثقة بعد (comparison_only)',
+            this.hud.lang === 'en' ? 'Modelled future — scenario only' : 'محاكاة مستقبلية للدورة الزراعية',
+            this.hud.lang === 'en'
+              ? 'SIMULATION — NOT SATELLITE OBSERVATION: paired crop comparison is not verified (comparison_only).'
+              : 'SIMULATION — NOT SATELLITE OBSERVATION: لا توجد مقارنة حسابية موثقة بعد (comparison_only)',
             'simulated'
           );
         }
@@ -178,9 +184,22 @@ class SeventhFieldGame {
     sharedEvents.on('outcome_achieved', (data) => {
       this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
       this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+      const en = this.hud.lang === 'en';
       this.hud.showTelemetryToast(
-        data.titleAr,
-        data.fairness == null ? 'تم تسجيل قرار افتراضي دون توزيع مياه؛ لا توجد عدالة توزيع محسوبة.' : `نتيجة محاكاة مسجلة في الدفتر، مؤشر Jain: ${(data.fairness * 100).toFixed(1)}% (غير معاير ميدانيًا)`,
+        en ? 'Simulated irrigation decision recorded' : data.titleAr,
+        data.fairness == null
+          ? (en ? 'Decision deferred. No water was distributed and no fairness metric applies.' : 'تم تسجيل قرار افتراضي دون توزيع مياه؛ لا توجد عدالة توزيع محسوبة.')
+          : (en ? `Fictional Jain fairness: ${(data.fairness * 100).toFixed(1)}%. Not field-calibrated.` : `نتيجة محاكاة مسجلة في الدفتر، مؤشر Jain: ${(data.fairness * 100).toFixed(1)}% (غير معاير ميدانيًا)`),
+        'simulated'
+      );
+    });
+    sharedEvents.on('safety_checked', ({ completed, total }) => {
+      this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
+      this.hud.showTelemetryToast(
+        this.hud.lang === 'en' ? 'Safety training progress' : 'تقدم مراجعة السلامة',
+        this.hud.lang === 'en'
+          ? `${completed}/${total} fictional safety checks completed. Never operate real equipment based on a game.`
+          : `اكتملت ${completed} من ${total} مراجعات تعليمية. اللعبة لا تمنح تصريحًا لتشغيل معدات حقيقية.`,
         'simulated'
       );
     });
@@ -212,8 +231,8 @@ class SeventhFieldGame {
       { id: 'hassan', nameAr: 'عم حسن', nameEn: 'Uncle Hassan', position: this.characters.hassan.root.position },
       { id: 'maryam', nameAr: 'مريم', nameEn: 'Maryam', position: this.characters.maryam.root.position },
       { id: 'pumpStation', nameAr: 'طلمبة الديزل', nameEn: 'Diesel Pump', position: this.village.pump.group.position },
-      ...this.village.gates.map((g) => ({ id: g.id, nameAr: g.nameAr, position: g.position })),
-      { id: 'timeEcho', nameAr: 'الغيط السابع (صدى الزمن)', position: new BABYLON.Vector3(68, 0, 0) },
+      ...this.village.gates.map((g) => ({ id: g.id, nameAr: g.nameAr, nameEn: g.nameEn || 'Canal Gate', position: g.position })),
+      { id: 'timeEcho', nameAr: 'الغيط السابع (صدى الزمن)', nameEn: 'The Seventh Field (Time Echo)', position: new BABYLON.Vector3(68, 0, 0) },
     ];
 
     this.playerController.setInteractables(targets);
@@ -247,8 +266,10 @@ class SeventhFieldGame {
 
     if (inEcho && !this._inEchoPrevious) {
       this.hud.showTelemetryToast(
-        'دخلت نطاق الأرض السابعة (صدى الزمن)',
-        'استكشف مقارنة السيناريوهات المستقبلية واطلع على سجل عدم اليقين في الدفتر.',
+        this.hud.lang === 'en' ? 'Entered The Seventh Field (Time Echo)' : 'دخلت نطاق الأرض السابعة (صدى الزمن)',
+        this.hud.lang === 'en'
+          ? 'Explore the fictional future scenarios. Review uncertainty in the evidence notebook.'
+          : 'استكشف مقارنة السيناريوهات المستقبلية واطلع على سجل عدم اليقين في الدفتر.',
         'simulated'
       );
     }
