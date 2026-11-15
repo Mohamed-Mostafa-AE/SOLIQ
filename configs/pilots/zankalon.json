@@ -1,0 +1,118 @@
+{
+  "pilotId": "zankalon-sharkia-eg",
+  "regionName": "Zankalon Water Requirements Research Station, Zagazig, Sharkia, East Nile Delta, Egypt",
+  "regionNameAr": "محطة بحوث المقننات المائية بالزنكلون - مركز الزقازيق - محافظة الشرقية (شرق الدلتا)",
+  "calibrationStatus": "literature_parameterized_requires_human_field_verification",
+  "coordinates": {
+    "latitude": 30.5833,
+    "longitude": 31.4333,
+    "elevationM": 11.0,
+    "mgrsTile": "36RUV",
+    "imergGridCenter": {
+      "lat": 30.55,
+      "lon": 31.45
+    }
+  },
+  "soil": {
+    "textureClass": "Clay Loam to Heavy Alluvial Clay (Vertic Torrifluvents)",
+    "clayFractionPct": 44.5,
+    "siltFractionPct": 34.0,
+    "sandFractionPct": 21.5,
+    "bulkDensityGcm3": 1.32,
+    "fieldCapacityThetaFc": 0.41,
+    "wiltingPointThetaWp": 0.21,
+    "saturationThetaSat": 0.50,
+    "saturatedHydraulicConductivityMmDay": 115.0,
+    "drainageCoefficientTauDay": 0.28,
+    "scsCurveNumberGroup": "D",
+    "scsCurveNumberDefault": 84,
+    "readilyEvaporableWaterRewMm": 11.0,
+    "totalEvaporableWaterTewMm": 29.0,
+    "topsoilEvaporationLayerDepthM": 0.12,
+    "baselineSoilSalinityEcDsm": 2.4,
+    "subsurfaceTileDrainageDepthM": 1.25
+  },
+  "waterManagement": {
+    "primarySource": "Bahr Mowais / Zankalon Branch Canal (Nile Surface Water)",
+    "irrigationSystem": "improved_surface_furrow_and_raised_bed",
+    "applicationEfficiency": 0.68,
+    "irrigationWaterSalinityEcDsm": 0.55,
+    "seasonalWaterQuotaMm": 1350.0,
+    "summerPeakCanalCapMmDay": 8.5,
+    "leachingFractionRequirement": 0.12
+  },
+  "currentBaselineRotation": {
+    "rotationId": "zankalon_baseline_wheat_rice",
+    "name": "Traditional Exhaustive Cereal Monoculture (Wheat -> Flooded Paddy Rice -> Bare Fallow)",
+    "nameAr": "الدورة التقليدية المجهدة (قمح شتوي -> أرز صيفي غمر -> بوار خريفي)",
+    "sequence": [
+      {
+        "season": "winter",
+        "cropId": "wheat",
+        "sowingDate": "2025-11-15",
+        "harvestDate": "2026-04-29"
+      },
+      {
+        "season": "summer",
+        "cropId": "paddy_rice",
+        "sowingDate": "2026-05-15",
+        "harvestDate": "2026-09-21"
+      },
+      {
+        "season": "fallow_window",
+        "cropId": "bare_fallow",
+        "sowingDate": "2026-09-22",
+        "harvestDate": "2026-11-14"
+      }
+    ]
+  },
+  "constraints": {
+    "maxAnnualWaterUseMm": 1350.0,
+    "maxAllowableSoilSalinityEcDsm": 4.0,
+    "requirePestHostBreak": true,
+    "requirePositiveOrNeutralNitrogenTrend": true,
+    "allowedCrops": [
+      "wheat",
+      "paddy_rice",
+      "grain_maize",
+      "grain_sorghum",
+      "berseem_clover",
+      "faba_bean",
+      "sugar_beet",
+      "soybean",
+      "short_season_cowpea"
+    ]
+  },
+  "UncertaintyBoundsConfig": {
+    "et0RelativeUncertainty": 0.10,
+    "kcRelativeUncertainty": 0.08,
+    "imergPrecipRelativeUncertainty": 0.18,
+    "hlsNdviAbsoluteUncertainty": 0.04,
+    "soilAvailableWaterRelativeUncertainty": 0.12,
+    "minMetCoverageRatio": 0.85,
+    "minImergCoverageRatio": 0.80,
+    "minHlsClearSceneRatio": 0.35
+  },
+  "references": [
+    {
+      "id": "ayyad_2024_zankalon",
+      "citation": "Ayyad, S., Karimi, P., Ribbe, L., & Becker, M. (2024). Potential Improvements in Crop Production in Egypt and Implications for Future Water and Land Demand: The Zankalon Region Benchmark Case Study. International Journal of Plant Production.",
+      "url": "https://www.researchgate.net/publication/381726159_Potential_Improvements_in_Crop_Production_in_Egypt_and_Implications_for_Future_Water_and_Land_Demand"
+    },
+    {
+      "id": "abdelbaki_2021_zankalon_soil",
+      "citation": "Abd El Baki, H. M., Fujimaki, H., et al. (2021). An Evaluation of a New Scheme for Determination of Irrigation Depths in the Egyptian Nile Delta (Zankalon, Sharkia hydraulic & solute parameters). Water, 13(16), 2181.",
+      "url": "https://www.mdpi.com/2073-4441/13/16/2181"
+    },
+    {
+      "id": "fao56_allen_1998",
+      "citation": "Allen, R. G., Pereira, L. S., Raes, D., & Smith, M. (1998). Crop Evapotranspiration: Guidelines for Computing Crop Water Requirements. FAO Irrigation and Drainage Paper 56.",
+      "url": "http://www.climasouth.eu/sites/default/files/FAO%2056.pdf"
+    },
+    {
+      "id": "nile_delta_eddy_et_2017",
+      "citation": "shuttleworth / Nile Delta Eddy Correlation Consortium (2017). Crop evapotranspiration in the Nile Delta under different irrigation methods (rice, maize, cotton, sugar beet, berseem, wheat, fava beans).",
+      "url": "https://www.researchgate.net/publication/317550284_Crop_evapotranspiration_in_the_Nile_Delta_under_different_irrigation_methods"
+    }
+  ]
+}
