@@ -70,3 +70,9 @@ Open `/outlook/`, `/welcome/#living-farm` or **2026 Living Farm** in the app. Ru
 - In-memory request throttling and explanation caching are per function instance; production traffic needs a durable limit or platform firewall policy. No account, private farm-record database or provider-specific data-retention guarantee is implemented.
 
 The 2026 outlook currently supports latitude −60° to 60° because the existing ET model is restricted to that range. Its weather is regional gridded context, not field-scale soil moisture, crop classification or ground truth. The existing complete-year workspace and its synthetic starting example remain separate and visibly labeled.
+
+## Team material integration and farm context
+
+See `TEAM_DATA_REVIEW.md` and `data/team-review-summary.json` for the supplied Drive material audit and explicit challenge coverage. The old annual telemetry is not used as daily NASA weather or verified local soil information.
+
+The 2026 form now accepts actual monthly calendars, farmer priorities, dated soil-source declarations, optional volumetric hydraulic inputs and option-specific feasibility declarations. Decision cards expose planned fallow/rainfall overlap and sourced soil-protection mechanisms. Unknown or refused inputs cannot produce a preferred option. These declarations do not establish independent field validation. The new point/map chooser does not save precise device location automatically; the user confirms the analysis point before new weather retrieval. Study locations import only coordinates and names from the team's files. Check the evidence export for the exact context and model assumptions.

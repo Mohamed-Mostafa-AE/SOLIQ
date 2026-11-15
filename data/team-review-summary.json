@@ -1,0 +1,111 @@
+{
+  "reviewedAt": "2026-11-15",
+  "folder": "https://drive.google.com/drive/folders/1FRiY8i4lowgE231zLgbsA7mzGQHh0PvI",
+  "status": "supplied annual series; source lineage not established",
+  "rowCount": 160,
+  "coverage": "1985\u20132024",
+  "regions": {
+    "zankalon": {
+      "records": 40,
+      "years": [
+        1985,
+        2024
+      ],
+      "temperature": {
+        "S": 194,
+        "pValue": 0.024515360557186658,
+        "senPerDecade": 0.4153947368421046
+      },
+      "rootWetness": {
+        "S": 83,
+        "pValue": 0.2648129845196114,
+        "senPerDecade": 0.0
+      },
+      "savedRootWetnessP": 0.339
+    },
+    "sidi_ghazi": {
+      "records": 40,
+      "years": [
+        1985,
+        2024
+      ],
+      "temperature": {
+        "S": 269,
+        "pValue": 0.001792068705432107,
+        "senPerDecade": 0.5468652037617555
+      },
+      "rootWetness": {
+        "S": 115,
+        "pValue": 0.03156129447892086,
+        "senPerDecade": 0.0
+      },
+      "savedRootWetnessP": 0.184
+    },
+    "mallawi": {
+      "records": 40,
+      "years": [
+        1985,
+        2024
+      ],
+      "temperature": {
+        "S": 154,
+        "pValue": 0.0746500897742795,
+        "senPerDecade": 0.37222222222221923
+      },
+      "rootWetness": {
+        "S": 71,
+        "pValue": 0.15232816299961038,
+        "senPerDecade": 0.0
+      },
+      "savedRootWetnessP": 0.415
+    },
+    "diamond_valley": {
+      "records": 40,
+      "years": [
+        1985,
+        2024
+      ],
+      "temperature": {
+        "S": 257,
+        "pValue": 0.0028556176578717956,
+        "senPerDecade": 0.5740740740740756
+      },
+      "rootWetness": {
+        "S": -23,
+        "pValue": 0.7935330468843804,
+        "senPerDecade": 0.0
+      },
+      "savedRootWetnessP": 0.798
+    }
+  },
+  "unverifiedOutputs": [
+    "site soil metadata",
+    "groundwater depth",
+    "canal capacity",
+    "gypsum requirement",
+    "WBGT",
+    "crop profitability flips",
+    "fairness improvements"
+  ],
+  "dailyWeatherSuitability": "Not suitable as daily water-model forcing: annual aggregation and units require raw-source verification.",
+  "files": {
+    "nasa_40yr_observations.csv": {
+      "sha256": "6eb67cc8e5f1dd9b36222284e5050d7ed232ab1b873653d7952141256ecc825c"
+    },
+    "nasa_verified_telemetry.json": {
+      "sha256": "89f5ab8a717b67634674e6009caa0e2a8d033c1042f4ee948cd2ad37860ad06d"
+    },
+    "SOLIQ_DATA_AUDIT.json": {
+      "sha256": "096fafb34229d9379bb270b00167835520ef6c5a4daf23b25c8eeb40cef929f5"
+    },
+    "CHALLENGE_COMPLETION.md": {
+      "sha256": "08bb1086aa6c5fbdbdd7057a292d349490a296dc58e1ddba047f5a7f3a5e3212"
+    },
+    "SOLIQ_IMPLEMENTATION_PACK.zip": {
+      "sha256": "9ece6e9f32a93ed257635f1dd67e2fce285f25639376690eea5f61d91e79230a"
+    },
+    "SOLIQ_READY.zip": {
+      "sha256": "43724f54531188f876219edacdc52f17fd2ca4a673938f0a8140eb2ba1925a03"
+    }
+  }
+}

@@ -54,7 +54,7 @@ function renderWorkspace(){recompute();$('#page').innerHTML=(view==='overview'&&
 let stopSeasonMotion=()=>{},stopOutlook=()=>{};
 function render(){
  stopSeasonMotion();stopOutlook();renderWorkspace();
- if(view==='outlook')stopOutlook=mountOutlook($('#living-outlook'),{language,config});
+ if(view==='outlook')stopOutlook=mountOutlook($('#living-outlook'),{language,config,strategies});
  $('#save-report').textContent=view==='outlook'?(language==='ar'?'↓ تصدير أدلة ٢٠٢٦':'↓ Export 2026 evidence'):(language==='ar'?'↓ تصدير التقرير':'↓ Export report');
  if(['overview','rotations','analyzer'].includes(view)){
   const results=view==='analyzer'&&cropReport?cropReport.results.filter(r=>r.metrics).map(r=>({id:r.id,name:language==='ar'?r.profile.ar:r.profile.name,daily:r.metrics.daily})):output.results;

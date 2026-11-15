@@ -16,3 +16,11 @@ const h=report.hindcast.metrics;
 const markdown=`# 2026 NASA outlook check\n\n${checks.type}.\n\n- NASA coverage: ${report.coverage.start} through ${report.coverage.through}; ${report.coverage.validDays} daily rows.\n- Point: ${report.config.lat}, ${report.config.lon}; regional NASA POWER grid, not field observations.\n- Evidence SHA-256: ${report.evidenceId}.\n- Donor years: ${report.projection.analogueYears.map(a=>a.year).join(', ')}.\n- Retrospective rainfall MAE: analogue ${h.analogue.rainMAE.toFixed(2)} mm; climatology ${h.climatology.rainMAE.toFixed(2)} mm.\n- Held-out years: ${report.hindcast.folds}. Folds may use later historical years; this is not forward validation.\n- Largest water-budget residual: ${Math.max(...report.projection.results.map(r=>r.maxResidual)).toExponential(3)} mm.\n\nNo crop growth, yield, soil health improvement or farmer outcome has been independently validated. Scenario percentiles are not calibrated confidence intervals.\n`;
 await writeFile('artifacts/outlook-2026-check.md',markdown);
 console.log(markdown);
+
+// A contrasting team-supplied study point checks the adapter, not regional agronomic validity.
+const international=await getOutlook({lat:39.6914,lon:-115.9611});
+assert.ok(international.coverage.validDays>=60);
+assert.ok(international.projection.results.every(r=>r.maxResidual<1e-9));
+assert.equal(international.conditionalComparison.status,'comparison_only');
+await writeFile('artifacts/outlook-nevada-2026-evidence.json',JSON.stringify(international,null,2));
+console.log('Nevada study point: '+international.coverage.validDays+' valid daily rows; unreviewed crop options remain comparison-only. Snow, groundwater and local crop suitability are not validated.');
