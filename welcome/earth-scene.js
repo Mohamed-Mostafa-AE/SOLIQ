@@ -148,14 +148,17 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
   // Match the Mars Society globe lighting: one warm directional key,
   // restrained hemisphere fill, and only a faint far-side lift.
-  const hemisphere = new THREE.HemisphereLight(0xb3b2c4, 0x160e0a, .38);
+  const hemisphere = new THREE.HemisphereLight(0xb3c6dc, 0x160e0a, .62);
   scene.add(hemisphere);
-  const sun = new THREE.DirectionalLight(0xffd5b5, 2.25);
+  const sun = new THREE.DirectionalLight(0xffd5b5, 2.45);
   sun.position.set(-2.7, 2.35, 6.4);
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0x7c89b0, .09);
-  fill.position.set(3.5, -1.5, -4);
-  scene.add(fill);
+  const frontFill = new THREE.DirectionalLight(0x9cb8d5, .34);
+  frontFill.position.set(2.2, -1.1, 4.8);
+  scene.add(frontFill);
+  const farFill = new THREE.DirectionalLight(0x7c89b0, .11);
+  farFill.position.set(3.5, -1.5, -4);
+  scene.add(farFill);
 
   const stars = makeStars(THREE, mobile ? 300 : 660, 7.2, 721);
   scene.add(stars);
@@ -187,6 +190,8 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     roughness: 0.975,
     metalness: 0,
     color: 0xffffff,
+    emissive: 0x0a1722,
+    emissiveIntensity: .18,
     transparent: false,
     opacity: 1,
     depthWrite: true,
