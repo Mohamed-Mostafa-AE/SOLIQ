@@ -107,8 +107,8 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({
-      canvas, alpha: true, antialias: !mobile,
-      powerPreference: 'high-performance', premultipliedAlpha: true
+      canvas, alpha: false, antialias: !mobile,
+      powerPreference: 'high-performance', premultipliedAlpha: false
     });
   } catch {
     if (status) status.textContent = 'WebGL unavailable · showing the Earth fallback';
@@ -133,13 +133,15 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   const disposable = [];
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, mobile ? 1.15 : 1.65));
-  renderer.setClearColor(0x000000, 0);
+  renderer.setClearColor(0x08090e, 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.1;
   renderer.shadowMap.enabled = false;
 
   const scene = new THREE.Scene();
+  // Keep the canvas fully opaque; no page background should show through it.
+  scene.background = new THREE.Color(0x08090e);
   const camera = new THREE.PerspectiveCamera(39, 1, 0.05, 120);
   camera.position.set(0.12, 0.02, 5.15);
   camera.lookAt(0, 0, 0);
@@ -174,7 +176,11 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     roughness: 0.975,
     metalness: 0,
     transparent: false,
-    opacity: 1
+    opacity: 1,
+    depthWrite: true,
+    depthTest: true,
+    alphaTest: 0,
+    side: THREE.FrontSide
   });
   const marsMaterial = new THREE.MeshStandardMaterial({
     map: null,
@@ -182,7 +188,11 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     metalness: 0,
     color: 0xffffff,
     transparent: false,
-    opacity: 1
+    opacity: 1,
+    depthWrite: true,
+    depthTest: true,
+    alphaTest: 0,
+    side: THREE.FrontSide
   });
   const marsMesh = new THREE.Mesh(marsGeometry, marsFallbackMaterial);
   marsMesh.castShadow = false;
