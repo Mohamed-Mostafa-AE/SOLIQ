@@ -16,3 +16,6 @@
 .field-caption{position:absolute;bottom:5px;right:25px;font:11px Arial,sans-serif;letter-spacing:1.6px;color:#aabb9f}
 @media(prefers-reduced-motion:reduce){.continuous-field{transition:none}}
 @media print{.continuous-field{display:none!important}.slide .scene,.slide .scene-caption{display:block!important}.slide{background:#10271f}}
+
+/* Keep the merged benchmark note clear of the footer. */
+.benchmark .stats{margin-top:26px}.benchmark .check-line{margin-top:24px;font-size:15px;line-height:1.5}.benchmark .text-link{margin-top:14px}
