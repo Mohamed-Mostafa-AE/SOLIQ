@@ -22,6 +22,7 @@
  <a href="play/" aria-label="Play the Seventh Field 3D prototype" style="text-decoration:none;display:inline-flex;align-items:center;background:#25694e;color:#fff;padding:8px 13px;border-radius:7px;font-weight:700">🎮 جرّب الأرض السابعة 3D (Prototype)</a>
  <button type="button" data-tab="farm">Living Farm</button>
  <button type="button" data-tab="trend">Trend Detective</button>
+ <button type="button" data-tab="cmr">🛰 NASA Live Catalogue</button>
  <button type="button" data-tab="sar">SAR Explorer</button>
  <button type="button" data-tab="decision">Rotation Lab</button>
  <button type="button" data-tab="water">Mesqa Challenge</button>
@@ -102,6 +103,18 @@
  <section class="panel" id="argon" hidden>
   <div class="scene-head"><div><span class="tag">Argon × Antigravity · Judge Lab</span><h2>مسابقة قرارات المسقة والمحاصيل</h2></div><span class="status">SIMULATED · comparison_only</span></div>
   <div id="argon-challenge-root"></div>
+ </section>
+ <section class="panel" id="cmr" hidden>
+  <div class="scene-head"><div><span class="tag">NASA CMR · LIVE CATALOGUE METADATA</span><h2>مشاهد الأقمار الحقيقية — فهرس المصدر</h2></div><span class="status">CATALOGUE ONLY · PIXELS NOT PROCESSED</span></div>
+  <p>استعلام مباشر من NASA CMR عن بيانات مشاهد HLS وIMERG المتاحة حول نقطة دراسية. هذه <strong>سجلات مشاهد حقيقية</strong> وتواريخها ومراجعها؛ ليست خرائط NDVI، ولا ملفات صور تم تنزيلها، ولا قياسات ملوحة أو دليل إنتاجية.</p>
+  <div class="form-grid">
+   <label>موقع الدراسة (وليس حدود مزرعة)<select id="cmr-region"></select></label>
+   <label>المنتج<select id="cmr-product"><option value="HLSL30">HLS Landsat 30m</option><option value="HLSS30">HLS Sentinel-2 30m</option><option value="IMERG">GPM IMERG Daily Final</option></select></label>
+   <label>من<input id="cmr-start" type="date" value="2026-09-15"></label>
+   <label>إلى<input id="cmr-end" type="date" value="2026-11-01"></label>
+  </div>
+  <button id="cmr-fetch" type="button">ابحث عن مشاهد NASA الحقيقية</button>
+  <div id="cmr-result" class="result" role="status" aria-live="polite">اضغط بحث. عند عدم توفر الخدمة سيظهر السبب، دون أي بديل صناعي.</div>
  </section>
 </main>
 <footer><span>Experience Lab · Prototype, not validated farm recommendation</span><button type="button" id="download">تصدير مدخلات اللعبة JSON</button><a href="../">العودة إلى Soil-IQ</a></footer>
