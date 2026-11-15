@@ -122,18 +122,18 @@ function mountEarthStarfield(canvas) {
     canvas.height = Math.max(1, Math.floor(height * dpr));
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
     seed = 73129;
-    const count = mobile.matches ? 190 : 340;
+    const count = mobile.matches ? 220 : 390;
     stars = Array.from({ length: count }, () => {
       const layer = Math.floor(random() * 3);
       return {
         x: random() * width,
         y: random() * height,
-        radius: layer === 0 ? .35 + random() * .35 : layer === 1 ? .5 + random() * .5 : .7 + random() * .65,
-        alpha: .2 + random() * (layer === 2 ? .44 : .28),
+        radius: layer === 0 ? .45 + random() * .4 : layer === 1 ? .65 + random() * .65 : .9 + random() * .8,
+        alpha: .34 + random() * (layer === 2 ? .56 : .4),
         phase: random() * Math.PI * 2,
         twinkle: .08 + random() * .22,
-        speedX: (random() - .5) * (.18 + layer * .13),
-        speedY: (.05 + random() * .12) * (layer + 1)
+        speedX: (random() - .5) * (.75 + layer * .48),
+        speedY: (.16 + random() * .22) * (layer + 1)
       };
     });
     draw(performance.now());
