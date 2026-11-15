@@ -250,21 +250,24 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
 
   const textureLoader = new THREE.TextureLoader();
   textureLoader.setCrossOrigin('anonymous');
-  const sphereGeometry = new THREE.SphereGeometry(1, mobile ? 112 : 176, mobile ? 72 : 112);
-  const fallbackMaterial = new THREE.MeshStandardMaterial({
-    color: 0x245e6c, roughness: .98, metalness: 0
+  const sphereGeometry = new THREE.SphereGeometry(1, mobile ? 320 : 512, mobile ? 160 : 256);
+  // Mars's supplied global atlas has its lighting baked into the color map.
+  // Use an opaque, unlit color-map surface for Earth too: a directional light
+  // was turning the far half of the globe nearly black, which looked transparent.
+  const fallbackMaterial = new THREE.MeshBasicMaterial({
+    color: 0x456b70,
+    transparent: false,
+    opacity: 1,
+    depthWrite: true
   });
   const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
   earthTilt.add(earth);
-  // Use the same fully opaque, texture-only planet material as Mars Society.
-  // No emissive texture, alpha blend, or cloud shell is layered over the continents.
-  const surfaceMaterial = new THREE.MeshStandardMaterial({
+  const surfaceMaterial = new THREE.MeshBasicMaterial({
     map: null,
-    roughness: .975,
-    metalness: 0,
     color: 0xffffff,
     transparent: false,
-    opacity: 1
+    opacity: 1,
+    depthWrite: true
   });
   let surfaceReady = false;
   let earthTexture = null;
