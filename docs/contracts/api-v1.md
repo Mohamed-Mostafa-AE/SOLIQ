@@ -23,7 +23,7 @@ All private responses are `Cache-Control: no-store`. Never log request bodies/co
 
 | Method/path | Request | Response |
 | --- | --- | --- |
-| POST /api/farms | `{geometry,saveLocation:true}` | 201 `{id,geometry,createdAt}` |
+| POST /api/farms | `{geometry,saveLocation:true}` | 201 `{id,geometry,createdAt,consent:{saveLocation:true,policy:"api-v1"}}` |
 | POST /api/evidence/jobs | `{farmId,timeRange,products:[{product,version,qa}]}` | 202 job |
 | GET /api/evidence/jobs/:id | none | 200 job |
 | DELETE /api/evidence/jobs/:id | none | 200 cancelled job; terminal jobs: 409 |
@@ -36,14 +36,17 @@ No geometry is persisted without literal `saveLocation:true` (403 otherwise).
 Geometry is GeoJSON Point or one-ring Polygon, WGS84 longitude/latitude, at most
 100 vertices and a bounding box no larger than 2 degrees per axis. No holes.
 timeRange is `{start,end}` in YYYY-MM-DD UTC, inclusive, ordered, max 366 days.
-Products: 1-8 distinct registered product/version pairs; qa is a JSON object.
+Products: 1–8 distinct product/version pairs; qa is a JSON object. Unregistered
+pairs yield explicitly unavailable evidence, never substituted products.
 Identifiers are server UUIDs. Unsupported fields are rejected (400).
 Body limit 20,000 bytes; malformed JSON 400, wrong content type 415, excess 413.
 Unknown routes 404, methods 405. Store not configured 503 `storage_unavailable`.
 
-POST farms/jobs/runs/replay accepts optional `Idempotency-Key` (1-128 ASCII
+POST farms/jobs/runs/replay accepts optional `Idempotency-Key` (1–128 ASCII
 letters/digits/._:-). Same session + route + key + canonical body returns original
 status/body; changed body gives 409. Keys are isolated and expire with session.
+Job creation reuses the job ID and returns its current status so a simultaneous
+duplicate can observe queued/running before the first request completes.
 
 ## Jobs and adapter handoff (Gemini EO/science #5; SAR #6)
 
@@ -62,6 +65,11 @@ where rawBytes is Buffer/Uint8Array, the exact source response bytes (max 8 MiB)
 Never reconstruct bytes from parsed values. Credentials, auth headers, signed
 URLs and arbitrary fetch URLs must not enter manifests. Provider modules must be
 registered on the server; browser requests cannot register adapters.
+For local integration set `SOLIQ_ADAPTER_MODULE` to an operator-owned ESM module
+exporting `adapters` with that registry, or inject adapters into
+`createBackendRuntime({adapters})`. No module path is accepted through the API.
+This is the integration seam for #5/#6; their unfinished raster ingest is not
+replaced by a metadata catalogue or falsely marked as delivered.
 
 Required manifest keys:
 
@@ -83,7 +91,7 @@ Required manifest keys:
 Unavailable requires nonempty missingReason, null rawSha256, no raw bytes,
 qa.usable=false. Missing quantities remain null/absent, never numeric zero.
 Every available response requires provider/version/date/units/native grid/QA,
-coverage fraction 0-1, and backend-verified SHA256. Backend pins geometry,
+coverage fraction 0–1, and backend-verified SHA256. Backend pins geometry,
 timeRange and product/version to request. Raw requests retain only those fields.
 Cache identity includes owner, geometry, time, product, version and QA; no region
 name keys or cross-session caches. Existing catalogue adapters are not raster
@@ -112,6 +120,12 @@ Single Node process only; no SQLite or local disk production claim. Keep data
 outside public assets and outside the repository. Permissions 0700/0600 where
 supported; encrypt the host disk and restrict backups; deletion covers active
 store, operator backups require separate documented retention.
+Set `SOLIQ_DATA_DIR` to a private persistent local directory; the development
+default is OS temp `soliq-evidence-local` (can be cleared by the OS). Signing key
+is generated locally with exclusive creation, or set `SOLIQ_SESSION_SECRET` to
+at least 32 random bytes. Set `SOLIQ_ORIGIN` to the exact browser origin.
+Restart marks unfinished queued/running jobs failed with worker_interrupted;
+re-requesting evidence creates a new job. Retention never extends on access.
 Vercel/serverless startup fails closed with 503 until a durable transactional
 store + private object storage adapter and signing secret are provisioned.
 Production durable provider integration is BLOCKED by provider/configuration.
@@ -124,4 +138,3 @@ simulated. Tests cover ownership/exports, CSRF, consent, TTL/delete, invalid
 inputs, concurrency/idempotency, immutable replay, corrupted bytes/snapshots,
 partial/unavailable jobs, deterministic exports and fail-closed deployment.
 Live EO/SAR acceptance remains with provider owners and release integration.
-

@@ -7,6 +7,8 @@ import outlook from "./api/outlook.js";
 import explain from "./api/explain.js";
 import trends from "./api/trends.js";
 import radar from "./api/radar-scenes.js";
+import {backendHandler} from "./lib/session-runtime.js";
+import {isEvidencePath} from "./lib/evidence-router.js";
 
 const ROOT=resolve(fileURLToPath(new URL(".",import.meta.url)));
 const TYPES={".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png"};
@@ -27,6 +29,7 @@ export async function handleRequest(req,res){
  res.setHeader("X-Content-Type-Options","nosniff");
  let url;
  try{url=new URL(req.url,"http://127.0.0.1");}catch{return json(res,400,{error:"Bad URL"});}
+ if(isEvidencePath(url.pathname))return backendHandler(req,res);
  const handler=API.get(url.pathname);
  if(url.pathname.startsWith("/api/")){
   if(!handler)return json(res,404,{error:"Unknown API"});
