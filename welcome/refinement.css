@@ -1645,3 +1645,39 @@ html, body { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .site-starfield { transition: none; }
 }
+
+
+/* Final submission layout correction: keep copy left and botanical artwork right. */
+@media (min-width: 761px) {
+  .field-bridge {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    align-items: center;
+    column-gap: clamp(30px, 5vw, 82px);
+  }
+
+  .field-bridge-copy {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    width: 100%;
+    max-width: 610px;
+    margin: 0;
+    text-align: left;
+  }
+
+  .field-artwork {
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    height: min(72vh, 650px);
+    min-height: 520px;
+    margin: 0;
+    opacity: .94;
+  }
+}
