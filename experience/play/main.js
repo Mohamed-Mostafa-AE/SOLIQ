@@ -16,6 +16,7 @@ import { EarthLensSystem } from '../../game/world/earth-lens.js';
 import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
+import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
 
 class SeventhFieldGame {
@@ -79,6 +80,7 @@ class SeventhFieldGame {
 
     // 7. Diegetic HUD & Event Wiring
     this._setupHUD();
+    this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
     this._setupPlayerControls(cameras);
 
     this.isInitialized = true;
@@ -136,6 +138,8 @@ class SeventhFieldGame {
       },
       onLensChange: (mode) => {
         const res = this.earthLens.setMode(mode);
+        if(mode==='nasa')this.nasaBrowseOverlay?.show();
+        else this.nasaBrowseOverlay?.hide();
         if (mode === 'nasa') {
           this.hud.showTelemetryToast(
             'NASA POWER — الرصد غير متاح داخل اللعبة',
@@ -192,6 +196,8 @@ class SeventhFieldGame {
       },
       onLensChange: (mode) => {
         this.earthLens.setMode(mode);
+        if(mode==='nasa')this.nasaBrowseOverlay?.show();
+        else this.nasaBrowseOverlay?.hide();
       },
       onToggleNotebook: () => {
         this.hud.toggleNotebook();
