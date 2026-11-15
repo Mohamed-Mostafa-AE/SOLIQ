@@ -23,24 +23,26 @@
       <span class="brandmark"><img src="soliq-mark.svg" alt=""></span>
       <span>Soliq<small>EARTH OBSERVATIONS. GROUNDED DECISIONS.</small></span>
     </a>
-    <div class="workspace-label">YOUR WORKSPACE</div>
-    <nav aria-label="Workspace">
-      <button data-view="outlook"><span>◷</span>2026 Living Farm</button>
-      <button data-view="analyzer"><span>&#10047;</span>Crop analyzer</button>
-      <button data-view="overview" class="active"><span>◈</span>Field overview</button>
-      <button data-view="rotations"><span>↻</span>Explore rotations</button>
-      <button data-view="evidence"><span>◎</span>Data & evidence</button>
-      <button data-view="research"><span>⌘</span>Research workspace</button>
-      <button data-view="settings"><span>⚙</span>Field & assumptions</button>
-      <a class="button" href="/experience/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none">✦ OMNI-EARTH Experience Lab ↗</a>
+    <div class="workspace-label" id="workspace-label">FARMER & CLIENT WORKSPACE</div>
+    <nav id="workspace-nav" aria-label="Workspace">
+      <button data-view="overview" data-audience="both" class="active"><span>⌂</span>Overview</button>
+      <button data-view="rotations" data-audience="guided"><span>↻</span>Crop plans</button>
+      <button data-view="settings" data-audience="guided"><span>⚙</span>Field setup</button>
+      <button data-view="outlook" data-audience="research"><span>◷</span>2026 Living Farm</button>
+      <button data-view="analyzer" data-audience="research"><span>&#10047;</span>Crop analyzer</button>
+      <button data-view="rotations" data-audience="research"><span>↻</span>Rotation modeling</button>
+      <button data-view="evidence" data-audience="research"><span>◎</span>Data & evidence</button>
+      <button data-view="research" data-audience="research"><span>⌘</span>Methods & diagnostics</button>
+      <button data-view="settings" data-audience="research"><span>⚙</span>Model parameters</button>
+      <a class="button" data-audience="research" href="/experience/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none">✦ OMNI-EARTH Experience Lab ↗</a>
     </nav>
     <div class="side-note">
       <span class="tiny-leaf">↗</span>
-      <strong>Better questions.<br>Resilient possibilities.</strong>
-      <p>Explore the trade-offs before changing what you grow.</p>
-      <button id="guide" class="text-btn">How to use Soliq ↗</button>
+      <strong id="side-note-title">Simple plans.<br>Clear next steps.</strong>
+      <p id="side-note-copy">Compare crop plans and review your field details.</p>
+      <button id="guide" class="text-btn">How to use this view ↗</button>
     </div>
-    <div class="side-footer"><span class="dot"></span> Research demonstrator <small>Version 0.1 · Support, not prescription</small></div>
+    <div class="side-footer"><span class="dot"></span><span id="side-footer-label">Farmer & client workspace</span><small id="side-footer-detail">Clear estimates · Local advice matters</small></div>
   </aside>
   <div class="workspace">
     <header>
@@ -56,11 +58,26 @@
       </div>
     </header>
     <main id="content" tabindex="-1">
+      <div class="audience-banner" id="audience-banner">
+        <span class="audience-banner-label" id="audience-banner-label">GUIDED VIEW / FARMERS & CLIENTS</span>
+        <span id="audience-banner-copy">Simple crop plans, field details and clear water estimates.</span>
+      </div>
       <div id="notice" role="status"></div>
       <div id="page"></div>
       <footer>Soliq · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer>
     </main>
   </div>
+  <dialog id="guided-help" class="simple-guide-dialog" aria-labelledby="guided-help-title">
+    <div class="dialog-head"><div><p class="eyebrow">GETTING STARTED</p><h2 id="guided-help-title">A few simple steps for your field</h2></div><button class="icon-btn" id="close-guided-help" aria-label="Close help">×</button></div>
+    <ol>
+      <li><b>Add your field details.</b> Enter its name and location so we can find nearby weather.</li>
+      <li><b>Load the weather.</b> Use the weather button in Field setup.</li>
+      <li><b>Check your crop plans.</b> Choose the crops you plan to grow in each month.</li>
+      <li><b>Compare the estimates.</b> Look at the water estimates, then discuss your plans with a local farm expert.</li>
+    </ol>
+    <p>These estimates help you explore options. They do not predict harvest or replace local farming advice.</p>
+    <button class="button primary" id="start-guided-help">Set up my field →</button>
+  </dialog>
   <dialog id="help" class="guide-dialog" aria-labelledby="guide-title">
     <div class="guide-shell">
       <div class="guide-topbar">
