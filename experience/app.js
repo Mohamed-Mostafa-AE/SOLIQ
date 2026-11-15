@@ -1,4 +1,5 @@
 import {allocateWater,trendStats,nitrogenLedger} from "./engine.js";
+import {intervalRegret} from "../science/interval-regret.js";
 
 const $=id=>document.getElementById(id);
 const REGIONS=[
@@ -126,3 +127,31 @@ $("download").onclick=()=>{try{
  const r=waterCompute(),payload={schema:"soliq-prototype-v1",createdAt:new Date().toISOString(),dataClass:"simulated",inputs:waterInput(),result:r,limitations:["Not a NASA observation","Not an agronomic prescription","Not a durable scientific run"]};
  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="soliq-mesqa-simulated.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
  }catch(e){window.alert("تعذر تصدير السيناريو: "+e.message);}};
+
+
+const REGRET_SYNTHETIC={
+ R0:{normal:.625,dry:.520,hot:.390,wet:.580},
+ R1:{normal:.740,dry:.550,hot:.445,wet:.755},
+ R2:{normal:.700,dry:.665,hot:.605,wet:.640}
+};
+function renderRegret(){
+ try{
+  const h=Number($("regret-width").value),tolerance=Number($("regret-tolerance").value);
+  $("regret-width-label").textContent=h.toFixed(3);
+  $("regret-tolerance-label").textContent=tolerance.toFixed(3);
+  const candidates=Object.entries(REGRET_SYNTHETIC).map(([id,utilities])=>({
+   id,feasibility:"eligible",utilities:Object.fromEntries(Object.entries(utilities).map(([scenario,value])=>[scenario,{lower:value-h,upper:value+h}]))
+  }));
+  const decision=intervalRegret({candidates,scenarios:["normal","dry","hot","wet"],tolerance});
+  const out=$("regret-result");
+  out.replaceChildren(paragraph("الحالة: "+(decision.status==="distinguished"?"فصل مشروط: "+decision.winner:"comparison_only — مقارنة بدون تفضيل")+" | "+decision.reason));
+  const table=document.createElement("table"),head=document.createElement("tr");
+  for(const label of ["البديل","حد الندم الأدنى","حد الندم الأعلى"]){const th=document.createElement("th");th.textContent=label;head.append(th);}table.append(head);
+  for(const r of decision.regret){const row=document.createElement("tr");for(const value of [r.id,r.lower.toFixed(3),r.upper.toFixed(3)]){const cell=document.createElement("td");cell.textContent=value;row.append(cell);}table.append(row);}
+  out.append(table,paragraph("حساب اصطناعي للتحقق من المعادلات فقط. حدود عدم اليقين لا تمثل دقة حساسات NASA أو ضمانات للمحاصيل."));
+ }catch(error){showError("regret-result",error);}
+}
+$("regret-run").onclick=renderRegret;
+$("regret-width").oninput=renderRegret;
+$("regret-tolerance").oninput=renderRegret;
+renderRegret();
