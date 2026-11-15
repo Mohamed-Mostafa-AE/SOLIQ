@@ -41,7 +41,7 @@ export function soilCapacity(context) {
  return capacity;
 }
 export function contextStrategies(context) {
- return STRATEGIES.map((s,i)=>({...s,crops:[...context.calendars[i]]}));
+ return STRATEGIES.map((s,i)=>({...s,name:i===0?'Current calendar':'Alternative '+i,crops:[...context.calendars[i]]}));
 }
 export function rotationDecisionCards(weather,projection,context) {
  const dates=datesInYear(projection.targetYear),baseline=projection.results[0];
