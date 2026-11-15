@@ -228,22 +228,15 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   camera.position.set(.08, .04, 4.8);
   camera.lookAt(0, 0, 0);
 
-  const hemisphere = new THREE.HemisphereLight(0xc9e3ec, 0x23352e, .76);
+  // Match the Mars Society globe lighting: one warm directional key,
+  // restrained hemisphere fill, and only a faint far-side lift.
+  const hemisphere = new THREE.HemisphereLight(0xb3b2c4, 0x160e0a, .38);
   scene.add(hemisphere);
-
-  // Keep the visible Earth hemisphere illuminated, as on the Mars reference.
-  // The main key light provides directional relief; a soft near-camera fill
-  // prevents the lower/front hemisphere from disappearing into the page.
-  const sun = new THREE.DirectionalLight(0xffe4c3, 2.15);
+  const sun = new THREE.DirectionalLight(0xffd5b5, 2.25);
   sun.position.set(-2.7, 2.35, 6.4);
   scene.add(sun);
-
-  const frontalFill = new THREE.DirectionalLight(0xdbe7df, .92);
-  frontalFill.position.set(0, -.15, 6.5);
-  scene.add(frontalFill);
-
-  const fill = new THREE.DirectionalLight(0x7eaa9a, .12);
-  fill.position.set(3, -.8, -3);
+  const fill = new THREE.DirectionalLight(0x7c89b0, .09);
+  fill.position.set(3.5, -1.5, -4);
   scene.add(fill);
 
   const stars = makeStars(THREE, mobile ? 300 : 660, 7.2, 721);
@@ -263,33 +256,13 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   });
   const earth = new THREE.Mesh(sphereGeometry, fallbackMaterial);
   earthTilt.add(earth);
-  const surfaceMaterial = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    specular: new THREE.Color(0x263c4a),
-    shininess: 9,
-    transparent: false,
-    opacity: 1,
-    emissive: new THREE.Color(0x718579),
-    emissiveIntensity: .34
-  });
-  surfaceMaterial.normalScale.set(.22, .22);
-  const loadDetailMap = (url, applyTexture) => {
-    textureLoader.load(url, texture => {
-      if (cleanedUp) { texture.dispose(); return; }
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 8);
-      applyTexture(texture);
-      disposable.push(texture);
-    }, undefined, () => {});
-  };
-  loadDetailMap(THREE_EARTH_NORMAL, texture => {
-    surfaceMaterial.normalMap = texture;
-    surfaceMaterial.needsUpdate = true;
-  });
-  loadDetailMap(THREE_EARTH_SPECULAR, texture => {
-    surfaceMaterial.specularMap = texture;
-    surfaceMaterial.needsUpdate = true;
+  // Use the same fully opaque, texture-only planet material as Mars Society.
+  // No emissive texture, alpha blend, or cloud shell is layered over the continents.
+  const surfaceMaterial = new THREE.MeshStandardMaterial({
+    map: null,
+    roughness: .975,
+    metalness: 0,
+    color: 0xffffff
   });
   let surfaceReady = false;
   let earthTexture = null;
@@ -301,10 +274,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     texture.wrapT = THREE.ClampToEdgeWrapping;
     texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 12);
     surfaceMaterial.map = texture;
-    // The same day-lit color atlas gently fills the unlit face, so the globe
-    // remains fully readable instead of fading into the transparent canvas.
-    surfaceMaterial.emissiveMap = texture;
-    surfaceMaterial.color.set(source === 'NASA Blue Marble' ? 0xffffff : 0xb9ceda);
+    surfaceMaterial.color.set(0xffffff);
     surfaceMaterial.needsUpdate = true;
     earth.material = surfaceMaterial;
     earthTexture = texture;
