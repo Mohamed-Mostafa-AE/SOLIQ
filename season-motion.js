@@ -1,5 +1,6 @@
 import { CROPS } from './engine.js';
 import { PROFILES } from './crop-analysis.js';
+import { cropRowSVG } from './crop-art.js';
 
 export function seasonFrame(result,index,capacity){
  if(!result?.daily?.length||!Number.isFinite(capacity)||capacity<=0)throw Error('A daily series and positive capacity are required');
@@ -26,7 +27,7 @@ export function mountSeasonMotion(host,{results,capacity,language='en',sourceKin
    section.querySelector(`[data-crop="${i}"]`).textContent=ar?(profile?.ar||crop?.name||day.crop):(crop?.name||day.crop);
    const bare=crop?.family==='None';
    const plants=section.querySelector(`[data-plants="${i}"]`);
-   if(plants.dataset.crop!==day.crop){plants.dataset.crop=day.crop;plants.style.setProperty('--crop-color',crop?.color||'#749651');plants.innerHTML=bare?'<span class="bare-ground">'+text('Planned bare period','فترة تربة مكشوفة مخطّطة')+'</span>':Array.from({length:9},(_,j)=>`<span class="scene-plant" style="--n:${j}"><i></i><i></i><i></i></span>`).join('');}
+   if(plants.dataset.crop!==day.crop){plants.dataset.crop=day.crop;plants.style.setProperty('--crop-color',crop?.color||'#749651');plants.innerHTML=bare?'<span class="bare-ground">'+text('Planned bare period','فترة تربة مكشوفة مخطّطة')+'</span>':cropRowSVG(day.crop,(crop?.name||profile?.name||day.crop)+' crop row');}
    section.querySelector(`[data-water="${i}"]`).style.height=day.waterPercent+'%';
    section.querySelector(`[data-storage="${i}"]`).textContent=number(day.storage)+' '+text('mm','مم');
    section.querySelector(`[data-rain="${i}"]`).classList.toggle('raining',day.rain>0);
