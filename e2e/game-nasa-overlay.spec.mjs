@@ -14,6 +14,8 @@ test('Earth Lens NASA button opens real-source GIBS browse overlay without misre
  await page.goto('/experience/play/');
  await page.waitForFunction(()=>!!window.__seventhFieldGame?.isInitialized,{timeout:30000});
  await page.locator('#btn-start-game').click();
+ await page.locator('#btn-earth-lens').click();
+ await expect(page.locator('#earth-lens-bar')).toHaveClass(/visible/);
  await page.locator('[data-lens="nasa"]').click();
  const panel=page.locator('#nasa-gibs-browse-overlay');
  await expect(panel).toBeVisible();
