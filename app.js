@@ -154,6 +154,7 @@ function bindPage(){
  on('#open-research','click',()=>go('research'));
 
  document.querySelectorAll('[data-month]').forEach(button=>button.addEventListener('click',()=>{selectedMonth=Number(button.dataset.month);const position=window.scrollY;render();window.scrollTo({top:position});}));
+ on('#guided-review-plans','click',()=>{flags.calendarReviewed=true;flags.exported=false;persist();render();notify('Crop plan review recorded. Ask a local farm expert to confirm crop suitability.');});
  on('#review-calendars','click',()=>{flags.calendarReviewed=true;flags.exported=false;persist();render();notify('Calendar review recorded. Local agronomic suitability still needs expert review.');});
 
  on('#load-guided-weather','click',loadPower);
