@@ -39,7 +39,7 @@ for(const language of ['en','ar'])test('adviser report is visibly labeled and ev
 test('living farm shows cutoff and changes provenance while scrubbing without changing evidence',async({page})=>{
  await mock(page);await page.goto('/welcome/');
  await expect(page.locator('[data-date]')).toHaveText('2026-07-19');
- await expect(page.locator('.living-rows i')).toHaveCount(24);
+ await expect(page.locator('.living-art-host svg')).toBeVisible();
  await expect(page.locator('[data-crop-name]')).toBeVisible();
  await page.locator('[data-day]').fill('340');await expect(page.locator('[data-provenance]')).toContainText('Historical weather');
  await page.locator('[data-rotation="1"]').click();await expect(page.locator('[data-rotation="1"]')).toHaveAttribute('aria-pressed','true');
