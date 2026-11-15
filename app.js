@@ -17,7 +17,7 @@ function updateLanguage(){document.documentElement.lang=language;document.docume
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=(n,d=0)=>Number(n).toLocaleString(language==='ar'?'ar-EG':'en',{maximumFractionDigits:d});
 const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-let selectedMonth=5,selectedStrategy=1,guidedEditingStrategy=1,cropPlan=null,cropReport=null;
+let selectedMonth=5,guidedEditingStrategy=1,cropPlan=null,cropReport=null;
 try{cropPlan=JSON.parse(localStorage.getItem('soliq-crop-plan-v1'));}catch{}
 
 let flags={fieldSaved:false,calendarReviewed:false,exported:false};
@@ -151,7 +151,7 @@ let stopSeasonMotion=()=>{},stopOutlook=()=>{};
 function render(){
  stopSeasonMotion();stopOutlook();renderWorkspace();
  if(view==='outlook')stopOutlook=mountOutlook($('#living-outlook'),{language,config,strategies});
- $('#save-report').textContent=view==='outlook'?(language==='ar'?'↓ تصدير أدلة ٢٠٢٦':'↓ Export 2026 evidence'):(language==='ar'?'↓ تصدير التقرير':'↓ Export report');
+ $('#save-report').textContent=view==='outlook'?(language==='ar'?'↓ تصدير أدلة ٢٠٢٦':'↓ Export 2026 evidence'):audience==='guided'?(language==='ar'?'طباعة ملخص الحقل':'Print field summary'):(language==='ar'?'↓ تصدير التقرير':'↓ Export report');
  if(['overview','rotations','analyzer'].includes(view)){
   const results=view==='analyzer'&&cropReport?cropReport.results.filter(r=>r.metrics).map(r=>({id:r.id,name:language==='ar'?r.profile.ar:r.profile.name,daily:r.metrics.daily})):output.results;
   stopSeasonMotion=mountSeasonMotion($('#page'),{results,capacity:config.capacity,language,sourceKind:source.kind});
