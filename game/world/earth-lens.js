@@ -11,6 +11,10 @@ export class EarthLensSystem {
     this.scene = scene;
     this.village = village;
     this.currentMode = 'ground'; // 'ground' | 'nasa' | 'future'
+    // Keep the Nile Delta land, water and crop rendering intact in every mode.
+    // Science comparisons appear as subtle geometric guides instead of repainting
+    // the entire village with fake cyan "satellite"/future fields.
+    this.futureGuides = this._buildFutureGuides();
 
     // NASA POWER has a working data path elsewhere in SOLIQ, but THIS game session has
     // NOT loaded, verified or attributed a source receipt. No hardcoded values can be called observed.
@@ -60,35 +64,52 @@ export class EarthLensSystem {
     };
   }
 
+  _buildFutureGuides() {
+    if (typeof BABYLON === 'undefined' || !this.village?.fields) return [];
+    const guides = [];
+    for (const field of this.village.fields) {
+      if (field.crop === 'future_echo') continue;
+      const {x,z}=field.center,halfW=field.width/2,halfD=field.depth/2;
+      // Thin straw-gold perimeter lines, not a fake satellite raster.
+      const points=[
+        new BABYLON.Vector3(x-halfW,.23,z-halfD),
+        new BABYLON.Vector3(x+halfW,.23,z-halfD),
+        new BABYLON.Vector3(x+halfW,.23,z+halfD),
+        new BABYLON.Vector3(x-halfW,.23,z+halfD),
+        new BABYLON.Vector3(x-halfW,.23,z-halfD),
+      ];
+      const guide=BABYLON.MeshBuilder.CreateLines('scenarioBoundary_'+field.id,{points},this.scene);
+      guide.color=new BABYLON.Color3(.82,.69,.39);
+      guide.alpha=.65;
+      guide.isPickable=false;
+      guide.setEnabled(false);
+      guides.push(guide);
+    }
+    return guides;
+  }
+
   _applyGroundMode() {
-    if (typeof BABYLON === 'undefined') return;
-    // Normal PBR materials
-    this.scene.clearColor = new BABYLON.Color4(0.82, 0.89, 0.94, 1.0);
-    this.village.fields.forEach((f) => {
-      f.material.albedoColor.set(0.55, 0.44, 0.32);
-      f.crops.forEach((c) => {
-        c.visibility = 1.0;
-      });
-    });
+    // No fake recoloring: original soil shading and real crop meshes remain.
+    this._setGuides(false);
+    this.scene.clearColor=new BABYLON.Color4(.82,.89,.94,1);
   }
 
   _applyNasaMode() {
-    if (typeof BABYLON === 'undefined') return;
-    // Neutral overlay only; DO NOT paint fake NDVI/temperature as NASA observed pixels.
-    // When a verified, QA-screened HLS/IMERG raster is available, a source-bound renderer
-    // may be added here and will explicitly expose date, native grid, masks and checksum.
-    this.scene.clearColor = new BABYLON.Color4(0.24, 0.28, 0.33, 1.0);
+    // Real NASA browse image appears in a separately labeled overlay. Do not
+    // invent imagery by tinting the ground or assigning arbitrary NDVI colors.
+    this._setGuides(false);
+    this.scene.clearColor=new BABYLON.Color4(.82,.89,.94,1);
   }
 
   _applyFutureMode() {
-    if (typeof BABYLON === 'undefined') return;
-    // Synthetic holographic contours
-    this.scene.clearColor = new BABYLON.Color4(0.1, 0.18, 0.28, 1.0);
-    this.village.fields.forEach((f, idx) => {
-      // High-tech translucent cyan grid
-      f.material.albedoColor.set(0.1, 0.65, 0.9);
-      f.material.roughness = 0.2;
-    });
+    // The future is a distinct, non-validated hypothetical overlay:
+    // outline six existing fields but preserve physical landscape colors.
+    this._setGuides(true);
+    this.scene.clearColor=new BABYLON.Color4(.82,.89,.94,1);
+  }
+
+  _setGuides(active) {
+    this.futureGuides.forEach(g=>g.setEnabled(active));
   }
 
   getTelemetry() {
