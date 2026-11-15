@@ -21,7 +21,7 @@ export function openLocationPicker({lat,lon,language='en',onConfirm}) {
  };
  const close=()=>{closed=true;map?.remove();dialog.remove();};
  dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.addEventListener('close',close,{once:true});
- dialog.querySelector('[data-confirm]').onclick=()=>{if(!setPoint(Number(dialog.querySelector('[name=mapLat]').value),Number(dialog.querySelector('[name=mapLon]').value)))return;onConfirm({...point,accuracy,method:'user_confirmed_point'});dialog.close();};
+ dialog.querySelector('[data-confirm]').onclick=()=>{if(!dialog.querySelector('[name=mapLat]').value.trim()||!dialog.querySelector('[name=mapLon]').value.trim()){message.textContent=t('Choose both coordinates before confirming.','حدد الإحداثيين قبل التأكيد.');return;}if(!setPoint(Number(dialog.querySelector('[name=mapLat]').value),Number(dialog.querySelector('[name=mapLon]').value)))return;onConfirm({...point,accuracy,method:'user_confirmed_point'});dialog.close();};
  dialog.querySelector('[data-move]').onclick=()=>{accuracy=null;setPoint(Number(dialog.querySelector('[name=mapLat]').value),Number(dialog.querySelector('[name=mapLon]').value));};
  dialog.querySelector('[data-locate]').onclick=()=>{
   if(!navigator.geolocation){message.textContent=t('Device location is unavailable. Select the field on the map.','موقع الجهاز غير متاح. اختر الحقل على الخريطة.');return;}

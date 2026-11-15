@@ -78,3 +78,13 @@ test('geolocation denial leaves a correctable point and requires explicit confir
  await page.locator('[data-confirm]').click();await expect(page.locator('dialog')).toHaveCount(0);
  await expect(page.locator('.living-form [name=lat]')).toHaveValue('30.5806');
 });
+
+test('device location stays a preview until the farmer confirms the field',async({page})=>{
+ await page.addInitScript(()=>Object.defineProperty(navigator,'geolocation',{value:{getCurrentPosition(success){success({coords:{latitude:30.5806,longitude:31.4333,accuracy:25}});}}}));
+ await mock(page);await page.goto('/outlook/');await page.locator('[data-select-location]').click();
+ await page.getByRole('button',{name:'Locate my device ⌖',exact:true}).click();
+ await expect(page.locator('[data-location-message]')).toContainText('25');
+ await expect(page.locator('[name=mapLat]')).toHaveValue('30.5806');
+ await expect(page.locator('.living-form [name=lat]')).toHaveValue('30.05');
+ await page.locator('[data-confirm]').click();await expect(page.locator('.living-form [name=lat]')).toHaveValue('30.5806');
+});
