@@ -51,6 +51,10 @@ test('Guided view uses short everyday labels and keeps research terms out of the
     'How to read this comparison',
   ]) assert.ok(html.includes(phrase), 'Missing simple Guided copy: ' + phrase);
 
+  assert.ok(!html.includes('data-go="analyzer"'));
+  assert.ok(!html.includes('data-go="evidence"'));
+  assert.ok(!html.includes('data-go="research"'));
+
   for (const term of ['Hargreaves', 'evapotranspiration', 'phenology', 'Kc =']) {
     assert.ok(!html.includes(term), 'Research wording leaked into Guided view: ' + term);
   }
