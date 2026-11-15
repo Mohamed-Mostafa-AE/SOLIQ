@@ -32,24 +32,24 @@ export function guidedOverview(state, helpers) {
       <h3>${CROPS[crop].name}</h3>
       <p>${months[selectedMonth]} ${config.year}</p>
       <div class="plan-year-strip">${strategy.crops.map((key, i) => `<span style="background:${CROPS[key].color}" class="${i === selectedMonth ? 'current' : ''}" title="${months[i]}: ${CROPS[key].name}"></span>`).join('')}</div>
-      <div class="plan-water"><span>Water left in soil</span><strong>${fmt(summary.storage)} <small>mm</small></strong></div>
-      <small>Estimated water left at month-end. This is not a sensor reading.</small>
+      <div class="plan-water"><span>Water left in the soil</span><strong>${fmt(summary.storage)} <small>mm</small></strong></div>
+      <small>Estimated water left at the end of the month. It is not a real measurement.</small>
     </article>`;
   };
 
   const waterDifference = difference > 0
-    ? `${fmt(difference)} mm more water may be needed than with your plan.`
+    ? `The other plan may need ${fmt(difference)} mm more water.`
     : difference < 0
-      ? `${fmt(Math.abs(difference))} mm less water may be needed than with your plan.`
-      : 'The estimated water need is the same as your plan.';
+      ? `The other plan may need ${fmt(Math.abs(difference))} mm less water.`
+      : 'Both plans may need the same amount of water.';
 
   const heroDescription = source.kind === 'synthetic'
-    ? 'These are example weather records. Add weather for your area before using the results to explore your field.'
-    : 'Weather has been added. Check the soil details and crop dates before using the results.';
+    ? 'This is sample weather. Add weather from your area to see results for your field.'
+    : 'Weather is loaded. Check your soil details and planting dates before using these results.';
 
   return `
     <div class="page-title">
-      <div><div class="eyebrow">Soliq / ${config.year}</div><h1>Plan what to grow next.</h1><p class="sub">Compare crop plans before you decide what to plant.</p></div>
+      <div><div class="eyebrow">Soliq / ${config.year}</div><h1>Plan what to grow next.</h1><p class="sub">Compare plans to help choose what to plant.</p></div>
       <button class="button" data-go="settings">Edit field details</button>
     </div>
     <div class="form-actions" style="margin:0 0 20px">
@@ -64,7 +64,7 @@ export function guidedOverview(state, helpers) {
     ${progressPanel()}
     <section class="panel crop-change-panel">
       <div class="panel-head">
-        <div><div class="eyebrow">Compare crop plans</div><h2>What changes if you choose another plan?</h2></div>
+        <div><div class="eyebrow">Compare crop plans</div><h2>What changes in the other plan?</h2></div>
         <label class="strategy-selector">Compare with
           <select id="compare-strategy">${strategies.slice(1).map((strategy, i) => `<option value="${i + 1}" ${selectedStrategy === i + 1 ? 'selected' : ''}>${esc(strategy.name || `Option ${i + 1}`)}</option>`).join('')}</select>
         </label>
@@ -78,38 +78,38 @@ export function guidedOverview(state, helpers) {
         ${cropCard(alternative, alternativeResult, false)}
       </div>
       <div class="change-caption">
-        <strong>${baseline.crops[selectedMonth] === selectedCrop ? 'The crop stays the same this month' : 'A different crop is planned this month'}</strong>
+        <strong>${baseline.crops[selectedMonth] === selectedCrop ? 'The crop is the same this month' : 'The other plan has a different crop this month'}</strong>
         <span>${changes.length} months change</span>
         <p>${changes.map(i => months[i]).join(' · ') || 'No other months change.'}</p>
       </div>
-      <div class="next-crop-note"><span>This month: ${CROPS[selectedCrop].name}</span><span aria-hidden="true">→</span><span>Next month: ${CROPS[alternative.crops[nextMonth]].name}</span></div>
-      <p class="note">The pictures show which crop is planned. They do not show how the plant will grow or how much you will harvest.</p>
+      <div class="next-crop-note"><span>Now: ${CROPS[selectedCrop].name}</span><span aria-hidden="true">→</span><span>Next: ${CROPS[alternative.crops[nextMonth]].name}</span></div>
+      <p class="note">The pictures show the crop in the plan. They do not show how big the plant will grow or how much you will harvest.</p>
       <button class="button" data-go="rotations">Change the crop calendar →</button>
     </section>
     <div class="guided-metrics">
       <article class="panel">
-        <div class="stat-label">Water the plan may still need</div>
+        <div class="stat-label">Extra water the plan may need</div>
         <div class="stat-value">${fmt(alternativeResult.deficit)} <small>mm</small></div>
         <div class="delta-label">${waterDifference}</div>
-        <p>This is an estimate based on the weather, soil values and watering limit entered above. It does not predict crop yield.</p>
+        <p>This estimate uses the weather, soil details and water limit you entered. It does not tell you how much you will harvest.</p>
       </article>
       <article class="panel">
-        <div class="stat-label">Days with a crop planned</div>
+        <div class="stat-label">Days with crops in the plan</div>
         <div class="stat-value">${alternativeResult.coverDays} <small>days</small></div>
-        <p>See how many days in the year have a crop planned.</p>
-        <p class="note">1 mm of water is about 1 litre over 1 square metre.</p>
+        <p>This is the number of days in the year when a crop is planned.</p>
+        <p class="note">1 mm of water is about 1 litre on each square metre of land.</p>
       </article>
       <article class="panel next-step-card">
         <div class="eyebrow">Before you decide</div>
-        <h3>Check planting dates, local seed types, water supply, tools and buyers with a local farm expert.</h3>
+        <h3>Ask a local farm expert about planting dates, seed types, water, tools and where to sell the crop.</h3>
         <button class="text-btn" id="open-research">See more details and downloads ↗</button>
       </article>
     </div>
     <details class="panel glossary">
-      <summary>How to read this comparison</summary>
+      <summary>How to understand these results</summary>
       <div class="grid-two">
-        <div><h3>What these numbers show</h3><p>They compare estimated water use and the number of days a crop is planned.</p></div>
-        <div><h3>What they do not show</h3><p>They do not tell you the harvest, income or effect on soil. These results have not been checked on a real farm.</p></div>
+        <div><h3>What the numbers show</h3><p>They show how much water each plan may use and how many days crops are planned.</p></div>
+        <div><h3>What the numbers do not show</h3><p>They do not tell you how much you will harvest, how much money you will make or how the soil will change. The results have not been tested on a real farm.</p></div>
       </div>
     </details>`;
 }
