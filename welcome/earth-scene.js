@@ -269,7 +269,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     shininess: 9,
     transparent: false,
     opacity: 1,
-    emissive: new THREE.Color(0x26372f),
+    emissive: new THREE.Color(0x718579),
     emissiveIntensity: .34
   });
   surfaceMaterial.normalScale.set(.22, .22);
@@ -301,6 +301,9 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     texture.wrapT = THREE.ClampToEdgeWrapping;
     texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), mobile ? 4 : 12);
     surfaceMaterial.map = texture;
+    // The same day-lit color atlas gently fills the unlit face, so the globe
+    // remains fully readable instead of fading into the transparent canvas.
+    surfaceMaterial.emissiveMap = texture;
     surfaceMaterial.color.set(source === 'NASA Blue Marble' ? 0xffffff : 0xb9ceda);
     surfaceMaterial.needsUpdate = true;
     earth.material = surfaceMaterial;
