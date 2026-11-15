@@ -1,0 +1,57 @@
+name: NASA Earthdata Authenticated HLS Raw and QA NDVI
+
+on:
+  push:
+    branches:
+      - demo/spaceapps-30s-real-gameplay-20261115
+    paths:
+      - .github/workflows/earthdata-auth-hls.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  download-genuine-hls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require a REGENERATED Earthdata token stored as a GitHub secret
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: |
+          if [ -z "$EARTHDATA_TOKEN" ]; then
+            echo "::error::BLOCKED: set a NEW token as GitHub repository secret EARTHDATA_TOKEN."
+            exit 1
+          fi
+          echo "Earthdata credential is configured; value not logged"
+      - name: Discover and download genuine NASA HLS three-band source
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: |
+          python tools/nasa_hls_ingest.py --catalog-only --product L30 \
+             --lat 30.5806 --lon 31.4333 --start 2026-10-01 --end 2026-11-01
+          python tools/nasa_hls_ingest.py --product L30 \
+             --lat 30.5806 --lon 31.4333 --start 2026-10-01 --end 2026-11-01 \
+             --max-mb 450 --output data/nasa-hls-raw
+      - name: Mask cloud pixels and calculate NDVI from source red and NIR
+        run: |
+          python -m pip install --disable-pip-version-check --quiet rasterio numpy
+          manifest=$(find data/nasa-hls-raw -name source_manifest.json -type f | head -1)
+          if [ -z "$manifest" ]; then
+            echo "::error::No authentic HLS source receipt"
+            exit 1
+          fi
+          python tools/hls_point_ndvi.py "$manifest" --radius 5 --output data/nasa-hls-raw/hls_point_ndvi.json
+      - name: Preserve raw NASA scene and all source receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soliq-nasa-authenticated-hls-raw-qa
+          path: data/nasa-hls-raw/
+          if-no-files-found: warn
+          retention-days: 14
