@@ -64,6 +64,10 @@ class SeventhFieldGame {
     // 3. Rigged Characters (Nada, Uncle Hassan, Maryam)
     this.characters = new CharacterSystem(scene, shadowGenerator);
     this.visualArtReport.characters = addCharacterDetails(this.characters,{preset:this.renderSetup.quality});
+    // Aim at the actual playable heroine before the first rendered frame.
+    // Otherwise ArcRotateCamera's origin target shows empty soil even though
+    // Nada starts at (-16,0,3), making the game look like a featureless map.
+    cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0,1.38,0)));
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
