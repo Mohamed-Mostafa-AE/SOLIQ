@@ -4,6 +4,8 @@ Soliq is a coined brand combining **soil + IQ**: informed decisions about soil, 
 
 Authors: Mohamed Mostafa, Youssef Mohamed, Aya Abdelnabi and Mohamed Abdelrahman.
 
+**Live application:** https://soliq-delta.vercel.app/
+
 Development repository: https://github.com/Mohamed-Mostafa-AE/SOLIQ. See BENCHMARKS.md and RELEASE_CHECKLIST.md for evidence standards and the final release process.
 
 Working browser application with no build dependencies. Run a local static server
