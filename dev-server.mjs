@@ -7,11 +7,13 @@ import outlook from "./api/outlook.js";
 import explain from "./api/explain.js";
 import trends from "./api/trends.js";
 import radar from "./api/radar-scenes.js";
+import {backendHandler} from "./lib/session-runtime.js";
+import {isEvidencePath} from "./lib/evidence-router.js";
 
 const ROOT=resolve(fileURLToPath(new URL(".",import.meta.url)));
-const TYPES={".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png"};
+const TYPES={".html":"text/html; charset=utf-8",".js":"text/javascript; charset=utf-8",".css":"text/css; charset=utf-8",".json":"application/json; charset=utf-8",".svg":"image/svg+xml",".png":"image/png",".glb":"model/gltf-binary",".gltf":"model/gltf+json",".bin":"application/octet-stream",".mp3":"audio/mpeg",".wav":"audio/wav",".webp":"image/webp"};
 const APP_ASSETS=new Set(["index.html","app.js","audience.js","crop-art.js","style.css","website-theme.css","plant-art.css","season-motion.css","outlook.css","soliq-logo.svg","soliq-mark.svg","soil-iq-logo.png","crop-analysis-view.js","crop-analysis.js","decision-audit.js","engine.js","farm-context-view.js","guided.js","i18n.js","location-picker.js","outlook-core.js","outlook-view.js","rotation-context.js","season-motion.js","team-regions.js","visuals.js"]);
-const STATIC=new Set([...APP_ASSETS,"welcome/index.html","welcome/paper.html","welcome/refinement.css","welcome/earth-scene.js","welcome/site.css","welcome/site.js","outlook/index.html","adviser/index.html","adviser/app.js","adviser/worker.js","adviser/knowledge.js","adviser/style.css","experience/index.html","experience/app.js","experience/engine.js","experience/style.css","science/interval-regret.js","pitch-3d/index.html","pitch-3d/app.js","pitch-3d/style.css","pitch-3d/content.js","pitch-3d/art.js","pitch-3d/transitions.js"]);
+const STATIC=new Set([...APP_ASSETS,"welcome/index.html","welcome/paper.html","welcome/refinement.css","welcome/earth-scene.js","welcome/site.css","welcome/site.js","outlook/index.html","adviser/index.html","adviser/app.js","adviser/worker.js","adviser/knowledge.js","adviser/style.css","experience/index.html","experience/app.js","experience/engine.js","experience/style.css","science/interval-regret.js","science/mesqa-window.js","pitch-3d/index.html","pitch-3d/app.js","pitch-3d/style.css","pitch-3d/content.js","pitch-3d/art.js","pitch-3d/transitions.js"]);
 const API=new Map([["/api/outlook",outlook],["/api/explain",explain],["/api/trends",trends],["/api/radar-scenes",radar]]);
 function json(res,status,payload){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});res.end(JSON.stringify(payload));}
 export function resolvePublicPath(pathname){
@@ -19,7 +21,7 @@ export function resolvePublicPath(pathname){
  try{path=decodeURIComponent(pathname).replace(/^\/+/,"");}catch{return null;}
  if(path.includes("\0")||path.includes("\\")||path.split("/").some(x=>x.startsWith(".")||x===".."))return null;
  if(!path||path.endsWith("/"))path+="index.html";
- if(!STATIC.has(path))return null;
+ if(!STATIC.has(path)&&!path.startsWith("experience/play/")&&!path.startsWith("game/"))return null;
  const abs=resolve(ROOT,path);
  return abs.startsWith(ROOT+sep)?abs:null;
 }
@@ -27,6 +29,7 @@ export async function handleRequest(req,res){
  res.setHeader("X-Content-Type-Options","nosniff");
  let url;
  try{url=new URL(req.url,"http://127.0.0.1");}catch{return json(res,400,{error:"Bad URL"});}
+ if(isEvidencePath(url.pathname))return backendHandler(req,res);
  const handler=API.get(url.pathname);
  if(url.pathname.startsWith("/api/")){
   if(!handler)return json(res,404,{error:"Unknown API"});
@@ -58,3 +61,4 @@ if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  const host=process.env.HOST??"127.0.0.1",port=Number(process.env.PORT)||4173;
  createLocalServer().listen(port,host,()=>console.log("SOLIQ local preview: http://"+host+":"+port+"/"));
 }
+
