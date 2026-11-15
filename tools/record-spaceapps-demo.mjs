@@ -81,7 +81,7 @@ try{
   // 14-19s: actual water-engine outcome, not a rendered number.
   await page.evaluate(()=>{
     const g=window.__seventhFieldGame;
-    document.querySelectorAll('.dialogue-modal').forEach(n=>n.setAttribute('hidden',''));
+    g.hud.hideDialogue();
     g.mission.executeOutcome('equilibrium');
   });
   await caption('SIX FARMS · ONE WATER WINDOW','Run the actual time-sliced mesqa simulation');
