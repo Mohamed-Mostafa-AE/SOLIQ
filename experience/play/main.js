@@ -116,8 +116,8 @@ class SeventhFieldGame {
     if (this.hud) {
       this.hud.showTelemetryToast(
         'المية وصلت في المسقة!',
-        'تحرك واستكشف القرية، وتحدث مع عم حسن ومريم قبل تشغيل طلمبة الري.',
-        'observed'
+        'تحرك واستكشف القرية، وتحدث مع عم حسن ومريم قبل تشغيل طلمبة الري. المشهد افتراضي.',
+        'simulated'
       );
     }
   }
@@ -138,7 +138,7 @@ class SeventhFieldGame {
         } else if (mode === 'future') {
           this.hud.showTelemetryToast(
             'محاكاة مستقبلية للدورة الزراعية',
-            'SIMULATION — NOT SATELLITE OBSERVATION: تداخل فترات عدم اليقين (comparison_only)',
+            'SIMULATION — NOT SATELLITE OBSERVATION: لا توجد مقارنة حسابية موثقة بعد (comparison_only)',
             'simulated'
           );
         }
@@ -169,7 +169,7 @@ class SeventhFieldGame {
       this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
       this.hud.showTelemetryToast(
         data.titleAr,
-        `تم تسجيل النتيجة في دفتر الأدلة برقم اعتماد مؤكد. عدالة Jain: ${(data.fairness * 100).toFixed(1)}%`,
+        data.fairness == null ? 'تم تسجيل قرار افتراضي دون توزيع مياه؛ لا توجد عدالة توزيع محسوبة.' : `نتيجة محاكاة مسجلة في الدفتر، مؤشر Jain: ${(data.fairness * 100).toFixed(1)}% (غير معاير ميدانيًا)`,
         'simulated'
       );
     });
