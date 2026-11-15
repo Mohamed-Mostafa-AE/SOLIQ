@@ -7,6 +7,7 @@ test('season playback advances, scrubbing stops playback, and project links work
  await scene.locator('[data-play]').click();await expect(date).not.toHaveText(initial);await scene.locator('[data-play]').click();
  await slider.focus();await slider.press('End');await expect(scene.locator('[data-play]')).toHaveAttribute('aria-pressed','false');
  await expect(date).not.toHaveText(initial);await scene.locator('[data-reset]').click();await expect(date).toHaveText(initial);
- await scene.getByRole('link').click();await expect(page.locator('#links .hub-grid a')).toHaveCount(6);
- await page.locator('[data-game="water"][data-correct="true"]').click();await expect(page.locator('#water-result')).toContainText('+30 mm');
+ await scene.getByRole('link').click();await expect(page.locator('#links .link-list a')).toHaveCount(4);
+ await expect(page.locator('#problem h2')).toContainText('THE NEXT CROP');
+ await expect(page.locator('#method')).toContainText('NASA POWER');
 });
