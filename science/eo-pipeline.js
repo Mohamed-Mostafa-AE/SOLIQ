@@ -219,12 +219,31 @@ export async function runEoSciencePipeline(options = {}) {
     }
   };
 
-  const regretEvaluation = evaluateIntervalRegret({
+  let regretEvaluation = evaluateIntervalRegret({
     simulatedRotations,
     uncertaintyBounds: pilotConfig.UncertaintyBoundsConfig,
     coverageDiagnostics,
     pilotConfig
   });
+
+  // Zero-filling a missing daily climate forcing is diagnostic-only, never decision-ready,
+  // even when overall coverage exceeds the preliminary 85% remote-source threshold.
+  const missingDailyForcing = simulatedRotations.some(r =>
+    r.overallForcingCoverageRatio < 1 ||
+    r.seasonResults?.some(s => s.missingForcingDays > 0));
+  if (missingDailyForcing) {
+    regretEvaluation = {
+      ...regretEvaluation,
+      status: 'comparison_only',
+      decisionMode: 'comparison_only',
+      isComparisonOnly: true,
+      recommendedStrategyId: null,
+      comparisonOnlyReasons: [
+        ...(regretEvaluation.comparisonOnlyReasons || []),
+        'missing_daily_forcing_zero_imputation_diagnostic_only'
+      ]
+    };
+  }
 
   return {
     pilotId: pilotConfig.pilotId,
