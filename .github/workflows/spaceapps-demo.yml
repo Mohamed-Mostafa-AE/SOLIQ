@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   record-actual-site:
@@ -47,3 +47,12 @@ jobs:
             demo/failure.png
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish the 29-second MP4 as a public file in the demo branch
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add demo/global-30s.mp4 demo/thumbnail.png demo/recording-log.json
+          git commit -m "Publish real browser gameplay demo for NASA Space Apps" || exit 0
+          git push origin HEAD:demo/spaceapps-30s-real-gameplay-20261115
