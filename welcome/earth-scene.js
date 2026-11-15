@@ -262,7 +262,9 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     map: null,
     roughness: .975,
     metalness: 0,
-    color: 0xffffff
+    color: 0xffffff,
+    transparent: false,
+    opacity: 1
   });
   let surfaceReady = false;
   let earthTexture = null;
