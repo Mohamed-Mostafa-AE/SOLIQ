@@ -89,12 +89,14 @@ export class EarthLensSystem {
   }
 
   _applyGroundMode() {
+    if (typeof BABYLON === 'undefined') return; // Pure Node test suite has no WebGL runtime
     // No fake recoloring: original soil shading and real crop meshes remain.
     this._setGuides(false);
     this.scene.clearColor=new BABYLON.Color4(.82,.89,.94,1);
   }
 
   _applyNasaMode() {
+    if (typeof BABYLON === 'undefined') return; // Pure Node test suite has no WebGL runtime
     // Real NASA browse image appears in a separately labeled overlay. Do not
     // invent imagery by tinting the ground or assigning arbitrary NDVI colors.
     this._setGuides(false);
@@ -102,6 +104,7 @@ export class EarthLensSystem {
   }
 
   _applyFutureMode() {
+    if (typeof BABYLON === 'undefined') return; // Pure Node test suite has no WebGL runtime
     // The future is a distinct, non-validated hypothetical overlay:
     // outline six existing fields but preserve physical landscape colors.
     this._setGuides(true);
