@@ -1,10 +1,10 @@
 /**
  * SOLIQ: The Seventh Field - Visual Water Simulation Engine
- * Consumes Codex's immutable allocateWater output from experience/engine.js.
+ * Consumes real time-sliced ON/OFF outputs from science/mesqa-window.js.
  * Animates dynamic canal water mesh, gate flows, and per-field soil wetness PBR transitions.
  */
 
-import { allocateWater } from '../../experience/engine.js';
+import { runGameWaterWindow } from '../core/water-window-adapter.js';
 
 export class VisualWaterEngine {
   constructor(scene, village, audio) {
@@ -67,8 +67,15 @@ export class VisualWaterEngine {
     this.supply = supply;
     this.policy = policy;
 
-    // Direct invocation of Codex's allocateWater (Immutable Scientific Truth)
-    const result = allocateWater(demands, supply, policy);
+    // The policy label belongs to the storyline; the source physics model never
+    // invents a head/tail priority effect merely because a button was clicked.
+    const result = runGameWaterWindow({
+      supplyM3h: supply,
+      demandsM3: demands,
+      turnOn: true,
+      pumpOn: this.isPumpActive,
+      seed: `chapter0-${policy}-v1`,
+    });
     this.currentSimulation = result;
 
     return result;
@@ -77,9 +84,9 @@ export class VisualWaterEngine {
   applySimulationToWorld(result) {
     if (!result) return;
 
-    const { delivered, shortfall, fairness, supply, deliveredTotal } = result;
+    const { delivered, shortfall, deliveredTotal } = result;
 
-    if (this.isPumpActive && supply > 0) {
+    if (this.isPumpActive && result.ledger.canalDivertedM3 > 0) {
       this.targetWaterLevel = -0.16; // Normal operating canal depth
       this.targetFlowVelocity = Math.min(1.0, deliveredTotal / 150);
       this.audio.setWaterFlowSound(this.targetFlowVelocity);
@@ -91,7 +98,7 @@ export class VisualWaterEngine {
 
     // Update each field's visual soil moisture based on delivered water vs demand
     result.delivered.forEach((amt, i) => {
-      const demand = this.village.fields[i]?.demand || 30;
+      const demand = this.village.fields[i]?.demand ?? 0;
       const ratio = demand > 0 ? amt / demand : 0;
       this.village.updateFieldHydration(i, ratio);
       if (this.village.fields[i]) {
@@ -106,19 +113,12 @@ export class VisualWaterEngine {
     this.village.setPumpRunning(active);
     this.audio.setPumpSound(active, overload);
 
-    if (active) {
-      // Auto run simulation with current field demands
-      const demands = this.village.fields.slice(0, 6).map((f) => f.demand);
-      const res = this.runSimulation(this.supply, demands, this.policy);
-      this.applySimulationToWorld(res);
-    } else {
+    if (!active) {
       this.targetWaterLevel = -0.52;
       this.targetFlowVelocity = 0.0;
       this.audio.setWaterFlowSound(0.0);
-      // Dry out fields slowly
-      this.village.fields.forEach((_, i) => {
-        this.village.updateFieldHydration(i, 0.1);
-      });
+      // Canal OFF does not erase soil moisture or add any irrigation.
+      // Preserve already delivered soil moisture as its own state.
     }
   }
 
