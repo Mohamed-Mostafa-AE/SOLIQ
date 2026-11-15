@@ -79,7 +79,7 @@ export function guidedOverview(state, helpers) {
       </div>
       <div class="change-caption">
         <strong>${baseline.crops[selectedMonth] === selectedCrop ? 'The crop stays the same this month' : 'A different crop is planned this month'}</strong>
-        <span>${changes.length} months change</span>
+        <span>Months with a different crop: ${changes.length}</span>
         <p>${changes.map(i => months[i]).join(' · ') || 'No other months change.'}</p>
       </div>
       <div class="next-crop-note"><span>This month: ${CROPS[selectedCrop].name}</span><span aria-hidden="true">→</span><span>Next month: ${CROPS[alternative.crops[nextMonth]].name}</span></div>
