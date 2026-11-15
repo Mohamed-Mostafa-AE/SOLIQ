@@ -1,5 +1,5 @@
-/** Reviewed proposal code: pure parsers only; NOT NASA raster download or independently verified source. */
 #!/usr/bin/env node
+/** Reviewed proposal code: pure parsers only; NOT NASA raster download or independently verified source. */
 /**
  * SOLIQ (FieldShift) — Tested Earth-Observation Adapters, Agronomy Water Bucket,
  * Interval-Regret Comparators (B1/B2/B3) & Seventh Field Game Evidence Contracts
