@@ -93,22 +93,26 @@
             <span class="guide-index">03 / DAILY MODEL</span>
             <h3>Reference evapotranspiration and crop demand</h3>
             <p>Reference evapotranspiration is estimated with the Hargreaves–Samani method using latitude, day of year and daily temperature range. Extraterrestrial radiation is calculated for the date and latitude, then converted from MJ m⁻² day⁻¹ to an equivalent water depth using the 0.408 factor.</p>
-            <p>Potential crop evapotranspiration is calculated as <code>ETc = ET₀ × Kc</code>. The current rotation engine assigns a constant, editable exploratory <code>Kc</code> to each crop in each calendar month. The crop-screening tool instead applies a staged coefficient curve using user-declared initial, development, mid-season and late-season durations.</p>
+            <div class="guide-equation"><code>ET₀ = 0.0023 × (Tmean + 17.8) × √(Tmax − Tmin) × 0.408 × Ra</code><code>ETc = ET₀ × Kc</code></div>
+            <p><code>Ra</code> is extraterrestrial radiation in MJ m⁻² day⁻¹; temperatures are in °C. The first expression is the implementation's Hargreaves–Samani estimate, including the radiation-to-water-depth conversion. The second expression gives potential crop evapotranspiration.</p>
+            <p>The current rotation engine assigns a constant, editable exploratory <code>Kc</code> to each crop in each calendar month. The crop-screening tool instead applies a staged coefficient curve: initial Kc is held constant, Kc increases linearly through development, remains at the mid-season value, then decreases linearly during the late season. Stage durations are user-declared assumptions, not observed phenology.</p>
           </section>
 
           <section class="guide-section">
             <span class="guide-index">04 / WATER ACCOUNTING</span>
             <h3>Storage, runoff, drainage and stress</h3>
             <p>Each daily step adds rainfall after the declared runoff fraction and any rule-triggered irrigation. Water above the fixed storage capacity is counted as drainage before evapotranspiration is applied. Actual ET is constrained by available storage and the model's simplified depletion-stress factor.</p>
-            <div class="guide-equation"><code>Storageₜ₊₁ = Storageₜ + Rainₑff + Irrigation − Drainage − Actual ET</code><code>Actual ET = min(Available water, ETc × Stress factor)</code></div>
-            <p>For cropped conditions, the stress factor is capped at 1 and scales with storage relative to 50% of the declared capacity. When storage falls below 40% of capacity, the simplified irrigation rule refills toward 70%, subject to the remaining annual budget. This is a fixed-depth bucket approximation, not a complete FAO-56 dual-coefficient or layered soil model.</p>
+            <div class="guide-equation"><code>Effective rainfall = P × (1 − runoff fraction)</code><code>Drainage = max(0, Storage + Effective rainfall + Irrigation − Capacity)</code><code>Post-drainage storage = min(Capacity, Storage + Effective rainfall + Irrigation)</code><code>Actual ET = min(Post-drainage storage, ETc × Stress factor)</code><code>Next storage = Post-drainage storage − Actual ET</code></div>
+            <p>For cropped conditions, the stress factor is min(1, post-drainage storage ÷ (0.5 × capacity)); fallow uses a stress factor of 1 in the current engine. When storage falls below 40% of capacity, the simplified irrigation rule applies water toward 70%, subject to the remaining annual budget. These daily terms are checked through a mass-balance residual. This is a fixed-depth bucket approximation, not a complete FAO-56 dual-coefficient or layered soil model.</p>
           </section>
 
           <section class="guide-section">
             <span class="guide-index">05 / COMPARATIVE ANALYSIS</span>
             <h3>Physical metrics versus preference score</h3>
             <p>For each sequence, Soliq reports potential ET demand, modeled actual ET, unmet modeled demand, irrigation use, drainage, final storage and planned crop-cover days. The seasonal research view also exposes daily storage traces and mass-balance residuals.</p>
-            <p>The overview preference score combines modeled water adequacy and the fraction of days assigned to a non-fallow crop, using the weights selected by the user. It is a preference index for navigating scenarios—not a yield, profitability, sustainability or agronomic suitability score. Changing weights does not change the physical water calculations.</p>
+            <p>The overview preference score combines modeled water adequacy and the fraction of days assigned to a non-fallow crop, using the weights selected by the user.</p>
+            <div class="guide-equation"><code>Score = 100 × [w₁ × (1 − min(1, deficit ÷ demand)) + w₂ × (planned crop days ÷ days in year)]</code><code>w₁ = water weight ÷ (water weight + cover weight)</code><code>w₂ = cover weight ÷ (water weight + cover weight)</code></div>
+            <p>It is a preference index for navigating scenarios—not a yield, profitability, sustainability or agronomic suitability score. Changing weights does not change the physical water calculations. A lower modeled deficit can reflect lower modeled crop demand; it does not quantify the production trade-off.</p>
           </section>
 
           <section class="guide-section">
