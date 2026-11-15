@@ -2,3 +2,8 @@ artifacts/
 node_modules/
 playwright-report/
 test-results/
+
+# Real NASA Earthdata downloads / credentials must never be committed
+data/nasa-hls-raw/
+.env
+.env.local

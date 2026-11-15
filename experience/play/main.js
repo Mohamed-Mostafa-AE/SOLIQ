@@ -6,6 +6,8 @@
 
 import { RenderSetup } from '../../game/render/engine-setup.js';
 import { DeltaVillage } from '../../game/world/village.js';
+import {installFieldVegetation,installVillageDetails} from '../../game/world/visual-polish.js';
+import {addCharacterDetails} from '../../game/world/character-detail.js';
 import { CharacterSystem } from '../../game/world/characters.js';
 import { PlayerController } from '../../game/world/controls.js';
 import { DeltaAudioSynthesizer } from '../../game/world/audio.js';
@@ -14,6 +16,7 @@ import { EarthLensSystem } from '../../game/world/earth-lens.js';
 import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
+import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
 
 class SeventhFieldGame {
@@ -49,11 +52,16 @@ class SeventhFieldGame {
 
     // 2. Build 3D Delta Village Environment
     this.village = new DeltaVillage(scene, shadowGenerator);
+    this.visualArtReport = {
+      plants: installFieldVegetation(this.village, this.renderSetup.quality),
+      details: installVillageDetails(this.village),
+    };
 
     this._updateProgress(60, 'تجهيز الشخصيات البشرية وحركات الهيكل العظمي...');
 
     // 3. Rigged Characters (Nada, Uncle Hassan, Maryam)
     this.characters = new CharacterSystem(scene, shadowGenerator);
+    this.visualArtReport.characters = addCharacterDetails(this.characters,{preset:this.renderSetup.quality});
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
@@ -72,6 +80,7 @@ class SeventhFieldGame {
 
     // 7. Diegetic HUD & Event Wiring
     this._setupHUD();
+    this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
     this._setupPlayerControls(cameras);
 
     this.isInitialized = true;
@@ -129,6 +138,8 @@ class SeventhFieldGame {
       },
       onLensChange: (mode) => {
         const res = this.earthLens.setMode(mode);
+        if(mode==='nasa')this.nasaBrowseOverlay?.show();
+        else this.nasaBrowseOverlay?.hide();
         if (mode === 'nasa') {
           this.hud.showTelemetryToast(
             'NASA POWER — الرصد غير متاح داخل اللعبة',
@@ -185,6 +196,8 @@ class SeventhFieldGame {
       },
       onLensChange: (mode) => {
         this.earthLens.setMode(mode);
+        if(mode==='nasa')this.nasaBrowseOverlay?.show();
+        else this.nasaBrowseOverlay?.hide();
       },
       onToggleNotebook: () => {
         this.hud.toggleNotebook();
