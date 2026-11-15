@@ -1,31 +1,115 @@
-/** Plain-language presentation of the same model outputs used in research view. */
+/** Plain-language presentation of the same results used in Research view. */
 import { CROPS } from './engine.js';
-import { PHOTOS, monthSummary } from './visuals.js';
+import { monthSummary } from './visuals.js';
+import { cropBotanicalSVG, cropFieldSVG } from './crop-art.js';
 
 export function changedMonths(baseline, alternative) {
-  return baseline.crops.flatMap((crop,index)=>crop===alternative.crops[index]?[]:[index]);
+  return baseline.crops.flatMap((crop, index) => crop === alternative.crops[index] ? [] : [index]);
 }
 
 function cropDrawing(cropKey) {
-  const color=CROPS[cropKey].color;
-  if(cropKey==='fallow')return '<svg viewBox="0 0 280 120" aria-hidden="true"><path d="M20 90 Q140 70 260 90" fill="none" stroke="#b9a786" stroke-width="4"/><path d="M35 105 H245" stroke="#d7cab0" stroke-width="3"/></svg>';
-  const broad=['legume','cover'].includes(cropKey);
-  return `<svg viewBox="0 0 280 120" aria-hidden="true"><path d="M20 105 Q140 92 260 105" fill="none" stroke="#c3cba9" stroke-width="3"/>${[55,95,140,185,225].map((x,i)=>`<g transform="translate(${x},${i%2?12:0})"><path d="M0 96 Q-4 58 0 23" fill="none" stroke="#5a7d46" stroke-width="3"/>${broad?`<ellipse cx="-12" cy="58" rx="16" ry="8" fill="${color}" transform="rotate(30 -12 58)"/><ellipse cx="12" cy="43" rx="16" ry="8" fill="${color}" transform="rotate(-30 12 43)"/>`:`<path d="M0 68 -18 51 M0 54 15 40" stroke="#779056" stroke-width="3"/>${[20,29,38].map(y=>`<ellipse cx="-4" cy="${y}" rx="4" ry="8" fill="${color}" transform="rotate(-25 -4 ${y})"/><ellipse cx="4" cy="${y}" rx="4" ry="8" fill="${color}" transform="rotate(25 4 ${y})"/>`).join('')}`}</g>`).join('')}</svg>`;
+  return cropBotanicalSVG(cropKey, CROPS[cropKey].name + ' plant illustration');
 }
 
-export function guidedOverview(state,helpers) {
-  const {config,source,output,strategies,selectedMonth,selectedStrategy,months}=state;
-  const {esc,fmt,progressPanel}=helpers;
-  const baseline=strategies[0],alternative=strategies[selectedStrategy];
-  const baselineResult=output.results[0],alternativeResult=output.results[selectedStrategy];
-  const changes=changedMonths(baseline,alternative);
-  const selectedCrop=alternative.crops[selectedMonth];
-  const nextMonth=(selectedMonth+1)%12;
-  const difference=alternativeResult.deficit-baselineResult.deficit;
-  const cropCard=(strategy,result,isBaseline)=>{
-    const crop=strategy.crops[selectedMonth];
-    const summary=monthSummary(result,selectedMonth,config.capacity);
-    return `<article class="plan-card ${isBaseline?'baseline-plan':'alternative-plan'}"><div class="plan-card-heading"><span>${isBaseline?'Your current plan':'A possible alternative'}</span><b>${strategy.id}</b></div><div class="planned-crop-illustration">${cropDrawing(crop)}</div><h3>${CROPS[crop].name}</h3><p>${months[selectedMonth]} ${config.year}</p><div class="plan-year-strip">${strategy.crops.map((key,i)=>`<span style="background:${CROPS[key].color}" class="${i===selectedMonth?'current':''}" title="${months[i]}: ${CROPS[key].name}"></span>`).join('')}</div><div class="plan-water"><span>End storage</span><strong>${fmt(summary.storage)} <small>mm</small></strong></div><small>End-of-month modeled storage · not a sensor reading</small></article>`;
+export function guidedOverview(state, helpers) {
+  const { config, source, output, strategies, selectedMonth, selectedStrategy, months } = state;
+  const { esc, fmt, progressPanel } = helpers;
+  const baseline = strategies[0];
+  const alternative = strategies[selectedStrategy];
+  const baselineResult = output.results[0];
+  const alternativeResult = output.results[selectedStrategy];
+  const changes = changedMonths(baseline, alternative);
+  const selectedCrop = alternative.crops[selectedMonth];
+  const nextMonth = (selectedMonth + 1) % 12;
+  const difference = alternativeResult.deficit - baselineResult.deficit;
+
+  const cropCard = (strategy, result, isBaseline) => {
+    const crop = strategy.crops[selectedMonth];
+    const summary = monthSummary(result, selectedMonth, config.capacity);
+    return `<article class="plan-card ${isBaseline ? 'baseline-plan' : 'alternative-plan'}">
+      <div class="plan-card-heading"><span>${isBaseline ? 'Your plan' : 'Another plan'}</span><b>${isBaseline ? 'CURRENT' : 'OPTION'}</b></div>
+      <div class="planned-crop-illustration">${cropDrawing(crop)}</div>
+      <h3>${CROPS[crop].name}</h3>
+      <p>${months[selectedMonth]} ${config.year}</p>
+      <div class="plan-year-strip">${strategy.crops.map((key, i) => `<span style="background:${CROPS[key].color}" class="${i === selectedMonth ? 'current' : ''}" title="${months[i]}: ${CROPS[key].name}"></span>`).join('')}</div>
+      <div class="plan-water"><span>Water left in soil</span><strong>${fmt(summary.storage)} <small>mm</small></strong></div>
+      <small>Estimated water left at month-end. This is not a sensor reading.</small>
+    </article>`;
   };
-  return `<div class="page-title"><div><div class="eyebrow">Soliq / ${config.year}</div><h1>Plan your next crop.</h1><p class="sub">See what changes before you change what you grow.</p></div><button class="button" data-go="settings">Edit field</button></div><div class="form-actions" style="margin:0 0 20px"><button class="button primary" data-go="analyzer">Find crop options for your field. &rarr;</button></div><section class="guided-hero"><img src="${PHOTOS.landscape}" alt="Illustrative countryside photograph, not imagery of the selected field"><div><span class="eyebrow">Your starting point</span><h2 data-user-content>${esc(config.name)}</h2><p>${source.kind==='synthetic'?'This example helps you learn the tool. Load real weather for your location before exploring a farm decision.':'Weather is loaded. Soil values and crop calendars still need your review.'}</p><button class="button" data-go="evidence">${source.kind==='synthetic'?'Add your weather':'Where are these numbers from?'}</button></div><span class="guided-photo-note">Editorial photograph · Unsplash</span></section>${progressPanel()}<section class="panel crop-change-panel"><div class="panel-head"><div><div class="eyebrow">What could change?</div><h2>Choose a sequence to compare with your current plan.</h2></div><label class="strategy-selector">Compare sequence<select id="compare-strategy">${strategies.slice(1).map((strategy,i)=>`<option value="${i+1}" ${selectedStrategy===i+1?'selected':''}>${strategy.id} · ${esc(strategy.name)}</option>`).join('')}</select></label></div><div class="month-picker" aria-label="Explore a month">${months.map((month,i)=>`<button data-month="${i}" aria-pressed="${i===selectedMonth}" class="${i===selectedMonth?'selected':''}"><span>${month}</span><i></i></button>`).join('')}</div><div class="crop-change-comparison">${cropCard(baseline,baselineResult,true)}<div class="change-connector" aria-hidden="true">→</div>${cropCard(alternative,alternativeResult,false)}</div><div class="change-caption"><strong>${baseline.crops[selectedMonth]===selectedCrop?'Same crop this month':'Different crop this month'}</strong><span>${changes.length} months</span><p>${changes.map(i=>months[i]).join(' · ')||'Same crop this month'}</p></div><div class="next-crop-note"><span>${months[selectedMonth]}: ${CROPS[selectedCrop].name}</span><span aria-hidden="true">→</span><span>${months[nextMonth]}: ${CROPS[alternative.crops[nextMonth]].name}</span></div><p class="note">Crop names show the planned calendar, not predicted plant growth or harvest.</p><button class="button" data-go="rotations">Edit crop calendar →</button></section><div class="guided-metrics"><article class="panel"><div class="stat-label">Unmet water demand</div><div class="stat-value">${fmt(alternativeResult.deficit)} <small>mm</small></div><div class="delta-label">${difference>0?'+':''}${fmt(difference)} mm · Change versus baseline</div><p>Water figures are estimates under the same weather and irrigation budget. Lower unmet demand is not proof of better yield.</p></article><article class="panel"><div class="stat-label">Planned crop days</div><div class="stat-value">${alternativeResult.coverDays} <small>days</small></div><p>Compare water demand and planned crop duration.</p><p class="note">A millimetre of water means one litre per square metre.</p></article><article class="panel next-step-card"><div class="eyebrow">Before you choose</div><h3>Check planting dates, local varieties, available water, equipment and buyers with a local agricultural expert.</h3><button class="text-btn" id="open-research">Open methods and exports ↗</button></article></div><details class="panel glossary"><summary>Read the comparison</summary><div class="grid-two"><div><h3>What the model can tell you</h3><p>Compare water demand and planned crop duration.</p></div><div><h3>What it cannot confirm yet</h3><p>Yield, profit, soil-carbon gains and actual farm outcomes have not been validated.</p></div></div></details>`;
+
+  const waterDifference = difference > 0
+    ? `${fmt(difference)} mm more water may be needed than with your plan.`
+    : difference < 0
+      ? `${fmt(Math.abs(difference))} mm less water may be needed than with your plan.`
+      : 'The estimated water need is the same as your plan.';
+
+  const heroDescription = source.kind === 'synthetic'
+    ? 'These are example weather records. Add weather for your area before using the results to explore your field.'
+    : 'Weather has been added. Check the soil details and crop dates before using the results.';
+
+  return `
+    <div class="page-title">
+      <div><div class="eyebrow">Soliq / ${config.year}</div><h1>Plan what to grow next.</h1><p class="sub">Compare crop plans before you decide what to plant.</p></div>
+      <button class="button" data-go="settings">Edit field details</button>
+    </div>
+    <div class="form-actions" style="margin:0 0 20px">
+      <button class="button primary" data-go="analyzer">Find crops for my field →</button>
+    </div>
+    <section class="guided-hero">
+      <div class="guided-hero-art" aria-hidden="true">${cropFieldSVG('wheat', { kind: 'banner' })}</div>
+      <div><span class="eyebrow">Your field</span><h2 data-user-content>${esc(config.name)}</h2><p>${heroDescription}</p>
+        <button class="button" data-go="evidence">${source.kind === 'synthetic' ? 'Add local weather' : 'Check the data'}</button>
+      </div>
+    </section>
+    ${progressPanel()}
+    <section class="panel crop-change-panel">
+      <div class="panel-head">
+        <div><div class="eyebrow">Compare crop plans</div><h2>What changes if you choose another plan?</h2></div>
+        <label class="strategy-selector">Compare with
+          <select id="compare-strategy">${strategies.slice(1).map((strategy, i) => `<option value="${i + 1}" ${selectedStrategy === i + 1 ? 'selected' : ''}>${esc(strategy.name || `Option ${i + 1}`)}</option>`).join('')}</select>
+        </label>
+      </div>
+      <div class="month-picker" aria-label="Choose a month">
+        ${months.map((month, i) => `<button data-month="${i}" aria-pressed="${i === selectedMonth}" class="${i === selectedMonth ? 'selected' : ''}"><span>${month}</span><i></i></button>`).join('')}
+      </div>
+      <div class="crop-change-comparison">
+        ${cropCard(baseline, baselineResult, true)}
+        <div class="change-connector" aria-hidden="true">→</div>
+        ${cropCard(alternative, alternativeResult, false)}
+      </div>
+      <div class="change-caption">
+        <strong>${baseline.crops[selectedMonth] === selectedCrop ? 'The crop stays the same this month' : 'A different crop is planned this month'}</strong>
+        <span>Months with a different crop: ${changes.length}</span>
+        <p>${changes.map(i => months[i]).join(' · ') || 'No other months change.'}</p>
+      </div>
+      <div class="next-crop-note"><span>This month: ${CROPS[selectedCrop].name}</span><span aria-hidden="true">→</span><span>Next month: ${CROPS[alternative.crops[nextMonth]].name}</span></div>
+      <p class="note">The pictures show which crop is planned. They do not show how the plant will grow or how much you will harvest.</p>
+      <button class="button" data-go="rotations">Change the crop calendar →</button>
+    </section>
+    <div class="guided-metrics">
+      <article class="panel">
+        <div class="stat-label">Water the plan may still need</div>
+        <div class="stat-value">${fmt(alternativeResult.deficit)} <small>mm</small></div>
+        <div class="delta-label">${waterDifference}</div>
+        <p>This is an estimate based on the weather, soil values and watering limit entered above. It does not predict crop yield.</p>
+      </article>
+      <article class="panel">
+        <div class="stat-label">Days with a crop planned</div>
+        <div class="stat-value">${alternativeResult.coverDays} <small>days</small></div>
+        <p>See how many days in the year have a crop planned.</p>
+        <p class="note">1 mm of water is about 1 litre over 1 square metre.</p>
+      </article>
+      <article class="panel next-step-card">
+        <div class="eyebrow">Before you decide</div>
+        <h3>Check planting dates, local seed types, water supply, tools and buyers with a local farm expert.</h3>
+        <button class="text-btn" id="open-research">See more details and downloads ↗</button>
+      </article>
+    </div>
+    <details class="panel glossary">
+      <summary>How to read this comparison</summary>
+      <div class="grid-two">
+        <div><h3>What these numbers show</h3><p>They compare estimated water use and the number of days a crop is planned.</p></div>
+        <div><h3>What they do not show</h3><p>They do not tell you the harvest, income or effect on soil. These results have not been checked on a real farm.</p></div>
+      </div>
+    </details>`;
 }
