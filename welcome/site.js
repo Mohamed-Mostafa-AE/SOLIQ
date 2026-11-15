@@ -31,15 +31,36 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape') closeMenu();
 });
 
-const revealTargets = document.querySelectorAll('.story-copy, .challenge-signals, .approach-list, .workflow-grid article, .data-card, .research-copy, .project-card');
+const revealTargets = document.querySelectorAll([
+  '.story-panel:not(.hero-panel) h2',
+  '.story-panel:not(.hero-panel) .panel-copy',
+  '.story-panel:not(.hero-panel) .challenge-signals',
+  '.story-panel:not(.hero-panel) .approach-list',
+  '.section-head h2',
+  '.section-head .section-intro',
+  '.workflow-grid article',
+  '.data-card',
+  '.research-copy > *',
+  '.project-card',
+  '.field-bridge-copy > *',
+  '.footer-brand-panel',
+  '.footer-column'
+].join(', '));
+
 if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  revealTargets.forEach((element, index) => {
+    element.classList.add('text-reveal');
+    if (/^H[1-3]$/.test(element.tagName)) element.classList.add('text-reveal-heading');
+    element.style.setProperty('--reveal-delay', `${(index % 4) * 75}ms`);
+  });
+
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
-        observer.unobserve(entry.target);
-      }
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
     });
-  }, { threshold: .12 });
+  }, { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+
   revealTargets.forEach(element => observer.observe(element));
 }
