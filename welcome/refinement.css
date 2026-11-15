@@ -1190,3 +1190,225 @@ body {
     filter: none !important;
   }
 }
+
+
+/* Planetary scrollytelling: keep the Earth as a single continuous scene beside the story. */
+html, body { overflow-x: clip; }
+
+.earth-story {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background:
+    radial-gradient(ellipse at 76% 18%, rgba(42, 104, 86, .17), transparent 38%),
+    #070c09;
+}
+
+.earth-story-grid {
+  grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr);
+  grid-template-rows: repeat(5, minmax(100svh, auto));
+  max-width: 1800px;
+  padding-inline: var(--pad);
+  gap: 0 clamp(15px, 2.5vw, 42px);
+}
+
+.story-panel {
+  grid-column: 1;
+  min-width: 0;
+  overflow: visible;
+  padding-inline: 0;
+}
+
+.hero-panel { overflow: visible; }
+
+.giant-title { display: none !important; }
+
+.hero-copy {
+  width: min(610px, 100%);
+  max-width: 100%;
+  padding-top: clamp(190px, 31vh, 360px);
+  margin-inline: 0;
+}
+
+.hero-copy h1 {
+  max-width: 590px;
+  font-size: clamp(2.9rem, 4.4vw, 5rem);
+  line-height: .97;
+  letter-spacing: -.075em;
+  text-wrap: balance;
+}
+
+.hero-description { max-width: 510px; }
+
+.planet-rail-global {
+  grid-column: 2;
+  grid-row: 1 / span 5;
+  top: 76px;
+  height: calc(100svh - 76px);
+  overflow: visible;
+  background:
+    radial-gradient(ellipse at 48% 45%, rgba(44, 104, 116, .13), transparent 58%),
+    transparent;
+}
+
+.planet-grid {
+  opacity: .055;
+  background-size: 86px 86px;
+}
+
+.earth-fallback {
+  width: min(76%, 66vh);
+  max-width: 620px;
+  background:
+    radial-gradient(ellipse at 36% 29%, rgba(126, 178, 193, .18), transparent 39%),
+    radial-gradient(circle at 35% 30%, #407c87 0%, #1a4b57 48%, #09202a 78%, #050d12 100%);
+  box-shadow:
+    inset -42px -16px 62px rgba(0,0,0,.66),
+    inset 10px 8px 22px rgba(219,241,242,.11),
+    0 0 86px rgba(72,157,172,.13);
+}
+
+#earth-canvas {
+  inset: 0;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.earth-glow {
+  inset: 7% 0 3%;
+  opacity: .45;
+  background: radial-gradient(ellipse at 50% 50%, transparent 33%, rgba(79,166,181,.07) 50%, transparent 70%);
+}
+
+.earth-label {
+  color: #c9d7d0;
+  font-size: .51rem;
+  letter-spacing: .13em;
+}
+
+.earth-label-top {
+  top: 5%;
+  left: 4%;
+}
+
+.earth-label strong {
+  color: #d1dfa9;
+  font-size: .58rem;
+  letter-spacing: .1em;
+}
+
+.earth-label .label-dot,
+.earth-legend .legend-pulse {
+  background: #a7ce8c;
+  box-shadow: 0 0 10px rgba(167,206,140,.65);
+}
+
+.earth-legend {
+  right: 4%;
+  bottom: 5%;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 270px;
+  justify-content: flex-end;
+  gap: 7px;
+  color: #a9b99f;
+  font-size: .46rem;
+  letter-spacing: .1em;
+  text-align: right;
+}
+
+.earth-legend small { display: none; }
+
+.earth-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.brand-wordmark {
+  display: block;
+  width: clamp(112px, 10vw, 140px);
+  height: auto;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.footer-brand img {
+  width: clamp(116px, 11vw, 140px);
+  height: auto;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.site-footer-expanded .footer-brand {
+  align-items: center;
+}
+
+@media (max-width: 1050px) {
+  .earth-story-grid {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: 0 18px;
+  }
+
+  .hero-copy h1 { font-size: clamp(2.65rem, 5.1vw, 4.2rem); }
+}
+
+@media (max-width: 760px) {
+  .earth-story-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    padding-inline: var(--pad);
+  }
+
+  .story-panels { display: contents; }
+
+  .story-panel {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 82svh;
+    padding-block: 90px 70px;
+  }
+
+  .hero-panel {
+    min-height: 86svh;
+    justify-content: center;
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
+
+  .hero-copy { padding-top: 0; width: min(100%, 600px); }
+  .hero-copy h1 { font-size: clamp(2.7rem, 10vw, 4.5rem); }
+
+  .planet-rail-global {
+    grid-column: 1;
+    grid-row: 1;
+    position: relative;
+    top: auto;
+    height: min(78svh, 610px);
+    margin: 0 calc(var(--pad) * -1);
+    order: -1;
+  }
+
+  .earth-legend { right: var(--pad); bottom: 4%; }
+  .earth-label-top { left: var(--pad); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > .eyebrow,
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions,
+  .hero-copy > .hero-disclaimer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
