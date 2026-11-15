@@ -29,3 +29,12 @@ test('API failure stays visible and does not display invented 2026 metrics',asyn
  await page.goto('/outlook/');await expect(page.locator('.living-status')).toContainText('NASA unavailable');
  await expect(page.locator('.living-metrics')).toHaveCount(0);
 });
+
+test('fresh workspace opens 2026 and header export downloads its evidence',async({page})=>{
+ await mock(page);await page.goto('/');
+ await expect(page.locator('.living-heading h2')).toContainText('Watch the choices');
+ const downloadEvent=page.waitForEvent('download');
+ await page.getByRole('button',{name:'↓ Export 2026 evidence',exact:true}).click();
+ const download=await downloadEvent;expect(download.suggestedFilename()).toBe('soliq-2026-evidence.json');
+ await expect(page.locator('.living-heading h2')).toBeVisible();
+});

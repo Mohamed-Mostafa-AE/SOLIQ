@@ -9,7 +9,7 @@ test.beforeEach(async({page})=>{
 
 test('guided calendar explains the actual planned crop change',async({page},info)=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('/');
+  await page.goto('/#overview');
   await expect(page.getByRole('heading',{name:'Plan your next crop.',exact:true})).toBeVisible();
   await page.locator('[data-month="5"]').click();
   await expect(page.locator('.baseline-plan h3')).toHaveText('Maize');
@@ -78,3 +78,4 @@ test('language and audience changes preserve the exported scientific results',as
   expect(after.analysis).toEqual(before.analysis);
   expect(after.weatherSHA256).toEqual(before.weatherSHA256);
 });
+
