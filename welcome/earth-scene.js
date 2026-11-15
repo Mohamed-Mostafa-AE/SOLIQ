@@ -295,6 +295,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
     disposable.push(texture);
     surfaceReady = true;
     if (status) status.textContent = source + ' surface · illustrative satellite orbit · drag to rotate';
+    rail.classList.add('earth-ready');
   };
 
   textureLoader.load(
@@ -344,9 +345,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
       }
     `
   });
-  const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.035, 96, 64), atmosphereMaterial);
-  atmosphere.renderOrder = 3;
-  earthTilt.add(atmosphere);
+  // No outer cyan atmosphere shell: keep the Earth silhouette clean and photographic.
 
   // Keep the orbital plane independent of the globe's drag rotation. The track
   // and spacecraft sit on the far side of the Earth, so neither is drawn across
@@ -360,7 +359,7 @@ export async function mountEarthScene({ canvas, rail, story, status }) {
   orbitGroup.add(makeOrbit(THREE, orbitX, orbitY, 0x8db9b5, .3));
 
   const satellite = makeSatellite(THREE);
-  satellite.scale.setScalar(.2);
+  satellite.scale.setScalar(.23);
   orbitGroup.add(satellite);
 
   const resize = () => {
