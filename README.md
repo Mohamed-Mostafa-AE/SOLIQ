@@ -74,7 +74,8 @@ field observations, growth predictions or yield estimates.
 | --- | --- |
 | `app.js`, `index.html` | Main browser application and navigation |
 | `engine.js` | Daily reference-ET and soil-water calculations |
-| `guided.js` | Plain-language overview |
+| `guided.js` | Farmer-facing overview and crop-plan editor |
+| `audience.js` | Guided/Research access boundaries and routing |
 | `crop-analysis.js`, `crop-analysis-view.js` | Crop screening and feasibility checks |
 | `crop-art.js`, `plant-art.css` | Crop-specific SVG artwork and presentation |
 | `season-motion.js`, `outlook-view.js` | Daily seasonal replay and 2026 Living Farm |
