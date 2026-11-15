@@ -55,6 +55,14 @@
   <div class="form-grid"><label>رصيد N عند البداية<input id="n-initial" type="number" value="50" min="0"></label><label>سماد N افتراضي<input id="n-fertilizer" type="number" value="20" min="0"></label><label>تثبيت N افتراضي<input id="n-fixation" type="number" value="10" min="0"></label><label>التمعدن<input id="n-mineralization" type="number" value="5" min="0"></label><label>امتصاص النبات<input id="n-uptake" type="number" value="65" min="0"></label><label>الفقد<input id="n-loss" type="number" value="8" min="0"></label></div>
   <button type="button" id="n-calc">احسب ميزان النيتروجين التعليمي</button>
   <div id="n-result" class="result" aria-live="polite"></div>
+  <h3>Decision Certificate — قاعدة فصل القرار من الورقة البحثية</h3>
+  <p>اختبار حسابي على جدول R0/R1/R2 الاصطناعي في الورقة (ليس بيانات زراعية أو NASA). وسّع عدم اليقين بنفسك وشاهد متى تتحول النتيجة من بديل مميز إلى مقارنة فقط.</p>
+  <div class="form-grid">
+   <label>نصف عرض عدم اليقين h <input id="regret-width" type="range" min="0" max="0.04" step="0.001" value="0.005"><output id="regret-width-label">0.005</output></label>
+   <label>هامش الفصل العملي δ <input id="regret-tolerance" type="range" min="0" max="0.03" step="0.001" value="0"><output id="regret-tolerance-label">0</output></label>
+  </div>
+  <button type="button" id="regret-run">اختبر فصل القرار</button>
+  <div id="regret-result" class="result" aria-live="polite"></div>
   <p><a href="../#rotations">افتح مقارنة الدورات في التطبيق الأساسي</a> لتجربة تقاويم ومياه المحاصيل.</p>
  </section>
  <section class="panel" id="water" hidden>
