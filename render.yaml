@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: soliq-web
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: HOST=0.0.0.0 node dev-server.mjs
+    healthCheckPath: /welcome/
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
