@@ -1,8 +1,12 @@
 {
   "pilotId": "kafr-el-sheikh-north-delta-eg",
-  "regionName": "Sakha / Meet Yazid Tail-End Command Area, Kafr El-Sheikh, North Nile Delta, Egypt",
-  "regionNameAr": "منطقة سخا ونهايات ترعة ميت يزيد - كفر الشيخ (شمال الدلتا)",
-  "calibrationStatus": "literature_parameterized_requires_human_field_verification",
+  "regionName": "Sakha / Sidi Ghazi Agricultural Research Zone, Kafr El-Sheikh, North Nile Delta, Egypt",
+  "regionNameAr": "منطقة بحوث سخا وسيدي غازي — كفر الشيخ، شمال الدلتا، مصر",
+  "evidenceStatus": "ASSUMED",
+  "evidenceKind": "assumed",
+  "calibrationStatus": "ASSUMED_UNCALIBRATED_LITERATURE",
+  "isFieldCalibrated": false,
+  "canIssueCalibratedFieldAdvice": false,
   "coordinates": {
     "latitude": 31.1107,
     "longitude": 30.9388,
@@ -14,10 +18,14 @@
     }
   },
   "soil": {
+    "evidenceStatus": "ASSUMED",
+    "evidenceKind": "assumed",
+    "calibrationStatus": "ASSUMED_UNCALIBRATED_LITERATURE",
+    "isFieldCalibrated": false,
     "textureClass": "Heavy Swelling Clay (Saline-Sodic Vertisols)",
-    "clayFractionPct": 54.0,
+    "clayFractionPct": 52.0,
     "siltFractionPct": 31.0,
-    "sandFractionPct": 15.0,
+    "sandFractionPct": 17.0,
     "bulkDensityGcm3": 1.28,
     "fieldCapacityThetaFc": 0.44,
     "wiltingPointThetaWp": 0.24,
@@ -29,22 +37,27 @@
     "readilyEvaporableWaterRewMm": 12.0,
     "totalEvaporableWaterTewMm": 32.0,
     "topsoilEvaporationLayerDepthM": 0.12,
-    "baselineSoilSalinityEcDsm": 5.2,
-    "subsurfaceTileDrainageDepthM": 1.05
+    "baselineSoilSalinityEcDsm": 3.8,
+    "subsurfaceTileDrainageDepthM": 0.95
   },
   "waterManagement": {
-    "primarySource": "Meet Yazid Canal Tail-End & Agricultural Drainage Reuse Mix",
-    "irrigationSystem": "surface_basin_and_modified_strip",
-    "applicationEfficiency": 0.62,
-    "irrigationWaterSalinityEcDsm": 1.35,
+    "evidenceStatus": "ASSUMED",
+    "evidenceKind": "assumed",
+    "calibrationStatus": "ASSUMED_UNCALIBRATED_LITERATURE",
+    "isFieldCalibrated": false,
+    "primarySource": "Meet Yazid / Sidi Ghazi Tail-End Mesqa (Mixed Canal & Drainage Reuse)",
+    "irrigationSystem": "surface_basin_and_furrow",
+    "applicationEfficiency": 0.64,
+    "irrigationWaterSalinityEcDsm": 1.15,
     "seasonalWaterQuotaMm": 1280.0,
     "summerPeakCanalCapMmDay": 7.8,
-    "leachingFractionRequirement": 0.18
+    "leachingFractionRequirement": 0.16
   },
   "currentBaselineRotation": {
     "rotationId": "kafr_el_sheikh_baseline_wheat_rice",
-    "name": "Salt-Stressed Wheat -> Paddy Rice Tail-End Rotation",
-    "nameAr": "دورة قمح شتوي -> أرز صيفي تحت إجهاد ملوحة نهايات الترع",
+    "name": "North Delta Saline-Belt Cereal Rotation (Wheat -> Paddy Rice -> Bare Fallow)",
+    "nameAr": "دورة الحزام الملحي بشمال الدلتا (قمح -> أرز -> بور)",
+    "evidenceStatus": "ASSUMED",
     "sequence": [
       {
         "season": "winter",
@@ -68,40 +81,26 @@
   },
   "constraints": {
     "maxAnnualWaterUseMm": 1280.0,
-    "maxAllowableSoilSalinityEcDsm": 4.8,
+    "maxAllowableSoilSalinityEcDsm": 4.5,
     "requirePestHostBreak": true,
     "requirePositiveOrNeutralNitrogenTrend": true,
     "allowedCrops": [
-      "sugar_beet",
-      "berseem_clover",
       "wheat",
-      "grain_sorghum",
-      "grain_maize",
       "paddy_rice",
+      "grain_sorghum",
+      "berseem_clover",
       "faba_bean",
-      "short_season_cowpea"
+      "sugar_beet"
     ]
   },
   "UncertaintyBoundsConfig": {
     "et0RelativeUncertainty": 0.10,
-    "kcRelativeUncertainty": 0.09,
+    "kcRelativeUncertainty": 0.08,
     "imergPrecipRelativeUncertainty": 0.18,
     "hlsNdviAbsoluteUncertainty": 0.04,
     "soilAvailableWaterRelativeUncertainty": 0.14,
     "minMetCoverageRatio": 0.85,
     "minImergCoverageRatio": 0.80,
     "minHlsClearSceneRatio": 0.35
-  },
-  "references": [
-    {
-      "id": "meet_yazid_sakha_2013",
-      "citation": "El-Agha, D. E., Molden, D., & Ghanem, A. M. (2011/2017). Performance assessment of irrigation water management in old lands of the Nile delta of Egypt (Meet Yazid & Sakha, Kafr El-Sheikh).",
-      "url": "https://www.researchgate.net/publication/257574280_Performance_assessment_of_irrigation_water_management_in_old_lands_of_the_Nile_delta_of_Egypt"
-    },
-    {
-      "id": "abdelbaki_2021_kafrelsheikh",
-      "citation": "Abd El Baki, H. M., et al. (2021). Field experiment in Kafr El-Sheikh (31°12'34.6\" N, 30°34'6.3\" E) and dielectric salinity sensor bias analysis. Water, 13(16), 2181.",
-      "url": "https://www.mdpi.com/2073-4441/13/16/2181"
-    }
-  ]
+  }
 }

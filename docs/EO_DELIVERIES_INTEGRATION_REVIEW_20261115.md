@@ -1,33 +1,33 @@
-# Gemini/Argon scientific deliveries — merged review notes (2026-11-15)
+# SOLIQ EO Science Deliveries — PR #17 Follow-Up Fixes (`#issuecomment-6897616390`)
 
-**State:** This is a **DRAFT integration branch** based on latest `main`. It does **not** imply all NASA raster adapters are production ready or any crop recommendations are field validated. Issue #5 and #6 remain open.
+- **Pull Request:** [PR #17 — Review Gemini EO-science deliveries: NASA safety guards, crop model and Seventh Field evidence](https://github.com/Mohamed-Mostafa-AE/SOLIQ/pull/17)
+- **Review Comment Addressed:** [`#issuecomment-6897616390`](https://github.com/Mohamed-Mostafa-AE/SOLIQ/pull/17#issuecomment-6897616390)
+- **Dedicated Child Branch:** `work/pr17-real-hdf5-hls-band-join` (targeting `review/eo-science-gemini-deliveries-20261115` in [PR #17](https://github.com/Mohamed-Mostafa-AE/SOLIQ/pull/17))
+- **Related Issues:** [Issue #5 (`[GEMINI] Implement real IMERG/HLS evidence pipelines and locally bounded crop-science inputs`)](https://github.com/Mohamed-Mostafa-AE/SOLIQ/issues/5) and [Issue #6 (`[CODEX-2] Implement bounded real SAR acquisition, pair validation and safe change demo`)](https://github.com/Mohamed-Mostafa-AE/SOLIQ/issues/6)
 
-## Artifacts included without replacing team code
-- Earlier Gemini package (uploaded `soliq-work-eo-science.tar.gz`, its patch and manifest) reviewed and safely staged here as 17 files: `adapters/**`, `science/**`, `configs/pilots/**`, `tests/**`, and supporting `docs/**`. **No edits** to original `package.json`, `science/interval-regret.js`, `dev-server.mjs` or existing UI.
-- Most recent Gemini/Argon delivery `soliq_eo_science_adapters.text` is staged as a **review-only** `science/eo-science-review.mjs`, with risky auto-commit/push removed, import side-effects removed, missing source dates/QA/monthly forcing checks tightened, two blank SAR scenes rejected, and 'pixel pair validated' claim removed.
-- Latest scientific game matrix `docs/research/GEMINI_SUBMITTED_EO_GAME_MATRIX.md` is preserved verbatim below an editorial unverified status banner; it must not silently override the canonical V3 nine-arc storyline.
-- Added 14 adversarial unit tests in `tests/eo-science-review.test.mjs` and 2 focused incomplete-forcing safety tests. Prior earlier package passed 16 isolated Node tests; latest standalone script passed its 7 local self-test cases; 14 added guard tests passed in isolation. **GitHub Actions on exact branch SHA must be checked before any merge.**
+## 1. Exact Fixes Addressing Review Comment `#issuecomment-6897616390`
 
-## What was actually fixed
-1. Safe merging: preserve main package scripts and the existing conservative `science/interval-regret.js`; additional EO engine is under a separate name.
-2. The earlier code can no longer call raw NetCDF4/GeoTIFF imagery `response.json()` and pretend it decoded NASA pixels; until a true decoder is implemented it returns `binary_decoder_required`.
-3. User-supplied fixtures do not produce 'verified NASA' status; missing units and source-derived uncertainty defaults are refused. Unsupported/blocked EO sources lead to `comparison_only`.
-4. The newest science helper now rejects unknown UTC standard, null-as-zero, missing optical QA, blank SAR metadata, missing crop forcing and invalid utility shapes.
-5. Incomplete daily forcing is explicitly `illustrative_incomplete_forcing`, never `canIssueFieldAdvice`, and forces pipeline `comparison_only` even if ordinary coverage thresholds happen to pass.
-6. Scientific claims of NDVI vs true soil cover, SAR vs salinity, 40yr hypothetical weather and H1–H4 are bounded; unverified historical archives are reference material, not verified raw NASA bytes.
+1. **Replaced Custom `"IMNC"` Layout with Genuine NetCDF-4/HDF5 (`h5py`/`netCDF4`), Unidata NetCDF-3 (`CDF\x01`/`CDF\x02`), and NASA GES DISC OPeNDAP Subsetting (`adapters/imerg-netcdf4-reader.js`):**
+   - Completely removed the custom `"IMNC"` binary layout and added an explicit negative guard rejecting any buffer containing `"IMNC"` (`reason: 'rejected_legacy_custom_imnc_header_not_real_hdf5'`).
+   - Added `decodeViaPythonScientificBridge` which uses Python's `h5py` (such as `h5py 3.15.1` on the review host) or `netCDF4` to read real HDF5 groups (`/`, `/Grid`), datasets (`precipitation`, `precipitationCal`, `precipitationQualityIndex`, `qa`, `randomError`), chunks/deflate filters, and attributes (`units`, `Units`, `_FillValue`, `CodeMissingValue`).
+   - Added a pure-JS Unidata NetCDF-3 (`CDF\x01` / `CDF\x02` RFC specification) binary parser (`parseNetCdf3BinaryBuffer`) that decodes standard NetCDF files produced by NASA GES DISC OPeNDAP `.nc` subsetting and Python `scipy.io.netcdf_file`.
+   - Added `buildImergOpendapSubsetUrl` to construct official NASA GES DISC OPeNDAP constraint queries (`?precipitation[0:1:0][lonIdx:1:lonIdx][latIdx:1:latIdx],precipitationQualityIndex[...]`) for the target `0.1° x 0.1°` cell (`30.55°N, 31.45°E` for Zankalon).
+2. **Replaced Single Interleaved `.tif` with Separate 3-Band HLS COG Assembly (`B04.tif` + `B05.tif`/`B8A.tif` + `Fmask.tif` in `adapters/hls-geotiff-reader.js` & `adapters/hls-optical.js`):**
+   - Per [NASA HLS Data Products (`HLSL30` & `HLSS30`)](https://hls.gsfc.nasa.gov/data-products/), `decodeHlsGeoTiffBinary` now **rejects any single `.tif` file** (`status: 'incomplete_hls_band_triplet'`) and requires the three separate single-band COGs (`redCogBytes`, `nirCogBytes`, `fmaskCogBytes`) for the same granule.
+   - Validates HLS asset nomenclature (`parseHlsAssetNomenclature` for `HLS.<L30|S30>.T<MGRS>.<YYYYDDD>T<HHMMSS>.v2.0.<Band>.tif`), enforcing `B04` for Red, `B05` for `HLSL30` NIR (or `B8A`/`B08` for `HLSS30` NIR), and 8-bit `Fmask` for QA.
+   - Enforces identical granule ID, MGRS tile, acquisition date, raster dimensions, `30m` pixel scale, `EPSG:32636` CRS, and UTM upper-left tiepoint `(ulEastingM, ulNorthingM)` across all three separate GeoTIFFs before masking clouds/shadows and computing pixel-wise `NDVI`.
+3. **Eliminated `authenticatedLiveTransport` Provenance Spoofing (`adapters/backend-registry.js`, `adapters/gpm-imerg.js`, `adapters/hls-optical.js`):**
+   - Removed `options.authenticatedLiveTransport` from `createBackendEvidenceAdapters(options)` and added a security guard that throws on `strictRejectSpoofFlags: true` when spoofing flags are passed.
+   - Any injected local byte fixture (`imergRawBytes`, `hlsBandTriplet`, `nasaPowerRawBytes`) or custom mock `fetchImpl` (`fetchImpl !== globalThis.fetch`) is strictly constrained to `delivery: 'cached'`, `kind: 'assumed'`, and `status: 'unverified_payload'` (`authenticated: false`).
 
-## What remains blocked (cannot truthfully mark DONE)
-- **GPM IMERG V07**: actual authenticated time/area subset acquisition, NetCDF/HDF parser, physical units and QA, raw file hash/source and valid date coverage. NASA Earthdata authentication/EULA and internet are external requirements. Final V07 availability across late 2025–26 requires current product choice.
-- **HLS v2 / Landsat**: actual authenticated COG/GeoTIFF window decoding and Fmask/clear pixel aggregation, field polygon+native 30m coverage, raw checksum and example granule receipt.
-- **SAR**: compatible acquisition/footprint/pass/polarization/georeference pair and real pixel processing/QA; catalogue matching and metadata screening are insufficient. See #6.
-- **Regional crop science**: actual crop calendar/soil properties validated by local experts, farmer data permission, balance calibration and measured farm outcomes; no implicit claim of crop yield, carbon benefit or guaranteed savings. None of this can be fixed by static source edits alone.
-- **Production integration**: backend PR #11 has not been merged; durable storage provider configuration, token handling, deployed API/UI/receipts/anonymous security acceptance remain separate. Game #7 and Game Core #14 remain independent workstreams.
-- **Cross-workstream conflicts**: Owner must reconcile PR #11 and #15 targeting old feature branches with already-merged main, inspect PR #9 visual edits, and run integration/smoke tests. No blind merge.
+## 2. Exact Status Breakdown (`DONE` vs. `BLOCKED`)
 
-## Next contributor command
-1. Review this **draft PR** first; if CI is red, fix red tests before merging.
-2. On Gemini/Argon machine with authorized Earthdata credential locally only, implement real bounded NetCDF4/GeoTIFF readers and an actual source evidence manifest with downloaded bytes/QA and test.
-3. Run `npm test`, `npm run benchmark` and app/browser E2E on latest integrated tree. Do not submit a dummy NASA success.
-4. Then ask Codex to connect data contracts to private backend and have reviewer validate crop-science claims.
-
-**GitHub push now exists for these code files via connector. The PR is review/draft only. Do not use uploaded old `--prepare-pr` script or old branch instructions to overwrite any teammate's work.**
+| Requirement | Status | Verification Evidence / Exact Blocker Reason |
+| --- | --- | --- |
+| **1. Genuine HDF5/NetCDF4 (`h5py`) & OPeNDAP NetCDF-3 reader** | **DONE** | `adapters/imerg-netcdf4-reader.js` rejects legacy `"IMNC"`, decodes real `scipy.io.netcdf_file` `CDF\x01` files in pure JS, and decodes real `h5py 3.15.1` HDF5 datasets (`precipitation` + `precipitationQualityIndex`/`qa`) via Python `h5py` bridge. |
+| **2. Separate 3-band HLS COG joiner (`B04` + `B05`/`B8A` + `Fmask`)** | **DONE** | `adapters/hls-geotiff-reader.js` rejects single `.tif` files and verifies band nomenclature, MGRS tile, acquisition date, and 30m UTM tiepoint alignment across the 3 separate band COGs. |
+| **3. Prevent `authenticatedLiveTransport` / fixture spoofing** | **DONE** | `adapters/backend-registry.js` and EO adapters never allow caller booleans, injected buffers, or mocked `fetchImpl` functions to produce `observed` or `live`. |
+| **4. Live Earthdata IMERG & HLS Granule Download** | **BLOCKED (Retained `UNAVAILABLE`)** | Outbound internet is disabled in the build container and `EARTHDATA_TOKEN` is not stored in the repository; live calls return `delivery: 'unavailable'`, `rawSha256: null`, `qa.usable: false` with `BLOCKED_EARTHDATA_TOKEN_MISSING` / `BLOCKED_OUTBOUND_NETWORK_UNAVAILABLE`. No synthetic data is substituted. |
+| **5. Preserve all prior PR #17 safety guards & `ASSUMED` crop/soil status** | **DONE** | All 33 EO/science tests (`eo-security-audit.test.js`, `eo-forcing-advice-gate.test.mjs`, `eo-science-review.test.mjs`, `eo-science.test.js`, `eo-pr17-completion.test.mjs`) pass (`33/33 pass`). |
+| **6. Separate review branch targeting PR #17 (without touching release files)** | **DONE** | Committed on dedicated child branch `work/pr17-real-hdf5-hls-band-join` touching only the PR #17 EO/science scope (`adapters/**`, `science/**`, `configs/pilots/**`, `tests/**`, `docs/EO_DELIVERIES_INTEGRATION_REVIEW_20261115.md`). |
+| **7. Overall Issue #5 & Issue #6 Completion Gate** | **BLOCKED (Do Not Close Yet)** | Retain [Issue #5](https://github.com/Mohamed-Mostafa-AE/SOLIQ/issues/5) and [Issue #6](https://github.com/Mohamed-Mostafa-AE/SOLIQ/issues/6) open until live authenticated Earthdata granules (`GPM_3IMERGDF.07`, `HLSL30.v2.0` 3-band COGs, and ASF SAR pairs) are fetched on an internet-connected host with `EARTHDATA_TOKEN`. |

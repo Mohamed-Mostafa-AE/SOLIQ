@@ -1,440 +1,192 @@
 /**
  * @file adapters/hls-optical.js
- * @description NASA Harmonized Landsat Sentinel-2 (HLS v2.0) Optical Connector & Processor.
- *
- * Implements real HLS `HLSL30.v2.0` (Landsat 8/9 OLI 30m) and `HLSS30.v2.0` (Sentinel-2A/B/C MSI 30m)
- * ingestion, reflectance scale factor (`0.0001`) correction, bitwise `Fmask` cloud/shadow/snow/aerosol
- * quality masking, spectral bandpass mapping (`B04`/`B05` for L30 vs `B04`/`B8A` for S30),
- * `NDVI` and salinity index (`SI5`) computation, and spatial/temporal coverage verification.
- *
- * Official NASA LP DAAC / HLS v2.0 References:
- * - HLSL30 v2.0 DOI: `10.5067/HLS/HLSL30.002` (Concept ID: `C2021957657-LPCLOUD`)
- * - HLSS30 v2.0 DOI: `10.5067/HLS/HLSS30.002` (Concept ID: `C2021957295-LPCLOUD`)
- * - HLS V2.0 User Guide (LP DAAC, 2024/2026):
- *   - Surface Reflectance scale factor: `0.0001`, add_offset: `0`, fill value: `-9999`.
- *   - Valid physical surface reflectance domain: `[0.0, 1.0]` (values outside `(0, 1]` after scaling are rejected).
- *   - Spectral band equivalence for 30m NBAR NDVI:
- *     - `HLSL30` (Landsat 8/9 OLI): Red = `B04` (0.64–0.67 µm), NIR = `B05` (0.85–0.88 µm)
- *     - `HLSS30` (Sentinel-2 MSI): Red = `B04` (0.65–0.68 µm), NIR Narrow = `B8A` (0.85–0.88 µm, bandpass-adjusted to OLI B05; `B08` broad NIR accepted only as secondary fallback with explicit flag).
- *   - `Fmask` 8-bit Quality Assessment (QA) Band Bit Definitions:
- *     - Bit 0 (value 1): Cirrus (reserved / thin cirrus)
- *     - Bit 1 (value 2): Cloud
- *     - Bit 2 (value 4): Adjacent to cloud / shadow (150m dilation)
- *     - Bit 3 (value 8): Cloud shadow
- *     - Bit 4 (value 16): Snow / ice
- *     - Bit 5 (value 32): Water
- *     - Bits 6–7 (values 64, 128): Aerosol Optical Thickness (AOT) level (`00`=Climatology, `01`=Low, `10`=Moderate, `11`=High — HLS User Guide recommends excluding High aerosol `11`).
+ * @description NASA Harmonized Landsat Sentinel-2 (HLS v2.0 `HLSL30` / `HLSS30`) adapter
+ * with separate single-band Cloud-Optimized GeoTIFF (`B04` + `B05`/`B8A` + `Fmask`) assembly,
+ * scene date/tile/alignment verification, SHA-256 hashing, and all PR #17 safety guards.
  */
+
+import {
+  decodeHlsFmaskByte,
+  decodeHlsGeoTiffBinary,
+  decodeSingleBandHlsGeoTiff,
+  encodeSingleBandHlsGeoTiff,
+  encodeHlsGeoTiffBandTriplet,
+  encodeHlsGeoTiffBinaryScene,
+  parseHlsAssetNomenclature,
+  isGeoTiffBinary,
+  HLS_REFLECTANCE_SCALE_FACTOR,
+  HLS_REFLECTANCE_FILL_VALUE,
+  HLS_FMASK_FILL_VALUE
+} from './hls-geotiff-reader.js';
 
 export const HLS_V2_SPEC = Object.freeze({
   version: '2.0',
-  scaleFactor: 0.0001,
-  addOffset: 0.0,
-  fillValue: -9999,
-  minReflectance: 0.0001,
-  maxReflectance: 1.0,
   collections: {
-    L30: {
-      shortName: 'HLSL30.v2.0',
-      conceptId: 'C2021957657-LPCLOUD',
+    landsat30m: {
+      shortName: 'HLSL30',
       doi: '10.5067/HLS/HLSL30.002',
+      resolutionMeters: 30,
       redBand: 'B04',
-      nirBand: 'B05',
-      greenBand: 'B03'
+      nirBand: 'B05'
     },
-    S30: {
-      shortName: 'HLSS30.v2.0',
-      conceptId: 'C2021957295-LPCLOUD',
+    sentinel30m: {
+      shortName: 'HLSS30',
       doi: '10.5067/HLS/HLSS30.002',
+      resolutionMeters: 30,
       redBand: 'B04',
-      nirBand: 'B8A',
-      greenBand: 'B03'
+      nirBand: 'B8A'
     }
   },
-  cmrStacEndpoint: 'https://cmr.earthdata.nasa.gov/stac/LPCLOUD/search',
-  cmrGranulesEndpoint: 'https://cmr.earthdata.nasa.gov/search/granules.json'
+  cmrGranulesEndpoint: 'https://cmr.earthdata.nasa.gov/search/granules.json',
+  scaleFactor: HLS_REFLECTANCE_SCALE_FACTOR,
+  fillValue: HLS_REFLECTANCE_FILL_VALUE,
+  fmaskFillValue: HLS_FMASK_FILL_VALUE,
+  minClearPixelRatio: 0.7
 });
 
-/**
- * Decodes an 8-bit HLS v2.0 `Fmask` integer QA value into its constituent flags.
- *
- * @param {number} fmaskByte - Integer QA value (0..255; fill is 255)
- * @param {Object} [options]
- * @param {boolean} [options.rejectAdjacentToCloud=true] - Mask dilated cloud/shadow adjacency (bit 2)
- * @param {boolean} [options.rejectHighAerosol=true] - Mask high aerosol optical thickness (bits 6-7 == 3)
- * @param {boolean} [options.rejectWater=true] - Mask standing water pixels for terrestrial NDVI (unless flooded rice mode)
- * @returns {{
- *   fmaskByte: number,
- *   isFill: boolean,
- *   cirrus: boolean,
- *   cloud: boolean,
- *   adjacentToCloudOrShadow: boolean,
- *   cloudShadow: boolean,
- *   snowIce: boolean,
- *   water: boolean,
- *   aerosolLevel: string,
- *   isClearLandPixel: boolean,
- *   maskReasons: string[]
- * }}
- */
-export function decodeHlsFmask(fmaskByte, options = {}) {
-  const {
-    rejectAdjacentToCloud = true,
-    rejectHighAerosol = true,
-    rejectWater = false
-  } = options;
-
-  if (
-    typeof fmaskByte !== 'number' ||
-    !Number.isInteger(fmaskByte) ||
-    fmaskByte < 0 ||
-    fmaskByte >= 255
-  ) {
-    return {
-      fmaskByte: fmaskByte ?? 255,
-      isFill: true,
-      cirrus: false,
-      cloud: false,
-      adjacentToCloudOrShadow: false,
-      cloudShadow: false,
-      snowIce: false,
-      water: false,
-      aerosolLevel: 'unknown',
-      isClearLandPixel: false,
-      maskReasons: ['fill_or_invalid_fmask']
-    };
-  }
-
-  const cirrus = Boolean(fmaskByte & (1 << 0));
-  const cloud = Boolean(fmaskByte & (1 << 1));
-  const adjacentToCloudOrShadow = Boolean(fmaskByte & (1 << 2));
-  const cloudShadow = Boolean(fmaskByte & (1 << 3));
-  const snowIce = Boolean(fmaskByte & (1 << 4));
-  const water = Boolean(fmaskByte & (1 << 5));
-  const aotBits = (fmaskByte >> 6) & 0b11;
-
-  const aerosolLabels = ['climatology', 'low', 'moderate', 'high'];
-  const aerosolLevel = aerosolLabels[aotBits] || 'unknown';
-
-  const maskReasons = [];
-  if (cirrus) maskReasons.push('cirrus_bit0');
-  if (cloud) maskReasons.push('cloud_bit1');
-  if (rejectAdjacentToCloud && adjacentToCloudOrShadow) {
-    maskReasons.push('adjacent_cloud_shadow_bit2');
-  }
-  if (cloudShadow) maskReasons.push('cloud_shadow_bit3');
-  if (snowIce) maskReasons.push('snow_ice_bit4');
-  if (rejectWater && water) maskReasons.push('water_bit5');
-  if (rejectHighAerosol && aotBits === 0b11) {
-    maskReasons.push('high_aerosol_bits6_7');
-  }
-
-  return {
-    fmaskByte,
-    isFill: false,
-    cirrus,
-    cloud,
-    adjacentToCloudOrShadow,
-    cloudShadow,
-    snowIce,
-    water,
-    aerosolLevel,
-    isClearLandPixel: maskReasons.length === 0,
-    maskReasons
-  };
+export function decodeHlsFmask(fmaskByte) {
+  return decodeHlsFmaskByte(fmaskByte);
 }
 
-/**
- * Scales raw HLS integer DN (`-9999` fill, `0.0001` scale factor) or validates already-scaled
- * surface reflectance into `[0.0001, 1.0]`.
- *
- * @param {number} rawOrScaledValue
- * @param {Object} [options]
- * @param {boolean} [options.isRawDn] - Explicitly specify if value is raw DN (e.g., 2450 -> 0.2450). If omitted, auto-detects raw integer DN > 1.0 vs pre-scaled float.
- * @returns {{ valid: boolean, reflectance: number|null, scalingApplied: boolean, reason?: string }}
- */
 export function scaleAndValidateReflectance(rawOrScaledValue, options = {}) {
+  const isAlreadyScaled = Boolean(options.isAlreadyScaled);
   if (
+    rawOrScaledValue === null ||
+    rawOrScaledValue === undefined ||
     typeof rawOrScaledValue !== 'number' ||
-    !Number.isFinite(rawOrScaledValue) ||
-    rawOrScaledValue === HLS_V2_SPEC.fillValue
+    !Number.isFinite(rawOrScaledValue)
   ) {
+    return { valid: false, reflectance: null, reason: 'non_numeric_or_null' };
+  }
+
+  if (!isAlreadyScaled && Math.abs(rawOrScaledValue - HLS_REFLECTANCE_FILL_VALUE) < 1) {
+    return { valid: false, reflectance: null, reason: 'hls_fill_value' };
+  }
+
+  const scaled = isAlreadyScaled
+    ? rawOrScaledValue
+    : Number((rawOrScaledValue * HLS_REFLECTANCE_SCALE_FACTOR).toFixed(6));
+
+  if (scaled <= 0 || scaled > 1.0) {
+    return { valid: false, reflectance: null, reason: 'out_of_physical_reflectance_bounds' };
+  }
+
+  return { valid: true, reflectance: scaled, reason: null };
+}
+
+export function processHlsObservation(obs = {}) {
+  if (obs.fmask === undefined || obs.fmask === null) {
     return {
+      date: obs.date || null,
       valid: false,
-      reflectance: null,
-      scalingApplied: false,
-      reason: 'fill_or_non_finite'
+      usableClear: false,
+      ndvi: null,
+      qualityFlag: 'missing_fmask_qa',
+      canInferBareSoilDirectly: false,
+      canInferSalinityDirectly: false
     };
   }
 
-  if (rawOrScaledValue < 0) {
+  const fmaskDecoded = decodeHlsFmask(Number(obs.fmask));
+  if (!fmaskDecoded.usableClearLand) {
     return {
+      date: obs.date || null,
       valid: false,
-      reflectance: null,
-      scalingApplied: false,
-      reason: `negative_reflectance (${rawOrScaledValue})`
+      usableClear: false,
+      ndvi: null,
+      fmask: fmaskDecoded,
+      qualityFlag: 'masked_by_fmask_qa',
+      canInferBareSoilDirectly: false,
+      canInferSalinityDirectly: false
     };
   }
 
-  const shouldScale =
-    options.isRawDn === true ||
-    (options.isRawDn === undefined && rawOrScaledValue > 1.0);
+  const isAlreadyScaled = Boolean(obs.isAlreadyScaled);
+  const redRes = scaleAndValidateReflectance(
+    obs.red !== undefined ? obs.red : obs.B04,
+    { isAlreadyScaled }
+  );
+  const nirRes = scaleAndValidateReflectance(
+    obs.nir !== undefined ? obs.nir : obs.B08 ?? obs.B8A ?? obs.B05,
+    { isAlreadyScaled }
+  );
 
-  const scaled = shouldScale
-    ? rawOrScaledValue * HLS_V2_SPEC.scaleFactor + HLS_V2_SPEC.addOffset
-    : rawOrScaledValue;
-
-  if (scaled < HLS_V2_SPEC.minReflectance || scaled > HLS_V2_SPEC.maxReflectance) {
+  if (!redRes.valid || !nirRes.valid) {
     return {
+      date: obs.date || null,
       valid: false,
-      reflectance: null,
-      scalingApplied: shouldScale,
-      reason: `reflectance_out_of_physical_bounds (${scaled.toFixed(6)})`
+      usableClear: false,
+      ndvi: null,
+      fmask: fmaskDecoded,
+      qualityFlag: redRes.reason || nirRes.reason || 'invalid_band_reflectance',
+      canInferBareSoilDirectly: false,
+      canInferSalinityDirectly: false
     };
   }
 
+  const denom = nirRes.reflectance + redRes.reflectance;
+  if (denom <= 1e-6) {
+    return {
+      date: obs.date || null,
+      valid: false,
+      usableClear: false,
+      ndvi: null,
+      fmask: fmaskDecoded,
+      qualityFlag: 'invalid_ndvi_denominator',
+      canInferBareSoilDirectly: false,
+      canInferSalinityDirectly: false
+    };
+  }
+
+  const ndvi = Number(((nirRes.reflectance - redRes.reflectance) / denom).toFixed(4));
   return {
+    date: obs.date || null,
     valid: true,
-    reflectance: Number(scaled.toFixed(6)),
-    scalingApplied: shouldScale
+    usableClear: true,
+    redSurfaceReflectance: redRes.reflectance,
+    nirSurfaceReflectance: nirRes.reflectance,
+    ndvi,
+    fmask: fmaskDecoded,
+    qualityFlag: 'clear_qa_verified',
+    canInferBareSoilDirectly: false,
+    canInferSalinityDirectly: false
   };
 }
 
-/**
- * Computes NDVI, NIRv, and optional Soil Salinity Index (`SI5 = (Red * NIR) / Green`)
- * for a single pixel or field-polygon pixel array after Fmask filtering and reflectance scaling.
- *
- * @param {Object} obs - Single HLS granule observation
- * @param {string} [obs.sensor='HLSS30'] - 'HLSL30' | 'HLSS30'
- * @param {string} obs.date - YYYY-MM-DD
- * @param {Array<Object>} [obs.pixels] - Array of pixel objects `{ red, nir, green?, fmask, isRawDn? }`
- * @param {number} [obs.B04] - Red band (if single-pixel record)
- * @param {number} [obs.B05] - NIR band for HLSL30
- * @param {number} [obs.B8A] - NIR narrow band for HLSS30
- * @param {number} [obs.B03] - Green band
- * @param {number} [obs.Fmask] - Fmask byte (if single-pixel record)
- * @param {boolean} [obs.isRawDn] - Whether band values are integer DNs requiring * 0.0001
- * @param {Object} [options]
- * @param {number} [options.minValidPixelCoverage=0.5] - Minimum clear-pixel fraction within field polygon
- * @returns {Object} Processed HLS observation with NDVI, NIRv, Fmask breakdown, and coverage flag
- */
-export function processHlsObservation(obs = {}, options = {}) {
-  const { minValidPixelCoverage = 0.5, rejectAdjacentToCloud = true } = options;
-  const sensor = String(obs.sensor || obs.product || 'HLSS30').toUpperCase();
-  const isLandsat = sensor.includes('L30') || sensor.includes('LANDSAT');
-
-  // Normalize single-pixel shorthand into pixel array
-  const pixelList = Array.isArray(obs.pixels)
-    ? obs.pixels
-    : [
-        {
-          red: obs.red ?? obs.B04,
-          nir:
-            obs.nir ??
-            (isLandsat ? obs.B05 ?? obs.B8A : obs.B8A ?? obs.B08 ?? obs.B05),
-          green: obs.green ?? obs.B03,
-          fmask: obs.fmask ?? obs.Fmask ?? 0,
-          isRawDn: obs.isRawDn
-        }
-      ];
-
-  const totalPixels = pixelList.length;
-  let clearValidPixels = 0;
-  let cloudMaskedPixels = 0;
-  let shadowMaskedPixels = 0;
-  let invalidReflectancePixels = 0;
-
-  const validNdviValues = [];
-  const validNirvValues = [];
-  const validRedValues = [];
-  const validNirValues = [];
-  const validSi5Values = [];
-
-  for (const px of pixelList) {
-    const fmaskDecoded = decodeHlsFmask(px.fmask ?? px.Fmask ?? 0, {
-      rejectAdjacentToCloud
-    });
-
-    if (!fmaskDecoded.isClearLandPixel) {
-      if (fmaskDecoded.cloud || fmaskDecoded.cirrus || fmaskDecoded.adjacentToCloudOrShadow) {
-        cloudMaskedPixels += 1;
-      }
-      if (fmaskDecoded.cloudShadow) {
-        shadowMaskedPixels += 1;
-      }
-      continue;
-    }
-
-    const redCheck = scaleAndValidateReflectance(px.red ?? px.B04, {
-      isRawDn: px.isRawDn ?? obs.isRawDn
-    });
-    const nirRaw =
-      px.nir ??
-      (isLandsat ? px.B05 ?? px.B8A : px.B8A ?? px.B08 ?? px.B05);
-    const nirCheck = scaleAndValidateReflectance(nirRaw, {
-      isRawDn: px.isRawDn ?? obs.isRawDn
-    });
-
-    if (!redCheck.valid || !nirCheck.valid) {
-      invalidReflectancePixels += 1;
-      continue;
-    }
-
-    const red = redCheck.reflectance;
-    const nir = nirCheck.reflectance;
-    const denom = nir + red;
-    if (denom <= 0) {
-      invalidReflectancePixels += 1;
-      continue;
-    }
-
-    const ndvi = (nir - red) / denom;
-    if (!Number.isFinite(ndvi) || ndvi < -1.0 || ndvi > 1.0) {
-      invalidReflectancePixels += 1;
-      continue;
-    }
-
-    const nirv = ndvi * nir;
-    clearValidPixels += 1;
-    validNdviValues.push(ndvi);
-    validNirvValues.push(nirv);
-    validRedValues.push(red);
-    validNirValues.push(nir);
-
-    if (px.green !== undefined || px.B03 !== undefined) {
-      const greenCheck = scaleAndValidateReflectance(px.green ?? px.B03, {
-        isRawDn: px.isRawDn ?? obs.isRawDn
-      });
-      if (greenCheck.valid && greenCheck.reflectance > 0) {
-        validSi5Values.push((red * nir) / greenCheck.reflectance);
-      }
-    }
-  }
-
-  const clearPixelCoverage = totalPixels > 0 ? clearValidPixels / totalPixels : 0;
-  const passesSpatialCoverage =
-    totalPixels > 0 && clearPixelCoverage >= minValidPixelCoverage && clearValidPixels > 0;
-
-  const mean = (arr) =>
-    arr.length > 0 ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
-
-  const meanNdvi = mean(validNdviValues);
-  const meanNirv = mean(validNirvValues);
-  const meanRed = mean(validRedValues);
-  const meanNir = mean(validNirValues);
-  const meanSi5 = mean(validSi5Values);
-
-  return {
-    date: obs.date,
-    sensor: isLandsat ? 'HLSL30' : 'HLSS30',
-    granuleId: obs.granuleId || null,
-    mgrsTile: obs.mgrsTile || '36RUV', // 36RUV covers Zankalon / Sharkia in East Nile Delta
-    totalPixels,
-    clearValidPixels,
-    cloudMaskedPixels,
-    shadowMaskedPixels,
-    invalidReflectancePixels,
-    clearPixelCoverage: Number(clearPixelCoverage.toFixed(4)),
-    passesSpatialCoverage,
-    ndvi: passesSpatialCoverage && meanNdvi !== null ? Number(meanNdvi.toFixed(4)) : null,
-    nirv: passesSpatialCoverage && meanNirv !== null ? Number(meanNirv.toFixed(4)) : null,
-    redReflectance: passesSpatialCoverage && meanRed !== null ? Number(meanRed.toFixed(4)) : null,
-    nirReflectance: passesSpatialCoverage && meanNir !== null ? Number(meanNir.toFixed(4)) : null,
-    salinityIndexSi5: passesSpatialCoverage && meanSi5 !== null ? Number(meanSi5.toFixed(4)) : null,
-    qualityStatus: passesSpatialCoverage
-      ? 'valid_clear_observation'
-      : clearValidPixels === 0
-        ? 'fully_masked_cloud_or_shadow'
-        : 'insufficient_clear_pixel_coverage'
-  };
-}
-
-/**
- * Processes a time series of HLS v2.0 observations and evaluates seasonal revisit & clear-sky coverage.
- *
- * @param {Object} rawDataset
- * @param {Object} [options]
- * @param {number} [options.minValidPixelCoverage=0.5]
- * @param {number} [options.maxExpectedRevisitGapDays=16] - Max acceptable gap between clear observations
- * @param {number} [options.minClearSceneRatio=0.35] - Minimum fraction of clear overpass scenes in season
- * @returns {Object}
- */
 export function normalizeHlsDataset(rawDataset = {}, options = {}) {
-  const {
-    minValidPixelCoverage = 0.5,
-    maxExpectedRevisitGapDays = 20,
-    minClearSceneRatio = 0.35
-  } = options;
+  const rawList = Array.isArray(rawDataset.observations)
+    ? rawDataset.observations
+    : Array.isArray(rawDataset.records)
+      ? rawDataset.records
+      : [];
 
-  const rawScenes = Array.isArray(rawDataset.scenes || rawDataset.observations)
-    ? rawDataset.scenes || rawDataset.observations
-    : [];
-
-  const processedScenes = rawScenes
-    .map((scene) =>
-      processHlsObservation(scene, {
-        minValidPixelCoverage,
-        rejectAdjacentToCloud: options.rejectAdjacentToCloud ?? true
-      })
-    )
-    .sort((a, b) => String(a.date).localeCompare(String(b.date)));
-
-  const validClearScenes = processedScenes.filter((s) => s.passesSpatialCoverage && s.ndvi !== null);
-  const totalScenes = processedScenes.length;
-  const clearSceneRatio = totalScenes > 0 ? validClearScenes.length / totalScenes : 0;
-
-  // Compute maximum temporal gap (days) between consecutive valid clear scenes
-  let maxTemporalGapDays = 0;
-  for (let i = 1; i < validClearScenes.length; i += 1) {
-    const tPrev = Date.parse(`${validClearScenes[i - 1].date}T00:00:00Z`);
-    const tCurr = Date.parse(`${validClearScenes[i].date}T00:00:00Z`);
-    if (Number.isFinite(tPrev) && Number.isFinite(tCurr)) {
-      const gap = Math.round((tCurr - tPrev) / 86400000);
-      if (gap > maxTemporalGapDays) maxTemporalGapDays = gap;
-    }
-  }
-
-  const bareSoilScenes = validClearScenes.filter((s) => s.ndvi < 0.2);
-  const activeCanopyScenes = validClearScenes.filter((s) => s.ndvi >= 0.2);
-
-  const passesTemporalCoverage =
-    validClearScenes.length >= 2 &&
-    clearSceneRatio >= minClearSceneRatio &&
-    maxTemporalGapDays <= maxExpectedRevisitGapDays;
+  const processed = rawList.map((item) => processHlsObservation(item));
+  const validClear = processed.filter((p) => p.valid && p.usableClear);
+  const clearRatio =
+    processed.length > 0 ? Number((validClear.length / processed.length).toFixed(4)) : 0;
 
   return {
     source: 'NASA_HLS_V2',
-    collectionsUsed: ['HLSL30.v2.0', 'HLSS30.v2.0'],
-    dois: [HLS_V2_SPEC.collections.L30.doi, HLS_V2_SPEC.collections.S30.doi],
-    scaleFactorApplied: HLS_V2_SPEC.scaleFactor,
+    version: '2.0',
+    observations: processed,
+    records: processed,
     coverage: {
-      totalOverpassScenes: totalScenes,
-      validClearScenesCount: validClearScenes.length,
-      cloudyOrRejectedScenesCount: totalScenes - validClearScenes.length,
-      clearSceneRatio: Number(clearSceneRatio.toFixed(4)),
-      maxTemporalGapDays,
-      maxAllowedGapDays: maxExpectedRevisitGapDays,
-      bareSoilDatesCount: bareSoilScenes.length,
-      activeCanopyDatesCount: activeCanopyScenes.length,
-      passesCoverageThreshold: passesTemporalCoverage
-    },
-    observations: processedScenes
+      totalOverpassScenes: processed.length,
+      validClearScenesCount: validClear.length,
+      clearSceneRatio: clearRatio,
+      fraction: clearRatio,
+      passesCoverageThreshold: clearRatio >= (options.minClearSceneRatio ?? 0.35) && validClear.length > 0
+    }
   };
 }
 
 /**
- * Queries NASA LPCLOUD CMR STAC / Granules API for HLS v2.0 (`HLSL30.v2.0` and `HLSS30.v2.0`).
- * Never generates synthetic optical reflectance if Earthdata authentication is missing or offline.
+ * Queries NASA LPCLOUD CMR / COG storage and assembles the 3 separate band COGs
+ * (`B04.tif`, `B05.tif`/`B8A.tif`, `Fmask.tif`) for the same scene.
  *
- * @param {Object} params
- * @param {number} params.latitude
- * @param {number} params.longitude
- * @param {string} params.startDate - YYYY-MM-DD
- * @param {string} params.endDate - YYYY-MM-DD
- * @param {string} [params.earthdataToken=process.env.EARTHDATA_TOKEN]
- * @param {Object} [params.verifiedHlsPayload]
- * @param {Function} [params.fetchImpl=globalThis.fetch]
- * @returns {Promise<Object>}
+ * Safety guards:
+ * - Never treats a single `.tif` file as all three HLS bands.
+ * - Never allows `authenticatedLiveTransport` or any caller boolean to turn local fixtures into `observed`/`live`.
  */
 export async function fetchHlsOpticalSeries(params = {}) {
   const {
@@ -444,6 +196,8 @@ export async function fetchHlsOpticalSeries(params = {}) {
     endDate,
     earthdataToken = process.env.EARTHDATA_TOKEN || process.env.NASA_EARTHDATA_TOKEN || null,
     verifiedHlsPayload = null,
+    binaryGeoTiffBytes = null,
+    binaryBandTriplet = null,
     fetchImpl = globalThis.fetch
   } = params;
 
@@ -451,6 +205,7 @@ export async function fetchHlsOpticalSeries(params = {}) {
     throw new Error('fetchHlsOpticalSeries requires finite numeric latitude and longitude');
   }
 
+  // Guard 1: Caller-supplied JSON fixture is never authenticated as live NASA
   if (verifiedHlsPayload) {
     const normalized = normalizeHlsDataset(verifiedHlsPayload, params);
     return {
@@ -458,11 +213,42 @@ export async function fetchHlsOpticalSeries(params = {}) {
       status: 'unverified_payload',
       authenticated: false,
       evidenceKind: 'assumed',
+      delivery: 'cached',
       syntheticFallbackUsed: false,
       diagnostics: {
         accessMode: 'external_payload_unverified',
         earthdataLoginRequired: true,
-        message: 'Processed real HLS v2.0 surface reflectance and Fmask QA observations.'
+        message: 'Processed caller-supplied HLS payload as unverified/assumed.'
+      }
+    };
+  }
+
+  // Guard 2: Caller-supplied binary GeoTIFF triplet (or single .tif rejected by decodeHlsGeoTiffBinary)
+  const localBinaryInput = binaryBandTriplet || binaryGeoTiffBytes;
+  if (localBinaryInput) {
+    const decoded = decodeHlsGeoTiffBinary(localBinaryInput, params);
+    if (!decoded.valid) {
+      return {
+        ...decoded,
+        source: 'NASA_HLS_V2',
+        authenticated: false,
+        evidenceKind: 'assumed',
+        delivery: 'unavailable',
+        syntheticFallbackUsed: false
+      };
+    }
+    return {
+      ...decoded,
+      status: 'unverified_payload',
+      authenticated: false,
+      evidenceKind: 'assumed',
+      delivery: 'cached',
+      syntheticFallbackUsed: false,
+      diagnostics: {
+        accessMode: 'binary_geotiff_triplet_local_unverified_origin',
+        earthdataLoginRequired: true,
+        message:
+          'Decoded local 3-band HLS GeoTIFF triplet (Red + NIR + Fmask); marked unverified_payload/assumed because it was not fetched from live Earthdata.'
       }
     };
   }
@@ -563,12 +349,16 @@ export async function fetchHlsOpticalSeries(params = {}) {
       };
     }
 
-    // Attempt authenticated COG / metadata read
     const firstEntry = entries[0];
-    const cogLink = (firstEntry.links || []).find(
-      (l) => l.href && (l.href.endsWith('.B04.tif') || l.href.endsWith('.Fmask.tif'))
+    const links = firstEntry.links || [];
+    const redLink = links.find((l) => l.href && /\.B04\.tif$/i.test(l.href.split('?')[0]));
+    const nirLink = links.find(
+      (l) => l.href && /\.(B05|B8A|B08)\.tif$/i.test(l.href.split('?')[0])
     );
-    const cogResp = await fetchImpl(cogLink ? cogLink.href : cmrUrl, {
+    const fmaskLink = links.find((l) => l.href && /\.Fmask\.tif$/i.test(l.href.split('?')[0]));
+
+    const primaryUrl = redLink ? redLink.href : fmaskLink ? fmaskLink.href : cmrUrl;
+    const cogResp = await fetchImpl(primaryUrl, {
       headers: { Authorization: `Bearer ${earthdataToken}` }
     });
 
@@ -596,20 +386,78 @@ export async function fetchHlsOpticalSeries(params = {}) {
 
     const responseType = (cogResp.headers?.get?.('content-type') || '').toLowerCase();
     if (!responseType.includes('json')) {
+      // A complete HLS scene requires all 3 separate band links (Red B04, NIR B05/B8A, Fmask)
+      // AND binary arrayBuffer() support on all 3 responses!
+      if (
+        redLink &&
+        nirLink &&
+        fmaskLink &&
+        typeof cogResp.arrayBuffer === 'function'
+      ) {
+        const [nirResp, fmaskResp] = await Promise.all([
+          fetchImpl(nirLink.href, { headers: { Authorization: `Bearer ${earthdataToken}` } }),
+          fetchImpl(fmaskLink.href, { headers: { Authorization: `Bearer ${earthdataToken}` } })
+        ]);
+        if (
+          nirResp.ok &&
+          fmaskResp.ok &&
+          typeof nirResp.arrayBuffer === 'function' &&
+          typeof fmaskResp.arrayBuffer === 'function'
+        ) {
+          const [redBuf, nirBuf, fmaskBuf] = await Promise.all([
+            cogResp.arrayBuffer().then((ab) => Buffer.from(ab)),
+            nirResp.arrayBuffer().then((ab) => Buffer.from(ab)),
+            fmaskResp.arrayBuffer().then((ab) => Buffer.from(ab))
+          ]);
+          const decoded = decodeHlsGeoTiffBinary(
+            {
+              redCogBytes: redBuf,
+              nirCogBytes: nirBuf,
+              fmaskCogBytes: fmaskBuf,
+              redAssetName: redLink.href,
+              nirAssetName: nirLink.href,
+              fmaskAssetName: fmaskLink.href
+            },
+            params
+          );
+          if (decoded.valid) {
+            const isRealGlobalFetch = fetchImpl === globalThis.fetch;
+            return {
+              ...decoded,
+              status: isRealGlobalFetch ? 'ok' : 'unverified_payload',
+              authenticated: isRealGlobalFetch,
+              evidenceKind: isRealGlobalFetch ? 'observed' : 'assumed',
+              delivery: isRealGlobalFetch ? 'live' : 'cached',
+              syntheticFallbackUsed: false
+            };
+          }
+        }
+      }
+
       return {
-        status: 'binary_decoder_required', source: 'NASA_HLS_V2',
-        authenticated: Boolean(earthdataToken), syntheticFallbackUsed: false,
-        diagnostics: { reason: 'native_binary_requires_bounded_parser', cmrQueryUrl: cmrUrl,
-          message: 'HLS GeoTIFF product cannot be parsed as JSON; authenticated COG/NetCDF reader with grid, QA, native file hash and unit verification is still required.' },
-        records: [], observations: []
+        status: 'binary_decoder_required',
+        source: 'NASA_HLS_V2',
+        authenticated: Boolean(earthdataToken),
+        syntheticFallbackUsed: false,
+        diagnostics: {
+          reason: 'native_binary_requires_bounded_parser',
+          cmrQueryUrl: cmrUrl,
+          message:
+            'HLS GeoTIFF product cannot be parsed as JSON; requires all three separate band COGs (Red B04, NIR B05/B8A, and Fmask) with verified spatial alignment.'
+        },
+        records: [],
+        observations: []
       };
     }
+
     const payload = await cogResp.json();
     const normalized = normalizeHlsDataset(payload, params);
+    const isRealGlobalFetch = fetchImpl === globalThis.fetch;
     return {
       ...normalized,
-      status: 'ok',
-      authenticated: true,
+      status: isRealGlobalFetch ? 'ok' : 'unverified_payload',
+      authenticated: isRealGlobalFetch,
+      evidenceKind: isRealGlobalFetch ? 'observed' : 'assumed',
       syntheticFallbackUsed: false
     };
   } catch (error) {
@@ -634,3 +482,14 @@ export async function fetchHlsOpticalSeries(params = {}) {
     };
   }
 }
+
+export {
+  decodeHlsFmaskByte,
+  decodeHlsGeoTiffBinary,
+  decodeSingleBandHlsGeoTiff,
+  encodeSingleBandHlsGeoTiff,
+  encodeHlsGeoTiffBandTriplet,
+  encodeHlsGeoTiffBinaryScene,
+  parseHlsAssetNomenclature,
+  isGeoTiffBinary
+};

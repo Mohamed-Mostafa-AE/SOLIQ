@@ -1,7 +1,8 @@
 /**
  * @file adapters/index.js
  * @description Unified barrel exports for SOLIQ NASA Earth Observation Adapters
- * (`NASA POWER`, `GPM IMERG V07`, `HLS Landsat/Sentinel-2 v2.0`).
+ * (`NASA POWER`, `GPM IMERG V07` + NetCDF4/HDF5/OPeNDAP reader, `HLS v2.0` + 3-band GeoTIFF/COG reader,
+ * and Codex Backend #4 `EvidenceEnvelope` adapter registry).
  */
 
 export {
@@ -18,14 +19,39 @@ export {
   convertAndValidateImergUnit,
   evaluateImergCoverageAndQuality,
   normalizeGpmImergV07Dataset,
-  fetchGpmImergV07
+  fetchGpmImergV07,
+  decodeImergNetCdf4Binary,
+  encodeImergNetCdf4BinaryGranule,
+  buildStandardNetCdf3TestGranule,
+  parseNetCdf3BinaryBuffer,
+  buildImergOpendapSubsetUrl,
+  snapToImergGridCenter,
+  computeRawSha256
 } from './gpm-imerg.js';
 
 export {
   HLS_V2_SPEC,
   decodeHlsFmask,
+  decodeHlsFmaskByte,
   scaleAndValidateReflectance,
   processHlsObservation,
   normalizeHlsDataset,
-  fetchHlsOpticalSeries
+  fetchHlsOpticalSeries,
+  decodeHlsGeoTiffBinary,
+  decodeSingleBandHlsGeoTiff,
+  encodeSingleBandHlsGeoTiff,
+  encodeHlsGeoTiffBandTriplet,
+  encodeHlsGeoTiffBinaryScene,
+  parseHlsAssetNomenclature,
+  isGeoTiffBinary
 } from './hls-optical.js';
+
+export {
+  REQUIRED_MANIFEST_KEYS,
+  validateContractGeometry,
+  validateContractTimeRange,
+  validateBackendEvidenceEnvelope,
+  buildUnavailableEnvelope,
+  createBackendEvidenceAdapters,
+  adapters
+} from './backend-registry.js';
