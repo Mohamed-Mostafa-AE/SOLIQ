@@ -712,26 +712,27 @@ body {
 .botanical-plant {
   transform-box: view-box;
   transform-origin: 58% 98%;
-  animation: botanical-wind 7.2s ease-in-out infinite;
+  animation: botanical-wind 8.2s cubic-bezier(.42, 0, .58, 1) infinite;
 }
 
 .plant-secondary {
-  opacity: .48;
-  animation-duration: 8.6s;
+  opacity: .46;
+  animation-duration: 8.2s;
 }
 
 .plant-left {
   transform-origin: 38% 98%;
-  animation-delay: -2.8s;
-}
-
-.plant-right {
-  transform-origin: 81% 98%;
-  animation-delay: -5.1s;
+  animation-delay: 0s;
 }
 
 .plant-main {
   transform-origin: 58% 98%;
+  animation-delay: .48s;
+}
+
+.plant-right {
+  transform-origin: 81% 98%;
+  animation-delay: .96s;
 }
 
 .botanical-leaf {
@@ -749,15 +750,18 @@ body {
 .leaf-left-b,.leaf-right-c { animation: leaf-response 5.1s ease-in-out -3.2s infinite; }
 
 @keyframes botanical-wind {
-  0%, 100% { transform: rotate(-.9deg); }
-  34% { transform: rotate(2.1deg); }
-  66% { transform: rotate(1.1deg); }
+  0%, 100% { transform: rotate(-.7deg); }
+  18% { transform: rotate(.15deg); }
+  42% { transform: rotate(3.1deg); }
+  62% { transform: rotate(2deg); }
+  84% { transform: rotate(-.15deg); }
 }
 
 @keyframes leaf-response {
-  0%, 100% { transform: rotate(-1deg); }
-  42% { transform: rotate(2.8deg); }
-  72% { transform: rotate(.7deg); }
+  0%, 100% { transform: rotate(-.5deg); }
+  28% { transform: rotate(.45deg); }
+  54% { transform: rotate(3.1deg); }
+  76% { transform: rotate(1deg); }
 }
 
 .botanical-caption,
@@ -1139,5 +1143,50 @@ body {
     filter: none !important;
     transition: none !important;
     will-change: auto;
+  }
+}
+
+
+/* Opening copy arrives in a deliberate editorial sequence. */
+.hero-copy > .eyebrow,
+.hero-copy > h1,
+.hero-copy > .hero-description,
+.hero-copy > .hero-actions,
+.hero-copy > .hero-disclaimer {
+  animation: hero-editorial-enter .9s cubic-bezier(.2,.72,.18,1) both;
+}
+
+.hero-copy > .eyebrow { animation-delay: .12s; }
+.hero-copy > h1 { animation-delay: .27s; }
+.hero-copy > .hero-description { animation-delay: .43s; }
+.hero-copy > .hero-actions { animation-delay: .59s; }
+.hero-copy > .hero-disclaimer { animation-delay: .74s; }
+
+.hero-copy h1 em {
+  display: inline-block;
+  animation: hero-accent-resolve .9s ease-out .82s both;
+}
+
+@keyframes hero-editorial-enter {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); filter: blur(5px); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+
+@keyframes hero-accent-resolve {
+  from { opacity: .32; filter: blur(5px) brightness(.82); }
+  to { opacity: 1; filter: blur(0) brightness(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-copy > .eyebrow,
+  .hero-copy > h1,
+  .hero-copy > .hero-description,
+  .hero-copy > .hero-actions,
+  .hero-copy > .hero-disclaimer,
+  .hero-copy h1 em {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
   }
 }
