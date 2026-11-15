@@ -73,5 +73,9 @@ Snapshots contain full scenario/actions + engine version and are SHA256 pinned;
 replay creates a new immutable ID and a run:replayed event, leaving original data
 untouched. No geometry is introduced; future private location persistence still
 requires API v1 consent. Production durable-provider acceptance remains BLOCKED.
+Mesqa runs/snapshots use separate `mesqaRuns`/`mesqaSnapshots` namespaces in the
+existing session document so evidence-summary API v1 replay/receipts retain their
+original shape. Both namespaces are destroyed on existing session deletion/TTL.
+The bridge is not yet a browser save endpoint; routing requires a separately
+reviewed contract extension retaining API v1 session and CSRF enforcement.
 Branch is stacked on PR #11 while that PR is pending; no backend reimplementation.
-
