@@ -52,3 +52,13 @@ test("Declared SIMULATED scenario without volume may be represented",()=>{
 test("LIVE evidence requires actual supplied raw bytes",()=>{
  assert.throws(()=>createEvidenceManifestRecord({delivery_state:"LIVE",evidence_kind:"OBSERVED"}),/raw source bytes/);
 });
+
+test("Caller cannot certify an IMERG fixture by setting sourceVerified flag",()=>{
+ const r=validateImergPrecipitationSubset([{date:"2025-01-01",precipitationCal:10}],{sourceUnits:"mm/day",sourceVerified:true});
+ assert.equal(r.status,"PARSED_SOURCE_UNVERIFIED");
+});
+test("SAR metadata checker rejects same scene and inconsistent processing product",()=>{
+ const a={band:"L",pass_direction:"ASCENDING",polarization:"HH",incidence_deg:37,product:"GCOV",scene_id:"A"};
+ assert.equal(evaluateSarScenePairOrUnavailability(a,a).status,"REJECTED_INCOMPATIBLE_PAIR");
+ assert.equal(evaluateSarScenePairOrUnavailability(a,{...a,scene_id:"B",product:"SLC"}).status,"REJECTED_INCOMPATIBLE_PAIR");
+});
