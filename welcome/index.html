@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="site.css">
+  <link rel="stylesheet" href="refinement.css">
   <link rel="stylesheet" href="../outlook.css">
 </head>
 <body>
@@ -121,6 +122,63 @@
       </div>
     </section>
 
+
+    <section class="field-bridge" id="field-context" aria-labelledby="field-bridge-title">
+      <div class="field-bridge-visual" aria-hidden="true">
+        <svg class="field-map-svg" viewBox="0 0 900 680" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="field-map-fill" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#789c62" stop-opacity=".33"/>
+              <stop offset=".55" stop-color="#375b42" stop-opacity=".48"/>
+              <stop offset="1" stop-color="#1a3429" stop-opacity=".18"/>
+            </linearGradient>
+          </defs>
+          <circle class="field-map-halo" cx="555" cy="345" r="280"/>
+          <circle class="field-map-halo" cx="555" cy="345" r="225"/>
+          <circle class="field-map-halo" cx="555" cy="345" r="165"/>
+          <path class="field-map-contour" d="M185 190 C290 76 510 72 698 148 S865 354 747 489 435 600 240 500 75 310 185 190Z"/>
+          <path class="field-map-contour" d="M229 206 C324 119 493 109 657 170 S811 354 713 457 441 553 266 475 136 302 229 206Z"/>
+          <path class="field-map-contour" d="M270 226 C350 152 487 147 620 194 S759 350 682 426 454 508 290 448 194 309 270 226Z"/>
+          <path class="field-map-boundary" d="M350 118 L710 162 L788 364 L632 540 L326 490 L236 298Z"/>
+          <path class="field-map-parcel" d="M350 118 L472 133 L438 285 L236 298Z"/>
+          <path class="field-map-parcel" d="M472 133 L710 162 L645 306 L438 285Z"/>
+          <path class="field-map-parcel" d="M236 298 L438 285 L420 506 L326 490Z"/>
+          <path class="field-map-parcel" d="M438 285 L645 306 L632 540 L420 506Z"/>
+          <path class="field-map-parcel" d="M645 306 L788 364 L632 540Z"/>
+          <g class="field-map-row">
+            <path d="M270 262 C332 201 375 179 447 164"/>
+            <path d="M275 274 C337 215 380 191 450 176"/>
+            <path d="M280 286 C342 229 386 205 453 188"/>
+            <path d="M484 153 C557 169 624 190 684 213"/>
+            <path d="M477 169 C553 184 613 204 674 227"/>
+            <path d="M470 186 C545 202 604 220 664 243"/>
+            <path d="M259 325 C318 322 365 318 421 313"/>
+            <path d="M257 341 C316 338 366 334 420 330"/>
+            <path d="M254 357 C313 354 365 350 419 347"/>
+            <path d="M450 312 C518 328 578 344 644 363"/>
+            <path d="M448 329 C515 345 576 362 643 380"/>
+            <path d="M446 346 C514 362 574 379 642 397"/>
+            <path d="M437 375 C497 391 558 409 638 431"/>
+            <path d="M436 392 C496 408 556 426 633 448"/>
+          </g>
+          <path class="field-map-route" d="M284 441 C374 388 407 238 517 227 S650 341 696 371"/>
+          <circle class="field-map-pin" cx="517" cy="227" r="7"/>
+        </svg>
+        <div class="field-scan-line"></div>
+        <div class="field-coordinate field-coordinate-a"><span>FIELD CONTEXT / LOCAL SCALE</span><strong>SOIL · WATER · CROP</strong></div>
+        <div class="field-coordinate field-coordinate-b"><span>OBSERVATION → DECISION</span><strong>ILLUSTRATIVE FIELD MODEL</strong></div>
+      </div>
+      <div class="field-bridge-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> GLOBAL SIGNALS. LOCAL DECISIONS.</p>
+        <h2 id="field-bridge-title">The view starts in orbit.<br>The decision belongs to the <em>field.</em></h2>
+        <p>NASA POWER weather is the current environmental input. Declared soil-water conditions, crop calendars and farmer priorities add the local context. Other Earth-observation missions and soil datasets are documented as future evidence layers—not presented as live integrations.</p>
+        <div class="field-bridge-steps" aria-label="Soliq workflow">
+          <span>01 / OBSERVE</span><i></i><span>02 / ADD CONTEXT</span><i></i><span>03 / COMPARE</span>
+        </div>
+        <a class="field-bridge-cta" href="#method-details">Follow the workflow <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
     <section class="method-section section-pad" id="method-details">
       <div class="section-head">
         <p class="eyebrow"><span class="eyebrow-line"></span> HOW THE PROTOTYPE WORKS</p>
@@ -193,11 +251,11 @@
           <span class="project-code">01 / INTERACTIVE PROTOTYPE</span><div class="project-icon">↗</div>
           <h3>Open the Soliq app.</h3><p>Explore the 2026 outlook, edit crop calendars, inspect water-balance scenarios and review field assumptions.</p><b>LAUNCH APPLICATION <span>↗</span></b>
         </a>
-        <a class="project-card" href="paper.html">
+        <a class="project-card project-research" href="paper.html">
           <span class="project-code">02 / RESEARCH DOCUMENT</span><div class="project-icon">⌁</div>
           <h3>Read the research brief.</h3><p>Review the research question, implemented method, evidence standards, proposed evaluation and current limitations.</p><b>OPEN RESEARCH BRIEF <span>↗</span></b>
         </a>
-        <a class="project-card" href="https://github.com/Mohamed-Mostafa-AE/SOLIQ" target="_blank" rel="noopener noreferrer">
+        <a class="project-card project-source" href="https://github.com/Mohamed-Mostafa-AE/SOLIQ" target="_blank" rel="noopener noreferrer">
           <span class="project-code">03 / DEVELOPMENT REPOSITORY</span><div class="project-icon">⌘</div>
           <h3>Explore the source.</h3><p>Review the project code, tests, benchmark notes and technical documentation. Repository access is restricted.</p><b>OPEN GITHUB REPOSITORY <span>↗</span></b>
         </a>
