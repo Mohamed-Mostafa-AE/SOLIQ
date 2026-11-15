@@ -18,6 +18,7 @@
  <div class="legend"><span>● NASA: عند توفر اتصال موثّق</span><span>◇ Simulated: تجربة تعليمية</span><span>△ Unavailable: بيانات لم تصل</span></div>
 </header>
 <nav id="tabs" aria-label="مساحات Soil-IQ">
+ <button type="button" data-tab="argon">🧪 Argon Water Challenge</button>
  <a href="play/" aria-label="Play the Seventh Field 3D prototype" style="text-decoration:none;display:inline-flex;align-items:center;background:#25694e;color:#fff;padding:8px 13px;border-radius:7px;font-weight:700">🎮 جرّب الأرض السابعة 3D (Prototype)</a>
  <button type="button" data-tab="farm">Living Farm</button>
  <button type="button" data-tab="trend">Trend Detective</button>
@@ -98,8 +99,13 @@
   <button type="button" id="ask">اشرح</button><div id="answer" class="result" aria-live="polite"></div>
   <div class="chat"><label>رسالة ضمن المحاكاة<input id="message" value="الري عندي غير كافٍ"></label><button type="button" id="send">رد محاكاة</button><div id="thread"></div></div>
  </section>
+ <section class="panel" id="argon" hidden>
+  <div class="scene-head"><div><span class="tag">Argon × Antigravity · Judge Lab</span><h2>مسابقة قرارات المسقة والمحاصيل</h2></div><span class="status">SIMULATED · comparison_only</span></div>
+  <div id="argon-challenge-root"></div>
+ </section>
 </main>
 <footer><span>Experience Lab · Prototype, not validated farm recommendation</span><button type="button" id="download">تصدير مدخلات اللعبة JSON</button><a href="../">العودة إلى Soil-IQ</a></footer>
 <script type="module" src="app.js"></script>
+<script type="module">import {mountArgonChallenge} from '../game/argon-challenge.js';mountArgonChallenge(document.getElementById('argon-challenge-root'));</script>
 </body>
 </html>
