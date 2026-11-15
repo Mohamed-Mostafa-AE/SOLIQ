@@ -71,6 +71,8 @@ jobs:
           node-version: '24'
       - name: Retrieve real NASA data and check the 2026 pipeline
         run: node outlook-benchmark.mjs
+      - name: Benchmark Sakha in Kafr El Sheikh with independent checks
+        run: node egypt-benchmark.mjs
       - name: Preserve dated evidence and hindcast report
         if: always()
         uses: actions/upload-artifact@v7
