@@ -14,7 +14,7 @@ test('guided calendar explains the actual planned crop change',async({page},info
   await page.locator('[data-month="5"]').click();
   await expect(page.locator('.baseline-plan h3')).toHaveText('Maize');
   await expect(page.locator('.alternative-plan h3')).toHaveText('Grain legume');
-  await expect(page.locator('.change-caption')).toContainText('Different crop this month');
+  await expect(page.locator('.change-caption')).toContainText('A different crop is planned this month');
   expect(errors).toEqual([]);
   await page.screenshot({path:info.outputPath('guided-calendar.png'),fullPage:true});
 });
@@ -100,7 +100,7 @@ test('Guided and Research views have distinct navigation and landing pages',asyn
  await expect(page.locator('#workspace-nav [data-view="rotations"][data-audience="guided"]')).toBeVisible();
  await expect(page.locator('#workspace-nav [data-view="evidence"]')).toBeHidden();
  await expect(page.locator('#audience-banner-label')).toContainText('FARMERS & CLIENTS');
- await page.locator('#workspace-nav [data-view="rotations"]').click();
+ await page.locator('#workspace-nav [data-view="rotations"][data-audience="guided"]').click();
  await expect(page.locator('[data-crop]')).toHaveCount(36);
  await page.locator('#guided-review-plans').click();
  await page.locator('#guided-mode').click();
