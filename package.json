@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "benchmark": "node benchmarks.mjs"
+    "benchmark": "node benchmarks.mjs",
+    "dev": "node dev-server.mjs"
   },
   "engines": {
     "node": ">=22"

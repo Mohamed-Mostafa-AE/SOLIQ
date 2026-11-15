@@ -56,3 +56,17 @@ Run `npm test` and `npm run benchmark`. GitHub workflow: .github/workflows/bench
 Open Crop analyzer to compare six sourced crop profiles, review seed/equipment/market/local constraints, change assumed growth-stage lengths and inspect water sensitivity. The rest of your baseline calendar stays in place. See CROP_ANALYZER.md.
 
 Browser checks run in GitHub Actions with a pinned test runner. To reproduce: `npm install --no-save --package-lock=false @playwright/test@1.65.1`, `npx playwright install --with-deps chromium`, then `npx playwright test`. Numerical tests remain dependency-free.
+
+
+## 2026 Living Farm and model explanations
+
+Open `/outlook/`, `/welcome/#living-farm` or **2026 Living Farm** in the app. Run `node dev-server.mjs` for local development with the API; a static server alone cannot provide the new endpoints. Vercel runs `api/outlook.js` and `api/explain.js` as Node functions.
+
+- `/api/outlook` retrieves 2026 NASA POWER UTC temperature and rainfall through the server's current date minus three days (or December 31 after 2026). Exact returned coverage and retrieval timestamps are displayed. It also retrieves complete 2016–2025 daily histories. A trailing publication gap is reported; an interior gap rejects the dataset. There is no synthetic fallback.
+- Five nearest historical weather years, selected using the last 60 available days, provide alternative remaining-year weather sequences. The bucket model starts on January 1 and carries water and irrigation consumption through the observation/scenario boundary. P10/P50/P90 are empirical historical-scenario percentiles, not calibrated confidence intervals. Calendar illustrations do not predict growth or yield.
+- A ten-fold retrospective, leave-one-year-out rainfall/heat-day check compares the analogue method with historical median climatology. These are retrospective weather checks, not forward-chained evaluation or crop-outcome validation. Small samples, station comparisons, independent locations and prospective validation remain necessary.
+- `api/explain.js` offers Kimi K3.1 Pro (`moonshotai/kimi-k3.1-pro`) and DeepSeek V4.1 Flash (`deepseek/deepseek-v4.1-flash`), verified against the live Gateway catalog on 2026-11-15. These are hosted open-weight models; this project does not self-host their weights. Hosted inference may cost money. The numerical model supplies the evidence, and the language model explains trade-offs. No free-form client prompt or client-computed metrics enter the model request.
+- Vercel deployment OIDC authenticates to AI Gateway. Local tests can use an uncommitted `AI_GATEWAY_API_KEY`. Never place credentials in browser code. Account activation/credits are required if Gateway reports 402/403. Provider failures remain visible; they never become a made-up AI response. Explanations may still be inaccurate and require human review.
+- In-memory request throttling and explanation caching are per function instance; production traffic needs a durable limit or platform firewall policy. No account, private farm-record database or provider-specific data-retention guarantee is implemented.
+
+The 2026 outlook currently supports latitude −60° to 60° because the existing ET model is restricted to that range. Its weather is regional gridded context, not field-scale soil moisture, crop classification or ground truth. The existing complete-year workspace and its synthetic starting example remain separate and visibly labeled.

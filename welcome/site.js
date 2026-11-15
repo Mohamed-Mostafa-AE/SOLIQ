@@ -1,3 +1,5 @@
+import { mountOutlook } from '../outlook-view.js';
+mountOutlook(document.querySelector('#living-outlook'));
 const revealTargets=document.querySelectorAll('.story-grid, .method-line, .project h2, .link-list a');
 if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
   const observer=new IntersectionObserver(entries=>{
