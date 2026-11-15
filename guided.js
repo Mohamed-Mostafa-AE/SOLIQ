@@ -53,12 +53,12 @@ export function guidedOverview(state, helpers) {
       <button class="button" data-go="settings">Edit field details</button>
     </div>
     <div class="form-actions" style="margin:0 0 20px">
-      <button class="button primary" data-go="analyzer">Find crops for my field →</button>
+      <button class="button primary" data-go="rotations">Edit crop plans →</button>
     </div>
     <section class="guided-hero">
       <div class="guided-hero-art" aria-hidden="true">${cropFieldSVG('wheat', { kind: 'banner' })}</div>
       <div><span class="eyebrow">Your field</span><h2 data-user-content>${esc(config.name)}</h2><p>${heroDescription}</p>
-        <button class="button" data-go="evidence">${source.kind === 'synthetic' ? 'Add local weather' : 'Check the data'}</button>
+        <button class="button" data-go="settings">${source.kind === 'synthetic' ? 'Add local weather' : 'Change weather data'}</button>
       </div>
     </section>
     ${progressPanel()}
@@ -96,13 +96,13 @@ export function guidedOverview(state, helpers) {
       <article class="panel">
         <div class="stat-label">Days with crops in the plan</div>
         <div class="stat-value">${alternativeResult.coverDays} <small>days</small></div>
-        <p>This is the number of days in the year when a crop is planned.</p>
+        <p>This is how many days of the year have a crop in the plan.</p>
         <p class="note">1 mm of water is about 1 litre on each square metre of land.</p>
       </article>
       <article class="panel next-step-card">
         <div class="eyebrow">Before you decide</div>
-        <h3>Ask a local farm expert about planting dates, seed types, water, tools and where to sell the crop.</h3>
-        <button class="text-btn" id="open-research">See more details and downloads ↗</button>
+        <h3>Ask a local farm expert about planting dates, seed types, water and equipment.</h3>
+        <button class="text-btn" data-go="rotations">Change your crop plans ↗</button>
       </article>
     </div>
     <details class="panel glossary">
