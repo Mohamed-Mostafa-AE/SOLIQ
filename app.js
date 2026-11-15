@@ -92,7 +92,38 @@ function cropAnalysisPage(){
  try{cropReport=screenCrops(weather,config,cropPlan,strategies[0],source.kind);}catch{cropPlan=synchronizeScreeningPlan(null,config);cropReport=screenCrops(weather,config,cropPlan,strategies[0],source.kind);}
  return cropAnalyzerView({config,plan:cropPlan,report:cropReport,language},{esc,fmt});
 }
-function renderWorkspace(){recompute();$('#page').innerHTML=(view==='overview'&&audience==='guided')?guidedOverview({config,source,output,strategies,selectedMonth,selectedStrategy,months},{esc,fmt,progressPanel}):({overview,rotations,evidence,research,settings,analyzer:cropAnalysisPage,outlook:()=>'<div id="living-outlook"></div>'})[view]();const names={outlook:'2026 Living Farm',analyzer:'Crop analyzer',overview:'Field overview',rotations:'Explore rotations',evidence:'Data & evidence',research:'Research workspace',settings:'Field & assumptions'};$('#crumb').textContent=names[view];$('#source-pill').textContent=view==='outlook'?'2026 evidence':label();$('#source-pill').classList.toggle('amber',view!=='outlook'&&source.kind==='synthetic');document.querySelectorAll('nav button').forEach(b=>{b.classList.toggle('active',b.dataset.view===view);b.setAttribute('aria-current',b.dataset.view===view?'page':'false');});if(view==='research')loadBenchmarks();if(view==='evidence')fingerprint(weather).then(hash=>{if($('#weather-hash'))$('#weather-hash').textContent=hash;});bindPage();$('#guided-mode').setAttribute('aria-pressed',String(audience==='guided'));$('#research-mode').setAttribute('aria-pressed',String(audience==='research'));$('#language-toggle').lang=language==='ar'?'en':'ar';$('#language-toggle').textContent=language==='ar'?'English':'\u0627\u0644\u0639\u0631\u0628\u064a\u0629';updateLanguage();document.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.style.visibility='hidden';}));}
+function renderWorkspace(){
+ view=resolveViewForAudience(audience,view);
+ recompute();
+ let renderer;
+ if(view==='overview') renderer=audience==='guided'?()=>guidedOverview({config,source,output,strategies,selectedMonth,selectedStrategy,months},{esc,fmt,progressPanel}):researchOverview;
+ else if(view==='rotations'&&audience==='guided') renderer=()=>guidedRotations({config,source,output,strategies,months},{esc,fmt});
+ else if(view==='settings'&&audience==='guided') renderer=guidedSettings;
+ else renderer=({overview,rotations,evidence,research,settings,analyzer:cropAnalysisPage,outlook:()=>'<div id="living-outlook"></div>'})[view];
+ $('#page').innerHTML=renderer?renderer():'';
+ const names={outlook:'2026 Living Farm',analyzer:'Crop analyzer',overview:audience==='guided'?'Field overview':'Research dashboard',rotations:audience==='guided'?'Crop plans':'Rotation modeling',evidence:'Data & evidence',research:'Methods & diagnostics',settings:audience==='guided'?'Field setup':'Model parameters'};
+ $('#crumb').textContent=names[view]||'Workspace';
+ $('#source-pill').textContent=view==='outlook'?'2026 evidence':label();
+ $('#source-pill').classList.toggle('amber',view!=='outlook'&&source.kind==='synthetic');
+ document.querySelectorAll('#workspace-nav [data-audience]').forEach(item=>{const show=item.dataset.audience==='both'||item.dataset.audience===audience;item.hidden=!show||(item.dataset.view&&!canAccessView(audience,item.dataset.view));});
+ document.querySelectorAll('#workspace-nav button').forEach(button=>{const active=!button.hidden&&button.dataset.view===view;button.classList.toggle('active',active);button.setAttribute('aria-current',active?'page':'false');});
+ $('#workspace-label').textContent=audience==='guided'?'FARMER & CLIENT WORKSPACE':'GRADUATE RESEARCH WORKSPACE';
+ $('#side-note-title').textContent=audience==='guided'?'Simple plans. Clear next steps.':'Methods. Evidence. Reproducibility.';
+ $('#side-note-copy').textContent=audience==='guided'?'Compare crop plans and review your field details.':'Inspect assumptions, diagnostics and reproducible results.';
+ $('#side-footer-label').textContent=audience==='guided'?'Farmer & client workspace':'MSc & PhD research workspace';
+ $('#side-footer-detail').textContent=audience==='guided'?'Clear estimates · Local advice matters':'Methods · QA · Reproducible analysis';
+ $('#audience-banner-label').textContent=audience==='guided'?'GUIDED VIEW / FARMERS & CLIENTS':'RESEARCH VIEW / MSc & PhD';
+ $('#audience-banner-copy').textContent=audience==='guided'?'Simple crop plans, field details and clear water estimates.':'Scientific methods, model assumptions, uncertainty, diagnostics and research exports.';
+ if(view==='research')loadBenchmarks();
+ if(view==='evidence')fingerprint(weather).then(hash=>{if($('#weather-hash'))$('#weather-hash').textContent=hash;});
+ bindPage();
+ $('#guided-mode').setAttribute('aria-pressed',String(audience==='guided'));
+ $('#research-mode').setAttribute('aria-pressed',String(audience==='research'));
+ $('#language-toggle').lang=language==='ar'?'en':'ar';
+ $('#language-toggle').textContent=language==='ar'?'English':'العربية';
+ updateLanguage();
+ document.querySelectorAll('img').forEach(image=>image.addEventListener('error',()=>{image.style.visibility='hidden';}));
+}
 let stopSeasonMotion=()=>{},stopOutlook=()=>{};
 function render(){
  stopSeasonMotion();stopOutlook();renderWorkspace();
