@@ -1,6 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 160" role="img" aria-labelledby="title">
-  <title id="title">Soliq</title>
-  <rect width="560" height="160" rx="22" fill="#102d26"/>
-  <g transform="translate(36 32)"><circle cx="46" cy="46" r="34" fill="none" stroke="#e7eee4" stroke-width="8"/><path d="M21 37h50M19 48h54M22 59h48" stroke="#94b88c" stroke-width="5" stroke-linecap="round"/><path d="M62 70l23 23" stroke="#e7eee4" stroke-width="8" stroke-linecap="round"/><circle cx="45" cy="49" r="5" fill="#e0bc72"/></g>
-  <text x="160" y="110" font-family="Arial,Helvetica,sans-serif" font-size="87" font-weight="700" letter-spacing="-5" fill="#f2f2e8">soliq</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 330" role="img" aria-labelledby="title desc">
+<title id="title">Soliq</title>
+<desc id="desc">Soliq earth observation and agriculture logo, with crop rows, leaves, satellite orbit and soil layers.</desc>
+<defs>
+ <linearGradient id="word" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4f5e9"/><stop offset="1" stop-color="#dce6d6"/></linearGradient>
+ <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b6df28"/><stop offset="1" stop-color="#08783e"/></linearGradient>
+ <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#9a6038"/><stop offset="1" stop-color="#633d2c"/></linearGradient>
+</defs>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <path d="M330 92 C470 -8 690 4 760 68" stroke="#16834b" stroke-width="5"/>
+ <path d="M745 49 L792 18 L812 37 L766 68Z" fill="#08783e" stroke="#08783e"/>
+ <path d="M763 45 L808 28 M777 37 L794 57" stroke="#e7f0df" stroke-width="2"/>
+ <circle cx="510" cy="31" r="9" fill="#b6df28" stroke="none"/>
+ <path d="M365 93 Q330 40 292 44 Q300 88 365 110 Q390 55 445 45 Q430 95 365 110Z" fill="url(#leaf)" stroke="none"/>
+ <path d="M365 110 Q338 76 306 57 M365 110 Q396 72 429 57" stroke="#e7f0df" stroke-width="3"/>
+ <path d="M695 89 Q737 70 775 91 M705 105 Q737 91 767 105" stroke="#12804a" stroke-width="6"/>
+ <circle cx="737" cy="112" r="9" stroke="#12804a" stroke-width="5"/>
+</g>
+<text x="24" y="222" fill="url(#word)" font-family="Arial,Helvetica,sans-serif" font-size="196" font-weight="800" letter-spacing="-11">SOLIQ</text>
+<path d="M28 239 H862" stroke="#e8eee3" stroke-width="5"/>
+<path d="M365 239 L405 278 Q445 317 485 278 L525 239" fill="url(#soil)" stroke="#a96c43" stroke-width="3"/>
+<path d="M390 262 Q445 291 500 262 M410 286 Q445 305 480 286" fill="none" stroke="#e3c5a2" stroke-width="5"/>
+<path d="M62 252 Q445 246 835 252" fill="none" stroke="#6a9b65" stroke-width="2"/>
 </svg>
