@@ -60,7 +60,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--lime);outline-offse
 .scroll-line{display:inline-block;height:24px;width:1px;background:linear-gradient(var(--rust),transparent)}
 .planet-rail-global{grid-column:2;grid-row:1/span 5;position:sticky;top:76px;align-self:start;min-width:0;height:calc(100svh - 76px);z-index:2;overflow:hidden;background:radial-gradient(ellipse at 52% 45%,#173b4652,transparent 58%),#08090e}
 .planet-grid{position:absolute;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(134,184,188,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(134,184,188,.12) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse,#000,transparent 72%)}
-#earth-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;display:block;background:#08090e;opacity:1!important;cursor:grab;touch-action:pan-y;outline:none}
+#earth-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;display:block;background:transparent;opacity:1!important;cursor:grab;touch-action:pan-y;outline:none}
 #earth-canvas:active{cursor:grabbing}
 .earth-fallback{position:absolute;z-index:1;width:min(74%,560px);aspect-ratio:1;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 34% 30%,rgba(125,184,191,.18),transparent 37%),radial-gradient(circle at 62% 70%,#071820 0,#0e3848 55%,#050b15 76%);box-shadow:inset -35px -18px 55px #01050d,0 0 90px #4c9aab29,0 0 0 1px #87c1c74a}
 .earth-glow{position:absolute;z-index:2;inset:9% 2% 4%;pointer-events:none;background:radial-gradient(ellipse at 50% 52%,transparent 31%,rgba(70,160,185,.08) 44%,transparent 67%);filter:blur(20px)}
