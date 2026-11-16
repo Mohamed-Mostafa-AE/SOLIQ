@@ -39,6 +39,10 @@ export class GameHUD {
               <span class="label">دفتر الأدلة</span>
               <span id="notebook-badge" class="badge-dot"></span>
             </button>
+            <button id="btn-story-desk" class="hud-tool-btn" title="Accessible story mode">
+              <span class="icon">📜</span>
+              <span class="label">Story mode</span>
+            </button>
             <button id="btn-camera" class="hud-tool-btn" title="تبديل الكاميرا (Tab)">
               <span class="icon">🎥</span>
               <span class="label">استراتيجي</span>
@@ -160,6 +164,7 @@ export class GameHUD {
           <button id="btn-touch-interact" class="mobile-btn mobile-btn-action" title="تفاعل">تفاعل ⚡</button>
           <button id="btn-touch-lens" class="mobile-btn" title="العدسة">عدسة 🛰️</button>
           <button id="btn-touch-book" class="mobile-btn" title="الدفتر">دفتر 📖</button>
+          <button id="btn-touch-story" class="mobile-btn" title="Accessible story mode">Story 📜</button>
         </div>
       </div>
     `;
@@ -190,6 +195,7 @@ export class GameHUD {
       settingsModal: q('#settings-modal'),
       btnEarthLens: q('#btn-earth-lens'),
       btnNotebook: q('#btn-notebook'),
+      btnStoryDesk: q('#btn-story-desk'),
       btnCamera: q('#btn-camera'),
       btnAudio: q('#btn-audio'),
       audioIcon: q('#audio-icon'),
@@ -202,6 +208,7 @@ export class GameHUD {
       touchInteract: q('#btn-touch-interact'),
       touchLens: q('#btn-touch-lens'),
       touchBook: q('#btn-touch-book'),
+      touchStory: q('#btn-touch-story'),
       joystickZone: q('#virtual-joystick-zone'),
       joystickBase: q('#joystick-base'),
       joystickThumb: q('#joystick-thumb'),
@@ -229,6 +236,8 @@ export class GameHUD {
     el.btnNotebook.addEventListener('click', () => this.toggleNotebook());
     el.btnCloseNotebook.addEventListener('click', () => this.toggleNotebook(false));
     el.touchBook.addEventListener('click', () => this.toggleNotebook());
+    el.btnStoryDesk.addEventListener('click', () => this.callbacks.onToggleStoryDesk?.());
+    el.touchStory.addEventListener('click', () => this.callbacks.onToggleStoryDesk?.());
 
     // Notebook tabs
     const nbTabs = this.container.querySelectorAll('.nb-tab');
@@ -263,6 +272,14 @@ export class GameHUD {
     el.selectLang.addEventListener('change', (e) => {
       this.lang = e.target.value;
       this.setLanguage(this.lang);
+    });
+
+    // This setting previously rendered a checkbox without any behavior.
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+    el.chkReducedMotion.checked = prefersReducedMotion;
+    document.body.classList.toggle('reduced-motion', prefersReducedMotion);
+    el.chkReducedMotion.addEventListener('change', (e) => {
+      document.body.classList.toggle('reduced-motion', e.target.checked);
     });
 
     // Mobile Action buttons
@@ -467,5 +484,6 @@ export class GameHUD {
     if (this.lastReceipts) this.updateNotebookReceipts(this.lastReceipts);
     if (this.lastSimulation !== undefined) this.updateWaterLedger(this.lastSimulation);
     if (this.activeDialogue) this.showDialogue(this.activeDialogue);
+    this.callbacks.onLanguageChange?.(this.lang);
   }
 }
