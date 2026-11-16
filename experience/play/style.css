@@ -1176,6 +1176,15 @@ body.reduced-motion .game-loader * {
   .hook-stakes strong { font-size: 1.4rem; }
   .hook-world-caption { left: 6%; }
 }
+@media (max-width: 640px) {
+  /* The mobile Lens/Notebook/Story controls form a right-side vertical rail.
+     The Chapter 1 button must stay clear so neither action is obscured. */
+  #game-ui-container > #chapter1-launch {
+    left: 10px;
+    right: auto;
+    max-width: min(210px, calc(100vw - 90px));
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .hook-stage { transition: none; }
 }

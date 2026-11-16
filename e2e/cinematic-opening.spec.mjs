@@ -101,6 +101,17 @@ test('splash reveals the actual village and HUD tools never collide with the cha
   await checkToolbarIsReadable();
   await page.setViewportSize({ width: 360, height: 740 });
   await checkToolbarIsReadable();
+  const mobile = await page.evaluate(() => {
+    const chapter = document.getElementById('chapter1-launch').getBoundingClientRect();
+    const buttons = [...document.querySelectorAll('.mobile-action-bar .mobile-btn')]
+      .filter(button => getComputedStyle(button).display !== 'none')
+      .map(button => button.getBoundingClientRect());
+    return { actionable: chapter.width > 0 && chapter.height > 0,
+      collisionAreas: buttons.map(rect => Math.max(0, Math.min(chapter.right, rect.right) - Math.max(chapter.left, rect.left))
+        * Math.max(0, Math.min(chapter.bottom, rect.bottom) - Math.max(chapter.top, rect.top))) };
+  });
+  expect(mobile.actionable).toBe(true);
+  expect(mobile.collisionAreas.every(area => area === 0)).toBe(true);
   await page.screenshot({ path: 'test-results/seventh-field-responsive-hud-360.png' });
 });
 
