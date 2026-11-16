@@ -35,7 +35,11 @@ test('Earth Lens NASA button opens real-source GIBS browse overlay without misre
  await page.locator('#btn-settings').click();
  await page.locator('#select-lang').selectOption('ar');
  await expect(page.locator('#select-quality')).not.toContainText(/30fps|60fps/);
- await page.locator('#btn-close-settings').click();
+ // Switching document direction moves the modal while WebGL is rendering;
+ // verify that the visible Close button remains keyboard-operable as well.
+ await page.locator('#btn-close-settings').focus();
+ await page.locator('#btn-close-settings').press('Enter');
+ await expect(page.locator('#settings-modal')).toBeHidden();
  await page.locator('[data-lens="nasa"]').click();
  await expect(panel).toBeVisible();
  await expect(panel).toHaveAttribute('lang','ar');

@@ -11,9 +11,14 @@ test('season playback advances, scrubbing stops playback, and project links work
  await scene.getByRole('link').click();await expect(page).toHaveURL(/\/welcome\/$/);
  const projects=page.locator('a.project-card');await expect(projects).toHaveCount(4);
  await expect(page.locator('#method-details')).toContainText('NASA POWER');
- await expect(page.locator('a.project-app')).toHaveAttribute('href','../#analyzer');
- await page.locator('a.project-app').click();await expect(page).toHaveURL(/\/#analyzer$/);
- await expect(page.locator('#research-mode')).toHaveAttribute('aria-pressed','true');
+ // Welcome opens the accessible Guided entry, not a Research-only view.
+ await expect(page.locator('a.project-app')).toHaveAttribute('href','../#overview');
+ await page.locator('a.project-app').click();await expect(page).toHaveURL(/\/#overview$/);
+ await expect(page.locator('#guided-mode')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#crumb')).toHaveText('Field overview');
+ await page.locator('#research-mode').click();
+ await page.locator('[data-view="analyzer"]').click();
+ await expect(page).toHaveURL(/\/#analyzer$/);
  await expect(page.locator('#crumb')).toHaveText('Crop analyzer');
 });
 
