@@ -5,7 +5,7 @@
  */
 
 import { sharedEvents, EMOTIONS, GESTURES, OUTCOMES } from '../core/events.js';
-import { SAFETY_CHECKS, assessPumpReadiness, completeSafetyCheck, sustainabilityLesson } from '../core/safety-sustainability.js';
+import { sustainabilityLesson } from '../core/safety-sustainability.js';
 
 export class Chapter0Mission {
   constructor(village, characters, waterEngine, audio) {
@@ -21,9 +21,7 @@ export class Chapter0Mission {
       talkedToHassan: false,
       talkedToMaryam: false,
       inspectedSoil: false,
-      pumpInspected: false,
-      canalAccessSecured: false,
-      heatPrecautionsReviewed: false,
+      questionedFuture: false,
       pumpStarted: false,
       selectedPolicy: 'proportional',
     };
@@ -39,13 +37,13 @@ export class Chapter0Mission {
     // Add initial objective to notebook
     this.addReceipt({
       id: 'REC_CH0_START',
-      titleAr: 'نداء الفجر: المية وصلت!',
-      titleEn: 'Dawn Call: The Water Has Arrived!',
+      titleAr: 'مجلس الفجر: لغز الأرض السابعة',
+      titleEn: 'Dawn Council: The Seventh Field Mystery',
       category: 'Mission Briefing',
       dataClass: 'simulated',
       timestamp: new Date().toISOString(),
-      detailsAr: 'بدأت نوبة ري افتراضية. عند توفر المياه والسعة الكافية يستطيع أصحاب الغيطان الستة الري معًا؛ افحص الظروف قبل تشغيل الطلمبة.',
-      detailsEn: 'A fictional canal turn has begun. With adequate water and capacity, all six farms can irrigate; inspect the scenario before pumping.',
+      detailsAr: 'في فجر خيالي، ست عائلات تناقش تقسيم المياه وتظهر الأرض السابعة بموسمين محتملين في حكاية ندى. اسمع الجميع ثم جرّب قراراتك؛ ليست تنبؤات حقيقية.',
+      detailsEn: 'At dawn, six families face a water-sharing decision, while a seventh field shows two possible seasons in Nada’s storybook. Explore people, then test choices; no real future is predicted.',
     });
   }
 
@@ -174,77 +172,29 @@ export class Chapter0Mission {
     };
   }
 
-  completeSafetyTraining(stepId) {
-    const step = SAFETY_CHECKS.find((item) => item.id === stepId);
-    if (!step) throw new RangeError('Unknown safety training step');
-    if (this.flags[stepId] === true) return assessPumpReadiness(this.flags);
-    this.flags = completeSafetyCheck(this.flags, stepId);
-    this.addReceipt({
-      id: 'SAFETY_' + stepId,
-      titleAr: step.titleAr,
-      titleEn: step.titleEn,
-      category: 'Safety Awareness (Fictional Training)',
-      dataClass: 'simulated',
-      timestamp: new Date().toISOString(),
-      detailsAr: step.lessonAr + ' — هذه خطوة تعليمية داخل اللعبة وليست تصريح تشغيل حقيقي.',
-      detailsEn: step.lessonEn + ' This is a game learning step, NOT real-world operational clearance.',
-    });
-    const assessment = assessPumpReadiness(this.flags);
-    sharedEvents.emit('safety_checked', { completed: assessment.completed, total: assessment.total });
-    return assessment;
-  }
-
   _getPumpDialogue() {
-    const safety = assessPumpReadiness(this.flags);
-    if (!safety.readyForFictionalMission) {
-      const next = safety.missing[0];
-      return {
-        speakerAr: 'مراجعة السلامة قبل تشغيل الطلمبة',
-        speakerEn: 'Safety Check — Before the Pump',
-        textAr: `قبل تجربة تشغيل الطلمبة، راجع السلامة (${safety.completed}/${safety.total}). لا يعني إكمال المهمة تصريحًا لتشغيل معدات حقيقية.`,
-        textEn: `Before the simulated pump turn, review the safety steps (${safety.completed}/${safety.total}). This is training, not permission to operate real equipment.`,
-        emotion: EMOTIONS.NEUTRAL,
-        choices: [
-          {
-            labelAr: next.titleAr,
-            labelEn: next.titleEn,
-            onSelect: () => this.completeSafetyTraining(next.id),
-          },
-          {
-            labelAr: 'أجّل التشغيل واطلب فحصًا ميدانيًا',
-            labelEn: 'Defer the turn and request a qualified inspection',
-            onSelect: () => this.executeOutcome(OUTCOMES.DEFERRAL),
-          },
-        ],
-      };
-    }
+    const voicesHeard = Number(this.flags.talkedToHassan) + Number(this.flags.talkedToMaryam);
     return {
-      speakerAr: 'طلمبة الديزل وبوابات المسقة',
-      speakerEn: 'Diesel Pump & Canal Regulator',
-      textAr: 'الطلمبة جاهزة. اختر حالة افتراضية (سعة كافية أو محدودة أو تأجيل للفحص)، والنتيجة ستأتي من محرك الري الزمني:',
-      textEn: 'The pump is ready. Choose a fictional adequate-capacity turn, a limited-capacity turn, or evidence deferral; the time-window solver computes the outcome.',
+      speakerAr: 'مجلس المسقة — قرار يخص ست عائلات',
+      speakerEn: 'The Canal Council — Six Families, One Turn',
+      textAr: `في محاكاة تعليمية، ستة غيطان على مسقة واحدة؛ حسن مهتم بانتظام الدور ومريم تفكر في الغطاء النباتي والموسم الجاي. سمعت ${voicesHeard} من صوتين مهمين. اختبر سعة كافية أو محدودة، أو أجّل لحين دليل حقيقي. النتائج افتراضية وليست وصفة ري.`,
+      textEn: `Six fictional plots share one canal. Hassan wants predictable turns; Maryam asks what this choice means for soil cover next season. You heard ${voicesHeard} of their two perspectives. Test adequate supply, limited capacity or deferral; this is a modelled community decision, never field advice.`,
       emotion: EMOTIONS.NEUTRAL,
       choices: [
         {
-          labelAr: '1. التوزيع المنصف المتناسب (Outcome 1: Coordinated Equilibrium)',
-          labelEn: '1. Proportional Fair Allocation (Outcome 1: Equilibrium)',
-          onSelect: () => {
-            this.executeOutcome(OUTCOMES.EQUILIBRIUM);
-          },
+          labelAr: '1. جرّب توزيعًا منسقًا بسعة افتراضية تكفي الطلب',
+          labelEn: '1. Test a coordinated, adequate-capacity turn',
+          onSelect: () => this.executeOutcome(OUTCOMES.EQUILIBRIUM),
         },
         {
-          labelAr: '2. نافذة بسعة ضخ محدودة (Outcome 2: Capacity-limited turn)',
-          labelEn: '2. Capacity-limited canal turn (Outcome 2: Bottleneck)',
-          onSelect: () => {
-            this.executeOutcome(OUTCOMES.BOTTLENECK);
-          },
+          labelAr: '2. جرّب سعة محدودة وشوف العجز وعدالة التوزيع',
+          labelEn: '2. Test a limited-supply turn and inspect shortages',
+          onSelect: () => this.executeOutcome(OUTCOMES.BOTTLENECK),
         },
         {
-          labelAr: '3. ترشيد المياه وتأجيل الري بناءً على رطوبة التربة (Outcome 3: Soil Deferral)',
-          labelEn: '3. Evidence-First Soil Deferral (Outcome 3: Conservative Science)',
-          onSelect: () => {
-            this.executeOutcome(OUTCOMES.DEFERRAL);
-          },
+          labelAr: '3. أجّل القرار لحين التحقق من التربة والطقس',
+          labelEn: '3. Defer until field soil and weather evidence is checked',
+          onSelect: () => this.executeOutcome(OUTCOMES.DEFERRAL),
         },
       ],
     };
@@ -252,15 +202,34 @@ export class Chapter0Mission {
 
   _getSeventhFieldDialogue() {
     return {
-      speakerAr: 'الأرض السابعة (صدى الزمن)',
-      speakerEn: 'The Seventh Field (Time Echo)',
-      textAr: 'الأرض السابعة مساحة تخيلية للمقارنة. لا توجد حتى الآن نتائج محاكاة محصولين موثقتين لحساب توفير مياه أو نيتروجين، ولذلك النظام يعرض comparison_only بدل اختراع فائز.',
-      textEn: 'The seventh field is an illustrative future. No paired crop-model runs or verified uncertainty intervals are loaded; the system reports comparison_only instead of inventing benefits.',
+      speakerAr: 'الأرض السابعة — موسم لم يحدث بعد',
+      speakerEn: 'The Seventh Field — A Season Not Yet Lived',
+      textAr: 'ندى تكتشف تقويمين مختلفين للمحاصيل في دفتر قديم. أحدهما يحافظ على الغطاء النباتي فترة أطول؛ والثاني يبدو أقل طلبًا للمياه. هل أحدهما أفضل فعلًا؟ لا توجد مقارنة موثقة بعد. الأرض السابعة سؤال بحثي، مش نبوءة.',
+      textEn: 'Nada finds two competing crop calendars in an old ledger. One keeps soil covered for longer; the other may need less irrigation. Which serves the village better? No verified paired calculations are loaded. The Seventh Field is a research mystery, not a magical forecast.',
       emotion: EMOTIONS.HOPEFUL,
       choices: [
         {
-          labelAr: 'فهمت: العلم الحقيقي يعترف بعدم اليقين بدل الوعود الوهمية.',
-          labelEn: 'Understood: True science discloses uncertainty instead of false promises.',
+          labelAr: 'سجّل السؤال: هل تغطية التربة تستحق مياهًا إضافية؟',
+          labelEn: 'Record the mystery: Can extra soil cover justify its water demand?',
+          onSelect: () => {
+            if (this.flags.questionedFuture) return;
+            this.flags.questionedFuture = true;
+            this.addReceipt({
+              id: 'FUTURE_ROTATION_MYSTERY',
+              titleAr: 'لغز الأرض السابعة: مفاضلة لا نتيجة محسومة',
+              titleEn: 'The Seventh Field: An Unresolved Rotation Trade-off',
+              category: 'Story Investigation',
+              dataClass: 'simulated',
+              timestamp: new Date().toISOString(),
+              detailsAr: 'سؤال القصة يحتاج مدخلات محاصيل وتربة وبيانات NASA ومقارنة نماذج في تطبيق Soil-IQ. لا توجد إجابة محسومة داخل المشهد الخيالي.',
+              detailsEn: 'Answer this story question with crop calendars, declared soil inputs and source-labelled NASA weather in the separate Soil-IQ rotation workspace; the fictional scene has no verified winner.',
+            });
+            sharedEvents.emit('mission_receipts_updated');
+          },
+        },
+        {
+          labelAr: 'ارجع لمجلس المسقة واسمع الناس',
+          labelEn: 'Return to the canal council and hear the families',
           onSelect: () => {},
         },
       ],
@@ -268,26 +237,13 @@ export class Chapter0Mission {
   }
 
   executeOutcome(outcome) {
-    // The fictional mission cannot run a powered pump until all educational
-    // safety checks are complete. Deferral remains possible at any time.
-    if (outcome !== OUTCOMES.DEFERRAL && !assessPumpReadiness(this.flags).readyForFictionalMission) {
-      this.addReceipt({
-        id: 'SAFETY_GATE_BLOCKED',
-        titleAr: 'تم منع تشغيل الطلمبة قبل مراجعة السلامة',
-        titleEn: 'Pump operation blocked pending safety checks',
-        category: 'Safety Awareness (Fictional Training)',
-        dataClass: 'simulated',
-        timestamp: new Date().toISOString(),
-        detailsAr: 'أكمل مراجعة الطلمبة والقناة والحر أولًا. لا تعد محاكاة اللعبة تصريحًا تشغيليًا حقيقيًا.',
-        detailsEn: 'Review pump, canal and heat precautions first. No game action certifies real equipment safety.',
-      });
-      sharedEvents.emit('safety_checked', {
-        completed: assessPumpReadiness(this.flags).completed,
-        total: SAFETY_CHECKS.length,
-      });
-      return false;
+    // Narrative choices are about sustainable water allocation, not passing
+    // equipment inspections. Every simulated outcome stays clearly fictional.
+    if (![OUTCOMES.EQUILIBRIUM, OUTCOMES.BOTTLENECK, OUTCOMES.DEFERRAL].includes(outcome)) {
+      throw new RangeError('Unknown fictional canal outcome');
     }
     this.activeOutcome = outcome;
+    this.stage = 'executed';
     this.flags.pumpStarted = outcome !== OUTCOMES.DEFERRAL;
 
     const demands = [35, 45, 60, 40, 25, 30]; // 6 fields
