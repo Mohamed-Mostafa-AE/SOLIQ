@@ -2,7 +2,7 @@
  * Sustainability themes for a fictional six-field water turn.
  * These notes never assert measured SDG achievement or NASA/UN endorsement.
  */
-export function sustainabilityLesson(outcome, result = null) {
+export function sustainabilityLesson(outcome, result = null, context = {}) {
   if (!['equilibrium', 'bottleneck', 'deferral'].includes(outcome)) {
     throw new RangeError('Unknown game outcome');
   }
@@ -34,5 +34,13 @@ export function sustainabilityLesson(outcome, result = null) {
     evidenceClass: 'simulated',
     realWorldImpactVerified: false,
     metrics: measured,
+    tradeoffAxes: Object.freeze({
+      waterFairness: outcome === 'deferral' ? 'untested_deferred'
+        : outcome === 'bottleneck' ? 'tail_end_deficit' : 'high_simulated',
+      soilCover: context.soilCoverChoice || 'unspecified',
+      livelihoodTension: context.livelihoodPriority || 'balanced',
+      uncertaintyNoteEn: 'All game outcomes are simulated. For real weather context and declared soil assumptions, inspect the independent Crop Rotation Workspace.',
+      uncertaintyNoteAr: 'كل نتائج اللعبة افتراضية. راجع بيانات الطقس الحقيقية وافتراضات التربة في أداة مقارنة دورات المحاصيل المستقلة.',
+    }),
   });
 }
