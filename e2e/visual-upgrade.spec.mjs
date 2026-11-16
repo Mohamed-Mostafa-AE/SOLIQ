@@ -12,6 +12,7 @@ test('visual upgrade populates real 3D crop geometry while preserving playable a
    meshes:count.length,
    thinInstances:count.reduce((n,m)=>n+(m.thinInstanceCount||0),0),
    actors:g.visualArtReport.characters.enhanced,
+   actorDetailReason:g.visualArtReport.characters.reason,
    hasNada:!!g.characters?.nada,
    hasHassan:!!g.characters?.hassan,
    hasMaryam:!!g.characters?.maryam,
@@ -29,6 +30,11 @@ test('visual upgrade populates real 3D crop geometry while preserving playable a
   expect(state.plantCount).toBeGreaterThan(600);
   expect(state.thinInstances).toBeGreaterThan(1000);
  }
- expect(state.actors).toBe(3);
  expect(state.hasNada&&state.hasHassan&&state.hasMaryam).toBe(true);
+ // The low preset preserves base procedural actor nodes and gameplay, while omitting
+ // decorative PBR face/clothing meshes on software / low-end renderers.
+ if(state.quality==='low'){
+  expect(state.actors).toBe(0);
+  expect(state.actorDetailReason).toBe('low performance preset');
+ }else expect(state.actors).toBe(3);
 });
