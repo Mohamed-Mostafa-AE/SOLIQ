@@ -28,13 +28,14 @@ test('premium evidence-first walkthrough exposes navigable, original responsive 
   await expect(page.locator('.field-hero').getByText('Concept art', { exact: false })).toBeVisible();
   await expect(page.locator('#calendars .plan-card')).toHaveCount(2);
   await expect(page.locator('#source')).toContainText('UNAVAILABLE');
+  await expect(page.locator('#receipt-url')).toBeHidden();
   await expect(page.locator('#compare')).toBeDisabled();
   await expect(page.locator('#export')).toBeDisabled();
   await expect(page.locator('.evidence-legend')).toContainText('OBSERVED');
   await expect(page.locator('.evidence-legend')).toContainText('ASSUMED');
   await expect(page.locator('.evidence-legend')).toContainText('SIMULATED');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.screenshot({ path: 'artifacts/walkthrough-premium-mobile-before-weather.png', fullPage: true });
+  await page.screenshot({ path: test.info().outputPath('walkthrough-premium-mobile-before-weather.png'), fullPage: true });
 });
 
 test('NASA receipt and editable plans become readable comparison without changing model or evidence', async ({ page }) => {
@@ -45,13 +46,14 @@ test('NASA receipt and editable plans become readable comparison without changin
 
   await expect(page.locator('#source')).toContainText('366 valid days');
   await expect(page.locator('.weather-receipt')).toHaveAttribute('data-state', 'observed');
+  await expect(page.locator('#receipt-url')).toHaveAttribute('href', /^https:\/\/power\.larc\.nasa\.gov\/api\/temporal\/daily\/point\?/);
   await page.getByLabel('Option 2 Jun').selectOption('sorghum');
   await page.locator('#compare').click();
   await expect(page.locator('#results')).toContainText('comparison_only');
   await expect(page.locator('#results .outcome-card')).toHaveCount(2);
   await expect(page.locator('#results')).toContainText('not a confidence interval');
   await expect(page.locator('#export')).toBeEnabled();
-  await page.screenshot({ path: 'artifacts/walkthrough-premium-desktop-comparison.png', fullPage: true });
+  await page.screenshot({ path: test.info().outputPath('walkthrough-premium-desktop-comparison.png'), fullPage: true });
 
   const download = page.waitForEvent('download');
   await page.locator('#export').click();

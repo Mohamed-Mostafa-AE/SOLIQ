@@ -34,6 +34,11 @@ function receipt(state,message){
   $('.weather-receipt').dataset.state=state;
   $('#receipt-state').textContent={unavailable:'NOT LOADED',loading:'REQUESTING',observed:'RETRIEVED'}[state];
   $('#load').setAttribute('aria-busy',state==='loading'?'true':'false');
+  const link=$('#receipt-url');
+  const verified=state==='observed'&&evidence?.requestUrl?.startsWith('https://power.larc.nasa.gov/api/');
+  link.hidden=!verified;
+  if(verified)link.href=evidence.requestUrl;
+  else link.removeAttribute('href');
 }
 function inputs(){const c={...DEFAULTS};for(const name of ['lat','lon','year','capacity','initial','irrigation','runoff','waterWeight','coverWeight'])c[name]=Number(form.elements[name].value);return validateConfig(c);}
 function invalidate(){bundle=null;$('#export').disabled=true;$('#results').hidden=true;$('#error').textContent='';}

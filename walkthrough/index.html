@@ -39,7 +39,7 @@
           <path d="M96 291L337 162 565 281 326 411Z" fill="url(#plot-top)"/>
           <path d="M216 354L478 214 510 233 249 374Z" fill="#f5dfab" stroke="#b88e55" stroke-width="3"/>
           <path d="M223 354L486 218 503 229 240 364Z" fill="url(#canal-water)"/>
-          <path d="M233 350L484 220M252 355L483 231" fill="none" stroke="#e1fff0" stroke-width="2" opacity=".55"/>
+          <path class="art-water-shimmer" d="M233 350L484 220M252 355L483 231" fill="none" stroke="#e1fff0" stroke-width="2" opacity=".55"/>
           <g fill="none" stroke="#357650" stroke-width="5" stroke-linecap="round"><path d="M110 282L228 218M126 302L250 232M145 314L268 245M166 327L287 258M186 338L309 267"/><path d="M333 394L458 326M359 385L480 318M385 376L509 307M411 364L535 299"/></g>
           <g fill="#bddc83" stroke="#2c6845" stroke-width="3" stroke-linecap="round"><path d="M128 275l-4 -15m4 15l-12 -5m12 5l10 -11M162 256l-4 -15m4 15l-12 -5m12 5l10 -11M195 237l-4 -15m4 15l-12 -5m12 5l10 -11"/><path d="M158 300l-4 -15m4 15l-12 -5m12 5l10 -11M193 281l-4 -15m4 15l-12 -5m12 5l10 -11M225 264l-4 -15m4 15l-12 -5m12 5l10 -11"/><path d="M374 369l-3 -14m3 14l-11 -6m11 6l8 -12M405 354l-3 -14m3 14l-11 -6m11 6l8 -12M436 337l-3 -14m3 14l-11 -6m11 6l8 -12"/></g>
           <path d="M298 187L361 155 408 180 343 214Z" fill="#e0d0a3" stroke="#825f3e" stroke-width="3"/>
@@ -72,14 +72,14 @@
         <div class="step-heading"><span class="step-number">01</span><div><p class="section-kicker">SOURCE BEFORE SCORES</p><h2 id="weather-heading">Locate the weather evidence</h2><p>A coordinate is a query point, not a land parcel or an ownership claim.</p></div></div>
         <div class="weather-grid">
           <div class="step-inputs">
-            <div class="field-grid weather-fields"><label>Latitude <span class="field-unit">decimal degrees</span><input name="lat" type="number" step="any" min="-60" max="60" value="31.09" required></label><label>Longitude <span class="field-unit">decimal degrees</span><input name="lon" type="number" step="any" min="-180" max="180" value="30.94" required></label><label>Historical year <span class="field-unit">completed UTC year</span><input name="year" type="number" min="1981" value="2024" required></label></div>
+            <div class="field-grid weather-fields"><label>Latitude <span class="field-unit">decimal degrees</span><input name="lat" type="number" aria-label="Latitude" step="any" min="-60" max="60" value="31.09" required></label><label>Longitude <span class="field-unit">decimal degrees</span><input name="lon" type="number" aria-label="Longitude" step="any" min="-180" max="180" value="30.94" required></label><label>Historical year <span class="field-unit">completed UTC year</span><input name="year" type="number" aria-label="Historical year" min="1981" value="2024" required></label></div>
             <label class="consent-field"><input id="consent" type="checkbox"><span>I confirm this query point and consent to requesting its weather. No farm boundary or GPS ownership is inferred.</span></label>
             <button type="button" id="load" class="action-button">Load dated NASA POWER weather <span aria-hidden="true">↗</span></button>
             <p class="input-note">NASA POWER daily temperature and rainfall. No weather request until you press Load.</p>
           </div>
           <aside class="weather-receipt" data-state="unavailable" aria-label="NASA weather source receipt">
             <div class="receipt-head"><span class="receipt-icon" aria-hidden="true">◎</span><div><p class="receipt-overline">SOURCE RECEIPT / 01</p><strong>NASA POWER</strong></div><span class="receipt-live" id="receipt-state">NOT LOADED</span></div>
-            <div class="receipt-main"><p class="receipt-label">EVIDENCE STATUS</p><p id="source" role="status" aria-live="polite" aria-atomic="true">UNAVAILABLE — no weather retrieved.</p></div>
+            <div class="receipt-main"><p class="receipt-label">EVIDENCE STATUS</p><p id="source" role="status" aria-live="polite" aria-atomic="true">UNAVAILABLE — no weather retrieved.</p><a id="receipt-url" class="receipt-link" href="#" rel="noopener noreferrer" target="_blank" hidden>Inspect the exact NASA POWER query ↗</a></div>
             <p class="receipt-foot">A complete dated year and source SHA-256 are required. On failure, no substitute weather is invented.</p>
           </aside>
         </div>
