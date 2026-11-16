@@ -14,7 +14,7 @@
     <a href="../welcome/" class="wordmark" aria-label="Soil-IQ home"><img src="../soil-iq-logo.png" alt="Soil-IQ"></a>
     <span class="event">NASA SPACE APPS / 6 OCTOBER</span>
     <div class="tools">
-      <button id="notes-toggle" aria-pressed="false">Notes <kbd>N</kbd></button>
+      <button id="notes-toggle" aria-controls="speaker-notes" aria-pressed="false">Notes <kbd>N</kbd></button>
       <button id="export-pptx">PowerPoint ↓</button>
       <button id="print-deck">Print / PDF</button>
       <button id="fullscreen">Full screen <kbd>F</kbd></button>
@@ -27,6 +27,7 @@
     <p></p>
   </aside>
   <footer class="controls">
+    <progress id="deck-progress" min="0" max="7" value="1" aria-label="Presentation slide progress"></progress>
     <button id="previous" aria-label="Previous slide">←</button>
     <div id="slide-nav" role="group" aria-label="Choose a slide"></div>
     <span id="counter" aria-live="polite"></span>

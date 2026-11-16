@@ -48,6 +48,7 @@ function show(index){
  stage.querySelectorAll('.slide').forEach((el,i)=>{el.classList.toggle('active',i===current);el.setAttribute('aria-hidden',String(i!==current));});
  nav.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
  document.querySelector('#counter').textContent=(current+1)+' / '+slides.length;
+ document.querySelector('#deck-progress').value=current+1;
  document.querySelector('#slide-announcement').textContent='Slide '+(current+1)+' of '+slides.length+': '+slides[current].title.replaceAll('\n',' ');
  document.querySelector('#previous').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;
  document.querySelector('#speaker-notes p').textContent=slides[current].notes;history.replaceState(null,'','#'+(current+1));
@@ -66,12 +67,27 @@ function show(index){
  if(scene)animate(scene,[{opacity:0,transform:'perspective(1400px) translateY(26px) rotateY(-15deg) rotateX(6deg)'},{opacity:1,transform:'perspective(1400px) translateY(0) rotateY(-8deg) rotateX(3deg)'}],{duration:900,delay:70,easing:'cubic-bezier(.22,.61,.36,1)',fill:'backwards'});
 }
 function fit(){const viewport=document.querySelector('#viewport'),scale=Math.min(viewport.clientWidth/1280,viewport.clientHeight/720);stage.style.transform=mobileReading.matches?'none':'scale('+scale+')';}
-function toggleNotes(){const notes=document.querySelector('#speaker-notes');notes.hidden=!notes.hidden;document.querySelector('#notes-toggle').setAttribute('aria-pressed',String(!notes.hidden));}
-document.querySelector('#close-notes').onclick=()=>{if(!document.querySelector('#speaker-notes').hidden)toggleNotes();document.querySelector('#notes-toggle').focus();};
+function toggleNotes(){
+ const notes=document.querySelector('#speaker-notes'),isOpening=notes.hidden;
+ notes.hidden=!isOpening;
+ document.querySelector('#notes-toggle').setAttribute('aria-pressed',String(isOpening));
+ (isOpening?document.querySelector('#close-notes'):document.querySelector('#notes-toggle')).focus();
+}
+document.querySelector('#close-notes').onclick=()=>{if(!document.querySelector('#speaker-notes').hidden)toggleNotes();};
 document.querySelector('#previous').onclick=()=>show(current-1);document.querySelector('#next').onclick=()=>show(current+1);document.querySelector('#notes-toggle').onclick=toggleNotes;
 document.querySelector('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notice('Full screen is unavailable here. Use your browser’s presentation/full-screen command.');}};
 document.querySelector('#print-deck').onclick=()=>window.print();
-document.addEventListener('keydown',event=>{if(event.target.closest('button,a,input,textarea,select')&&event.key===' ')return;if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1);}if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1);}if(event.key==='Home')show(0);if(event.key==='End')show(slides.length-1);if(event.key.toLowerCase()==='n')toggleNotes();if(event.key.toLowerCase()==='f')document.querySelector('#fullscreen').click();});
+document.addEventListener('keydown',event=>{
+ if(event.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+ if(event.key==='Escape'&&!document.querySelector('#speaker-notes').hidden){event.preventDefault();toggleNotes();return;}
+ if(event.target.closest('button,a')&&event.key===' ')return;
+ if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1);}
+ if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1);}
+ if(event.key==='Home')show(0);
+ if(event.key==='End')show(slides.length-1);
+ if(event.key.toLowerCase()==='n')toggleNotes();
+ if(event.key.toLowerCase()==='f')document.querySelector('#fullscreen').click();
+});
 window.addEventListener('resize',fit);new ResizeObserver(fit).observe(document.querySelector('#viewport'));show(current);fit();
 function notice(text){const target=document.querySelector('#export-status');target.style.display='block';target.textContent=text;}
 let libraryPromise;
