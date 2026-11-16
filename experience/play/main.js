@@ -294,5 +294,8 @@ window.addEventListener('DOMContentLoaded', () => {
   window.__seventhFieldGame = game;
   game.init().catch((err) => {
     console.error('[GameInit] Failed to load 3D scene:', err);
+    const loadingMessage = document.querySelector('.loader-sub');
+    if (loadingMessage) loadingMessage.textContent =
+      '3D loading failed. The text-first story below still works without WebGL.';
   });
 });
