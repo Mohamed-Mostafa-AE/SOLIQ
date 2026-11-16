@@ -16,6 +16,7 @@ import { EarthLensSystem } from '../../game/world/earth-lens.js';
 import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
+import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
 import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
 
@@ -37,6 +38,7 @@ class SeventhFieldGame {
     this.timeEcho = null;
     this.mission = null;
     this.hud = null;
+    this.storyDesk = null;
 
     this.isReady = false;
   }
@@ -126,8 +128,8 @@ class SeventhFieldGame {
       this.hud.showTelemetryToast(
         this.hud.lang === 'en' ? 'The canal water turn has begun!' : 'المية وصلت في المسقة!',
         this.hud.lang === 'en'
-          ? 'Explore the fictional village. Talk to Uncle Hassan and Maryam, then check safety before operating the simulated pump.'
-          : 'تحرك واستكشف القرية وتحدث مع عم حسن ومريم. راجع السلامة قبل تشغيل الطلمبة الافتراضية.',
+          ? 'A seventh field holds two possible seasons. Explore the fictional village, hear Hassan and Maryam, then test sustainable water choices. Story mode is available without 3D movement.'
+          : 'الأرض السابعة بتعرض موسمين محتملين. استكشف القرية واسمع حسن ومريم، ثم جرب مفاضلات المياه والاستدامة. وضع القصة متاح بدون حركة ثلاثية الأبعاد.',
         'simulated'
       );
     }
@@ -163,6 +165,12 @@ class SeventhFieldGame {
       onToggleNotebook: () => {
         this.hud.toggleNotebook();
       },
+      onToggleStoryDesk: () => {
+        this.storyDesk?.toggle();
+      },
+      onLanguageChange: (language) => {
+        this.storyDesk?.setLanguage(language);
+      },
       onToggleCamera: () => {
         this.playerController?.toggleCameraMode();
       },
@@ -176,6 +184,15 @@ class SeventhFieldGame {
         this.playerController?.setVirtualJoystick(dx, dy);
       },
     });
+
+    // The story companion calls the same mission and solver as 3D interactions.
+    this.storyDesk = new AccessibleStoryDesk(this.uiContainer, this.mission, {
+      onMissionChanged: () => {
+        this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
+        this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+      },
+    });
+    this.storyDesk.setLanguage(this.hud.lang);
 
     // Populate initial notebook receipts
     this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
@@ -196,16 +213,7 @@ class SeventhFieldGame {
     sharedEvents.on('mission_receipts_updated', () => {
       this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
     });
-    sharedEvents.on('safety_checked', ({ completed, total }) => {
-      this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
-      this.hud.showTelemetryToast(
-        this.hud.lang === 'en' ? 'Safety training progress' : 'تقدم مراجعة السلامة',
-        this.hud.lang === 'en'
-          ? `${completed}/${total} fictional safety checks completed. Never operate real equipment based on a game.`
-          : `اكتملت ${completed} من ${total} مراجعات تعليمية. اللعبة لا تمنح تصريحًا لتشغيل معدات حقيقية.`,
-        'simulated'
-      );
-    });
+
   }
 
   _setupPlayerControls(cameras) {
