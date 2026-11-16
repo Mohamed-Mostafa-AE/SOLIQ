@@ -4,9 +4,14 @@ import { resolve } from 'node:path';
 
 test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture', () => {
 
-  test('Capture P1-08 runtime evidence screenshots and profile performance', async ({ page }) => {
-    mkdirSync('game/assets/evidence', { recursive: true });
-    mkdirSync('artifacts/p1-08', { recursive: true });
+  test('Verify P1-08 scenery, simulated feedback and mobile layout; capture evidence on demand', async ({ page }) => {
+    // Keep semantic E2E coverage in every PR. Heavy software-WebGL screenshots
+    // and profiling are an explicit opt-in capture workflow, not a merge gate.
+    const captureEvidence = process.env.P1_08_CAPTURE === '1';
+    if (captureEvidence) {
+      mkdirSync('game/assets/evidence', { recursive: true });
+      mkdirSync('artifacts/p1-08', { recursive: true });
+    }
 
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto('/experience/play/');
@@ -28,12 +33,9 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
     const perfBaseline = await page.evaluate(() => {
       const g = window.__seventhFieldGame;
       const scene = g.renderSetup.scene;
-      const t0 = performance.now();
-      for (let i = 0; i < 20; i++) {
-        scene.render();
-      }
-      const dt = performance.now() - t0;
-      const measuredFps = Math.round((20 * 1000) / Math.max(1, dt));
+      // The engine already renders continuously. Avoid 20 synchronous extra
+      // WebGL frames, which stall software GPU and distort the sampled FPS.
+      const measuredFps = g.renderSetup.engine.getFps();
 
       return {
         fps: measuredFps,
@@ -62,12 +64,14 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       cam.beta = 1.15;
     });
     await page.waitForTimeout(600);
-    const heroShot = await page.screenshot({ animations: 'disabled' });
-    writeFileSync('game/assets/evidence/p1_08_delta_hero_bridge_and_canal.png', heroShot);
+    if (captureEvidence) {
+      const heroShot = await page.screenshot({ animations: 'disabled', timeout: 30000 });
+      writeFileSync('game/assets/evidence/p1_08_delta_hero_bridge_and_canal.png', heroShot);
+    }
 
     // Shot 2: Seasonal Feedback View (Simulated irrigation outcome)
     // Run an irrigation turn where Field 1 & 2 are well-watered, and others face deficit
-    await page.evaluate(() => {
+    const simulatedFeedback = await page.evaluate(() => {
       const g = window.__seventhFieldGame;
       // Trigger simulation: fields 0, 1 delivered full; 2, 3 partial; 4, 5 zero
       const sim = {
@@ -79,7 +83,7 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       };
       g.waterEngine.isPumpActive = true;
       g.village.setPumpRunning(true);
-      g.seasonFeedback.applyIrrigationOutcome(sim);
+      const feedback = g.seasonFeedback.applyIrrigationOutcome(sim);
 
       // Point camera to show contrast between Field 1 (irrigated mud) and Field 5 (dry saline crust)
       const cam = g.renderSetup.cameras.follow;
@@ -87,10 +91,18 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       cam.radius = 24.0;
       cam.alpha = -Math.PI / 1.8;
       cam.beta = 1.05;
+      return {
+        evidenceClass: feedback?.evidenceClass,
+        dryFieldPosture: g.seasonFeedback.getFieldFeedback(g.village.fields[4].id)?.posture,
+      };
     });
+    expect(simulatedFeedback.evidenceClass).toBe('simulated');
+    expect(simulatedFeedback.dryFieldPosture).toBe('wilted');
     await page.waitForTimeout(600);
-    const feedbackShot = await page.screenshot({ animations: 'disabled' });
-    writeFileSync('game/assets/evidence/p1_08_seasonal_irrigation_feedback.png', feedbackShot);
+    if (captureEvidence) {
+      const feedbackShot = await page.screenshot({ animations: 'disabled', timeout: 30000 });
+      writeFileSync('game/assets/evidence/p1_08_seasonal_irrigation_feedback.png', feedbackShot);
+    }
 
     // Shot 3: The Seventh Field Time Echo dual-scenario projection
     await page.evaluate(() => {
@@ -104,8 +116,10 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       cam.beta = 1.1;
     });
     await page.waitForTimeout(600);
-    const echoShot = await page.screenshot({ animations: 'disabled' });
-    writeFileSync('game/assets/evidence/p1_08_seventh_field_time_echo_scenarios.png', echoShot);
+    if (captureEvidence) {
+      const echoShot = await page.screenshot({ animations: 'disabled', timeout: 30000 });
+      writeFileSync('game/assets/evidence/p1_08_seventh_field_time_echo_scenarios.png', echoShot);
+    }
 
     // Shot 4: Mobile 360px viewport responsiveness
     await page.setViewportSize({ width: 360, height: 780 });
@@ -119,19 +133,16 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       cam.beta = 1.2;
     });
     await page.waitForTimeout(500);
-    const mobileShot = await page.screenshot({ animations: 'disabled' });
-    writeFileSync('game/assets/evidence/p1_08_mobile_360px_performance.png', mobileShot);
+    if (captureEvidence) {
+      const mobileShot = await page.screenshot({ animations: 'disabled', timeout: 30000 });
+      writeFileSync('game/assets/evidence/p1_08_mobile_360px_performance.png', mobileShot);
+    }
 
     // Measure mobile performance (explicit render loop timing)
     const mobilePerf = await page.evaluate(() => {
       const g = window.__seventhFieldGame;
       const scene = g.renderSetup.scene;
-      const t0 = performance.now();
-      for (let i = 0; i < 20; i++) {
-        scene.render();
-      }
-      const dt = performance.now() - t0;
-      const measuredFps = Math.round((20 * 1000) / Math.max(1, dt));
+      const measuredFps = g.renderSetup.engine.getFps();
 
       return {
         fps: measuredFps,
@@ -149,13 +160,14 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       timestamp: '2026-11-16',
       task: 'P1-08: Egyptian Delta world and seasonal feedback',
       hardware: {
-        platform: 'Windows (software WebGL / Chromium headless)',
-        browser: 'Chromium / Google Chrome',
+        platform: process.platform,
+        browser: 'Playwright Chromium',
+        measurement: 'Engine FPS snapshot in current browser; not a mobile hardware benchmark',
       },
       desktop: {
         resolution: '1280x720',
-        preset: 'balanced',
-        measuredFps: perfBaseline.fps > 0 ? perfBaseline.fps : 60,
+        preset: perfBaseline.renderPreset,
+        measuredFps: Number.isFinite(perfBaseline.fps) && perfBaseline.fps > 0 ? perfBaseline.fps : null,
         totalMeshes: perfBaseline.totalMeshes,
         activeMeshes: perfBaseline.activeMeshes,
         features: {
@@ -168,7 +180,7 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       mobile: {
         resolution: '360x780',
         preset: 'low',
-        measuredFps: mobilePerf.fps > 0 ? mobilePerf.fps : 58,
+        measuredFps: Number.isFinite(mobilePerf.fps) && mobilePerf.fps > 0 ? mobilePerf.fps : null,
         totalMeshes: mobilePerf.totalMeshes,
         activeMeshes: mobilePerf.activeMeshes,
         horizontalOverflow: !mobilePerf.noHorizontalOverflow,
@@ -181,7 +193,9 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       },
     };
 
-    writeFileSync('artifacts/p1-08/profiling-observations.json', JSON.stringify(profilingReport, null, 2));
+    if (captureEvidence) {
+      writeFileSync('artifacts/p1-08/profiling-observations.json', JSON.stringify(profilingReport, null, 2));
+    }
   });
 
 });
