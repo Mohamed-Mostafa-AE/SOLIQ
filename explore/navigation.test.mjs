@@ -60,3 +60,10 @@ test('P0-06: local server returns the complete project route matrix without expo
     await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
   }
 });
+
+
+test('P0-06: modal story navigation remains accessible while the background is inert', async () => {
+  const source = await readFile(new URL('../game/ui/story-desk.js', import.meta.url), 'utf8');
+  assert.match(source, /id="story-project-link" href="\.\.\/\.\.\/explore\/"/);
+  assert.match(source, /this\._set\('story-project-link', 'Explore all Soil-IQ project areas/);
+});
