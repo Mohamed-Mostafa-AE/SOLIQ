@@ -63,6 +63,10 @@ function validateChapter0Snapshot(snapshot) {
       flags.pumpStarted !== (snapshot.activeOutcome !== OUTCOMES.DEFERRAL)) {
     throw new TypeError('Invalid Chapter 0 checkpoint pump state');
   }
+  if ((snapshot.activeOutcome === OUTCOMES.EQUILIBRIUM && flags.selectedPolicy !== 'proportional') ||
+      (snapshot.activeOutcome === OUTCOMES.BOTTLENECK && flags.selectedPolicy !== 'capacity_limited')) {
+    throw new TypeError('Invalid Chapter 0 checkpoint simulated policy');
+  }
   if (!Array.isArray(snapshot.notebookReceipts) || snapshot.notebookReceipts.length > 100) {
     throw new TypeError('Invalid Chapter 0 checkpoint receipts count');
   }
@@ -486,6 +490,22 @@ export class Chapter0Mission {
         : coverUnlocked
           ? 'فحص الجذور واتفاق غطاء البرسيم فتحا تجربة افتراضية إضافية.'
           : 'وازني بين افتراضات توزيع المياه والغطاء النباتي في الموسم القادم.';
+    // Field7's chosen crop-calendar *question* changes what the Council
+    // discusses, but never changes the hydraulic solver or claims NASA evidence.
+    const hypothesisEn = this.flags.cropHypothesis === 'cover_first'
+      ? 'Calendar A (living soil cover) remains an untested crop hypothesis, not a calculated water saving.'
+      : this.flags.cropHypothesis === 'water_saving'
+        ? 'Calendar B (lower peak water demand) remains an untested crop hypothesis, not a measured livelihood gain.'
+        : this.flags.cropHypothesis === 'deferred_for_nasa'
+          ? 'The Seventh Field crop comparison is still UNAVAILABLE until real NASA context and declared soil inputs are checked.'
+          : '';
+    const hypothesisAr = this.flags.cropHypothesis === 'cover_first'
+      ? 'التقويم (أ) بافتراض غطاء التربة الحي لسه فرضية غير مختبرة، مش توفير مياه محسوب.'
+      : this.flags.cropHypothesis === 'water_saving'
+        ? 'التقويم (ب) بافتراض خفض ذروة طلب المياه لسه فرضية غير مختبرة، مش زيادة دخل مقاسة.'
+        : this.flags.cropHypothesis === 'deferred_for_nasa'
+          ? 'مقارنة المحاصيل في الأرض السابعة غير متاحة لحد مراجعة بيانات NASA وافتراضات التربة.'
+          : '';
     const choices = [
       {
         id: 'council_proportional',
@@ -521,8 +541,8 @@ export class Chapter0Mission {
     return {
       speakerAr: 'مجلس المسقة — قرار يخص ست عائلات',
       speakerEn: 'The Canal Council — Six Families, One Turn',
-      textAr: `في محاكاة تعليمية، ستة غيطان على مسقة واحدة. سمعت ${voicesHeard} من صوتين مهمين. ${statusAr} النتائج افتراضية وليست وصفة ري.`,
-      textEn: `Six fictional plots share one canal. You heard ${voicesHeard} of two perspectives. ${statusEn} This modelled community decision is not real farm advice.`,
+      textAr: `في محاكاة تعليمية، ستة غيطان على مسقة واحدة. سمعت ${voicesHeard} من صوتين مهمين. ${statusAr} ${hypothesisAr} النتائج افتراضية وليست وصفة ري.`,
+      textEn: `Six fictional plots share one canal. You heard ${voicesHeard} of two perspectives. ${statusEn} ${hypothesisEn} This modelled community decision is not real farm advice.`,
       emotion: EMOTIONS.NEUTRAL,
       choices,
     };
@@ -608,6 +628,11 @@ export class Chapter0Mission {
     this.activeOutcome = outcome;
     this.stage = 'executed';
     this.flags.pumpStarted = outcome !== OUTCOMES.DEFERRAL;
+    // The final Council action, not an earlier NPC negotiation, determines
+    // which simulated water-allocation policy is recorded and later restored.
+    // Deferral performs no allocation, so it preserves the last selected policy.
+    if (outcome === OUTCOMES.EQUILIBRIUM) this.flags.selectedPolicy = 'proportional';
+    if (outcome === OUTCOMES.BOTTLENECK) this.flags.selectedPolicy = 'capacity_limited';
     const coverBuffered = outcome === OUTCOMES.EQUILIBRIUM &&
       mode === 'cover_buffered_turn' && this.flags.inspectedSoil &&
       this.flags.soilCoverChoice === 'living_cover';
