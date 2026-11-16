@@ -309,6 +309,8 @@ body, html {
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   pointer-events: auto;
+  /* Dialogue choices must win hit-testing over the touch joystick. */
+  z-index: 10;
 }
 
 .dialogue-header {
@@ -605,7 +607,14 @@ body, html {
   left: 0;
   width: 50vw;
   height: 50vh;
-  pointer-events: auto;
+  /* A virtual touch target must not swallow mouse clicks on dialogue. */
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Enable the joystick hit target only on actual touch-first devices. */
+@media (pointer: coarse) {
+  .virtual-joystick-zone { pointer-events: auto; }
 }
 
 .joystick-base {
