@@ -7,6 +7,7 @@ import {
   planWaterwheel,
   planVillageYards,
   scenicCanalCenterZ,
+  planDistantFieldMosaic,
 } from './delta-environment-layer.js';
 
 test('scenic art is explicitly fictional and never reported as observed NASA data', () => {
@@ -54,6 +55,19 @@ test('decorative canal follows the same existing six centerline control points',
   assert.equal(scenicCanalCenterZ(999),4);
 });
 
+test('fictional horizon fields are beyond named playable plots and stable across renders',()=>{
+  const first=planDistantFieldMosaic(),again=planDistantFieldMosaic();
+  assert.deepEqual(again,first);
+  assert.ok(first.length>=10);
+  assert.ok(first.every(field=>field.z-field.depth/2>32));
+  assert.ok(first.every(field=>field.color==='clover'||field.color==='cover'||field.color==='harvest'));
+  for(let i=0;i<first.length;i++)for(let j=i+1;j<first.length;j++){
+    const a=first[i],b=first[j];
+    assert.ok(Math.abs(a.x-b.x)>=(a.width+b.width)/2 || Math.abs(a.z-b.z)>=(a.depth+b.depth)/2,
+      `horizon patches ${i} and ${j} should not overlap`);
+  }
+});
+
 test('3D layer builds on a real Babylon NullEngine, animates only for simulated active irrigation',async()=>{
   await import('../assets/vendor/babylon.js');
   const engine=new BABYLON.NullEngine();
@@ -72,7 +86,13 @@ test('3D layer builds on a real Babylon NullEngine, animates only for simulated 
     assert.ok(scene.getMeshByName('scenicCanalNurseryPlot'));
     assert.ok(scene.getMeshByName('scenicNurseryLeafMass0'));
     assert.ok(scene.getMeshByName('scenicNurseryLeafMass1'));
-    assert.ok(scene.meshes.length>120 && scene.meshes.length<320);
+    assert.ok(scene.getMeshByName('scenicHorizonField0'));
+    assert.ok(scene.getMeshByName('scenicHorizonSeedlingsCover'));
+    assert.ok(scene.getMeshByName('scenicHorizonPalmTrunk'));
+    assert.ok(scene.getMeshByName('scenicHorizonPalmCrown'));
+    assert.equal(scene.getMeshByName('scenicHorizonPalmTrunk').thinInstanceCount,layer.budget.horizonPalmCount);
+    assert.ok(scene.getMeshByName('scenicHorizonSeedlingsCover').thinInstanceCount>100);
+    assert.ok(scene.meshes.length>120 && scene.meshes.length<350);
     assert.equal(layer.wheel.rotation.z,0);
     layer.tick(.02); // Decorative mechanism is stationary while canal pump is off.
     assert.equal(layer.wheel.rotation.z,0);
