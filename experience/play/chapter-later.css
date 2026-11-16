@@ -1,0 +1,38 @@
+/* Later chapters are earned by playable outcomes, not decorative navigation.
+   Keep one independent focusable launcher per stage on both WebGL and text. */
+.chapter-later-launch {
+  position: fixed;
+  right: 18px;
+  z-index: 205;
+  width: min(300px, calc(100vw - 28px));
+  min-height: 48px;
+  padding: 10px 15px;
+  border: 1px solid #d6c894;
+  border-radius: 10px;
+  color: #f8f6e5;
+  background: linear-gradient(120deg, #22483b, #376b4a);
+  box-shadow: 0 10px 27px #00180caa;
+  font: 800 .88rem/1.35 system-ui, sans-serif;
+  cursor: pointer;
+  pointer-events: auto;
+  text-align: center;
+}
+#chapter3-launch { top: 204px; }
+#chapter4-launch { top: 263px; background: linear-gradient(120deg, #63452b, #9a6b36); }
+.chapter-later-launch[hidden] { display: none !important; }
+.chapter-later-launch:hover { filter: brightness(1.12); }
+.chapter-later-launch:focus-visible { outline: 3px solid #ffefb9; outline-offset: 3px; }
+@media (max-width: 640px) {
+  .chapter-later-launch {
+    right: 14px;
+    width: min(275px, calc(100vw - 28px));
+    padding: 8px 12px;
+    min-height: 46px;
+    font-size: .81rem;
+  }
+  #chapter3-launch { top: 209px; }
+  #chapter4-launch { top: 268px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapter-later-launch { animation: none !important; transition: none !important; }
+}
