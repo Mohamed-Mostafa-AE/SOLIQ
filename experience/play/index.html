@@ -11,14 +11,17 @@
 <body>
   <!-- Loading Splash Screen -->
   <div id="game-loader" class="game-loader">
+    <div class="loader-world-title" aria-hidden="true"><span>CHAPTER 0</span>THE SEVENTH FIELD</div>
     <div class="loader-content">
       <img src="../../soliq-logo.svg" alt="Soil-IQ logo" class="loader-logo">
-      <h2 class="loader-title">The Seventh Field · A Living World</h2>
-      <p class="loader-sub">Preparing the Nile Delta village and water systems...</p>
+      <p class="loader-chapter">SOIL-IQ / A PLAYABLE EGYPTIAN STORY</p>
+      <h1 class="loader-title">The land remembers water.</h1>
+      <p class="loader-sub">At dawn, the canal falls quiet. Six fields have a plan. The seventh asks a question nobody can answer yet.</p>
+      <p class="loader-world-caption">AN ORIGINAL NILE DELTA WORLD · FICTIONAL SCENARIO</p>
       <div class="loader-progress-bar"><div id="loader-bar" class="loader-bar"></div></div>
-      <button id="btn-start-game" class="btn-start" hidden>Enter the Village · Begin Mission 🌾</button>
-      <p class="loader-note">A fictional village powered by transparent canal-water calculations, not live field measurements.</p>
-      <p class="loader-note"><a href="story.html" id="text-story-entry">Play the text-first story (keyboard, screen reader, captions) →</a></p>
+      <button id="btn-start-game" class="btn-start" hidden>Enter the Seventh Field →</button>
+      <p class="loader-note">Simulated canal choices, not live farm or satellite measurements.</p>
+      <p class="loader-note"><a href="story.html" id="text-story-entry">Play the same opening choices without 3D · captions, keyboard and screen reader ↗</a></p>
     </div>
   </div>
 
@@ -28,7 +31,7 @@
   <!-- In-Game UI Layer -->
   <div id="game-ui-container"></div>
 
-  <!-- Fallback Babylon Scripts (Local Vendored with CDN Fallback) -->
+  <!-- Babylon Scripts (vendored with CDN fallback) -->
   <script src="../../game/assets/vendor/babylon.js"></script>
   <script src="../../game/assets/vendor/babylonjs.loaders.min.js"></script>
   <script>

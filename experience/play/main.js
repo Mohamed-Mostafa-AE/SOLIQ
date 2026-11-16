@@ -1,6 +1,6 @@
 /**
- * SOLIQ: The Seventh Field - Main Game Orchestrator
- * Connects Babylon.js 3D world, rigged characters, real mesqa simulation,
+ * Soil-IQ: The Seventh Field - Main Game Orchestrator
+ * Connects Babylon.js 3D world, rigged characters, fictional mesqa simulation,
  * Chapter 0 mission, Earth Lens, Time Echo, and responsive diegetic HUD.
  */
 
@@ -20,6 +20,7 @@ import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
 import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
 import { OpeningHook } from '../../game/ui/opening-hook.js';
+import { CinematicDirector } from './cinematic-director.js';
 import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
 
@@ -76,8 +77,12 @@ class SeventhFieldGame {
     cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0,1.38,0)));
     // ArcRotateCamera.setTarget preserves eye position and therefore silently
     // expands the radius; restore the intended human-scale follow framing.
-    cameras.follow.radius=8.5;
-    cameras.follow.beta=1.20;
+    // Frame Nada diagonally with the canal, crops and village behind her.
+    // Looking straight along the path left most of the meaningful world out
+    // of the first controllable view, even after the opening shot ended.
+    cameras.follow.alpha = -2.20;
+    cameras.follow.radius = 10.5;
+    cameras.follow.beta = 1.10;
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
@@ -102,8 +107,12 @@ class SeventhFieldGame {
     this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
     this.nasaBrowseOverlay.setLanguage(this.hud.lang);
     this._setupPlayerControls(cameras);
+    this.cinematicDirector = new CinematicDirector(this.renderSetup, this.characters, this.playerController);
 
     this.isInitialized = true;
+    // The first impression must display the *actual* Delta scene, not a
+    // permanently opaque splash while the renderer waits for a click.
+    this.renderSetup.scene.render();
     this._updateProgress(100, 'اكتملت التهيئة بنجاح!');
     this._showStartButton();
   }
@@ -227,14 +236,16 @@ class SeventhFieldGame {
     });
     this.storyDesk.setLanguage(this.hud.lang);
     this.openingHook = new OpeningHook(document.body, this.mission, {
+      onPreview: (clue) => this.cinematicDirector?.preview(clue),
       onInvestigation: (clue) => {
+        this.cinematicDirector?.choose(clue);
         this.storyDesk.refresh();
         const en = this.hud.lang === 'en';
         this.hud.showTelemetryToast(
           en ? (clue === 'water' ? 'Your first clue: the canal ledger' : 'Your first clue: the crop calendar')
             : (clue === 'water' ? 'أول خيط: دفتر المسقة' : 'أول خيط: تقويم المحاصيل'),
-          en ? 'A question, not an answer. Meet Hassan and Maryam; your investigation is recorded in the evidence notebook.'
-            : 'ده سؤال مش إجابة. اتكلم مع حسن ومريم؛ بداية بحثك اتسجلت في دفتر الأدلة.',
+          en ? `Your first witness: ${clue === 'water' ? 'Hassan by Canal Gate 1' : 'Maryam by the soil-cover field'}. Follow the glowing marker or open Story Mode. Both crop plans remain untested.`
+            : `أول شخصية هتقابلها: ${clue === 'water' ? 'حسن عند بوابة المسقة' : 'مريم عند غيط غطاء التربة'}. اتبع العلامة المضيئة أو افتح وضع القصة. الخطتان غير مختبرتين.`,
           'simulated'
         );
       },
@@ -311,6 +322,7 @@ class SeventhFieldGame {
   tick(deltaTime) {
     // 1. Update player locomotion and proximity
     this.playerController.update(deltaTime);
+    this.cinematicDirector?.tick(deltaTime);
 
     // 2. Update character skeletal animations
     this.characters.updateAnimations(deltaTime);

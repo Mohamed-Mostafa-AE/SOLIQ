@@ -952,3 +952,212 @@ body.reduced-motion .game-loader * {
   .mobile-action-bar { bottom: 12px; gap: 8px; }
   .mobile-btn { width: 52px; height: 52px; }
 }
+
+/*
+ * Chapter 0's stage is composed around the live Babylon world. The previous
+ * opaque, centered window hid the village and made 3D gameplay look like a
+ * static web form. All controls remain DOM-native and keyboard accessible.
+ */
+.game-loader {
+  justify-content: flex-end;
+  padding: clamp(16px, 5vw, 70px);
+  background: linear-gradient(90deg, #05130ef0 0%, #06130ad1 31%, #06150c25 67%, #06150a22 100%);
+  isolation: isolate;
+}
+.game-loader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #e8ab6416 0%, transparent 28%, #00130b49 92%);
+}
+.loader-world-title {
+  position: absolute;
+  top: clamp(22px, 6vh, 75px);
+  right: clamp(18px, 5vw, 75px);
+  max-width: 25rem;
+  color: #fff0d2d6;
+  font: 400 clamp(1.5rem, 3.8vw, 3.5rem)/.9 Georgia, Cambria, serif;
+  letter-spacing: -.055em;
+  text-align: right;
+  text-shadow: 0 8px 25px #000b;
+}
+.loader-world-title span {
+  display: block;
+  margin-bottom: .7rem;
+  font: 800 .7rem/1.4 var(--font-sans);
+  letter-spacing: .22em;
+  color: #f9d08f;
+}
+.loader-content {
+  position: relative;
+  z-index: 2;
+  width: min(460px, 100%);
+  max-width: none;
+  padding: clamp(20px, 3vw, 38px);
+  text-align: left;
+  border: 1px solid #f2cf8957;
+  border-radius: 20px;
+  background: #071d18dc;
+  box-shadow: 0 30px 100px #000a;
+  backdrop-filter: blur(16px);
+}
+.loader-logo { width: 65px; height: 65px; margin-bottom: 16px; }
+.loader-chapter, .loader-world-caption {
+  color: #ecc889;
+  font-size: .7rem;
+  font-weight: 850;
+  letter-spacing: .16em;
+  line-height: 1.5;
+}
+.loader-title {
+  margin: 12px 0 16px;
+  font: 400 clamp(2rem, 4vw, 3.3rem)/1.02 Georgia, Cambria, serif;
+  letter-spacing: -.04em;
+  color: #fff4d8;
+}
+.loader-sub { font-size: 1rem; line-height: 1.65; color: #e9f1e6; }
+.loader-world-caption { margin-bottom: 18px; }
+.btn-start { width: 100%; min-height: 54px; background: #e8bd78; color: #14231b; border: 1px solid #fff1ce; }
+.btn-start:hover { background: #ffdfa0; color: #10221b; }
+.loader-note { font-size: .78rem; opacity: 1; line-height: 1.55; }
+
+.opening-hook {
+  align-items: stretch;
+  justify-items: end;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(90deg, #06100c20, #061a1399 57%, #030c0bcc);
+  isolation: isolate;
+}
+.opening-hook::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #dcb17913, transparent 34%, #051b1499);
+}
+.hook-world-caption {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  left: clamp(19px, 4.5vw, 80px);
+  bottom: clamp(40px, 10vh, 105px);
+  width: min(41vw, 620px);
+  pointer-events: none;
+  text-shadow: 0 4px 25px #020d0bf0;
+}
+.hook-episode { font-size: .74rem; font-weight: 900; letter-spacing: .25em; color: #ffe0a3; }
+.hook-world-title {
+  margin: 13px 0 21px;
+  font: 400 clamp(3rem, 7vw, 7rem)/.88 Georgia, Cambria, serif;
+  letter-spacing: -.065em;
+  color: #fff0d3;
+  white-space: pre-line;
+}
+.hook-world-location {
+  padding-top: 14px;
+  border-top: 1px solid #ffe6ad78;
+  color: #ffd59c;
+  font-weight: 850;
+  font-size: .81rem;
+  letter-spacing: .14em;
+}
+.hook-world-instruction { max-width: 390px; margin-top: 11px; font-size: .84rem; line-height: 1.5; color: #f5eee1; }
+.hook-stage {
+  z-index: 2;
+  width: min(580px, 51vw);
+  min-width: 0;
+  max-height: 100dvh;
+  height: 100dvh;
+  overflow-y: auto;
+  border-radius: 0;
+  border: 0;
+  border-left: 1px solid #e9be7959;
+  background: linear-gradient(120deg, #0b2721f2, #14271eee 56%, #302516ef);
+  box-shadow: -25px 0 100px #0008, inset 0 0 0 1px #ffffff04;
+  backdrop-filter: blur(18px);
+  transition: width .4s ease, background .4s ease;
+}
+.hook-stage::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; left: 0;
+  height: 7px;
+  background: linear-gradient(90deg, #5da99a, #f3c57b, #78522a);
+}
+.hook-atmosphere { opacity: .2; }
+.hook-content { padding: clamp(19px, 2.5vw, 36px); }
+.hook-topline { font-size: .63rem; letter-spacing: .12em; }
+.hook-field-report {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  color: #f2c991;
+  font-size: .7rem;
+  letter-spacing: .14em;
+  font-weight: 850;
+}
+.hook-record-dot { width: 8px; height: 8px; border-radius: 50%; background: #f9cb7b; box-shadow: 0 0 12px #ebb26480; }
+.hook-eyebrow { margin-top: 16px; }
+.opening-hook h1 { font-size: clamp(2.4rem, 3.75vw, 4.25rem); }
+.hook-premise { font-size: clamp(.86rem, 1.1vw, .99rem); line-height: 1.65; }
+.hook-stakes { margin: 13px 0; }
+.hook-stakes strong { font-size: 1.7rem; }
+.hook-decision-head h2 { font-size: 1.2rem; }
+.hook-decision-head p { margin-bottom: 5px; }
+.hook-camera-instruction { color: #f9d79c; font-size: .78rem; margin-bottom: 13px; line-height: 1.4; }
+.hook-choices { gap: 10px; }
+.hook-choice { min-height: 178px; padding: 14px; border-radius: 11px; }
+.hook-choice strong { font-size: clamp(1.22rem, 1.8vw, 1.57rem); }
+.hook-choice:hover, .hook-choice:focus-visible { background: #194c46; box-shadow: 0 0 0 1px #e8cc94, 0 12px 32px #0008; }
+.hook-choice-soil:hover, .hook-choice-soil:focus-visible { background: #5a4b29; }
+.hook-view-village {
+  min-height: 38px;
+  padding: 8px 10px;
+  background: #e5b770;
+  color: #12231a;
+  border: 1px solid #ffdfa4;
+  border-radius: 7px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.hook-wide-view .hook-stage { width: min(470px, 43vw); background: linear-gradient(110deg, #0b2721d9, #14271ed2 56%, #302516d9); }
+
+@media (max-width: 700px) {
+  .game-loader { justify-content: flex-end; padding: 8px 0 0; background: linear-gradient(180deg, #07160a39, #07160ab0 35%, #06140de9 65%); }
+  .loader-world-title { top: 30px; right: 20px; font-size: 2rem; }
+  .loader-content { width: 100%; padding: 20px; border-radius: 18px 18px 0 0; max-height: 76dvh; overflow-y: auto; }
+  .loader-title { font-size: 2.3rem; }
+  .opening-hook { background: linear-gradient(180deg, #06100c18, #061a1359 30%, #030c0bee); }
+  .hook-world-caption { top: 4vh; bottom: auto; width: 88%; }
+  .hook-episode { font-size: .6rem; letter-spacing: .12em; }
+  .hook-world-title { font-size: clamp(2.2rem, 11vw, 4rem); margin: 9px 0; }
+  .hook-world-location { padding-top: 6px; font-size: .65rem; }
+  .hook-world-instruction { display: none; }
+  .hook-stage, .hook-wide-view .hook-stage {
+    align-self: end;
+    width: 100%;
+    height: 74dvh;
+    max-height: 74dvh;
+    border: 1px solid #e9be7959;
+    border-bottom: 0;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(130deg, #0b2721f5, #14271ef4 56%, #302516f2);
+  }
+  .hook-wide-view .hook-stage { height: 60dvh; max-height: 60dvh; }
+  .hook-content { padding: 16px; }
+  .hook-topline { font-size: .6rem; }
+  .hook-field-report { margin-top: 13px; }
+  .hook-choices { grid-template-columns: 1fr; }
+  .hook-choice { min-height: 143px; }
+  .hook-stakes strong { font-size: 1.4rem; }
+  .hook-world-caption { left: 6%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hook-stage { transition: none; }
+}
+body.reduced-motion .hook-stage { transition: none; }
