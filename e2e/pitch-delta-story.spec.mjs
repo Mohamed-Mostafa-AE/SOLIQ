@@ -6,12 +6,14 @@ test('judge pitch uses an original Delta canal illustration and an honest slide-
   await page.goto('/pitch-3d/');
 
   await expect(page.locator('.slide')).toHaveCount(7);
-  const heroArt = page.locator('.slide.active .scene svg');
+  // Desktop has one cinematic field shared across all slides. The slide-local
+  // SVG is deliberately hidden there and shown only in mobile reading mode.
+  const heroArt = page.locator('.continuous-field svg');
   await expect(heroArt).toBeVisible();
   await expect(heroArt.locator('[data-art="delta-canal"]')).toHaveCount(1);
   await expect(heroArt.locator('[data-art="mesqa-bridge"]')).toHaveCount(1);
   await expect(heroArt.locator('[data-art="sakia-wheel"]')).toHaveCount(1);
-  await expect(page.locator('.slide.active')).toContainText('CONCEPT ILLUSTRATION');
+  await expect(page.locator('.continuous-field .field-caption')).toBeVisible();
 
   const progress = page.locator('#deck-progress');
   await expect(progress).toHaveAttribute('max', '7');
