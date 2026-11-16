@@ -16,7 +16,7 @@
 | Research | NASA POWER daily forcing, Hargreaves + bucket water balance, sensitivity, 2026 analogue scenarios | Agricultural field calibration and prospective validation |
 | Earth observation | GIBS imagery browse, CMR metadata discovery, conditional HLS ingestion tooling | End-to-end quality-controlled pixel products in the user workflow |
 | Seventh Field | Babylon.js Nile Delta village, six fields, canal, pump, Nada/Hassan/Maryam, Chapter 0, water solver, Earth Lens, Time Echo | Multi-chapter gameplay, richer mechanics, graphics, accessibility, authentic environmental detail |
-| Safety | Some uncertainty disclosures and risk checks in farm-data tools | Playable occupational safety learning and game safeguards |
+| Accessibility & inclusion | Existing bilingual HUD; this PR adds Chapter 0 text companion, captions and a no-WebGL route | Independent screen-reader, mobility, low-vision and Deaf-user QA; scene-wide reduced-motion and save-state work |
 | Voice | Optional AI explanation endpoint; no verified integrated game speech pipeline | Opt-in speech accessibility, localized scripting, fail-closed AI grounding |
 | Deployment | Production Vercel SHA `312e5809` | main is `2f196da6`; newer production not verified |
 | Visual PR | Draft PR #33; draft PR #32 demonstration/evidence | Review/CI/merge decisions; no blanket merge |
@@ -31,7 +31,7 @@
 4. **Evidence Bridge:** a versioned, read-only scenario contract passes only properly labelled calculations into game displays. Neither game XP nor dialog changes scientific facts.
 
 ## The Seventh Field — full narrative arc (target, not all implemented)
-**Chapter 0: The Water Has Arrived!** Nada meets Uncle Hassan and Maryam. Inspect the pump, protect canal access and consider outdoor heat BEFORE playing any powered-pump turn. Choose coordinated, capacity-limited or evidence-first deferral. View the six-field ledger; make room for fairness, shortage, and practical limitations. Existing Chapter 0 now includes a first educational safety gate on this PR.
+**Chapter 0: The Season That Hasn't Happened Yet (implemented vertical slice).** At dawn Nada finds two conflicting crop calendars in an old canal ledger. A mysterious seventh field makes the village debate tomorrow. Hear Hassan and Maryam's differing priorities, investigate the rotation question, then test a sufficient-capacity or constrained-water turn—or responsibly defer. The shared solver supplies fictional ledger values; the scientific rotation workspace is a separate link, never an invented future. No equipment inspection gates the storyline.
 
 **Chapter 1: My Farm, My Responsibility.** The player can choose an imaginary district or opt into a location-inspired *game setting*; GPS never silently identifies real land ownership. Inspect soil, choose a crop, manage a plot and open a crop exploration room. One crop world explores maize planting, irrigation demand and weather exposure; subsequent worlds may cover wheat, clover and other plants. No hardcoded yield promises.
 
@@ -51,10 +51,10 @@ Relevant United Nations goals are **learning links**, not earned certifications:
 - **SDG 6.4:** water-use efficiency and scarcity — examine canal supply, modeled shortfall and irrigation allocation.
 - **SDG 12.2:** responsible natural-resource use — see avoidable waste, equipment considerations and trade-offs.
 - **SDG 13.1:** climate resilience — replay heat/rainfall scenarios with clear source labels.
-- **SDG 3 & SDG 8:** worker well-being and safe work practices — heat exposure, equipment and water hazards. These are safety-awareness tasks, not occupational clearance.
+- **SDG 10:** inclusion and equitable access — keyboard-first text gameplay, captions and a separate no-WebGL route; actual accessibility needs participant testing.
 - **SDG 15:** land ecosystems — explore soil cover and habitat without fabricating carbon, biodiversity or restoration metrics.
 
-Mission outcomes should distinguish **resource delivery**, **shortfall**, **fairness**, **worker-safety learning**, and **unknowns**. Avoid a single “sustainability score” that hides trade-offs. Unsafe fictional pump-operation choices are blocked until safety-awareness steps are completed; an evidence-first deferral stays available.
+Mission outcomes should distinguish **resource delivery**, **shortfall**, **fairness**, **community preferences**, **soil-cover questions**, and **unknowns**. Avoid a single “sustainability score” that hides trade-offs. The fictional canal council allows choices or evidence-first deferral without unrelated safety-training gates.
 
 Sources: https://sdgs.un.org/goals ; https://sdgs.un.org/goals/goal2 ; https://sdgs.un.org/goals/goal6 ; ILO agricultural OSH guidance https://www.ilo.org/sites/default/files/wcmsp5/groups/public/%40ed_dialogue/%40lab_admin/documents/genericdocument/wcms_828873.pdf
 
@@ -77,7 +77,7 @@ Sources: https://sdgs.un.org/goals ; https://sdgs.un.org/goals/goal2 ; https://s
 ## Release sequence / Codex work packages
 **P0 / integration and baseline:** inventory PR #33, #32, #30 and overlapping visual/evidence work; compare diffs; run all Node tests, benchmarks and Playwright; fix season-motion navigation; verify actual deployed commit and staging strategy. Deliver a reproducible release ledger. No force-push.
 
-**P1 / English, safety, sustainability (this PR):** English default on game loader and HUD, optional Arabic, pump training gate, SDG evidence notebook receipts, tests. Manual QA of game dialogue, input focus, mobile, accessibility and scenario honesty before merge.
+**P1 / Story, sustainability and inclusive play (this PR):** English default on game UI, Arabic option, canal council, mystery beats, SDG learning receipts, keyboard/screen-reader story companion, captions, no-WebGL route and functional reduced-motion preference. Manual assistive-tech/device QA and Playwright remain release gates.
 
 **P2 / visual quality pass:** use a *separate* review branch for PR #33's ground textures, closer camera, character animation, crop detail, lighting, original assets. Capture before/after real browser frames, mobile perf, no invented NASA pixels. Don't merge visuals without performance + screenshot review.
 
@@ -87,7 +87,7 @@ Sources: https://sdgs.un.org/goals ; https://sdgs.un.org/goals/goal2 ; https://s
 
 **P5 / immersive UX + voice:** progressive ambient audio, subtitles/captions, graphics settings, accessibility, optional mic with no silent recording; scripted fallback and grounded AI explorer.
 
-**P6 / scientific & safety evidence:** better crop/soil pilots, provenance audits, quality-controlled satellite adapter where justified, privacy and security review, ILO/SDG learning validation, farmer and educator usability studies.
+**P6 / scientific and inclusion evidence:** better crop/soil pilots, provenance audits, quality-controlled satellite adapter where justified, privacy and security review, actual SDG learning validation, accessibility review with disabled players, farmer and educator studies.
 
 **P7 / deployment:** modularize APIs for host limits, verified staging, end-to-end smoke suite, measured performance and gradual rollout; attach domain only once stable. Keep NASA archive unchanged.
 
@@ -96,10 +96,10 @@ Sources: https://sdgs.un.org/goals ; https://sdgs.un.org/goals/goal2 ; https://s
 - Real working behavior, not decorative buttons, fake screenshots or promises.
 - `npm test` and `npm run benchmark`, plus relevant Playwright tests pass **for that commit**; report any known baseline failures, don't mask them.
 - English-first game and Arabic optional locale visibly verified; app bilingual preserved.
-- Safety choices have observable effect and no false operational approval; optional no-data/deferral path always exists.
+- Sustainable choices have observable simulated consequences; unknown crop/soil outcomes remain unknown and an evidence-first deferral always exists.
 - Distinguish OBSERVED / DERIVED / ASSUMED / SIMULATED / UNAVAILABLE in UI, exports and dialogue.
 - WCAG-minded keyboard/focus, no overflow at 360px, reduced motion and accessible text alternatives.
 - Human review of screenshots on desktop and mobile; evidence logs retained; no new production deployment until approved.
 - Short implementation notes and a release/rollback plan in every PR.
 
-**First executable slice in this branch:** safety-sustainability module + tests, safety-gated pump dialogue and receipts, English-first game loader/HUD, and game E2E regression coverage. Future phases remain planned, not delivered.
+**First executable slice in this branch:** sustainability-led canal council, narrative beats, simulated SDG receipts, English-first game HUD, actual crop-rotation science bridge, keyboard/captioned Story Mode and separate no-WebGL route. Future chapters, 3D art overhaul, save-state and assistive-tech field validation remain planned, not delivered.
