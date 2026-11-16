@@ -5,6 +5,16 @@
 **Task ID:** `P1-01` (Depends on `P0-02`; feeds `P1-03` Checkpoint & `P1-04` Chapter 1)
 **Owners:** Narrative & Systems Spec (Gemini) -> Code Integration (Codex)
 
+### Implementation reconciliation — reviewed 2026-11-16
+
+This document is the **target narrative and systems specification**, not a claim that every scripted line or all Chapters 1–6 have shipped. The actual Chapter 0 code is [P1-01 PR #46](https://github.com/Mohamed-Mostafa-AE/SOLIQ/pull/46) and the optional local save/resume/reset implementation [P1-03 PR #48](https://github.com/Mohamed-Mostafa-AE/SOLIQ/pull/48) was merged **into the P1-01 feature branch only**. Neither is yet part of the release integration branch or production.
+
+Code-level parity already implemented in PR #46: stable Hassan/Maryam/Seventh Field choice IDs, conditional cover-buffered Council option, assumed/simulated scenario receipts, English default with optional Arabic, text-only/3D choice rendering, `flags.relationships`, strict versioned snapshot serialization, and regression tests. PR #48 adds an **explicit user-action-only** local browser checkpoint; saving does not happen automatically and no GPS/NASA raw payload is included.
+
+**Remaining acceptance review:** the Field 7 opening dialogue currently explains both hypotheses generically; its combined Hassan/Maryam-specific entry line below remains a narrative target. Two Field 7 hypothesis selections currently register distinct receipts, while their distinct effect on the *next* playable question needs a direct E2E assertion. Verify that `flags.selectedPolicy` records the **final Council-selected** solver policy (not only a prior NPC proposal), especially after Hassan head-priority followed by proportional Council, or Maryam proportional followed by bottleneck Council. The chapter's fictional head-first negotiation does **not** model measured head-to-tail canal pressure. Manual screen-reader/device checks, actual GLB human animation, and the full browser CI remain release gates.
+
+Runnable coverage belongs to `e2e/chapter0-consequences.spec.mjs` (PR #46), `e2e/chapter0-checkpoint.spec.mjs` (PR #48), and the continuing `e2e/play-3d.spec.mjs` regression suite. The detailed examples in Section 6 are **acceptance illustrations**: use the implementation's actual localized phrasing and current selectors when running them.
+
 ---
 
 ## 1. Executive Scope & Design Boundaries
@@ -108,7 +118,7 @@ Add `getSerializableState()` and `restoreState(snapshot)` on `Chapter0Mission` r
   - **EN:** `"Word travels fast along the mesqa, Nada. Hassan says you're backing a head-first turn for his wheat. Look at the tail-end ledger—who pays for that if the diesel supply drops?"`
   - **AR:** `"الكلام بيجري بسرعة على المسقة يا ندى. عم حسن بيقول إنك مأيدة يبدأ بيه عشان القمح. بصي على دفتر آخر المسقة—مين هيدفع التمن لو الديزل قل؟"`
 - Else if `inspectedSoil === true`:
-  - **EN:** `"Hassan waved from Gate 1—he said you actually checked under the soil crust instead of guessing. That changes how we can plan the berseem cover."`
+  - **EN:** `"Hassan waved from Gate 1—he said you actually checked below the soil crust instead of guessing. That changes how we can plan the berseem cover."`
   - **AR:** `"عم حسن شاورلي من البوابة الأولى—قال إنك فحصتي تحت قشرة التربة بدل التخمين. ده بيغير طريقة تخطيطنا لغطاء البرسيم."`
 - Else if `hassanStance === 'cooperative'`:
   - **EN:** `"Hassan just sent word that you both agreed to share any shortage proportionally. If we pair that with soil cover, the tail end might actually breathe."`
@@ -206,9 +216,9 @@ Keep `getSeasonStoryBeat(flags, activeOutcome)` backward-compatible with `season
 
 ---
 
-## 6. Two Runnable Playwright E2E Acceptance Tests
+## 6. Playwright E2E Acceptance Examples (adapt to exact implementation)
 
-Add these two tests to `e2e/play-3d.spec.mjs` (inside `test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', ...)`). They verify that **early decisions visibly change later NPC dialogue, available Council options, and simulated sustainability receipts**, across both English and Arabic, using accessible keyboard controls.
+These are illustrative acceptance examples; executable P1-01 tests are tracked in `e2e/chapter0-consequences.spec.mjs` and should run alongside `e2e/play-3d.spec.mjs`. They verify that **early decisions visibly change later NPC dialogue, available Council options, and simulated sustainability receipts**, across both English and Arabic, using accessible keyboard controls.
 
 ```javascript
   test('P1-01 Branch A: soil clue + soil inspection + cover pact unlocks Cover-Buffered Council turn', async ({ page }) => {
@@ -267,7 +277,7 @@ Add these two tests to `e2e/play-3d.spec.mjs` (inside `test.describe('SOLIQ: The
 
     // 3. Maryam must react directly to the head-first decision
     await page.locator('[data-story-target="maryam"]').click();
-    await expect(page.locator('#story-dialogue-text')).toContainText('head-first turn');
+    await expect(page.locator('#story-dialogue-text')).toContainText('head-first proposal');
     await page.locator('[data-choice-id="maryam_stress_test_rush"]').press('Enter');
 
     // 4. Seventh Field: refuse to guess without NASA POWER context
