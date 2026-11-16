@@ -34,6 +34,16 @@ test('P0-08: every pitch slide is readable without scaling or horizontal overflo
   }
 
   await page.locator('#slide-nav button').nth(2).click();
+  const navigationTargets = await page.locator('#slide-nav button').evaluateAll((buttons) =>
+    buttons.map((button) => ({
+      width: button.getBoundingClientRect().width,
+      height: button.getBoundingClientRect().height,
+    })));
+  expect(navigationTargets).toHaveLength(7);
+  for (const target of navigationTargets) {
+    expect(target.width).toBeGreaterThanOrEqual(44);
+    expect(target.height).toBeGreaterThanOrEqual(44);
+  }
   await expect(page.locator('.rotation')).toHaveCount(3);
   const positions = await page.locator('.rotation').evaluateAll((cards) => cards.map((card) => ({
     top: card.getBoundingClientRect().top, width: card.getBoundingClientRect().width,
