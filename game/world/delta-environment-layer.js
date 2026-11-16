@@ -110,6 +110,7 @@ export class DeltaEnvironmentLayer {
     this._createVillageLife();
     this._createCanalDetail();
     this._createFieldDetail();
+    this._createNearCanalNursery();
   }
 
   _makeMaterials() {
@@ -281,6 +282,34 @@ export class DeltaEnvironmentLayer {
       specular:[.43,.53,.49],doubleSided:true,
     });
     waterMat.alpha=.78;
+    // Draw a tiny deterministic, original ripple texture rather than flat
+    // cyan paint. Gracefully fall back to solid diffuse on headless renderers.
+    if(typeof document!=='undefined' && typeof BABYLON.DynamicTexture==='function'){
+      try {
+        const size=this.budget.preset==='low'?128:256;
+        const tex=new BABYLON.DynamicTexture('scenicMesqaRippleTexture',
+          {width:size,height:size/2},scene,false);
+        const ctx=tex.getContext(),im=ctx.createImageData(size,size/2);
+        const random=seedRandom(0x517ab);
+        for(let y=0;y<size/2;y++)for(let x=0;x<size;x++){
+          const wave=Math.sin(x*.11+y*.23)+Math.sin(x*.047-y*.25)*.55;
+          const reflection=Math.max(0,Math.sin(x*.17+y*.075)-.52)*23;
+          const grain=(random()-.5)*12;
+          const p=(y*size+x)*4;
+          im.data[p]=Math.round(48+wave*5+grain+reflection*.78);
+          im.data[p+1]=Math.round(122+wave*8+grain+reflection);
+          im.data[p+2]=Math.round(123+wave*8+grain+reflection*1.05);
+          im.data[p+3]=255;
+        }
+        ctx.putImageData(im,0,0);
+        tex.wrapU=BABYLON.Texture.WRAP_ADDRESSMODE;
+        tex.wrapV=BABYLON.Texture.WRAP_ADDRESSMODE;
+        tex.uScale=3;tex.vScale=2;
+        tex.update();
+        waterMat.diffuseTexture=tex;
+        waterMat.diffuseColor=new BABYLON.Color3(.70,.78,.79);
+      } catch (_) { /* Canvas-disabled fallback keeps gameplay alive. */ }
+    }
     this.ambientCanalMaterial=waterMat;
     const upper=[],lower=[];
     for(let i=0;i<=35;i++){
@@ -390,6 +419,56 @@ export class DeltaEnvironmentLayer {
       }
       this.butterflies.push({mesh:flower,baseY:flower.position.y,phase:rng()*6.28});
     }
+  }
+
+  _createNearCanalNursery() {
+    // The first follow-camera shot was previously 55–60% empty dirt.
+    // A compact, reachable demonstration nursery on the canal footpath gives
+    // an organic foreground while leaving Nada's route and all real six fields
+    // unchanged. It is NOT a modelled farm parcel or a crop recommendation.
+    const scene=this.scene,m=this.materials;
+    const x=-8.8,z=5.15,width=6.3,depth=3.5;
+    const soil=material(scene,'scenicNurseryLoam',[.27,.20,.13]);
+    const greenery=material(scene,'scenicNurseryClover',[.18,.48,.18]);
+    const shoots=material(scene,'scenicNurseryYoungLeaves',[.34,.61,.20]);
+    const patch=BABYLON.MeshBuilder.CreateGround('scenicCanalNurseryPlot',
+      {width,height:depth,subdivisions:2},scene);
+    patch.position.set(x,.17,z);
+    patch.material=soil;patch.isPickable=false;patch.receiveShadows=true;
+    for(const side of [-1,1]){
+      meshBox(scene,`scenicNurseryBermLong${side}`,
+        {width:width+.4,height:.24,depth:.26},
+        [x,.20,z+side*(depth/2+.08)],m.sand);
+      meshBox(scene,`scenicNurseryBermShort${side}`,
+        {width:.26,height:.24,depth:depth+.4},
+        [x+side*(width/2+.08),.20,z],m.sand);
+    }
+    const rng=seedRandom(0xa51c),density=this.budget.preset==='low'?11:17;
+    for(const [kind,mat,angle] of [[0,greenery,0],[1,shoots,Math.PI/2]]){
+      // Low-poly leaf masses are true volumetric ellipsoids, drawn with two
+      // thin-instance calls rather than hundreds of heavy individual meshes.
+      const leaf=BABYLON.MeshBuilder.CreateSphere(`scenicNurseryLeafMass${kind}`,
+        {diameter:1,segments:6},scene);
+      leaf.material=mat;leaf.isPickable=false;leaf.alwaysSelectAsActiveMesh=true;
+      const buffer=new Float32Array(density*7*16);
+      for(let row=0;row<7;row++)for(let i=0;i<density;i++){
+        const h=.22+rng()*.20;
+        const position=new BABYLON.Vector3(
+          x-width*.45+(i+.5)*width*.90/density+(rng()-.5)*.08,
+          .28+h*.48,
+          z-depth*.43+(row+.5)*depth*.86/7+(rng()-.5)*.08,
+        );
+        const scale=new BABYLON.Vector3(.13+rng()*.05,h,.07+rng()*.05);
+        BABYLON.Matrix.Compose(scale,
+          BABYLON.Quaternion.RotationYawPitchRoll(angle+(rng()-.5)*.35,0,.13),position)
+          .copyToArray(buffer,(row*density+i)*16);
+      }
+      leaf.thinInstanceSetBuffer('matrix',buffer,16,true);
+    }
+    const waterPot=cylinder(scene,'scenicNurseryWaterPitcher',
+      {diameterTop:.31,diameterBottom:.55,height:.73,tessellation:14},
+      [x-width/2-.53,.37,z-depth/2+.3],m.terracotta);
+    waterPot.rotation.z=-.06;
   }
 
   setIrrigationActive(active) {

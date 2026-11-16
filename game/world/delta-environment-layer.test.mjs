@@ -69,6 +69,9 @@ test('3D layer builds on a real Babylon NullEngine, animates only for simulated 
     assert.ok(scene.getMeshByName('scenicBankSedges0'));
     assert.ok(scene.getMeshByName(`scenicBankSedges${Math.PI/2}`));
     assert.ok(scene.getMeshByName('scenicFieldBerm0_-1'));
+    assert.ok(scene.getMeshByName('scenicCanalNurseryPlot'));
+    assert.ok(scene.getMeshByName('scenicNurseryLeafMass0'));
+    assert.ok(scene.getMeshByName('scenicNurseryLeafMass1'));
     assert.ok(scene.meshes.length>120 && scene.meshes.length<320);
     assert.equal(layer.wheel.rotation.z,0);
     layer.tick(.02); // Decorative mechanism is stationary while canal pump is off.
