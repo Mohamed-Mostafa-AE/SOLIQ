@@ -1,9 +1,17 @@
 name: Soliq tests and benchmarks
 
 on:
+  # Feature branches are verified by the PR event; avoid duplicated CI runs.
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+# Keep only the latest run for each PR or main. No test is skipped on the
+# surviving commit; this prevents software-rendered WebGL tests piling up.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
