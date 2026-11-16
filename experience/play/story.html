@@ -14,7 +14,8 @@
     .text-route-shell p { margin: 12px 0; line-height: 1.65; }
     .text-route-shell a { color: #bdf9d6; }
     #btn-open-story { padding: 12px 18px; font: inherit; font-weight: 700; background: #c0e4ac; color: #10291f; border: 0; border-radius: 8px; cursor: pointer; }
-    #btn-open-story:focus-visible, .text-route-shell a:focus-visible { outline: 3px solid #ffe19c; outline-offset: 4px; }
+    #story-language { display: inline-block; font: inherit; background: #153c32; color: #fff; border: 1px solid #aac7b7; padding: 10px; margin: 8px 14px 8px 6px; }
+    #story-language:focus-visible, #btn-open-story:focus-visible, .text-route-shell a:focus-visible { outline: 3px solid #ffe19c; outline-offset: 4px; }
     #text-receipts { margin: 18px 0; padding-inline-start: 26px; }
     #text-receipts li { line-height: 1.5; padding-block: 4px; }
   </style>
@@ -28,6 +29,11 @@
     no sound, geolocation, graphics accelerator or 3D movement is required.</p>
     <p>All story outcomes are <strong>SIMULATED</strong>. They are not observed NASA records,
     verified agricultural benefits, or recommendations for real farms.</p>
+    <label for="story-language">Language / اللغة</label>
+    <select id="story-language" aria-label="Story language">
+      <option value="en" selected>English</option>
+      <option value="ar">العربية</option>
+    </select>
     <button id="btn-open-story" type="button">Resume the story</button>
     <p><a href="./">Back to the 3D world</a> ·
        <a href="../../#rotations">Open Soil-IQ Crop Rotation Workspace</a></p>
