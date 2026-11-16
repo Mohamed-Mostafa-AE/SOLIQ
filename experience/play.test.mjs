@@ -162,7 +162,8 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   assert.equal(mission.activeOutcome, OUTCOMES.EQUILIBRIUM);
   const r1 = mission.notebookReceipts.find(r => r.id === 'OUTCOME_1_EQUILIBRIUM');
   assert.ok(r1, 'Outcome 1 receipt generated');
-  assert.ok(r1.hash, 'Receipt has cryptographic hash');
+  assert.equal(r1.hashKind, 'noncryptographic_display_id');
+  assert.match(r1.hash, /^SIM-/);
   assert.equal(r1.dataClass, 'simulated');
 
   // Outcome 2: Bottleneck
