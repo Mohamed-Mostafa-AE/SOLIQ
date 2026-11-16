@@ -17,6 +17,8 @@ export function scenicQualityBudget({ preset = 'balanced', hardwareScale = 1 } =
     hayBales: low ? 6 : high ? 18 : 12,
     birdCount: low ? 0 : high ? 8 : 5,
     butterflyCount: low ? 0 : high ? 14 : 8,
+    horizonStemsPerRow: low ? 8 : high ? 24 : 17,
+    horizonPalmCount: low ? 4 : high ? 9 : 7,
   };
 }
 
@@ -51,6 +53,27 @@ export function scenicCanalCenterZ(x) {
     if(clamped<=b[0])return a[1]+(clamped-a[0])/(b[0]-a[0])*(b[1]-a[1]);
   }
   return anchors.at(-1)[1];
+}
+
+/**
+ * The quiet, distant agricultural mosaic in the player's opening camera.
+ * These are NOT the seven gameplay plots and do not have hydrology, crop
+ * choices, or observed planting. They begin beyond the far edge (z=32) of
+ * every named playable northern field; the nearest village remains at z=24.
+ */
+export function planDistantFieldMosaic() {
+  const plan=[];
+  const kinds=['clover','cover','clover','harvest','cover','clover','cover'];
+  for(const [row,z,width,depth,xs] of [
+    [0,42,14,15,[-49,-31,-13,5,23,41,59]],
+    [1,61,17,16,[-40,-19,2,23,44]],
+  ]) {
+    for(const [i,x] of xs.entries())plan.push({
+      x,z,width,depth,
+      color:kinds[(i+row*2)%kinds.length],
+    });
+  }
+  return plan;
 }
 
 function material(scene, name, color, opts = {}) {
@@ -111,6 +134,7 @@ export class DeltaEnvironmentLayer {
     this._createCanalDetail();
     this._createFieldDetail();
     this._createNearCanalNursery();
+    this._createDistantMosaic();
   }
 
   _makeMaterials() {
@@ -469,6 +493,90 @@ export class DeltaEnvironmentLayer {
       {diameterTop:.31,diameterBottom:.55,height:.73,tessellation:14},
       [x-width/2-.53,.37,z-depth/2+.3],m.terracotta);
     waterPot.rotation.z=-.06;
+  }
+
+  _createDistantMosaic() {
+    // Deep green across the skyline replaces the old uninterrupted brown
+    // expanse. This is purely fictional background scenery, separate from
+    // every player field, irrigation simulation and satellite observation.
+    const scene=this.scene,rng=seedRandom(0x5eae7),fields=planDistantFieldMosaic();
+    const palette={
+      clover:material(scene,'scenicHorizonClover',[.15,.38,.17],{emissive:[.012,.025,.009]}),
+      cover:material(scene,'scenicHorizonCover',[.28,.45,.17],{emissive:[.014,.027,.006]}),
+      harvest:material(scene,'scenicHorizonHarvest',[.56,.49,.23]),
+    };
+    const leafPalette={
+      clover:material(scene,'scenicHorizonCloverLeaf',[.27,.59,.23],{doubleSided:true}),
+      cover:material(scene,'scenicHorizonCoverLeaf',[.39,.65,.25],{doubleSided:true}),
+      harvest:material(scene,'scenicHorizonHarvestLeaf',[.70,.59,.30],{doubleSided:true}),
+    };
+    const plants={clover:[],cover:[],harvest:[]};
+    for(const [index,f] of fields.entries()) {
+      const tile=BABYLON.MeshBuilder.CreateGround(`scenicHorizonField${index}`,
+        {width:f.width,height:f.depth,subdivisions:1},scene);
+      tile.position.set(f.x,.235,f.z);
+      tile.material=palette[f.color];
+      tile.isPickable=false;
+      tile.checkCollisions=false;
+      tile.receiveShadows=false;
+      // Individual short green rows give depth and cover without spawning
+      // hundreds of draw calls or making the distance look like a carpet.
+      for(let row=0;row<7;row++)for(let i=0;i<this.budget.horizonStemsPerRow;i++){
+        const h=.40+rng()*.40;
+        plants[f.color].push({
+          x:f.x-f.width*.46+f.width*.92*(i+.5)/this.budget.horizonStemsPerRow,
+          y:.25+h*.49,
+          z:f.z-f.depth*.44+f.depth*.88*(row+.5)/7,
+          height:h,
+          width:.20+rng()*.10,
+          turn:rng()*Math.PI,
+        });
+      }
+    }
+    for(const [kind,rows] of Object.entries(plants)){
+      const leaf=BABYLON.MeshBuilder.CreatePlane(`scenicHorizonSeedlings${kind[0].toUpperCase()}${kind.slice(1)}`,
+        {width:1,height:1,sideOrientation:BABYLON.Mesh.DOUBLESIDE},scene);
+      leaf.material=leafPalette[kind];
+      leaf.isPickable=false;
+      leaf.alwaysSelectAsActiveMesh=true;
+      const matrix=new Float32Array(rows.length*16);
+      for(let i=0;i<rows.length;i++){
+        const row=rows[i];
+        BABYLON.Matrix.Compose(new BABYLON.Vector3(row.width,row.height,1),
+          BABYLON.Quaternion.RotationYawPitchRoll(row.turn,0,0),
+          new BABYLON.Vector3(row.x,row.y,row.z)).copyToArray(matrix,i*16);
+      }
+      leaf.thinInstanceSetBuffer('matrix',matrix,16,true);
+    }
+
+    // A pair of shared prototypes with thin instances provides convincing
+    // distant palm crowns (rather than dozens of expensive mesh draw calls).
+    const trunkMaterial=material(scene,'scenicHorizonPalmBark',[.29,.24,.16]);
+    const crownMaterial=material(scene,'scenicHorizonPalmGreen',[.16,.34,.19],{doubleSided:true});
+    const trunks=BABYLON.MeshBuilder.CreateCylinder('scenicHorizonPalmTrunk',
+      {diameterTop:.21,diameterBottom:.36,height:1,tessellation:7},scene);
+    trunks.material=trunkMaterial;trunks.isPickable=false;trunks.alwaysSelectAsActiveMesh=true;
+    const crowns=BABYLON.MeshBuilder.CreateBox('scenicHorizonPalmCrown',
+      {width:.34,height:.08,depth:3.1},scene);
+    crowns.material=crownMaterial;crowns.isPickable=false;crowns.alwaysSelectAsActiveMesh=true;
+    const palmLocations=[[-57,38],[-41,54],[-24,56],[-8,52],[16,54],[37,54],[56,65],[5,70],[48,72]];
+    const count=this.budget.horizonPalmCount;
+    const trunkMatrices=new Float32Array(count*16),crownMatrices=new Float32Array(count*7*16);
+    for(let i=0;i<count;i++){
+      const [x,z]=palmLocations[i],height=6.4+rng()*2.3;
+      BABYLON.Matrix.Compose(new BABYLON.Vector3(1,height,1),
+        BABYLON.Quaternion.RotationYawPitchRoll(0,0,(rng()-.5)*.09),
+        new BABYLON.Vector3(x,height*.5+.17,z)).copyToArray(trunkMatrices,i*16);
+      for(let frond=0;frond<7;frond++){
+        const theta=frond*2*Math.PI/7;
+        BABYLON.Matrix.Compose(new BABYLON.Vector3(1,1,.78+rng()*.30),
+          BABYLON.Quaternion.RotationYawPitchRoll(theta,.32,0),
+          new BABYLON.Vector3(x+Math.sin(theta)*.65,height+.08,z+Math.cos(theta)*.65))
+          .copyToArray(crownMatrices,(i*7+frond)*16);
+      }
+    }
+    trunks.thinInstanceSetBuffer('matrix',trunkMatrices,16,true);
+    crowns.thinInstanceSetBuffer('matrix',crownMatrices,16,true);
   }
 
   setIrrigationActive(active) {
