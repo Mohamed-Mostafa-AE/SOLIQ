@@ -67,10 +67,14 @@ test('splash reveals the actual village and HUD tools never collide with the cha
     const canvas = document.getElementById('renderCanvas');
     const scene = window.__seventhFieldGame.renderSetup.scene;
     return { renderer: canvas.width > 0 && canvas.height > 0, previewFrames: window.__seventhFieldGame.previewFrames,
+      simulationStarted: window.__seventhFieldGame.isReady,
+      waterSimulated: Boolean(window.__seventhFieldGame.waterEngine.currentSimulation),
+      gameLoopStarted: window.__seventhFieldGame.renderLoopStarted,
       actualCanal: Boolean(scene.getMeshByName('scenicMesqaStillWater')),
       loaderBackground: getComputedStyle(loader).backgroundImage };
   });
   expect(splash.renderer && splash.actualCanal && splash.previewFrames >= 3).toBe(true);
+  expect([splash.simulationStarted, splash.waterSimulated, splash.gameLoopStarted]).toEqual([false, false, false]);
   // The splash is a translucent overlay on live 3D, not the old opaque card.
   expect(splash.loaderBackground).toContain('linear-gradient');
   await page.screenshot({ path: 'test-results/seventh-field-live-3d-splash.png' });

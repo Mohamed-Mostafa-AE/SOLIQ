@@ -49,6 +49,7 @@ class SeventhFieldGame {
     this.isReady = false;
     this.renderLoopStarted = false;
     this.previewFrames = 0;
+    this.previewTimer = null;
   }
 
   async init() {
@@ -114,15 +115,17 @@ class SeventhFieldGame {
     this.cinematicDirector = new CinematicDirector(this.renderSetup, this.characters, this.playerController);
 
     this.isInitialized = true;
-    // The first impression needs living WebGL frames even *before* Start.
-    // One scene.render() is not enough: browsers may discard its backbuffer
-    // before compositing the translucent intro. Do not advance game time or
-    // NPC/controller state during preview, only redraw the real village.
-    this.renderSetup.startRenderLoop(deltaTime => {
-      if (this.isReady) this.tick(deltaTime);
-      else this.previewFrames += 1;
-    });
-    this.renderLoopStarted = true;
+    // The intro needs live WebGL frames even before Start; a single draw may
+    // lose its backbuffer before the translucent splash is composited. Cap
+    // preview at 24fps, pause when hidden, and stop after a few frames when
+    // reduced motion is requested. Never advance game/simulation time here.
+    this.renderSetup.scene.render();
+    this.previewFrames = 1;
+    this.previewTimer = window.setInterval(() => {
+      if (document.hidden || (this.renderSetup.reducedMotion && this.previewFrames >= 3)) return;
+      this.renderSetup.scene.render();
+      this.previewFrames += 1;
+    }, 1000 / 24);
     this._updateProgress(100, 'اكتملت التهيئة بنجاح!');
     this._showStartButton();
   }
@@ -144,6 +147,10 @@ class SeventhFieldGame {
   }
 
   start() {
+    if (this.previewTimer !== null) {
+      window.clearInterval(this.previewTimer);
+      this.previewTimer = null;
+    }
     if (this.loader) {
       this.loader.style.opacity = '0';
       this.loader.style.display = 'none';
