@@ -63,6 +63,7 @@ test('splash reveals the actual village and HUD tools never collide with the cha
   await expect(page.locator('#game-loader')).toBeVisible();
   await expect(page.locator('#btn-start-game')).toBeVisible();
   await expect(page.locator('.hud-top-bar')).toBeHidden();
+  await expect(page.locator('#chapter1-launch')).toBeHidden();
   const splash = await page.evaluate(() => {
     const loader = document.getElementById('game-loader');
     const canvas = document.getElementById('renderCanvas');
@@ -82,6 +83,7 @@ test('splash reveals the actual village and HUD tools never collide with the cha
   await page.locator('#btn-start-game').click();
   await page.locator('#hook-skip').click();
   await expect(page.locator('.hud-top-bar')).toBeVisible();
+  await expect(page.locator('#chapter1-launch')).toBeVisible();
 
   async function checkToolbarIsReadable() {
     const geometry = await page.evaluate(() => {

@@ -978,7 +978,10 @@ body.reduced-motion .game-loader * {
 }
 /* The splash has its own cinematic chapter headline. The regular in-game HUD
    must wait until Play, or two titles overlap the live canal image. */
-.game-intro-active .hud-top-bar { visibility: hidden; }
+.game-intro-active .hud-top-bar,
+.game-intro-active .ch1-launch,
+.game-intro-active .chapter2-launch,
+.game-intro-active .chapter-later-launch { visibility: hidden; }
 .game-loader::before {
   content: '';
   position: absolute;
