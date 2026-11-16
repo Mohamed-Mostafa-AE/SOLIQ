@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('Earth Lens NASA button opens real-source GIBS browse overlay without misrepresenting game pixels',async({page})=>{
+ test.setTimeout(90_000); // Software WebGL is slow on the shared CI runner.
  await page.route('**/api/eo-browse?**',async route=>{
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({
    imageUrl:'https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?SERVICE=WMS&REQUEST=GetMap',

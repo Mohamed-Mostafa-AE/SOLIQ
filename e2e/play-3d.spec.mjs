@@ -45,6 +45,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
   });
 
   test('native Tab focuses HUD, Space activates buttons, camera C only works on canvas', async ({ page }) => {
+    test.setTimeout(90_000); // Real 3D render and keyboard input on software CI.
     await startSession(page);
     const canvas=page.locator('#renderCanvas');
     const game=()=>page.evaluate(()=>window.__seventhFieldGame.playerController.isCameraIso);
@@ -232,6 +233,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
   });
 
   test('Settings modal and audio mute toggle work without regressions', async ({ page }) => {
+    test.setTimeout(90_000); // Keep the real UI workflow on software WebGL CI.
     await startSession(page);
 
     // Audio mute button
@@ -264,6 +266,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
   });
 
   test('Evidence Notebook opens the actual crop-rotation decision workspace', async ({ page }) => {
+    test.setTimeout(90_000); // Popup navigation can lag under software WebGL.
     await startSession(page);
     await page.locator('#btn-notebook').click();
     await page.locator('[data-nbtab="provenance"]').click();
