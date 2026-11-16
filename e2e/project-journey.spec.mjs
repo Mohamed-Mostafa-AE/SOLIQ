@@ -23,8 +23,8 @@ test('P0-06: accessible story provides a truthful return to science routes', asy
   await page.goto('/explore/');
   await page.getByRole('link', { name: /Text story/ }).click();
   await expect(page).toHaveURL(/\/experience\/play\/story.html$/);
-  await expect(page.getByText(/All story outcomes are/)).toBeVisible();
-  await page.getByRole('link', { name: /All Soil-IQ project areas/ }).click();
+  await expect(page.locator('#story-desk-source')).toContainText('SIMULATED STORY');
+  await page.locator('#story-project-link').click();
   await expect(page).toHaveURL(/\/explore\/$/);
   await page.getByRole('link', { name: /Start comparison/ }).click();
   await expect(page.getByRole('heading', { name: /Compare two crop plans/ })).toBeVisible();
