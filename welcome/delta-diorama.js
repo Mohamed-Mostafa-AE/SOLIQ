@@ -130,7 +130,9 @@ export async function mountDeltaDiorama(host) {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, mobile() ? 1.15 : 1.5));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.22;
+    // A small viewport crops most of the dark sky, so the desktop sunrise
+    // exposure would bleach the farmland into beige. Keep crop texture legible.
+    renderer.toneMappingExposure = mobile() ? .94 : 1.22;
     renderer.setClearColor(0x000000, 0);
     renderer.shadowMap.enabled = false;
     scene = new THREE.Scene();
