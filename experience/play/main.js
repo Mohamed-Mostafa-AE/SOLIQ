@@ -129,7 +129,7 @@ class SeventhFieldGame {
 
     if (this.hud) {
       this.hud.showTelemetryToast(
-        this.hud.lang === 'en' ? 'The canal water turn has begun!' : 'المية وصلت في المسقة!',
+        this.hud.lang === 'en' ? 'The dawn council is gathering' : 'مجلس الفجر بيتجمع',
         this.hud.lang === 'en'
           ? 'A seventh field holds two possible seasons. Explore the fictional village, hear Hassan and Maryam, then test sustainable water choices. Story mode is available without 3D movement.'
           : 'الأرض السابعة بتعرض موسمين محتملين. استكشف القرية واسمع حسن ومريم، ثم جرب مفاضلات المياه والاستدامة. وضع القصة متاح بدون حركة ثلاثية الأبعاد.',

@@ -27,6 +27,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
 
     const objective = page.locator('#hud-objective-title');
     await expect(objective).toContainText('Chapter 0: A Season Unwritten');
+    await expect(page.locator('#telemetry-toast')).toContainText('The dawn council is gathering');
   });
 
   test('Player Nada locomotion and camera mode toggle', async ({ page }) => {
