@@ -1,8 +1,14 @@
 import { test, expect } from '@playwright/test';
 
-/** Standalone mount checks the public attach contract without 3D/WebGL. */
+/** Exercise the actual mounted board when the text route has Chapter integration.
+ * Keep standalone attach for the original public-contract test harness. */
 async function attachBoard(page) {
   await page.evaluate(async () => {
+    const integrated = window.__soilIqTextGame?.chapterSequence?.chapter1;
+    if (integrated) {
+      window.__chapter1TestBoard = integrated;
+      return;
+    }
     const { attachChapter1Game } = await import('/game/ui/chapter1-board.js');
     window.__chapter1TestBoard = attachChapter1Game({
       host: document.getElementById('text-game'),
@@ -16,6 +22,7 @@ test('locked Chapter 1 board explains the actual Chapter 0 prerequisite without 
   await page.goto('/experience/play/story.html');
   await page.keyboard.press('Escape');
   await attachBoard(page);
+  await expect(page.locator('#chapter1-launch')).toHaveCount(1);
   await page.locator('#chapter1-launch').click();
   await expect(page.locator('#ch1-title')).toContainText('Two seasons');
   await expect(page.locator('#ch1-source')).toContainText('SIMULATED GAME');
@@ -32,6 +39,7 @@ test('a Chapter 0 council outcome unlocks a playable 2-season/3-field puzzle wit
   await page.locator('[data-choice-id="council_bottleneck"]').click();
   await page.keyboard.press('Escape');
   await attachBoard(page);
+  await expect(page.locator('#chapter1-launch')).toHaveCount(1);
   await page.locator('#chapter1-launch').click();
   await expect(page.locator('.ch1-field-row')).toHaveCount(4);
   await expect(page.locator('.ch1-crop-select')).toHaveCount(12);
@@ -65,6 +73,7 @@ test('Chapter 1 is usable in Arabic at 360px, with keyboard and motion-safe boar
   await page.keyboard.press('Escape');
   await attachBoard(page);
   await page.evaluate(() => window.__chapter1TestBoard.setLanguage('ar'));
+  await expect(page.locator('#chapter1-launch')).toHaveCount(1);
   await page.locator('#chapter1-launch').click();
   await expect(page.locator('.ch1-window')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('#ch1-close')).toHaveAccessibleName('إغلاق الفصل الأول');
@@ -76,6 +85,7 @@ test('Chapter 1 is usable in Arabic at 360px, with keyboard and motion-safe boar
   expect(overflow).toBeLessThanOrEqual(1);
   await page.locator('#chapter1-commit').press('Enter');
   await expect(page.locator('.ch1-ending-narrative')).toContainText('أنت كنت أجلت');
+  await expect(page.locator('#chapter1-replay')).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('#chapter1-overlay')).toBeHidden();
 });

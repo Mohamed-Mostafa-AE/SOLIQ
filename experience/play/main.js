@@ -21,6 +21,7 @@ import { GameHUD } from '../../game/ui/hud.js';
 import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
 import { OpeningHook } from '../../game/ui/opening-hook.js';
 import { CinematicDirector } from './cinematic-director.js';
+import { mountChapterSequence } from './chapter-progression.js';
 import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
 
@@ -109,6 +110,13 @@ class SeventhFieldGame {
 
     // 7. Diegetic HUD & Event Wiring
     this._setupHUD();
+    this.chapterSequence = mountChapterSequence({
+      host: this.uiContainer, chapter0: this.mission, language: this.hud.lang,
+      onUnlocked: text => this.hud.showTelemetryToast(
+        this.hud.lang === 'ar' ? 'الفصل الثاني جاهز' : 'Chapter 2 unlocked',
+        text, 'simulated',
+      ),
+    });
     this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
     this.nasaBrowseOverlay.setLanguage(this.hud.lang);
     this._setupPlayerControls(cameras);
@@ -219,6 +227,7 @@ class SeventhFieldGame {
         this.storyDesk?.setLanguage(language);
         this.openingHook?.setLanguage(language);
         this.nasaBrowseOverlay?.setLanguage(language);
+        this.chapterSequence?.setLanguage(language);
       },
       onToggleCamera: () => {
         this.playerController?.toggleCameraMode();
@@ -239,6 +248,7 @@ class SeventhFieldGame {
       onMissionChanged: () => {
         this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
         this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+        this.chapterSequence?.refresh();
       },
       onCheckpointRestored: () => {
         // Reapply only fictional scene effects. The Chapter 0 snapshot never
@@ -246,6 +256,7 @@ class SeventhFieldGame {
         this.mission.rehydrateWorldEffects();
         this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
         this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+        this.chapterSequence?.refresh();
       },
       onCheckpointReset: () => {
         // Rebuild the 3D world so previous gate, water and soil-material effects
@@ -278,6 +289,7 @@ class SeventhFieldGame {
     sharedEvents.on('outcome_achieved', (data) => {
       this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
       this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+      this.chapterSequence?.refresh();
       if (this.seasonFeedback && this.waterEngine.currentSimulation) {
         this.seasonFeedback.applyIrrigationOutcome(this.waterEngine.currentSimulation);
       }

@@ -1,0 +1,97 @@
+.soiliq-soil-lab[hidden]{display:none!important}
+.soiliq-soil-lab{position:fixed;inset:0;z-index:1700;overflow-y:auto;overscroll-behavior:contain;background:#071d21;color:#f4f0da;font:400 15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;isolation:isolate}
+.soiliq-soil-lab *{box-sizing:border-box}
+.soiliq-soil-lab :focus-visible{outline:3px solid #ffe1a0;outline-offset:3px}
+.soil-lab-backdrop{position:fixed;z-index:-1;inset:0;pointer-events:none;overflow:hidden;background:radial-gradient(ellipse at 6% -8%,#42655c 0%,transparent 52%),radial-gradient(ellipse at 100% 100%,#124a43 0%,transparent 50%),#071d21}
+.soil-stars{position:absolute;inset:0;opacity:.12;background-image:radial-gradient(#f8e6b5 1px,transparent 1px);background-size:25px 25px;transform:rotate(12deg) scale(1.4)}
+.soil-fog{position:absolute;left:-20%;right:-20%;bottom:-15%;height:55%;background:linear-gradient(4deg,#234b3db9,#234b3d00);filter:blur(45px)}
+.soil-lab-content{max-width:1480px;margin:auto;padding:clamp(20px,3.4vw,52px);position:relative}
+.soil-lab-close{position:fixed;z-index:6;right:clamp(13px,2.8vw,38px);top:clamp(13px,2.8vw,30px);display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:#0b2929ef;color:#fff4d9;border:1px solid #d4ca91;cursor:pointer;font-size:30px;line-height:1}
+[dir=rtl] .soil-lab-close{right:auto;left:clamp(13px,2.8vw,38px)}
+.soil-lab-eyebrow,.soil-lab-section-kicker{color:#edbf78;font:700 12px/1.3 ui-monospace,SFMono-Regular,monospace;letter-spacing:.14em;text-transform:uppercase}
+.soil-lab-badge{color:#f9e3ad;font:700 11px ui-monospace,SFMono-Regular,monospace;letter-spacing:.06em;border:1px solid #d9bc6e77;padding:5px 9px;border-radius:14px;background:#5b492649;display:inline-block;margin-inline-start:18px}
+.soil-lab-header{max-width:1000px;padding:10px 70px 40px 0}
+.soil-lab-header h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(38px,5.6vw,76px);line-height:1.06;letter-spacing:-.035em;font-weight:400;margin:24px 0 14px;text-wrap:balance}
+.soil-lab-header>p{font-size:clamp(16px,1.45vw,20px);max-width:920px;color:#d6e5db;margin:0}
+.soil-story-breadcrumb{margin-top:23px;padding:12px 18px;display:inline-flex;align-items:center;gap:14px;flex-wrap:wrap;border-left:3px solid #cda768;background:#142e2bcf}
+[dir=rtl] .soil-story-breadcrumb{border-left:0;border-right:3px solid #cda768}
+.soil-story-breadcrumb span{font:700 11px ui-monospace,monospace;letter-spacing:.1em;color:#a8cfbe}
+.soil-story-breadcrumb strong{color:#f8edca;font-size:14px}
+.soil-lab-grid{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(24px,3vw,42px);align-items:start}
+.soil-visual-side,.soil-planner-side{min-width:0}
+.soil-visual-side{padding:22px;background:linear-gradient(152deg,#0e3230,#082622);border-radius:14px;border:1px solid #698b7b80;box-shadow:0 20px 60px #0005}
+.soil-lab-section-kicker{display:block;margin-bottom:17px}
+.soil-plot-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.soil-plot{background:#153937;border:1px solid #7b998d70;border-radius:9px;overflow:hidden;min-width:0}
+.soil-field-name{min-height:67px;display:flex;flex-direction:column;justify-content:center;padding:12px 13px;background:#174442}
+.soil-field-name span{font:700 10px ui-monospace,monospace;color:#e1cb86;letter-spacing:.1em}
+.soil-field-name strong{font-size:15px;color:#f3e5c1}
+.soil-illustration{position:relative;height:257px;overflow:hidden;background:linear-gradient(#738f80 0%,#b1bb8a 28%,#a67e54 28.1%);perspective:850px}
+.soil-skyline{height:28%;position:absolute;top:0;inset-inline:0;background:linear-gradient(175deg,#789e9a,#b8b586)}
+.soil-village-house{position:absolute;bottom:0;left:12%;width:47px;height:27px;background:#8c694c;box-shadow:22px -12px 0 -7px #a98254,25px -17px 0 -10px #d2b18d;border-bottom:3px solid #4f735e}
+.soil-village-house:before{content:"";position:absolute;width:11px;height:16px;left:17px;bottom:0;background:#33423a}
+.soil-sun{position:absolute;width:36px;height:36px;border-radius:50%;background:#f9d997;box-shadow:0 0 27px #ffe1a8;top:14px;right:14px}
+.soil-reeds{position:absolute;bottom:-3px;right:12px;color:#356b44;font-size:24px;letter-spacing:2px;white-space:nowrap}
+.soil-surface{position:absolute;inset-inline:0;top:28%;height:10px;background:#4e603a;z-index:3;border-top:3px solid #8d9c52}
+.soil-horizon-a,.soil-horizon-b,.soil-horizon-c{position:absolute;inset-inline:0}
+.soil-horizon-a{top:calc(28% + 10px);height:28%;background:radial-gradient(circle at 23% 36%,#c38b5f,#98704d 45%,#816141);border-top:2px solid #ca9964}
+.soil-horizon-b{top:calc(56% + 10px);height:28%;background:repeating-linear-gradient(-11deg,#8d6950 0 10px,#805e49 11px 21px,#9a7355 22px 27px);border-top:2px solid #bc8b5e}
+.soil-horizon-c{bottom:0;height:16%;background:linear-gradient(#6f5948,#4b4a47);border-top:3px solid #726550}
+.soil-horizon-a:after,.soil-horizon-b:after{content:"";position:absolute;inset:0;background:radial-gradient(#d0a37177 1.6px,transparent 1.7px) 4px 5px/27px 24px;opacity:.5}
+.soil-plant{display:none;position:absolute;z-index:5;width:3px;height:40px;bottom:3px;background:#275a36;transform-origin:bottom center}
+.soil-plant:before,.soil-plant:after{content:"";position:absolute;width:14px;height:8px;border-radius:100% 4px 100% 2px;background:#65a457;left:-13px;top:13px;transform:rotate(25deg)}
+.soil-plant:after{left:2px;top:4px;transform:rotate(-24deg)}
+.soil-plant.p1{left:18%;transform:rotate(-8deg)}.soil-plant.p2{left:54%;height:51px;transform:rotate(6deg)}.soil-plant.p3{left:81%;height:37px}
+.soil-straw{position:absolute;display:none;width:20%;height:5px;z-index:5;bottom:3px;background:#c3a46a;border-radius:90% 30% 60% 30%;transform:rotate(12deg)}
+.soil-straw.s1{left:12%}.soil-straw.s2{left:41%;transform:rotate(-15deg)}.soil-straw.s3{right:10%}
+.soil-root{display:none;position:absolute;z-index:4;width:3px;height:42%;top:-2px;border-left:2px solid #b6ba80;transform-origin:top center;filter:drop-shadow(2px 2px 0 #423b23a0)}
+.soil-root.r1{left:18%;transform:rotate(-18deg)}.soil-root.r2{left:54%;height:67%;transform:rotate(18deg)}.soil-root.r3{left:81%;transform:rotate(-18deg)}.soil-root.r4{left:58%;height:58%;transform:rotate(22deg);opacity:.45}
+.soil-pore{position:absolute;width:10px;height:10px;border-radius:40% 60% 60% 40%;background:#63878985;top:35%;left:39%;box-shadow:32px 13px 0 #6c959088}
+.soil-pore.pore2{top:70%;left:11%}.soil-pore.pore3{top:48%;left:73%}
+.soil-stone{position:absolute;bottom:25%;left:25%;width:30px;height:9px;border-radius:60% 40% 50% 20%;background:#aba18e;transform:rotate(-22deg);box-shadow:105px -7px 0 -1px #9b9081}
+.soil-droplets{position:absolute;z-index:6;left:11%;right:0;top:26%;color:#d3fff1;font-size:17px;opacity:0;animation:soil-gentle-rain 3.4s infinite ease-in-out}
+.soiliq-soil-lab[data-turn="single_fast"] .soil-droplets{font-size:26px;letter-spacing:10px;animation-duration:1.1s}
+.soil-plot[data-practice="living_cover"] .soil-plant,.soil-plot[data-practice="living_cover"] .soil-root{display:block}
+.soil-plot[data-practice="mulch"] .soil-straw{display:block}
+.soil-plot[data-practice="living_cover"] .soil-surface{background:#48693e}
+.soil-plot[data-practice="bare_fallow"] .soil-surface{background:#a17956;border-top-color:#b98b5f}
+.soil-plot-caption{color:#e4ebd9;font-size:13px;line-height:1.6;padding:10px 13px;margin:0;min-height:80px}
+.soil-cutaway-explainer{font-size:12px;color:#c5d7c7;margin:19px 2px 13px}
+.soil-missing{display:inline-flex;align-items:center;gap:7px;font:700 12px ui-monospace,monospace;color:#f8d9a3;letter-spacing:.03em;margin:0;padding:9px 12px;border:1px solid #d9ae6d88;background:#4d382a80;border-radius:5px}
+.soil-planner-side{padding:clamp(21px,2.5vw,35px);border:1px solid #b8b58972;border-radius:14px;background:linear-gradient(145deg,#18362f,#0d2825);box-shadow:0 20px 60px #0005}
+.soil-planner-side h2{font-size:clamp(23px,2vw,34px);margin:0 0 10px;font-weight:700;letter-spacing:-.03em}
+.soil-instructions{color:#d6e3d6;font-size:14px;margin:0 0 18px}
+.soil-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.soil-choice-group{display:flex;flex-direction:column;min-width:0}
+.soil-choice-group label{font:700 11px ui-monospace,monospace;letter-spacing:.06em;color:#f6d590;margin-bottom:7px}
+.soil-choice-group select{appearance:auto;width:100%;max-width:100%;color:#f9f9ef;background:#0a2825;border:1px solid #94baa4;border-radius:5px;min-height:45px;font:600 13px system-ui;padding:10px}
+.soil-control-note{font-size:11.5px;color:#c9d7ca;line-height:1.4;margin:6px 0 0}
+.soil-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:18px}
+.soil-metrics>div{min-width:0;background:#163e36;border:1px solid #77948880;border-radius:5px;padding:10px 8px;text-align:center}
+.soil-metrics span{display:block;font-size:10px;color:#e1e4d0;line-height:1.2;min-height:31px}
+.soil-metrics strong{font:700 27px ui-monospace,monospace;color:#f1cc80;display:block;font-variant-numeric:tabular-nums}
+.soil-priority-score{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 13px;margin-top:12px;border:1px solid #cebb7b80;background:#1f3b32;color:#e8e8d4;border-radius:5px;font-size:12px}
+.soil-priority-score strong{font:700 24px ui-monospace,monospace;color:#f5d386;font-variant-numeric:tabular-nums}
+.soil-work-budget{margin-top:20px;font-size:13px;color:#e2e6d5}
+.soil-work-budget span{display:flex;justify-content:space-between}.soil-work-budget b{font-variant-numeric:tabular-nums;color:#f3d387}
+.soil-work-budget small{color:#c0c9ba}
+.soil-work-bar{overflow:hidden;margin:6px 0;height:10px;border-radius:6px;background:#10251f;border:1px solid #688273}
+.soil-work-bar i{display:block;height:100%;background:linear-gradient(90deg,#65b094,#e1d184);transition:width .3s ease}
+.soil-work-budget.is-over .soil-work-bar i{background:#f1a47f}.soil-work-budget.is-over b{color:#ffb097}
+.soil-budget-warning{padding:10px;border:1px solid #f3ae8b;background:#662d28;border-radius:4px;color:#ffddd5;font-size:13px}
+.soil-simulated-note{font-size:12px;color:#d0d9cc;margin-top:17px;padding-left:12px;border-left:2px solid #7cb4a4}
+[dir=rtl] .soil-simulated-note{padding-left:0;border-left:0;padding-right:12px;border-right:2px solid #7cb4a4}
+.soil-action-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:17px}
+.soil-commit,.soil-reset{border-radius:5px;padding:12px 16px;min-height:48px;font:700 13px system-ui;cursor:pointer}
+.soil-commit{border:1px solid #e7d39e;color:#183329;background:#f3d997;box-shadow:0 4px 0 #725e3d}
+.soil-commit:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.soil-reset{border:1px solid #90a89e;color:#f7f7e8;background:#24483d}
+.soil-verdict>h2{font-size:clamp(20px,2.1vw,31px);line-height:1.4;margin:20px 0;color:#f8ebc5}
+.soil-verdict>p{color:#d4e3d8;margin:17px 0}
+.soil-lab-footer{display:flex;justify-content:space-between;align-items:center;gap:18px;border-top:1px solid #778f7d80;padding:25px 5px 3px;margin-top:30px;font:700 11px ui-monospace,monospace;letter-spacing:.04em;color:#f4db98}
+.soil-lab-footer a{color:#e4f1df;text-decoration:underline;text-underline-offset:4px}
+@keyframes soil-gentle-rain{0%{opacity:0;transform:translateY(-20px)}20%{opacity:.9}70%{opacity:.65}100%{opacity:0;transform:translateY(55px)}}
+@media(max-width:1100px){.soil-lab-grid{grid-template-columns:1fr}.soil-illustration{height:280px}.soil-planner-side{max-width:none}.soil-lab-header{padding-right:42px}}
+@media(max-width:650px){.soil-lab-content{padding:62px 14px 28px}.soil-lab-header{padding:0 0 24px}.soil-lab-header h1{font-size:40px}.soil-lab-badge{display:block;width:max-content;margin:9px 0 0}.soil-story-breadcrumb{display:block}.soil-story-breadcrumb strong{display:block;margin-top:3px}.soil-visual-side,.soil-planner-side{padding:14px}.soil-plot-pair{grid-template-columns:1fr}.soil-illustration{height:210px}.soil-plot-caption{min-height:0}.soil-controls{grid-template-columns:1fr}.soil-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.soil-lab-footer{display:block}.soil-lab-footer a{display:block;margin-top:13px}}
+@media(max-width:380px){.soil-lab-header h1{font-size:34px}.soil-missing{font-size:12px;letter-spacing:0}.soil-lab-eyebrow{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.soil-droplets{animation:none;opacity:.25}.soil-work-bar i{transition:none}}
