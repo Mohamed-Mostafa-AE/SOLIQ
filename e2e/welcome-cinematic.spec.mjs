@@ -19,7 +19,14 @@ test('P1-09 cinematic Welcome preview: accessible choices, routes and mobile red
  await expect(page.locator('#delta-art')).toHaveAttribute('data-mode','evidence');
  const motion=await page.evaluate(()=>getComputedStyle(document.querySelector('.delta-canal'),'::after').animationName);
  expect(motion).toBe('none');
- expect(await preview.evaluate(e=>e.scrollWidth<=e.clientWidth+1)).toBe(true);
+ const mobileGeometry=await page.evaluate(()=>{
+  const width=innerWidth,buttons=[...document.querySelectorAll('#decision-preview .decision-choices button')];
+  return {pageOverflow:document.documentElement.scrollWidth-width,buttonsFit:buttons.every(button=>{
+   const b=button.getBoundingClientRect();return b.left>=-1&&b.right<=width+1&&b.width>=44;
+  })};
+ });
+ expect(mobileGeometry.pageOverflow).toBeLessThanOrEqual(1);
+ expect(mobileGeometry.buttonsFit).toBe(true);
  await preview.screenshot({path:'test-results/p1-09-mobile.png',animations:'disabled'});
  await page.setViewportSize({width:1440,height:900});
  await preview.scrollIntoViewIfNeeded();
