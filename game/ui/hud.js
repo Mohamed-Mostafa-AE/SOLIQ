@@ -113,7 +113,7 @@ export class GameHUD {
                   <section class="rotation-bridge" aria-labelledby="rotation-bridge-title">
                     <h3 id="rotation-bridge-title">Field Shift: Crop Rotation Decision Support</h3>
                     <p id="rotation-bridge-copy">Compare crop calendars in the separate scientific workspace using source-labelled NASA weather context, declared soil parameters and farmer priorities. The fictional game does not transfer farm data.</p>
-                    <a id="open-rotation-workspace" href="../../#rotations" target="_blank" rel="noopener noreferrer">Open Crop Rotation Workspace ↗</a>
+                    <a id="open-rotation-workspace" href="../../walkthrough/?from=seventh-field" target="_blank" rel="noopener noreferrer">Open Crop Rotation Workspace ↗</a>
                   </section>
                 </div>
               </div>

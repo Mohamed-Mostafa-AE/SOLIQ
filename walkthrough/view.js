@@ -1,7 +1,18 @@
 import {DEFAULTS,CROPS,STRATEGIES,validateConfig} from '../engine.js';
 import {retrieve,compare,LIMITATIONS} from './model.js';
+import {parseGameEvidenceHandoff} from '../game/core/evidence-handoff.js';
 const $=s=>document.querySelector(s),form=$('#walkthrough');
 let evidence=null,bundle=null,controller=null,generation=0;
+const gameHandoff=parseGameEvidenceHandoff(window.location.search);
+if(gameHandoff){
+ const words={
+  cover_first:'Calendar A: investigate crop cover first.',
+  water_saving:'Calendar B: investigate lower peak water demand and livelihoods.',
+  deferred_for_nasa:'You deferred the fictional crop choice until NASA and soil evidence is checked.',
+ };
+ $('#game-handoff-copy').textContent=(words[gameHandoff.hypothesis]||'You came from a fictional canal decision.')+' This is an UNTESTED story hypothesis, not a measured crop response.';
+ $('#game-handoff').hidden=false;
+}
 const plans=structuredClone(STRATEGIES.slice(0,2));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -25,7 +36,7 @@ $('#load').onclick=async()=>{
 };
 form.onsubmit=e=>{
  e.preventDefault();invalidate();
- try{bundle=compare(evidence,inputs(),plans);const f=x=>x.toFixed(1);
+ try{bundle=compare(evidence,inputs(),plans);if(gameHandoff)bundle.gameHandoff={...gameHandoff,meaning:'Fictional investigation prompt only; no effect on inputs, calculations, or NASA receipt.'};const f=x=>x.toFixed(1);
  $('#results').innerHTML='<h2>4. SIMULATED comparison — comparison_only</h2><p>Same dated weather, horizon and initial conditions. No recommended winner.</p><div class="table-wrap"><table><thead><tr><th>Plan</th><th>Unmet ET (mm)</th><th>Irrigation (mm)</th><th>Planned crop days</th><th>Preference score</th></tr></thead><tbody>'+bundle.outputs.results.map(r=>'<tr><th>'+esc(r.name)+'</th><td>'+f(r.deficit)+'</td><td>'+f(r.irrigation)+'</td><td>'+r.coverDays+'</td><td>'+f(r.score)+'</td></tr>').join('')+'</tbody></table></div><h3>Sensitivity and uncertainty</h3><p>Rainfall is perturbed to 75%, 100% and 125% of the retrieved record for both plans. These are SIMULATED scenarios, not observations or a forecast. The range is not a confidence interval; unquantified soil/crop uncertainty remains.</p>'+bundle.sensitivity.envelopes.map(r=>'<p>'+esc(plans.find(p=>p.id===r.id).name)+': unmet ET '+f(r.minDeficit)+'–'+f(r.maxDeficit)+' mm.</p>').join('')+'<p>Discuss local crop feasibility, soil capacity, equipment and market access with an adviser before acting.</p>';$('#results').hidden=false;$('#export').disabled=false;
  }catch(error){$('#error').textContent=error.message;}
 };
