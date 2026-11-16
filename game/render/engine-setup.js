@@ -3,6 +3,14 @@
  * Powered by Babylon.js WebGL2 / WebGPU
  */
 
+// The exact renderer name is supplied by WebGL, not a device guess. Software
+// renderers need a lower-cost default; a user-selected preset still wins later.
+export function isSoftwareWebGLRenderer(info = {}) {
+  const text = [info.renderer, info.vendor, info.unmaskedRenderer]
+    .filter(Boolean).join(' ').toLowerCase();
+  return /swiftshader|llvmpipe|softpipe|software rasterizer|mesa offscreen/.test(text);
+}
+
 export class RenderSetup {
   constructor(canvasElement, options = {}) {
     this.canvas = canvasElement;
@@ -39,6 +47,19 @@ export class RenderSetup {
       adaptToDeviceRatio: this.options.adaptToDeviceRatio,
       powerPreference: 'high-performance',
     });
+
+    // Desktop GPUs retain balanced by default. Chromium CI and older devices
+    // may expose SwiftShader/llvmpipe: reduce costly glow, shadow refreshes and
+    // pixel density *before* the first rendered frame. Keep full gameplay/UI.
+    const gl = this.engine._gl;
+    const debugExt = gl?.getExtension?.('WEBGL_debug_renderer_info');
+    const rendererInfo = {
+      ...(this.engine.getGlInfo?.() || {}),
+      unmaskedRenderer: debugExt ? gl.getParameter(debugExt.UNMASKED_RENDERER_WEBGL) : '',
+    };
+    this.autoSoftwareQuality = this.quality === 'balanced' &&
+      isSoftwareWebGLRenderer(rendererInfo);
+    if (this.autoSoftwareQuality) this.quality = 'low';
 
     this.scene = new BABYLON.Scene(this.engine);
     this.scene.clearColor = new BABYLON.Color4(0.80, 0.88, 0.94, 1.0); // Nile Delta morning sky
