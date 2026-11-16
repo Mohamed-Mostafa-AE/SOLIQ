@@ -106,6 +106,11 @@ export class GameHUD {
                   <p><strong>NASA POWER Sakha:</strong> بيانات إقليمية تاريخية، وليست رصدًا لحظيًا لحقل خاص.</p>
                   <p><strong>Codex Water Solver:</strong> الحسابات تتم بدقة عبر خوارزمية allocateWater دون تكرار الحسابات بالواجهة.</p>
                   <p><strong>The Seventh Field:</strong> محاكاة سيناريوهات تعليمية لتوضيح أثر عدم اليقين (Interval Regret) ولا تشكل توصية زراعية حقلية دون فحص معملي للتربة.</p>
+                  <section class="rotation-bridge" aria-labelledby="rotation-bridge-title">
+                    <h3 id="rotation-bridge-title">Field Shift: Crop Rotation Decision Support</h3>
+                    <p id="rotation-bridge-copy">Compare crop calendars in the separate scientific workspace using source-labelled NASA weather context, declared soil parameters and farmer priorities. The fictional game does not transfer farm data.</p>
+                    <a id="open-rotation-workspace" href="../../#rotations" target="_blank" rel="noopener noreferrer">Open Crop Rotation Workspace ↗</a>
+                  </section>
                 </div>
               </div>
             </div>
