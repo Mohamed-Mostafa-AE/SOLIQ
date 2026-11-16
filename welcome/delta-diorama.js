@@ -13,6 +13,33 @@ export function resolveDioramaState(value) {
   return Object.hasOwn(DIORAMA_STATES, value) ? DIORAMA_STATES[value] : DIORAMA_STATES.water;
 }
 
+// Narrow bent fronds with a central stem; a single lightweight instanced mesh
+// draws entire planted fields without a mesh per leaf or external art assets.
+function makeCropGeometry(THREE) {
+  const positions=[];
+  const indices=[];
+  for(let side=0;side<6;side++){
+    const a=side*Math.PI/3;
+    const s=.76+(side%3)*.13;
+    const cos=Math.cos(a),sin=Math.sin(a);
+    const offset=positions.length/3;
+    for(const [rad,height,width] of [[.0,.07,.022],[.105,.23,.075],[.225,.42*s,.054],[.30,.45*s,0]]){
+      const x=cos*rad,z=sin*rad;
+      const tangentX=-sin*width,tangentZ=cos*width;
+      positions.push(x-tangentX,height,z-tangentZ,x+tangentX,height,z+tangentZ);
+    }
+    for(let segment=0;segment<3;segment++){
+      const i=offset+segment*2;
+      indices.push(i,i+1,i+2,i+1,i+3,i+2);
+    }
+  }
+  const geometry=new THREE.BufferGeometry();
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
 export async function mountDeltaDiorama(host) {
   if (!host) return () => {};
   const canvas = host.querySelector('#delta-diorama-canvas');
@@ -147,11 +174,11 @@ export async function mountDeltaDiorama(host) {
     // original symbolic composition, not cadastral boundaries or observations.
     const plotBorder = mat('#d7bf88');
     const parcelSoil = mat('#6d603f');
-    fieldCover = new THREE.Mesh(new THREE.BoxGeometry(1,.1,1),mat('#688b35'));
+    fieldCover = new THREE.Mesh(new THREE.BoxGeometry(1,.1,1),new THREE.MeshStandardMaterial({color:'#688b35',roughness:.86,side:THREE.DoubleSide}));
     const cropMaterial = fieldCover.material;
     fieldCover.visible = false; // material handle for all instanced crop leaves
     scene.add(fieldCover);
-    const cropGeom = new THREE.ConeGeometry(.087,.44,5,1);
+    const cropGeom = makeCropGeometry(THREE);
     const cropCountPerPlot = mobile() ? 75 : 135;
     const total = cropCountPerPlot * 6;
     const leaves = new THREE.InstancedMesh(cropGeom,cropMaterial,total);
