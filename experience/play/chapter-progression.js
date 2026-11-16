@@ -20,7 +20,10 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
   let wasUnlocked = false;
   const chapter1 = attachChapter1Game({
     host, chapter0, language: lang,
-    onStateChange: () => refresh(),
+    // Chapter 1 has already rendered and restored keyboard focus before it
+    // notifies us. Rendering it again destroys the focused element, causing
+    // Escape/Tab to stop working after Commit, especially in the AR 360px UI.
+    onStateChange: () => refresh({ preserveChapter1Focus: true }),
   });
   const chapter2Launch = document.createElement('button');
   chapter2Launch.type = 'button';
@@ -37,8 +40,8 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter2Launch.title = t.summary;
   }
 
-  function refresh() {
-    chapter1.refresh();
+  function refresh({ preserveChapter1Focus = false } = {}) {
+    if (!preserveChapter1Focus) chapter1.refresh();
     const completed = chapter1.game.phase === 'result';
     if (!completed) {
       chapter2?.destroy();

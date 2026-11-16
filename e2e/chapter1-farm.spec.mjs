@@ -85,6 +85,7 @@ test('Chapter 1 is usable in Arabic at 360px, with keyboard and motion-safe boar
   expect(overflow).toBeLessThanOrEqual(1);
   await page.locator('#chapter1-commit').press('Enter');
   await expect(page.locator('.ch1-ending-narrative')).toContainText('أنت كنت أجلت');
+  await expect(page.locator('#chapter1-replay')).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(page.locator('#chapter1-overlay')).toBeHidden();
 });
