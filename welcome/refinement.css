@@ -2045,7 +2045,10 @@ html, body { overflow-x: clip; }
 .delta-fiction{bottom:18px;color:#e1ebe0;letter-spacing:0;font-weight:600}
 .delta-art[data-mode="soil"] .delta-field{filter:hue-rotate(22deg) brightness(1.15);transform:translateY(-8px) skewY(-6deg)}
 .delta-art[data-mode="soil"] .delta-canal{filter:brightness(.82)}
-.delta-art[data-mode="evidence"]{filter:saturate(.65)}
+/* Evidence is a subdued *illustration state*, not a readability filter for
+   the UI labels or the scene's safety/science disclaimers. */
+.delta-art[data-mode="evidence"]:not([data-diorama-ready="true"]) .delta-field,
+.delta-art[data-mode="evidence"]:not([data-diorama-ready="true"]) .delta-canal { filter:saturate(.68) brightness(.86) }
 .delta-art[data-mode="evidence"] .delta-chapter-tag{color:#f8ecbd}
 .delta-art[data-mode="evidence"] .delta-canal::after{animation-play-state:paused}
 @keyframes canal-current{from{transform:translateY(-14%)}to{transform:translateY(18%)}}
@@ -2081,3 +2084,123 @@ html, body { overflow-x: clip; }
 }
 
 /* P1-09:END_CINEMATIC_PREVIEW */
+
+/* P1-11: An original THREE.js aerial Delta diorama lives *inside* the decision
+   scene. CSS terrain remains a complete offline/no-WebGL fallback. */
+.delta-diorama-canvas {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  display: block;
+  pointer-events: none;
+  transition: opacity .9s cubic-bezier(.19,1,.22,1);
+  filter: saturate(1.16) contrast(1.045);
+}
+.delta-art[data-diorama-ready="true"] .delta-diorama-canvas { opacity: 1; }
+.delta-art[data-diorama-ready="true"] {
+  background: radial-gradient(ellipse at 26% 16%,#f6d1a3 0,#91b0a0 35%,#2e6259 68%,#102c2a 100%);
+}
+.delta-art[data-diorama-ready="true"]::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,rgba(4,27,25,.22),transparent 16%,transparent 61%,rgba(3,24,23,.47)),
+    radial-gradient(ellipse at center,transparent 45%,rgba(5,24,20,.22));
+}
+.diorama-view-label {
+  position: absolute;
+  z-index: 10;
+  top: 65px;
+  right: 22px;
+  max-width: min(62%,260px);
+  color: #fff4cf;
+  font: 800 .68rem/1.3 "Space Grotesk", sans-serif;
+  letter-spacing: .13em;
+  text-align: right;
+  text-shadow: 0 2px 8px #092821;
+  opacity: 0;
+  transition: opacity .5s ease .3s;
+}
+.delta-art[data-diorama-ready="true"] .diorama-view-label { opacity: 1; }
+.diorama-view-label small {
+  display: block;
+  margin-top: 7px;
+  font: 600 .56rem/1.45 "Space Grotesk", sans-serif;
+  letter-spacing: .05em;
+  color: #f3f0df;
+}
+.diorama-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: #ffe3ad;
+  box-shadow: 0 0 9px #f4c879;
+}
+.diorama-compass {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  bottom: 62px;
+  right: 22px;
+  border-radius: 24px;
+  padding: 7px 10px;
+  color: #f8ebc6;
+  border: 1px solid rgba(255,230,169,.5);
+  background: rgba(3,32,30,.74);
+  font: 700 .65rem/1.3 "Space Grotesk",sans-serif;
+  opacity: 0;
+}
+.delta-art[data-diorama-ready="true"] .diorama-compass { opacity: 1; }
+.diorama-compass i {
+  width: 33px;
+  height: 1px;
+  background: #b6d1b8;
+  position: relative;
+}
+.diorama-compass i::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: 0;
+  border: 4px solid transparent;
+  border-left: 7px solid #f5c878;
+}
+.delta-art[data-diorama-ready="true"] .delta-fiction,
+.delta-art[data-diorama-ready="true"] .delta-chapter-tag { background: rgba(3,28,25,.83); }
+.decision-preview .decision-result { transition: border-color .35s, background .35s; }
+.decision-preview:has(.delta-art[data-mode="soil"]) .decision-result { border-color: #aee49b; background: rgba(109,163,104,.08); }
+.decision-preview:has(.delta-art[data-mode="evidence"]) .decision-result { border-color: #8ad8e5; background: rgba(101,175,195,.08); }
+@media(max-width:760px) {
+  .diorama-view-label {
+    top: auto;
+    bottom: 65px;
+    left: 14px;
+    right: auto;
+    box-sizing: border-box;
+    max-width: min(60%,190px);
+    padding: 9px 10px;
+    border-radius: 7px;
+    border: 1px solid rgba(255,232,177,.45);
+    color: #fff5d8;
+    background: rgba(3,27,25,.9);
+    font-size: .62rem;
+    letter-spacing: .055em;
+    text-align: left;
+    text-shadow: none;
+  }
+  .diorama-view-label small { font-size: .52rem; line-height: 1.35; color: #f2f0e5; }
+  .diorama-compass { right: 13px; bottom: 54px; transform: scale(.86); transform-origin: bottom right; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .delta-diorama-canvas,.diorama-view-label,.decision-preview .decision-result { transition: none!important; }
+}
