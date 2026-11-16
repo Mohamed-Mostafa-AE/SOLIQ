@@ -244,6 +244,40 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#receipts-list')).not.toContainText('Pump operation blocked');
   });
 
+  test('No-WebGL inclusive story route reuses the real water solver and captions', async ({ page }) => {
+    await page.goto('/experience/play/story.html');
+    await expect(page).toHaveTitle(/Accessible Story/);
+    await expect(page.locator('#story-desk')).toBeVisible();
+    await expect(page.locator('#story-desk')).toHaveAttribute('role', 'dialog');
+    const noCanvas = await page.evaluate(() => ({
+      babylon: typeof window.BABYLON,
+      canvasCount: document.querySelectorAll('canvas').length,
+    }));
+    expect(noCanvas).toEqual({ babylon: 'undefined', canvasCount: 0 });
+    await page.locator('[data-story-target="hassan"]').click();
+    await page.locator('#story-choice-list button').first().press('Enter');
+    await page.locator('[data-story-target="pumpStation"]').click();
+    await page.locator('#story-choice-list button').nth(1).press('Enter');
+    const result = await page.evaluate(() => {
+      const { mission, water } = window.__soilIqTextGame;
+      return {
+        outcome: mission.activeOutcome,
+        delivered: water.currentSimulation?.deliveredTotal,
+        source: water.currentSimulation?.provenance?.kind,
+        receipts: mission.notebookReceipts.length,
+      };
+    });
+    expect(result.outcome).toBe('bottleneck');
+    expect(result.delivered).toBeGreaterThan(0);
+    expect(result.source).toBe('simulated');
+    expect(result.receipts).toBeGreaterThanOrEqual(3);
+    await expect(page.locator('#text-receipts')).toContainText('Sustainability trade-offs');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#story-desk-overlay')).toBeHidden();
+    await page.locator('#btn-open-story').click();
+    await expect(page.locator('#story-desk')).toBeVisible();
+  });
+
   test('Text-first story route is playable with keyboard, captions and reduced motion', async ({ page }) => {
     await startSession(page);
     await page.locator('#btn-story-desk').click();
