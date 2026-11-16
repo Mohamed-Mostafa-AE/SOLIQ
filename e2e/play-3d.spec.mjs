@@ -26,7 +26,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     });
 
     const objective = page.locator('#hud-objective-title');
-    await expect(objective).toContainText('Mission: The Water Has Arrived!');
+    await expect(objective).toContainText('Chapter 0: A Season Unwritten');
   });
 
   test('Player Nada locomotion and camera mode toggle', async ({ page }) => {
@@ -68,19 +68,10 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
   test('Mesqa water simulation executes all three outcomes and updates evidence receipts', async ({ page }) => {
     await startSession(page);
 
-    // Unsafe startup is blocked; the player must complete three meaningful
-    // training steps before selecting the powered-pump branch.
-    const blocked = await page.evaluate(() => window.__seventhFieldGame.mission.executeOutcome('equilibrium'));
-    expect(blocked).toBe(false);
-    const training = await page.evaluate(() => {
-      const g = window.__seventhFieldGame;
-      for (const id of ['pumpInspected', 'canalAccessSecured', 'heatPrecautionsReviewed']) {
-        g.mission.completeSafetyTraining(id);
-      }
-      return { checks: g.mission.flags, receipts: g.mission.notebookReceipts.length };
-    });
-    expect(training.checks.heatPrecautionsReviewed).toBe(true);
-    expect(training.receipts).toBeGreaterThanOrEqual(4);
+    // The canal council is available without fictional equipment inspections.
+    const council = await page.evaluate(() => window.__seventhFieldGame.mission.getDialogueForTarget({ id: 'pumpStation' }));
+    expect(council.speakerEn).toContain('The Canal Council');
+    expect(council.choices).toHaveLength(3);
 
     // Outcome 1: Proportional Fair Equilibrium
     const res1 = await page.evaluate(() => {
@@ -207,15 +198,15 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
   test('English-first HUD and Arabic subtitle option remain usable', async ({ page }) => {
     await startSession(page);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(page.locator('#hud-objective-title')).toContainText('Mission:');
+    await expect(page.locator('#hud-objective-title')).toContainText('Chapter 0:');
     await expect(page.locator('#btn-earth-lens .label')).toHaveText('Earth Lens');
     await page.locator('#btn-settings').click();
     await expect(page.locator('#select-lang')).toHaveValue('en');
     await page.locator('#select-lang').selectOption('ar');
     await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
-    await expect(page.locator('#hud-objective-title')).toContainText('المهمة');
+    await expect(page.locator('#hud-objective-title')).toContainText('الفصل');
     await page.locator('#select-lang').selectOption('en');
-    await expect(page.locator('#hud-objective-title')).toContainText('Mission:');
+    await expect(page.locator('#hud-objective-title')).toContainText('Chapter 0:');
   });
 
   test('Evidence Notebook opens the actual crop-rotation decision workspace', async ({ page }) => {
@@ -238,33 +229,52 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await rotationPage.close();
   });
 
-  test('Pump mission requires player safety checks before irrigation and logs SDG learning', async ({ page }) => {
+  test('Canal council offers water choices and records sustainability trade-offs', async ({ page }) => {
     await startSession(page);
-    for (let step = 0; step < 3; step++) {
-      await page.evaluate(() => {
-        const g = window.__seventhFieldGame;
-        g.hud.showDialogue(g.mission.getDialogueForTarget({ id: 'pumpStation' }));
-      });
-      await expect(page.locator('#dialogue-speaker')).toHaveText('Safety Check — Before the Pump');
-      await page.locator('.dialogue-choice-btn').first().click();
-    }
-    const state = await page.evaluate(() => {
+    await page.evaluate(() => {
       const g = window.__seventhFieldGame;
-      return {
-        ready: g.mission.flags.pumpInspected && g.mission.flags.canalAccessSecured && g.mission.flags.heatPrecautionsReviewed,
-        speaker: g.mission.getDialogueForTarget({ id: 'pumpStation' }).speakerEn,
-        options: g.mission.getDialogueForTarget({ id: 'pumpStation' }).choices.length,
-      };
+      g.hud.showDialogue(g.mission.getDialogueForTarget({ id: 'pumpStation' }));
     });
-    expect(state.ready).toBe(true);
-    expect(state.speaker).toBe('Diesel Pump & Canal Regulator');
-    expect(state.options).toBe(3);
-
-    await page.evaluate(() => window.__seventhFieldGame.mission.executeOutcome('equilibrium'));
+    await expect(page.locator('#dialogue-speaker')).toHaveText('The Canal Council — Six Families, One Turn');
+    await expect(page.locator('.dialogue-choice-btn')).toHaveCount(3);
+    await page.locator('.dialogue-choice-btn').first().click();
     await page.locator('#btn-notebook').click();
     await expect(page.locator('#receipts-list')).toContainText('Sustainability trade-offs');
     await expect(page.locator('#receipts-list')).toContainText('SDG Learning');
-    await expect(page.locator('#receipts-list')).toContainText('NOT real-world operational clearance');
+    await expect(page.locator('#receipts-list')).not.toContainText('Pump operation blocked');
+  });
+
+  test('Text-first story route is playable with keyboard, captions and reduced motion', async ({ page }) => {
+    await startSession(page);
+    await page.locator('#btn-story-desk').click();
+    const story = page.locator('#story-desk');
+    await expect(story).toBeVisible();
+    await expect(page.locator('#story-desk-source')).toContainText('SIMULATED STORY');
+    await expect(page.locator('#story-beat-title')).toContainText('The Seventh Field');
+
+    await page.locator('[data-story-target="hassan"]').click();
+    await page.locator('#story-choice-list button').first().press('Enter');
+    await expect(page.locator('#story-beat-title')).toContainText('One voice');
+    await page.locator('[data-story-target="maryam"]').click();
+    await page.locator('#story-choice-list button').first().press('Enter');
+    await expect(page.locator('#story-beat-title')).toContainText('Two families');
+
+    await page.locator('[data-story-target="timeEcho"]').click();
+    await page.locator('#story-choice-list button').first().press('Enter');
+    await expect(page.locator('#story-beat-title')).toContainText('seventh field');
+
+    await page.locator('[data-story-target="pumpStation"]').click();
+    await page.locator('#story-choice-list button').nth(1).press('Enter');
+    await expect(page.locator('#story-beat-title')).toContainText('water turn has consequences');
+    await expect(page.locator('#story-rotation-link')).toHaveAttribute('href', '../../#rotations');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#story-desk-overlay')).toBeHidden();
+
+    await page.locator('#btn-settings').click();
+    await page.locator('#chk-reduced-motion').check();
+    await expect(page.locator('body')).toHaveClass(/reduced-motion/);
+    await page.locator('#select-lang').selectOption('ar');
+    await expect(page.locator('#btn-story-desk')).toHaveAttribute('title', /القصة/);
   });
 
 });
