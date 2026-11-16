@@ -51,7 +51,7 @@
 | P1-05 Maize crop-learning room | P1-04 | 5 | Codex Science/Game | Seasonal heat and irrigation sensitivity from declared crop assumptions; no pest prescription | PLANNED |
 | P1-06 Original rigged Nada GLB | P1-01 | 6 | Antigravity + Blender technical artist | Rights-cleared original model, skin/LOD, idle/walk, in-engine video + phone performance | BLOCKED on approved art asset |
 | P1-07 Hassan/Maryam acting pass | P1-06 | 6 | Antigravity + Blender | Original faces, clothes, two dialogue gestures, captions, three live screenshots | PLANNED |
-| P1-08 Delta hero scene and season feedback | P1-06 | 6 | Antigravity technical art | Human-scale canal/banks/plant textures; animated actual consequences, licensed assets, WebGL fallback | PARTIAL procedural |
+| P1-08 Delta hero scene and season feedback | P1-06 | 6 | Antigravity technical art | Human-scale canal/bridge/plant textures; animated seasonal consequences, licensed assets, WebGL fallback | BUILT procedural technical-art |
 | P1-09 Shared design tokens and motion | P0-06 | 6 | Gemini Pro designer + Windsurf/Codex | Color/typography tokens, coherent navigation/states, 360px screenshots, contrast >=4.5:1 | PLANNED |
 | P1-10 Accessibility & reduced 3D motion | P0-02 | 6 | Accessibility specialist + Codex | NVDA/VoiceOver/TalkBack/manual, equivalent cues, no 3D camera motion on opt-out | PARTIAL |
 | P1-11 3D mobile performance profiling | P1-08 | 5 | Antigravity Babylon engineer | Real FPS, asset budget, load waterfall, three quality presets without unsupported targets | PLANNED |
