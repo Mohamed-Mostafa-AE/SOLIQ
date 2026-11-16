@@ -31,8 +31,8 @@ const UI_TEXT = Object.freeze({
     'Codex Water Solver: الحسابات تتم بدقة عبر خوارزمية allocateWater دون تكرار الحسابات بالواجهة.',
   ],
   '.provenance-content p:nth-of-type(3)': [
-    'The Seventh Field: training simulation; no real pump clearance, verified yield, or field-ready irrigation recommendation.',
-    'The Seventh Field: محاكاة سيناريوهات تعليمية لتوضيح أثر عدم اليقين (Interval Regret) ولا تشكل توصية زراعية حقلية دون فحص معملي للتربة.',
+    'The Seventh Field: fictional story and water allocation; no observed field measurements, crop-rotation forecast, or field-ready irrigation prescription.',
+    'The Seventh Field: حكاية ومحاكاة توزيع مياه افتراضيتان، دون قياسات حقلية أو تنبؤات موثقة للمحاصيل أو وصفة ري حقيقية.',
   ],
   '#rotation-bridge-title': ['Field Shift: Crop Rotation Decision Support', 'Field Shift: مقارنة دورات المحاصيل'],
   '#rotation-bridge-copy': [
