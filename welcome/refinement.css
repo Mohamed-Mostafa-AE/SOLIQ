@@ -2045,7 +2045,10 @@ html, body { overflow-x: clip; }
 .delta-fiction{bottom:18px;color:#e1ebe0;letter-spacing:0;font-weight:600}
 .delta-art[data-mode="soil"] .delta-field{filter:hue-rotate(22deg) brightness(1.15);transform:translateY(-8px) skewY(-6deg)}
 .delta-art[data-mode="soil"] .delta-canal{filter:brightness(.82)}
-.delta-art[data-mode="evidence"]{filter:saturate(.65)}
+/* Evidence is a subdued *illustration state*, not a readability filter for
+   the UI labels or the scene's safety/science disclaimers. */
+.delta-art[data-mode="evidence"]:not([data-diorama-ready="true"]) .delta-field,
+.delta-art[data-mode="evidence"]:not([data-diorama-ready="true"]) .delta-canal { filter:saturate(.68) brightness(.86) }
 .delta-art[data-mode="evidence"] .delta-chapter-tag{color:#f8ecbd}
 .delta-art[data-mode="evidence"] .delta-canal::after{animation-play-state:paused}
 @keyframes canal-current{from{transform:translateY(-14%)}to{transform:translateY(18%)}}
@@ -2178,8 +2181,24 @@ html, body { overflow-x: clip; }
 .decision-preview:has(.delta-art[data-mode="soil"]) .decision-result { border-color: #aee49b; background: rgba(109,163,104,.08); }
 .decision-preview:has(.delta-art[data-mode="evidence"]) .decision-result { border-color: #8ad8e5; background: rgba(101,175,195,.08); }
 @media(max-width:760px) {
-  .diorama-view-label { top: 56px; right: 13px; max-width: 56%; font-size: .55rem; }
-  .diorama-view-label small { font-size: .48rem; }
+  .diorama-view-label {
+    top: auto;
+    bottom: 65px;
+    left: 14px;
+    right: auto;
+    box-sizing: border-box;
+    max-width: min(60%,190px);
+    padding: 9px 10px;
+    border-radius: 7px;
+    border: 1px solid rgba(255,232,177,.45);
+    color: #fff5d8;
+    background: rgba(3,27,25,.9);
+    font-size: .62rem;
+    letter-spacing: .055em;
+    text-align: left;
+    text-shadow: none;
+  }
+  .diorama-view-label small { font-size: .52rem; line-height: 1.35; color: #f2f0e5; }
   .diorama-compass { right: 13px; bottom: 54px; transform: scale(.86); transform-origin: bottom right; }
 }
 @media(prefers-reduced-motion:reduce) {
