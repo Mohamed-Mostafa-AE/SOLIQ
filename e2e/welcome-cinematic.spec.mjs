@@ -38,7 +38,9 @@ test('P1-09 cinematic Welcome preview: accessible choices, routes and mobile red
  await preview.scrollIntoViewIfNeeded();
  await preview.screenshot({path:'test-results/p1-09-desktop.png',animations:'disabled'});
  await expect(preview.getByRole('link',{name:/Enter The Seventh Field/})).toHaveAttribute('href','../experience/play/');
- await expect(preview.getByRole('link',{name:/Compare real crop rotations/})).toHaveAttribute('href','../#rotations');
- await expect(preview.locator('.decision-preview-actions .decision-primary')).toHaveAttribute('href','../#rotations');
+ await expect(preview.getByRole('link',{name:/Compare crop rotation scenarios/})).toHaveAttribute('href','../walkthrough/');
+ await expect(preview.locator('.decision-preview-actions .decision-primary')).toHaveAttribute('href','../walkthrough/');
  await expect(preview.locator('.decision-preview-actions .decision-secondary')).toHaveAttribute('href','../experience/play/');
+ await preview.getByRole('link',{name:/Compare crop rotation scenarios/}).click();
+ await expect(page.getByRole('heading',{name:'Compare two crop plans, evidence first'})).toBeVisible();
 });

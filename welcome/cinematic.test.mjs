@@ -11,12 +11,12 @@ assert.ok(source,'cinematic preview must be bundled into the public site module'
 
 test('P1-09: story preview is supplemental to the scientific product and keeps distinct routes',()=>{
  assert.match(html,/ONE CANAL/);
- for(const path of ['../#overview','../#rotations','../experience/play/','../pitch-3d/']){
+ for(const path of ['../#overview','../walkthrough/','../experience/play/','../pitch-3d/']){
   assert.ok(html.includes('href="'+path+'"'),path);
  }
  assert.match(html,/SIMULATED STORY/);
  assert.match(html,/Illustrative story preview, not an Earth observation/);
- assert.match(html,/class="decision-primary" href="\.\.\/#rotations"/,'science CTA must be primary');
+ assert.match(html,/class="decision-primary" href="\.\.\/walkthrough\/"/,'evidence-first science CTA must be primary');
  assert.match(html,/class="decision-secondary" href="\.\.\/experience\/play\/"/,'game must remain supplemental');
  assert.match(html,/href="refinement.css"/);
  assert.match(html,/src="site.js"/);
