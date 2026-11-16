@@ -75,6 +75,7 @@ export class AccessibleStoryDesk {
           <a id="story-rotation-link" href="../../walkthrough/?from=seventh-field" target="_blank" rel="noopener noreferrer">
             Open the real Crop Rotation Workspace ↗
           </a>
+          <a id="story-project-link" href="../../explore/" style="display:inline-block;margin-top:12px;color:#cef3ab;font-weight:700;text-underline-offset:4px">Explore all Soil-IQ project areas ↗</a>
           <p id="story-desk-limit" class="story-desk-limit">The 3D free-roam world is visual; this
             companion provides an equivalent Chapter 0 decision path, not a full 3D accessibility certification.</p>
         </div>
@@ -157,6 +158,7 @@ export class AccessibleStoryDesk {
     this.root.querySelector('#story-thread-list').setAttribute('aria-label',
       this._localize('Opening investigation', 'بداية التحقيق'));
     this._set('story-rotation-link', 'Open the real Crop Rotation Workspace ↗', 'افتح أداة مقارنة دورات المحاصيل الحقيقية ↗');
+    this._set('story-project-link', 'Explore all Soil-IQ project areas ↗', 'تصفح أقسام مشروع Soil-IQ ↗');
     this.root.querySelector('#story-desk-close').setAttribute('aria-label',
       this._localize('Close story mode', 'إغلاق وضع القصة'));
     this.root.querySelector('#story-scene-nav').setAttribute('aria-label',
