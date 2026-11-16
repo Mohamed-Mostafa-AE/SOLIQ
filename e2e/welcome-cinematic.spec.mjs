@@ -20,6 +20,10 @@ test('P1-09 cinematic Welcome preview: accessible choices, routes and mobile red
  const motion=await page.evaluate(()=>getComputedStyle(document.querySelector('.delta-canal'),'::after').animationName);
  expect(motion).toBe('none');
  expect(await preview.evaluate(e=>e.scrollWidth<=e.clientWidth+1)).toBe(true);
+ await preview.screenshot({path:'test-results/p1-09-mobile.png',animations:'disabled'});
+ await page.setViewportSize({width:1440,height:900});
+ await preview.scrollIntoViewIfNeeded();
+ await preview.screenshot({path:'test-results/p1-09-desktop.png',animations:'disabled'});
  await expect(preview.getByRole('link',{name:/Enter The Seventh Field/})).toHaveAttribute('href','../experience/play/');
  await expect(preview.getByRole('link',{name:/Compare real crop rotations/})).toHaveAttribute('href','../#rotations');
 });
