@@ -37,6 +37,26 @@ test('P1-11: 3D Delta scene is truthful, responsive and coupled to preview decis
   await art.scrollIntoViewIfNeeded();
   await expect(art).toBeInViewport();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+  const mobileAnnotations=await art.evaluate(element=>{
+    const rect=selector=>element.querySelector(selector).getBoundingClientRect().toJSON();
+    const label=element.querySelector('.diorama-view-label');
+    return {
+      label:rect('.diorama-view-label'),
+      compass:rect('.diorama-compass'),
+      fiction:rect('.delta-fiction'),
+      chapter:rect('.delta-chapter-tag'),
+      background:getComputedStyle(label).backgroundColor,
+    };
+  });
+  // Readable against both the animated sun and washed-out evidence mode;
+  // never obscure the fiction disclaimer or north arrow on narrow screens.
+  expect(mobileAnnotations.background).toMatch(/rgba?\(3, 27, 25, 0\.9\)/);
+  expect(mobileAnnotations.label.bottom).toBeLessThan(mobileAnnotations.fiction.top - 5);
+  expect(mobileAnnotations.label.right).toBeLessThan(mobileAnnotations.compass.left - 5);
+  expect(mobileAnnotations.label.top).toBeGreaterThan(mobileAnnotations.chapter.bottom + 5);
+  await art.screenshot({path:'test-results/p1-11-mobile-evidence-diorama.png'});
+  await page.getByRole('button',{name:/Share water/}).click();
+  await expect(art).toHaveAttribute('data-mode','water');
   await art.screenshot({path:'test-results/p1-11-mobile-diorama.png'});
 });
 
