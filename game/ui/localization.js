@@ -4,7 +4,7 @@
  * keeps its independent bilingual language setting.
  */
 const UI_TEXT = Object.freeze({
-  '.hud-badge': ['SOLIQ · The Seventh Field', 'SOLIQ · الأرض السابعة'],
+  '.hud-badge': ['Soil-IQ · The Seventh Field', 'Soil-IQ · الأرض السابعة'],
   '#hud-objective-title': ['Mission: The Water Has Arrived!', 'المهمة: المية وصلت!'],
   '#btn-earth-lens .label': ['Earth Lens', 'عدسة الأرض'],
   '#btn-notebook .label': ['Evidence', 'دفتر الأدلة'],
@@ -33,6 +33,12 @@ const UI_TEXT = Object.freeze({
     'The Seventh Field: training simulation; no real pump clearance, verified yield, or field-ready irrigation recommendation.',
     'The Seventh Field: محاكاة سيناريوهات تعليمية لتوضيح أثر عدم اليقين (Interval Regret) ولا تشكل توصية زراعية حقلية دون فحص معملي للتربة.',
   ],
+  '#rotation-bridge-title': ['Field Shift: Crop Rotation Decision Support', 'Field Shift: مقارنة دورات المحاصيل'],
+  '#rotation-bridge-copy': [
+    'Compare crop calendars in the separate scientific workspace using source-labelled NASA weather context, declared soil parameters and farmer priorities. The fictional game does not transfer farm data.',
+    'قارن دورات المحاصيل داخل مساحة التحليل العلمي باستخدام سياق الطقس الموثق المصدر من NASA، وخصائص التربة المعلنة، وأولويات المزارع. اللعبة خيالية ولا تنقل بيانات مزرعة حقيقية.',
+  ],
+  '#open-rotation-workspace': ['Open Crop Rotation Workspace ↗', 'افتح مساحة مقارنة دورات المحاصيل ↗'],
   '.settings-header h2': ['⚙️ Display & Accessibility', '⚙️ إعدادات العرض والأداء'],
   '#select-quality option[value="balanced"]': ['Balanced', 'متوازن (Balanced 60fps)'],
   '#select-quality option[value="low"]': ['Low (older devices)', 'منخفض للأجهزة القديمة (Low 30fps)'],
