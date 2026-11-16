@@ -5,7 +5,7 @@
  */
 const UI_TEXT = Object.freeze({
   '.hud-badge': ['Soil-IQ · The Seventh Field', 'Soil-IQ · الأرض السابعة'],
-  '#hud-objective-title': ['Mission: The Water Has Arrived!', 'المهمة: المية وصلت!'],
+  '#hud-objective-title': ['Chapter 0: A Season Unwritten', 'الفصل صفر: موسم لسه ما اتكتبش'],
   '#btn-earth-lens .label': ['Earth Lens', 'عدسة الأرض'],
   '#btn-notebook .label': ['Evidence', 'دفتر الأدلة'],
   '#btn-camera .label': ['Camera', 'استراتيجي'],
