@@ -21,7 +21,7 @@
   <aside class="sidebar">
     <a class="brand" href="#overview">
       <span class="brandmark"><img src="soil-iq-logo.png" alt="Soil-IQ"></span>
-      <span>Soliq<small>EARTH OBSERVATIONS. GROUNDED DECISIONS.</small></span>
+      <span>Soil-IQ<small>EARTH OBSERVATIONS. GROUNDED DECISIONS.</small></span>
     </a>
     <div class="workspace-label" id="workspace-label">FARMER & CLIENT WORKSPACE</div>
     <nav id="workspace-nav" aria-label="Workspace">
@@ -35,7 +35,7 @@
       <button data-view="research" data-audience="research"><span>⌘</span>Methods & diagnostics</button>
       <button data-view="settings" data-audience="research"><span>⚙</span>Model parameters</button>
       <a class="button" data-audience="research" href="/experience/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none">✦ OMNI-EARTH Experience Lab ↗</a>
-      <a class="button" data-audience="both" href="/experience/play/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none">🎮 الأرض السابعة — Play 3D Prototype</a>
+      <a class="button" data-audience="both" href="/experience/play/" style="display:block;margin:12px 8px;text-align:center;border:1px solid #91ae92;text-decoration:none" aria-label="Play The Seventh Field, Soil-IQ's 3D narrative village">🎮 The Seventh Field · Play 3D</a>
     </nav>
     <div class="side-note">
       <span class="tiny-leaf">↗</span>
@@ -65,7 +65,7 @@
       </div>
       <div id="notice" role="status"></div>
       <div id="page"></div>
-      <footer>Soliq · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer>
+      <footer>Soil-IQ · NASA Space Apps project <span>Evidence first. Farmer judgment always.</span></footer>
     </main>
   </div>
   <dialog id="guided-help" class="simple-guide-dialog" aria-labelledby="guided-help-title">
@@ -82,14 +82,14 @@
   <dialog id="help" class="guide-dialog" aria-labelledby="guide-title">
     <div class="guide-shell">
       <div class="guide-topbar">
-        <div><span class="guide-kicker">SOLIQ / TECHNICAL RESEARCH GUIDE</span><span class="guide-version">MODEL 0.1 · EXPLORATORY</span></div>
+        <div><span class="guide-kicker">SOIL-IQ / TECHNICAL RESEARCH GUIDE</span><span class="guide-version">MODEL 0.1 · EXPLORATORY</span></div>
         <button class="icon-btn" id="close-help" aria-label="Close research guide">×</button>
       </div>
       <div class="guide-content">
         <div class="guide-intro">
           <p class="eyebrow">METHODS / DATA / REPRODUCIBILITY</p>
           <h2 id="guide-title">From meteorological forcing to a transparent crop-water comparison.</h2>
-          <p class="guide-lead">Soliq is an exploratory, deterministic water-balance workspace. It applies shared weather, soil-water and irrigation assumptions to alternative monthly crop calendars, then exposes the calculations, sensitivity cases and data lineage behind each comparison.</p>
+          <p class="guide-lead">Soil-IQ is an exploratory, deterministic water-balance workspace. It applies shared weather, soil-water and irrigation assumptions to alternative monthly crop calendars, then exposes the calculations, sensitivity cases and data lineage behind each comparison.</p>
         </div>
 
         <div class="guide-grid">
@@ -128,7 +128,7 @@
           <section class="guide-section">
             <span class="guide-index">05 / COMPARATIVE ANALYSIS</span>
             <h3>Physical metrics versus preference score</h3>
-            <p>For each sequence, Soliq reports potential ET demand, modeled actual ET, unmet modeled demand, irrigation use, drainage, final storage and planned crop-cover days. The seasonal research view also exposes daily storage traces and mass-balance residuals.</p>
+            <p>For each sequence, Soil-IQ reports potential ET demand, modeled actual ET, unmet modeled demand, irrigation use, drainage, final storage and planned crop-cover days. The seasonal research view also exposes daily storage traces and mass-balance residuals.</p>
             <p>The overview preference score combines modeled water adequacy and the fraction of days assigned to a non-fallow crop, using the weights selected by the user.</p>
             <div class="guide-equation"><code>Score = 100 × [w₁ × (1 − min(1, deficit ÷ max(1, demand))) + w₂ × (planned crop days ÷ days in year)]</code><code>w₁ = water weight ÷ (water weight + cover weight)</code><code>w₂ = cover weight ÷ (water weight + cover weight)</code></div>
             <p>It is a preference index for navigating scenarios—not a yield, profitability, sustainability or agronomic suitability score. Changing weights does not change the physical water calculations. A lower modeled deficit can reflect lower modeled crop demand; it does not quantify the production trade-off.</p>
@@ -184,7 +184,7 @@
           <h3>What the current model does not estimate</h3>
           <p>The current release does not predict yield, harvest quality, prices, profit, nitrogen fixation credits, soil-carbon change, root development, layered soil-water movement, groundwater interaction, salinity, waterlogging, disease pressure or measured vegetation cover. Crop drawings are illustrations of crop identity, not phenology observations or growth forecasts.</p>
           <p>The separate 2026 Living Farm module is a historical-analogue scenario tool: it preserves the retrieved 2026 weather through its publication cutoff and uses five selected historical years to construct the remaining-period scenarios. Its P10–P90 ranges summarize the small analogue ensemble; they are not calibrated forecast probabilities. Its hindcast comparison is retrospective, not prospective validation.</p>
-          <div class="guide-warning">Soliq is a research demonstrator and decision-support aid, not an irrigation prescription or validated farm recommendation. Local measurements, crop-specific calibration and independent outcome validation remain necessary.</div>
+          <div class="guide-warning">Soil-IQ is a research demonstrator and decision-support aid, not an irrigation prescription or validated farm recommendation. Local measurements, crop-specific calibration and independent outcome validation remain necessary.</div>
         </section>
       </div>
       <div class="guide-footer">
