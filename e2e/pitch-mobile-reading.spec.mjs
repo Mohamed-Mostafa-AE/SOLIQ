@@ -67,5 +67,7 @@ test('P0-08: keyboard navigation announces slides, notes and reduced motion with
   await expect(page.locator('#notes-toggle')).toBeFocused();
   await expect(page.locator('#export-pptx')).toBeVisible();
   await expect(page.locator('#print-deck')).toBeVisible();
-  await expect(page.locator('#stage').evaluate((stage) => stage.getAnimations({ subtree: true }).filter((a) => a.playState === 'running').length)).resolves.toBe(0);
+  const activeAnimations = await page.locator('#stage').evaluate((stage) =>
+    stage.getAnimations({ subtree: true }).filter((animation) => animation.playState === 'running').length);
+  expect(activeAnimations).toBe(0);
 });
