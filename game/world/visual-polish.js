@@ -78,6 +78,7 @@ export function installFieldVegetation(village,quality='balanced'){
     if(!materials[f.crop])materials[f.crop]=pbr(scene,'deltaPlantMat_'+f.crop,spec.color,.76);
     const mat=materials[f.crop];
     if(!mat.albedoTexture)applyCropCutoutMaterial(mat,makeCropCutoutTexture(scene,f.crop));
+    f.thinCropMeshes = [];
     const angles=[0,Math.PI/2];
     for(let side=0;side<2;side++){
       const mesh=BABYLON.MeshBuilder.CreatePlane('liveCrop_'+f.id+'_'+side,
@@ -87,6 +88,7 @@ export function installFieldVegetation(village,quality='balanced'){
       mesh.thinInstanceSetBuffer('matrix',instanceMatrices(plants,angles[side]),16,true);
       mesh.isPickable=false;
       mesh.alwaysSelectAsActiveMesh=true;
+      f.thinCropMeshes.push(mesh);
       meshes++;
     }
     // Old crop-row boxes become believable low soil ridges, not huge green rectangular "plants".

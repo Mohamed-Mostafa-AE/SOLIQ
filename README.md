@@ -1,10 +1,10 @@
-# Soliq — Earth observations. Grounded decisions.
+# Soil-IQ — Earth observations. Grounded decisions.
 
-Soliq is a coined brand combining **soil + IQ**: informed decisions about soil, water and crops. This is the team’s adopted brand interpretation.
+Soil-IQ is a coined brand combining **soil + IQ**: informed decisions about soil, water and crops. The GitHub repository retains its historical `SOLIQ` name.
 
 Authors: Mohamed Mostafa, Youssef Mohamed, Aya Abdelnabi and Mohamed Abdelrahman.
 
-**Live application:** https://soliq-2gobdsnht-mohamedhussam09-9067.vercel.app/?utm_source=chatgpt.com#settings
+**Current production application (not the unreleased integration candidate):** https://soliq-delta.vercel.app/
 
 Development repository: https://github.com/Mohamed-Mostafa-AE/SOLIQ. See BENCHMARKS.md and RELEASE_CHECKLIST.md for evidence standards and the final release process.
 
