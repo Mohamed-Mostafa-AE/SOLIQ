@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="320" viewBox="0 0 1120 320" role="img" aria-labelledby="brand-title brand-description">
+  <title id="brand-title">Soil-IQ</title>
+  <desc id="brand-description">Original emerald-and-gold Soil-IQ wordmark with an Earth-observation magnifier over crop-field contours.</desc>
+  <rect x="4" y="4" width="1112" height="312" rx="45" fill="#0c3028" stroke="#66856b" stroke-width="8"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="154" cy="146" r="82" stroke="#f6f1dd" stroke-width="18"/>
+    <path d="M97 119c33-13 74-13 113 0M91 150c41-14 82-13 127 0M98 180c32-9 71-9 110 0" stroke="#9ecb98" stroke-width="13"/>
+    <path d="M210 207l55 55" stroke="#f6f1dd" stroke-width="19"/>
+  </g>
+  <circle cx="154" cy="147" r="12" fill="#f5c875" stroke="#0c3028" stroke-width="4"/>
+  <text x="326" y="218" fill="#fff4dc" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="169" letter-spacing="-7">Soil-IQ</text>
+  <path d="M336 261h705" stroke="#e4bc73" stroke-width="8" stroke-linecap="round" opacity=".94"/>
+</svg>
