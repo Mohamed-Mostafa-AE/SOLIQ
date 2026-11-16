@@ -952,3 +952,29 @@ body.reduced-motion .game-loader * {
   .mobile-action-bar { bottom: 12px; gap: 8px; }
   .mobile-btn { width: 52px; height: 52px; }
 }
+
+/* Unlock after Chapter 1 has produced a real (fictional) result, never from a
+   static story outline. Positioned just below Chapter 1's own launch control. */
+.chapter2-launch {
+  position: fixed;
+  top: 147px;
+  right: 18px;
+  z-index: 205;
+  width: min(300px, calc(100vw - 28px));
+  min-height: 48px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: 1px solid #aae6e6;
+  background: linear-gradient(120deg, #124d52, #1f746c);
+  color: #f4fff6;
+  box-shadow: 0 10px 26px #0019139c;
+  font: 800 .9rem/1.35 var(--font-sans);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.chapter2-launch[hidden] { display: none !important; }
+.chapter2-launch:focus-visible { outline: 3px solid #ffe0a1; outline-offset: 3px; }
+.chapter2-launch:hover { background: linear-gradient(120deg, #176065, #208278); }
+@media (max-width: 640px) {
+  .chapter2-launch { top: 149px; right: 14px; width: min(275px, calc(100vw - 28px)); }
+}
