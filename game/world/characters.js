@@ -261,7 +261,10 @@ export class CharacterSystem {
   _createNada() {
     // Playable Female Protagonist Nada (1.68m)
     const actor = this._createRiggedHuman('nada', this.materials.skinNada, this.materials.nadaJacket, 1.68);
-    actor.root.position.set(-16, 0.0, 3.0); // Starting position near the pump lane
+    // Begin near the canal, palms, Hassan and planted fields. The older pump-lane
+    // spawn framed bare soil and oversized machinery, undermining the story's
+    // focus on the village and the next season. Pump remains walkable nearby.
+    actor.root.position.set(-4, 0.0, 3.0);
     actor.root.rotation.y = 0.4;
 
     // Ponytail & scarf

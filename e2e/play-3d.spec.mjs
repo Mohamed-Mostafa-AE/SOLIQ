@@ -51,9 +51,11 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#opening-hook')).toHaveAttribute('role', 'dialog');
     await expect(page.locator('#opening-hook')).toContainText('The Seventh Field');
     await expect(page.locator('#opening-hook')).toContainText('UNTESTED');
+    await expect(page.locator('#hook-skip')).toBeInViewport();
     await expect(page.locator('#game-ui-container')).toHaveAttribute('inert', '');
     await page.screenshot({ path: 'test-results/seventh-field-opening-desktop.png' });
     await page.setViewportSize({ width: 360, height: 780 });
+    await expect(page.locator('#hook-skip')).toBeInViewport();
     await expect(page.locator('#hook-clue-soil')).toBeVisible();
     const noOverflow = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
     expect(noOverflow).toBe(true);

@@ -69,8 +69,8 @@ class SeventhFieldGame {
     this.characters = new CharacterSystem(scene, shadowGenerator);
     this.visualArtReport.characters = addCharacterDetails(this.characters,{preset:this.renderSetup.quality});
     // Aim at the actual playable heroine before the first rendered frame.
-    // Otherwise ArcRotateCamera's origin target shows empty soil even though
-    // Nada starts at (-16,0,3), making the game look like a featureless map.
+    // Otherwise ArcRotateCamera's origin target shows empty soil rather than
+    // the heroine and the planted canal edge, making the game feel lifeless.
     cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0,1.38,0)));
     // ArcRotateCamera.setTarget preserves eye position and therefore silently
     // expands the radius; restore the intended human-scale follow framing.
