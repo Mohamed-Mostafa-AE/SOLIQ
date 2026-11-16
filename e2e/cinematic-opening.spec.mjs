@@ -57,6 +57,14 @@ test('water-thread entry keeps the village canal visually substantial behind Nad
   await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
   await page.locator('#btn-start-game').click();
   await page.locator('#hook-clue-water').click();
+  await page.waitForFunction(() => {
+    const g = window.__seventhFieldGame;
+    return g.renderSetup.scene.activeCamera === g.renderSetup.cameras.follow &&
+      g.renderSetup.cameras.follow.target.z - g.characters.nada.root.position.z > 4.1;
+  });
+  // Projection uses the Babylon scene transform; wait for the follow camera's
+  // first actual render, not the retired dialogue-camera matrix.
+  await page.waitForTimeout(120);
   const view = await page.evaluate(() => {
     const g = window.__seventhFieldGame;
     const scene = g.renderSetup.scene;
