@@ -13,6 +13,7 @@ import { CharacterSystem } from '../../game/world/characters.js';
 import { PlayerController } from '../../game/world/controls.js';
 import { DeltaAudioSynthesizer } from '../../game/world/audio.js';
 import { VisualWaterEngine } from '../../game/world/water-simulation.js';
+import { SeasonFeedbackEngine } from '../../game/world/season-feedback.js';
 import { EarthLensSystem } from '../../game/world/earth-lens.js';
 import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
@@ -36,6 +37,7 @@ class SeventhFieldGame {
     this.playerController = null;
     this.audio = null;
     this.waterEngine = null;
+    this.seasonFeedback = null;
     this.earthLens = null;
     this.timeEcho = null;
     this.mission = null;
@@ -82,6 +84,9 @@ class SeventhFieldGame {
     // 4. Procedural Audio & Water Simulation
     this.audio = new DeltaAudioSynthesizer();
     this.waterEngine = new VisualWaterEngine(scene, this.village, this.audio);
+    this.seasonFeedback = new SeasonFeedbackEngine(this.village, this.waterEngine, {
+      reducedMotion: this.renderSetup?.reducedMotion ?? false,
+    });
 
     // 5. Earth Lens & Time Echo Systems
     this.earthLens = new EarthLensSystem(scene, this.village);
@@ -243,6 +248,9 @@ class SeventhFieldGame {
     sharedEvents.on('outcome_achieved', (data) => {
       this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
       this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+      if (this.seasonFeedback && this.waterEngine.currentSimulation) {
+        this.seasonFeedback.applyIrrigationOutcome(this.waterEngine.currentSimulation);
+      }
       const en = this.hud.lang === 'en';
       this.hud.showTelemetryToast(
         en ? 'Simulated irrigation decision recorded' : data.titleAr,
@@ -312,6 +320,9 @@ class SeventhFieldGame {
 
     // 4. Update water simulation waves and height
     this.waterEngine.update(deltaTime);
+
+    // 4b. Environmental wind sway and seasonal feedback
+    this.seasonFeedback?.tick(deltaTime);
 
     // 5. Check Time Echo field presence
     const inEcho = this.timeEcho.checkPlayerInside(this.characters.nada.root.position);
