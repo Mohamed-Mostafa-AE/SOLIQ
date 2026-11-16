@@ -2,6 +2,8 @@
 
 **Audited 2026-11-16.** This file describes the code currently shipping in the *development branch*, not our art goals. Proposed film, model, animation and texture references are in the [art research bible](../../docs/EGYPTIAN_CINEMATIC_ART_REFERENCE_BIBLE_2026.md) and [candidate registry](asset-reference-registry.json). They are **not yet downloaded, licensed per item or bundled**.
 
+**Concept-only art disclosure:** `game/assets/concepts/egyptian-delta-triad-concept-v1.jpg` was generated with OpenAI ImageGen on 2026-11-16 from an original prompt for fictional Nada, Hassan and Maryam; 1200px JPEG export of the original concept. It is for *art direction only* and is **not** used by the 3D runtime or represented as NASA/field evidence, real actors or completed 3D models.
+
 ## 1. Compliance Statement & Ethics
 The project's source and rights principles:
 - No copied or ripped commercial assets from GTA, Farming Simulator, or proprietary software.

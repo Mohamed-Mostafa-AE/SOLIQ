@@ -8,6 +8,8 @@ The main product remains the NASA Field Shift crop-rotation decision-support wor
 
 The target is the **humanity and sense of place** of Egyptian rural cinema, not a licensed film adaptation. Build original characters with modern lives, clear motivations and visual personalities. Do **not** copy an actor's identifiable face, a film character, wardrobe design one-to-one, footage, dialogue, soundtrack or publicity still into the shipped app. Film pages are research references only; seek separate permission before using any film material.
 
+**Original look-dev moodboard:** [Nada, Hassan and Maryam — first concept pass](../game/assets/concepts/egyptian-delta-triad-concept-v1.jpg). Generated specifically for this project with OpenAI ImageGen on 2026-11-16. This is *fictional concept art, not gameplay or proof of a working GLB model*, and has not been loaded into the 3D scene. It helps the character artist match silhouettes, clothes and the canal mood; all actual runtime meshes still need to be modeled/rigged and tested.
+
 | Film / primary film-industry reference | What to study | What not to carry into Soil-IQ |
 |---|---|---|
 | [*The Land / Al-Ard* (Youssef Chahine, 1969)](https://www.acmi.net.au/works/94389--the-land-al-ard/) · [BFI analysis](https://www.bfi.org.uk/features/where-begin-with-youssef-chahine) | Group framing, agricultural land as a lived home, conflicting but dignified farmers, canal and meeting-place visual language | Its 1930s political conflict and forced irrigation restrictions are **not** our game's default 2026 water physics; no Abu Swelam likeness, actor face, scene or film dialogue |
