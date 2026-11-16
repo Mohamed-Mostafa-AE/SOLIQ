@@ -29,5 +29,11 @@ test('original Egyptian Delta actors keep low-cost silhouettes and reduced-motio
   expect(state.legAngle).toBe(0);
   expect(state.headAngle).toBe(0);
   expect(state.meshesAreProcedural).toBe(true);
+  // A screenshot taken before starting only shows the loading overlay. Begin
+  // rendering and prove the actual 3D scene is visible before capturing art.
+  await page.evaluate(() => window.__seventhFieldGame.start());
+  await expect(page.locator('#game-loader')).toBeHidden();
+  await expect(page.locator('#renderCanvas')).toBeVisible();
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await page.screenshot({ path: 'test-results/original-delta-actors-reduced-motion.png' });
 });
