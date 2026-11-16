@@ -165,6 +165,16 @@
    dark-emerald / canal-teal / warm-gold visual language of Soil-IQ Welcome.
    The thin progress track is native HTML, not a scripted animation. */
 :root { --delta-gold: #f4c879; --delta-teal: #72c9c4; }
+.wordmark { gap: 10px; text-decoration: none; }
+.wordmark img {
+  width: 96px; max-height: 46px; padding: 4px 6px;
+  background: #eff3e4; border-radius: 7px; object-fit: contain;
+}
+.wordmark .brand-name {
+  display: inline-block; color: #f4c879;
+  font: 700 22px/1.2 Arial,sans-serif; letter-spacing: .5px;
+  white-space: nowrap;
+}
 #stage {
   background:
     radial-gradient(ellipse at 78% 39%, #26544a55, transparent 52%),
@@ -194,6 +204,8 @@
 .controls #next:not(:disabled):hover { background: #f4c879; border-color: #f4c879; color: #10271f; }
 
 @media screen and (max-width: 700px) {
+  .wordmark img { width: 86px; max-height: 42px; }
+  .wordmark .brand-name { font-size: 21px; }
   .toolbar { border-bottom: 1px solid #f4c87955; }
   .slide.active {
     background: radial-gradient(circle at 78% 84%, #275a5066, transparent 57%), #0a241e;

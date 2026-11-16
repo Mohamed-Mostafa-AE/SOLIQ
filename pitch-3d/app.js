@@ -3,7 +3,7 @@ import {slides,LINKS} from './content.js';
 import {farmSVG} from './art.js';
 const stage=document.querySelector('#stage'),nav=document.querySelector('#slide-nav');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const footer=(i)=>'<footer class="slide-footer"><span>SOIL-IQ / NASA SPACE APPS 6 OCTOBER</span><span>BUC: event venue · Working prototype · 15 NOV 2026</span><span>'+String(i+1).padStart(2,'0')+' / 07</span></footer>';
+const footer=(i)=>'<footer class="slide-footer"><span>SOIL-IQ / NASA SPACE APPS 2026</span><span>Working prototype · Evidence and limitations disclosed</span><span>'+String(i+1).padStart(2,'0')+' / 07</span></footer>';
 function scene(s){return '<div class="scene" aria-hidden="true">'+farmSVG(s.scene)+'</div><p class="scene-caption">3D CONCEPT ILLUSTRATION</p>';}
 function detail(s){
  if(s.kind==='hero')return '<span class="tagline">SOIL + WATER + CROP ROTATIONS</span>';
@@ -124,7 +124,7 @@ export async function exportPowerPoint(){
    if(s.kind==='close'){text(slide,'Mohamed Mostafa · Youssef Mohamed · Aya Abdelnabi · Mohamed Abdelrahman',62,580,1060,27,16,'C7D0C0');text(slide,'NASA Space Apps 6 October · Event venue: Badr University in Cairo',62,615,1060,25,14,'B5C2B2');}
    const link=s.kind==='ai'?LINKS.ai:s.kind==='benchmark'||s.kind==='honesty'?LINKS.benchmark:s.kind==='close'?LINKS.app:null;
    if(link)text(slide,s.kind==='ai'?'OPEN AI DEMO ↗':'OPEN LIVE PROJECT ↗',s.kind==='close'?62:900,s.kind==='close'?540:625,s.kind==='close'?500:310,25,14,'C0D794',{hyperlink:{url:link}});
-   text(slide,'SOIL-IQ · NASA SPACE APPS 6 OCTOBER | BUC: EVENT VENUE',62,681,1020,18,10,'AABB9F');
+   text(slide,'SOIL-IQ · NASA SPACE APPS 2026 · WORKING PROTOTYPE',62,681,1020,18,10,'AABB9F');
    text(slide,String(i+1).padStart(2,'0')+' / 07',1130,681,100,18,10,'AABB9F');
    slide.addNotes(s.notes+'\n\nSources and live evidence: '+LINKS.benchmark+' ; '+LINKS.github+' ; https://doi.org/10.3389/fpls.2023.1165113 . Field artwork is a conceptual illustration.');
   }

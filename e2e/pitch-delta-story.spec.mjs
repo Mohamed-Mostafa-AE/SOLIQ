@@ -6,6 +6,8 @@ test('judge pitch uses an original Delta canal illustration and an honest slide-
   await page.goto('/pitch-3d/');
 
   await expect(page.locator('.slide')).toHaveCount(7);
+  await expect(page.locator('.wordmark .brand-name')).toBeVisible();
+  await expect(page.locator('.wordmark .brand-name')).toHaveText('Soil-IQ');
   // Desktop has one cinematic field shared across all slides. The slide-local
   // SVG is deliberately hidden there and shown only in mobile reading mode.
   const heroArt = page.locator('.continuous-field svg');
@@ -31,6 +33,17 @@ test('360px pitch preserves full-size typography, touch controls, accessible not
   await page.setViewportSize({ width: 360, height: 780 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/pitch-3d/');
+
+  const brand = page.locator('.wordmark .brand-name');
+  await expect(brand).toBeVisible();
+  const brandStyle = await brand.evaluate((el) => ({
+    size: Number.parseFloat(getComputedStyle(el).fontSize),
+    color: getComputedStyle(el).color,
+    width: el.getBoundingClientRect().width,
+  }));
+  expect(brandStyle.size).toBeGreaterThanOrEqual(20);
+  expect(brandStyle.width).toBeGreaterThan(60);
+  expect(brandStyle.color).toBe('rgb(244, 200, 121)');
 
   const art = page.locator('.slide.active .scene svg');
   await expect(art).toBeVisible();
