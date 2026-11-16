@@ -160,3 +160,64 @@
   }
   #export-status { position: relative; inset: auto; margin: 12px 16px; max-width: none; }
 }
+
+/* Judge review polish: align the pitch's original illustration with the
+   dark-emerald / canal-teal / warm-gold visual language of Soil-IQ Welcome.
+   The thin progress track is native HTML, not a scripted animation. */
+:root { --delta-gold: #f4c879; --delta-teal: #72c9c4; }
+.wordmark { gap: 10px; text-decoration: none; }
+.wordmark .brand-name {
+  display: inline-block; color: #f4c879;
+  font: 700 22px/1.2 Arial,sans-serif; letter-spacing: .5px;
+  white-space: nowrap;
+}
+#stage {
+  background:
+    radial-gradient(ellipse at 78% 39%, #26544a55, transparent 52%),
+    radial-gradient(ellipse at 15% 96%, #876b3c25, transparent 43%),
+    #0a241e;
+}
+.slide .overline { color: var(--delta-gold); font-weight: 700; }
+.slide .overline::before {
+  content: ''; display: inline-block; vertical-align: middle;
+  width: 28px; height: 2px; background: var(--delta-gold);
+  margin-right: 12px;
+}
+.tagline { color: var(--delta-gold); }
+.slide .scene svg { filter: drop-shadow(0 21px 20px #0008); }
+.slide .scene-caption, .field-caption { color: #d6e4d0; }
+.controls { position: relative; }
+#deck-progress {
+  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  border: none; border-radius: 0; appearance: none;
+  background: #37574b; color: var(--delta-gold);
+}
+#deck-progress::-webkit-progress-bar { background: #37574b; }
+#deck-progress::-webkit-progress-value { background: linear-gradient(90deg,var(--delta-teal),var(--delta-gold)); }
+#deck-progress::-moz-progress-bar { background: var(--delta-gold); }
+.controls #previous, .controls #next { border-color: #c1d6be80; }
+.controls #previous:not(:disabled):hover,
+.controls #next:not(:disabled):hover { background: #f4c879; border-color: #f4c879; color: #10271f; }
+
+@media screen and (max-width: 700px) {
+  .wordmark .brand-name { font-size: 21px; }
+  .toolbar { border-bottom: 1px solid #f4c87955; }
+  .slide.active {
+    background: radial-gradient(circle at 78% 84%, #275a5066, transparent 57%), #0a241e;
+    padding-top: 32px;
+  }
+  .slide .overline::before { width: 18px; margin-right: 8px; }
+  .slide .scene {
+    min-height: 205px; height: min(72vw, 295px);
+    padding: 10px; border-radius: 16px;
+    border: 1px solid #72c9c47a;
+    background: radial-gradient(ellipse at 62% 31%, #33584c77, #102f28 73%);
+    box-shadow: 0 18px 38px #020e0b70;
+  }
+  .slide .scene svg { filter: drop-shadow(0 10px 8px #0009); }
+  .slide .scene-caption { margin: -12px 0 0; color: #d9ead3; font-size: 11px; }
+  .controls { border-top: 1px solid #f4c87970; }
+  .controls #counter { color: #f1e5c5; font-weight: 700; }
+  .rotation, .need, .step, .ai-stat, .stat { border-color: #f4c87988; }
+}
+@media print { #deck-progress { display: none !important; } }
