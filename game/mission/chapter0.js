@@ -7,6 +7,91 @@
 import { sharedEvents, EMOTIONS, GESTURES, OUTCOMES } from '../core/events.js';
 import { sustainabilityLesson } from '../core/sustainability.js';
 
+const SNAPSHOT_VERSION = 1;
+const STAGES = Object.freeze(['intro', 'meet_hassan', 'meet_maryam', 'pump_ready', 'executed']);
+const BOOL_FLAGS = Object.freeze([
+  'talkedToHassan', 'talkedToMaryam', 'inspectedSoil', 'questionedFuture',
+  'pumpStarted', 'cooperationRiskFlag', 'evidenceRequested',
+]);
+const ENUM_FLAGS = Object.freeze({
+  firstClue: [null, 'water', 'soil'],
+  selectedPolicy: ['proportional', 'capacity_limited'],
+  hassanStance: [null, 'cooperative', 'cautious', 'head_priority'],
+  maryamStance: [null, 'aligned', 'cover_advocate', 'skeptical_stress_test'],
+  livelihoodPriority: ['balanced', 'immediate_cash', 'risk_averse'],
+  soilCoverChoice: [null, 'living_cover', 'moisture_checked', 'bare_fallow_risk'],
+  cropHypothesis: [null, 'cover_first', 'water_saving', 'deferred_for_nasa'],
+  councilMode: [null, 'standard_proportional', 'cover_buffered_turn', 'bottleneck_overload', 'evidence_deferral'],
+});
+const RECEIPT_KEYS = Object.freeze([
+  'id', 'titleAr', 'titleEn', 'category', 'dataClass', 'timestamp',
+  'detailsAr', 'detailsEn', 'hash', 'hashKind',
+]);
+const isRecord = value => value !== null && typeof value === 'object' &&
+  !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype;
+const exactKeys = (value, keys) => isRecord(value) &&
+  Object.keys(value).length === keys.length &&
+  keys.every(key => Object.hasOwn(value, key));
+const safeText = (value, max) => typeof value === 'string' && value.length <= max && !/[<>]/.test(value);
+
+/** Accept only the authored story's bounded, non-sensitive state contract. No GPS or PII fields. */
+function validateChapter0Snapshot(snapshot) {
+  if (!exactKeys(snapshot, ['version', 'stage', 'activeOutcome', 'flags', 'notebookReceipts']) ||
+      snapshot.version !== SNAPSHOT_VERSION) {
+    throw new TypeError('Unsupported Chapter 0 checkpoint version or shape');
+  }
+  if (!STAGES.includes(snapshot.stage) ||
+      !Object.values(OUTCOMES).includes(snapshot.activeOutcome) ||
+      (snapshot.stage === 'executed') !== (snapshot.activeOutcome !== OUTCOMES.NONE)) {
+    throw new TypeError('Invalid Chapter 0 checkpoint stage/outcome');
+  }
+  const flags = snapshot.flags;
+  const expectedFlagKeys = [...BOOL_FLAGS, ...Object.keys(ENUM_FLAGS), 'relationships'];
+  if (!exactKeys(flags, expectedFlagKeys)) throw new TypeError('Invalid or unsafe Chapter 0 checkpoint flags');
+  for (const key of BOOL_FLAGS) {
+    if (typeof flags[key] !== 'boolean') throw new TypeError('Invalid Chapter 0 checkpoint boolean flag');
+  }
+  for (const [key, values] of Object.entries(ENUM_FLAGS)) {
+    if (!values.includes(flags[key])) throw new TypeError(`Invalid Chapter 0 checkpoint enum: ${key}`);
+  }
+  if (!exactKeys(flags.relationships, ['hassanTrust', 'maryamTrust']) ||
+      !['hassanTrust', 'maryamTrust'].every(key =>
+        Number.isInteger(flags.relationships[key]) && flags.relationships[key] >= 0 && flags.relationships[key] <= 2)) {
+    throw new TypeError('Invalid Chapter 0 checkpoint relationships');
+  }
+  if (snapshot.activeOutcome !== OUTCOMES.NONE &&
+      flags.pumpStarted !== (snapshot.activeOutcome !== OUTCOMES.DEFERRAL)) {
+    throw new TypeError('Invalid Chapter 0 checkpoint pump state');
+  }
+  if (!Array.isArray(snapshot.notebookReceipts) || snapshot.notebookReceipts.length > 100) {
+    throw new TypeError('Invalid Chapter 0 checkpoint receipts count');
+  }
+  const receipts = snapshot.notebookReceipts.map(receipt => {
+    if (!exactKeys(receipt, RECEIPT_KEYS) || !/^[A-Za-z0-9_]{1,80}$/.test(receipt.id) ||
+        !safeText(receipt.titleAr, 200) || !safeText(receipt.titleEn, 200) ||
+        !safeText(receipt.category, 120) || !safeText(receipt.detailsAr, 1500) ||
+        !safeText(receipt.detailsEn, 1500) || receipt.dataClass !== 'simulated' ||
+        receipt.hashKind !== 'noncryptographic_display_id' ||
+        !/^SIM-\d{4,}$/.test(receipt.hash) ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(receipt.timestamp) ||
+        !Number.isFinite(Date.parse(receipt.timestamp))) {
+      throw new TypeError('Unsafe Chapter 0 checkpoint receipt');
+    }
+    return Object.fromEntries(RECEIPT_KEYS.map(key => [key, receipt[key]]));
+  });
+  return {
+    version: SNAPSHOT_VERSION,
+    stage: snapshot.stage,
+    activeOutcome: snapshot.activeOutcome,
+    flags: Object.fromEntries([
+      ...BOOL_FLAGS.map(key => [key, flags[key]]),
+      ...Object.keys(ENUM_FLAGS).map(key => [key, flags[key]]),
+      ['relationships', { hassanTrust: flags.relationships.hassanTrust, maryamTrust: flags.relationships.maryamTrust }],
+    ]),
+    notebookReceipts: receipts,
+  };
+}
+
 export class Chapter0Mission {
   constructor(village, characters, waterEngine, audio) {
     this.village = village;
@@ -33,8 +118,8 @@ export class Chapter0Mission {
       cooperationRiskFlag: false,
       evidenceRequested: false,
       councilMode: null,
+      relationships: { hassanTrust: 0, maryamTrust: 0 },
     };
-    this.relationships = { hassanTrust: 0, maryamTrust: 0 };
 
     this.dialogueQueue = [];
     this.currentDialogue = null;
@@ -64,6 +149,30 @@ export class Chapter0Mission {
       hashKind: 'noncryptographic_display_id',
     });
     this.audio.playNotebookChime();
+  }
+
+  /** Pure JSON snapshot. Storage, consent and replay belong to a later checkpoint task. */
+  getSerializableState() {
+    return validateChapter0Snapshot({
+      version: SNAPSHOT_VERSION,
+      stage: this.stage,
+      activeOutcome: this.activeOutcome,
+      flags: this.flags,
+      notebookReceipts: this.notebookReceipts.slice(0, 100),
+    });
+  }
+
+  /** Atomic restore of validated narrative flags and receipts; deliberately no pump replay. */
+  restoreState(snapshot) {
+    const clean = validateChapter0Snapshot(snapshot);
+    this.stage = clean.stage;
+    this.activeOutcome = clean.activeOutcome;
+    this.flags = clean.flags;
+    this.notebookReceipts = clean.notebookReceipts;
+    this.currentDialogue = null;
+    this.dialogueQueue = [];
+    sharedEvents.emit('mission_receipts_updated');
+    return true;
   }
 
   /** The opening branch is a research question, never a crop recommendation. */
@@ -137,7 +246,7 @@ export class Chapter0Mission {
               this.flags.hassanStance = 'cooperative';
               this.flags.selectedPolicy = 'proportional';
               this.flags.livelihoodPriority = 'balanced';
-              this.relationships.hassanTrust = Math.min(2, this.relationships.hassanTrust + 1);
+              this.flags.relationships.hassanTrust = Math.min(2, this.flags.relationships.hassanTrust + 1);
               this.stage = this.flags.talkedToMaryam ? 'pump_ready' : 'meet_maryam';
               this.characters.setActorEmotion('hassan', EMOTIONS.SATISFIED);
               this.addReceipt({
@@ -161,7 +270,7 @@ export class Chapter0Mission {
               this.flags.inspectedSoil = true;
               this.flags.hassanStance = 'cautious';
               this.flags.soilCoverChoice = 'moisture_checked';
-              this.relationships.hassanTrust = Math.min(2, this.relationships.hassanTrust + 1);
+              this.flags.relationships.hassanTrust = Math.min(2, this.flags.relationships.hassanTrust + 1);
               this.stage = this.flags.talkedToMaryam ? 'pump_ready' : 'meet_maryam';
               this.characters.setActorEmotion('hassan', EMOTIONS.HOPEFUL);
               this.addReceipt({
@@ -186,7 +295,7 @@ export class Chapter0Mission {
               this.flags.selectedPolicy = 'capacity_limited';
               this.flags.livelihoodPriority = 'immediate_cash';
               this.flags.cooperationRiskFlag = true;
-              this.relationships.hassanTrust = Math.min(2, this.relationships.hassanTrust + 1);
+              this.flags.relationships.hassanTrust = Math.min(2, this.flags.relationships.hassanTrust + 1);
               this.stage = this.flags.talkedToMaryam ? 'pump_ready' : 'meet_maryam';
               this.characters.setActorEmotion('hassan', EMOTIONS.CONCERNED);
               this.addReceipt({
@@ -253,7 +362,7 @@ export class Chapter0Mission {
             this.flags.maryamStance = 'aligned';
             this.flags.selectedPolicy = 'proportional';
             this.flags.cooperationRiskFlag = false;
-            this.relationships.maryamTrust = Math.min(2, this.relationships.maryamTrust + 1);
+            this.flags.relationships.maryamTrust = Math.min(2, this.flags.relationships.maryamTrust + 1);
             this.stage = this.flags.talkedToHassan ? 'pump_ready' : 'meet_hassan';
             this.characters.setActorEmotion('maryam', EMOTIONS.SATISFIED);
             this.addReceipt({
@@ -280,7 +389,7 @@ export class Chapter0Mission {
             this.flags.talkedToMaryam = true;
             this.flags.maryamStance = 'cover_advocate';
             this.flags.soilCoverChoice = 'living_cover';
-            this.relationships.maryamTrust = Math.min(2, this.relationships.maryamTrust + 1);
+            this.flags.relationships.maryamTrust = Math.min(2, this.flags.relationships.maryamTrust + 1);
             this.stage = this.flags.talkedToHassan ? 'pump_ready' : 'meet_hassan';
             this.characters.setActorEmotion('maryam', EMOTIONS.HOPEFUL);
             this.addReceipt({
