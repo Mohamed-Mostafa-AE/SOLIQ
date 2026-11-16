@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#14332d">
+  <meta name="description" content="Text-first accessible chapter of Soil-IQ The Seventh Field, without WebGL or sound.">
+  <title>Soil-IQ · The Seventh Field · Accessible Story</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    html, body { min-height: 100%; height: auto; overflow: auto; user-select: text; }
+    .text-route-shell { max-width: 680px; margin: 8vh auto; padding: 24px; }
+    .text-route-shell h1 { color: #f0cf92; margin-bottom: 12px; }
+    .text-route-shell p { margin: 12px 0; line-height: 1.65; }
+    .text-route-shell a { color: #bdf9d6; }
+    #btn-open-story { padding: 12px 18px; font: inherit; font-weight: 700; background: #c0e4ac; color: #10291f; border: 0; border-radius: 8px; cursor: pointer; }
+    #btn-open-story:focus-visible, .text-route-shell a:focus-visible { outline: 3px solid #ffe19c; outline-offset: 4px; }
+    #text-receipts { margin: 18px 0; padding-inline-start: 26px; }
+    #text-receipts li { line-height: 1.5; padding-block: 4px; }
+  </style>
+</head>
+<body>
+  <main class="text-route-shell" id="content">
+    <p>Soil-IQ · The Seventh Field</p>
+    <h1>The Season That Hasn't Happened Yet</h1>
+    <p>This keyboard-and-screen-reader friendly Chapter 0 uses the same fictional mission
+    and deterministic canal-water calculations as the 3D game. Every dialogue is visible in text;
+    no sound, geolocation, graphics accelerator or 3D movement is required.</p>
+    <p>All story outcomes are <strong>SIMULATED</strong>. They are not observed NASA records,
+    verified agricultural benefits, or recommendations for real farms.</p>
+    <button id="btn-open-story" type="button">Resume the story</button>
+    <p><a href="./">Back to the 3D world</a> ·
+       <a href="../../#rotations">Open Soil-IQ Crop Rotation Workspace</a></p>
+    <h2>Current story notes</h2>
+    <p id="text-progress" role="status" aria-live="polite">Ready to begin.</p>
+    <ol id="text-receipts"></ol>
+  </main>
+  <div id="text-game"></div>
+  <script type="module" src="story-only.js"></script>
+</body>
+</html>
