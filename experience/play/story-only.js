@@ -23,11 +23,14 @@ const receipts = document.getElementById('text-receipts');
 
 function renderNotes() {
   const beat = getSeasonStoryBeat(mission.flags, mission.activeOutcome);
-  progress.textContent = beat.titleEn;
+  const isArabic = desk.lang === 'ar';
+  progress.textContent = isArabic ? beat.titleAr : beat.titleEn;
   receipts.replaceChildren();
   for (const entry of mission.notebookReceipts) {
     const li = document.createElement('li');
-    li.textContent = `SIMULATED · ${entry.titleEn}: ${entry.detailsEn}`;
+    li.textContent = isArabic
+      ? `افتراضي · ${entry.titleAr}: ${entry.detailsAr}`
+      : `SIMULATED · ${entry.titleEn}: ${entry.detailsEn}`;
     receipts.appendChild(li);
   }
 }
@@ -36,6 +39,10 @@ const desk = new AccessibleStoryDesk(document.getElementById('text-game'), missi
   onMissionChanged: renderNotes,
 });
 document.getElementById('btn-open-story').addEventListener('click', () => desk.open());
+document.getElementById('story-language').addEventListener('change', (event) => {
+  desk.setLanguage(event.target.value);
+  renderNotes();
+});
 renderNotes();
 // Make the story available immediately, including to keyboard-only users.
 desk.open();
