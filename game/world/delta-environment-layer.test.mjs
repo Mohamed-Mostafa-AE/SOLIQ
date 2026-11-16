@@ -6,6 +6,7 @@ import {
   scenicQualityBudget,
   planWaterwheel,
   planVillageYards,
+  scenicCanalCenterZ,
 } from './delta-environment-layer.js';
 
 test('scenic art is explicitly fictional and never reported as observed NASA data', () => {
@@ -46,6 +47,13 @@ test('village facades match all existing farmhouse locations without new plot ov
   assert.ok(yards.every(h=>h.width>0 && h.depth>0));
 });
 
+test('decorative canal follows the same existing six centerline control points',()=>{
+  assert.deepEqual([-35,-15,5,25,45,65].map(scenicCanalCenterZ),[12,10,9,7,6,4]);
+  assert.equal(scenicCanalCenterZ(-10),9.75);
+  assert.equal(scenicCanalCenterZ(15),8);
+  assert.equal(scenicCanalCenterZ(999),4);
+});
+
 test('3D layer builds on a real Babylon NullEngine, animates only for simulated active irrigation',async()=>{
   await import('../assets/vendor/babylon.js');
   const engine=new BABYLON.NullEngine();
@@ -57,12 +65,16 @@ test('3D layer builds on a real Babylon NullEngine, animates only for simulated 
     assert.ok(scene.getMeshByName('sakiaRim-0.16'));
     assert.ok(scene.getMeshByName('scenicBlueGate0'));
     assert.ok(scene.getMeshByName('scenicCanalLimestone12'));
+    assert.ok(scene.getMeshByName('scenicMesqaStillWater'));
+    assert.ok(scene.getMeshByName('scenicBankSedges0'));
+    assert.ok(scene.getMeshByName(`scenicBankSedges${Math.PI/2}`));
     assert.ok(scene.getMeshByName('scenicFieldBerm0_-1'));
-    assert.ok(scene.meshes.length>120 && scene.meshes.length<300);
+    assert.ok(scene.meshes.length>120 && scene.meshes.length<320);
     assert.equal(layer.wheel.rotation.z,0);
     layer.tick(.02); // Decorative mechanism is stationary while canal pump is off.
     assert.equal(layer.wheel.rotation.z,0);
     layer.setIrrigationActive(true);
+    assert.equal(layer.ambientCanalMaterial.diffuseColor.g,.48);
     layer.tick(.02);
     assert.ok(layer.wheel.rotation.z>0);
     const before=layer.wheel.rotation.z;

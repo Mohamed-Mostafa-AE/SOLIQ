@@ -43,6 +43,16 @@ export function planVillageYards() {
   ];
 }
 
+export function scenicCanalCenterZ(x) {
+  const anchors=[[-35,12],[-15,10],[5,9],[25,7],[45,6],[65,4]];
+  const clamped=Math.max(anchors[0][0],Math.min(anchors.at(-1)[0],x));
+  for(let i=0;i<anchors.length-1;i++){
+    const a=anchors[i],b=anchors[i+1];
+    if(clamped<=b[0])return a[1]+(clamped-a[0])/(b[0]-a[0])*(b[1]-a[1]);
+  }
+  return anchors.at(-1)[1];
+}
+
 function material(scene, name, color, opts = {}) {
   const mat = new BABYLON.StandardMaterial(name, scene);
   mat.diffuseColor = new BABYLON.Color3(...color);
@@ -94,6 +104,7 @@ export class DeltaEnvironmentLayer {
     this.birds = [];
     this.butterflies = [];
     this.animatedCanvas = [];
+    this.ambientCanalMaterial = null;
     this._createWaterwheel();
     this._createFarmyardFacades();
     this._createVillageLife();
@@ -262,6 +273,48 @@ export class DeltaEnvironmentLayer {
 
   _createCanalDetail() {
     const scene=this.scene,m=this.materials;
+    // The mesqa remains a recognizable waterway even when the diesel pump is
+    // OFF: still water in a shared canal is not an assertion of delivered
+    // irrigation. The separate solver controls every allocation/outcome.
+    // The still-water ribbon is decorative scenery, not a hydrology gauge.
+    const waterMat=material(scene,'scenicMesqaStillWater',[.12,.37,.42],{
+      specular:[.43,.53,.49],doubleSided:true,
+    });
+    waterMat.alpha=.78;
+    this.ambientCanalMaterial=waterMat;
+    const upper=[],lower=[];
+    for(let i=0;i<=35;i++){
+      const x=-34.7+i*2.82,z=scenicCanalCenterZ(x);
+      upper.push(new BABYLON.Vector3(x,.13,z-1.52));
+      lower.push(new BABYLON.Vector3(x,.13,z+1.52));
+    }
+    const water=BABYLON.MeshBuilder.CreateRibbon('scenicMesqaStillWater',{
+      pathArray:[upper,lower],sideOrientation:BABYLON.Mesh.DOUBLESIDE},scene);
+    water.material=waterMat;water.isPickable=false;water.receiveShadows=false;
+
+    // Thin-instanced bank sedges create readable organic near-field foliage,
+    // replacing the previous uninterrupted beige ground in human camera view.
+    const plantCount=this.budget.preset==='low'?130:this.budget.preset==='ultra'?570:360;
+    const rng=seedRandom(0x5e71ed);
+    for(const side of [0,Math.PI/2]){
+      const reed=BABYLON.MeshBuilder.CreatePlane(`scenicBankSedges${side}`,
+        {width:.18,height:1,sideOrientation:BABYLON.Mesh.DOUBLESIDE},scene);
+      reed.material=m.reed;
+      reed.isPickable=false;
+      reed.alwaysSelectAsActiveMesh=true;
+      const transforms=new Float32Array(plantCount*16);
+      for(let i=0;i<plantCount;i++){
+        const x=-27+rng()*87,bankSign=i%2===0?1:-1;
+        const z=scenicCanalCenterZ(x)+bankSign*(2.55+rng()*1.9);
+        const height=.48+rng()*1.05,width=.55+rng()*.8;
+        const scaling=new BABYLON.Vector3(width,height,1);
+        const rotation=BABYLON.Quaternion.RotationYawPitchRoll(side+rng()*.28,0,(rng()-.5)*.18);
+        BABYLON.Matrix.Compose(scaling,rotation,new BABYLON.Vector3(x,height/2+.1,z))
+          .copyToArray(transforms,i*16);
+      }
+      reed.thinInstanceSetBuffer('matrix',transforms,16,true);
+    }
+
     // Segmented stone edging on the near bank gives a visible horizontal
     // silhouette from the follow camera without blocking gates or bridges.
     for(let i=0;i<34;i++){
@@ -343,6 +396,13 @@ export class DeltaEnvironmentLayer {
     // Water animation is illustrative feedback to the fiction; real numeric
     // allocation remains in game/core/water-window-adapter.js.
     this.irrigationActive=Boolean(active);
+    if(this.ambientCanalMaterial){
+      // A simulated pumping turn changes only the artistic sheen, not water
+      // level or any quantity. The solver's canal mesh remains independent.
+      this.ambientCanalMaterial.diffuseColor=this.irrigationActive
+        ? new BABYLON.Color3(.13,.48,.54)
+        : new BABYLON.Color3(.12,.37,.42);
+    }
   }
 
   tick(deltaTime) {
