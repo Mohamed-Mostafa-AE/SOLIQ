@@ -1,6 +1,6 @@
 # Soil-IQ: The Seventh Field — Actual Asset and Prototype Art Status
 
-**Audited 2026-11-16.** This file describes the code currently shipping in the *development branch*, not our art goals. Proposed film, model, animation and texture references are in the [art research bible](../../docs/EGYPTIAN_CINEMATIC_ART_REFERENCE_BIBLE_2026.md) and [candidate registry](asset-reference-registry.json). They are **not yet downloaded, licensed per item or bundled**.
+**Audited 2026-11-16.** This file describes the code currently shipping in the *development branch*, not our art goals. Proposed third-party film, model, animation and texture references are in the [art research bible](../../docs/EGYPTIAN_CINEMATIC_ART_REFERENCE_BIBLE_2026.md) and [candidate registry](asset-reference-registry.json). Those third-party candidates remain unbundled; the new **first-party** human GLBs are documented separately below.
 
 **Concept-only art disclosure:** `game/assets/concepts/egyptian-delta-triad-concept-v1.jpg` was generated with OpenAI ImageGen on 2026-11-16 from an original prompt for fictional Nada, Hassan and Maryam; 1200px JPEG export of the original concept. It is for *art direction only* and is **not** used by the 3D runtime or represented as NASA/field evidence, real actors or completed 3D models.
 
@@ -21,11 +21,12 @@ The project's source and rights principles:
 
 ---
 
-## 3. Characters & Skeletal Rigs — CURRENT LIMITATION
+## 3. Characters & Skeletal Rigs — ORIGINAL GLB PROTOTYPES
 - **Nada, Hassan and Maryam** are original fictional Egyptian Delta character concepts, not actress/actor likenesses.
-- `game/world/characters.js` animates articulated Babylon `TransformNode` chains with **disconnected sphere/box/cylinder body parts**. `game/world/character-detail.js` adds sculpted geometric pieces, simple facial features and costume hints.
-- The previous claim of a **high-poly anatomical mesh with smooth vertex skinning weights** was incorrect. No continuous human skin mesh, weight-painted skeleton, professionally rigged GLB, facial mocap, blendshapes or production quality cloth is installed yet.
-- Source code and procedural geometry were authored for this project. Actual license for distributed code follows the repository license; future third-party human assets must have individual verified rights and attribution.
+- `game/assets/models/{nada,hassan,maryam}.glb` are actual Blender 4.3-exported glTF 2.0 **skinned armature assets**, with 17 joints and five named action tracks each. These are original geometry and procedural animations, not scans or film likenesses. Reproducible build script and digests are in [PROVENANCE.md](models/PROVENANCE.md).
+- `game/world/characters.js` imports these files asynchronously into Babylon, switches each actor to a skinned animation graph and preserves the former `TransformNode` human as a fully functional fallback if an asset or loader fails. `game/world/character-detail.js` remains the fallback art pass.
+- Visual quality is deliberately stylized: the model is segmented and rigid-weighted by joint; it does **not** claim professional continuous anatomical skin, facial motion capture, hand-authored blendshapes or full cloth physics. In-engine screenshots and real phone profiling remain required before a cinematic or production-quality claim.
+- No external human, motion, texture or likeness asset was used. Provenance is original first-party project work; redistribution beyond this repository needs owner permission.
 
 ---
 

@@ -5,6 +5,7 @@
 
 import { planVisibleCanalBanks, planCanalBridge } from './delta-canal-layout.js';
 import { updateFieldSoilAppearance } from './delta-procedural-textures.js';
+import { DeltaEnvironmentLayer } from './delta-environment-layer.js';
 
 export class DeltaVillage {
   constructor(scene, shadowGenerator) {
@@ -31,6 +32,9 @@ export class DeltaVillage {
     this._buildVegetation();
     this._buildProps();
     this._buildSeventhFieldMarker();
+    // Original 3D village-life art sits outside all mission triggers and never
+    // modifies the source-of-truth water or crop-decision simulations.
+    this.scenicLayer = new DeltaEnvironmentLayer(this);
   }
 
   _initMaterials() {
@@ -729,6 +733,7 @@ export class DeltaVillage {
     if (this.smokeParticles) {
       this.smokeParticles.emitRate = isRunning ? 25 : 0;
     }
+    this.scenicLayer?.setIrrigationActive(isRunning);
   }
 
   setGateOpen(gateId, isOpen) {
@@ -769,5 +774,6 @@ export class DeltaVillage {
     if (this.pump && this.pump.running && this.pump.flywheel) {
       this.pump.flywheel.rotation.x += deltaTime * 18.0;
     }
+    this.scenicLayer?.tick(deltaTime);
   }
 }
