@@ -140,9 +140,9 @@ export class Chapter3SoilMission {
     const comparison = this.compare();
     if (!comparison.canCommit) throw new Error('This fictional choice exceeds the family work-token budget');
     this.phase = 'result';
-    const ending = this.prior.ending === 'evidence_pause'
-      ? 'prepared_for_measurement'
-      : comparison.runoffRiskTokens >= 5 ? 'runoff_warning'
+    const ending = comparison.runoffRiskTokens >= 5 ? 'runoff_warning'
+      : this.prior.ending === 'evidence_pause'
+        ? 'prepared_for_measurement'
         : comparison.coverTokens >= 4 && comparison.tailAccessTokens >= 3 ? 'shared_soil_cover'
           : 'hard_tradeoff';
     const summaries = {
@@ -174,6 +174,7 @@ export class Chapter3SoilMission {
       tailAccessTokens: comparison.tailAccessTokens,
       livelihoodTokens: comparison.livelihoodTokens,
       workTokens: comparison.workTokens,
+      narrativeScore: comparison.narrativeScore,
       priority: comparison.priority,
       practices: comparison.practices,
       waterTurn: comparison.turn,

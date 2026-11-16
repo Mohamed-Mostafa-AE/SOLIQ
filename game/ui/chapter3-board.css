@@ -55,7 +55,7 @@
 .soil-plot[data-practice="mulch"] .soil-straw{display:block}
 .soil-plot[data-practice="living_cover"] .soil-surface{background:#48693e}
 .soil-plot[data-practice="bare_fallow"] .soil-surface{background:#a17956;border-top-color:#b98b5f}
-.soil-plot-caption{color:#dbe2cf;font-size:12px;line-height:1.5;padding:10px 13px;margin:0;min-height:80px}
+.soil-plot-caption{color:#e4ebd9;font-size:13px;line-height:1.6;padding:10px 13px;margin:0;min-height:80px}
 .soil-cutaway-explainer{font-size:12px;color:#c5d7c7;margin:19px 2px 13px}
 .soil-missing{display:inline-flex;align-items:center;gap:7px;font:700 12px ui-monospace,monospace;color:#f8d9a3;letter-spacing:.03em;margin:0;padding:9px 12px;border:1px solid #d9ae6d88;background:#4d382a80;border-radius:5px}
 .soil-planner-side{padding:clamp(21px,2.5vw,35px);border:1px solid #b8b58972;border-radius:14px;background:linear-gradient(145deg,#18362f,#0d2825);box-shadow:0 20px 60px #0005}
@@ -70,6 +70,8 @@
 .soil-metrics>div{min-width:0;background:#163e36;border:1px solid #77948880;border-radius:5px;padding:10px 8px;text-align:center}
 .soil-metrics span{display:block;font-size:10px;color:#e1e4d0;line-height:1.2;min-height:31px}
 .soil-metrics strong{font:700 27px ui-monospace,monospace;color:#f1cc80;display:block;font-variant-numeric:tabular-nums}
+.soil-priority-score{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 13px;margin-top:12px;border:1px solid #cebb7b80;background:#1f3b32;color:#e8e8d4;border-radius:5px;font-size:12px}
+.soil-priority-score strong{font:700 24px ui-monospace,monospace;color:#f5d386;font-variant-numeric:tabular-nums}
 .soil-work-budget{margin-top:20px;font-size:13px;color:#e2e6d5}
 .soil-work-budget span{display:flex;justify-content:space-between}.soil-work-budget b{font-variant-numeric:tabular-nums;color:#f3d387}
 .soil-work-budget small{color:#c0c9ba}
@@ -91,5 +93,5 @@
 @keyframes soil-gentle-rain{0%{opacity:0;transform:translateY(-20px)}20%{opacity:.9}70%{opacity:.65}100%{opacity:0;transform:translateY(55px)}}
 @media(max-width:1100px){.soil-lab-grid{grid-template-columns:1fr}.soil-illustration{height:280px}.soil-planner-side{max-width:none}.soil-lab-header{padding-right:42px}}
 @media(max-width:650px){.soil-lab-content{padding:62px 14px 28px}.soil-lab-header{padding:0 0 24px}.soil-lab-header h1{font-size:40px}.soil-lab-badge{display:block;width:max-content;margin:9px 0 0}.soil-story-breadcrumb{display:block}.soil-story-breadcrumb strong{display:block;margin-top:3px}.soil-visual-side,.soil-planner-side{padding:14px}.soil-plot-pair{grid-template-columns:1fr}.soil-illustration{height:210px}.soil-plot-caption{min-height:0}.soil-controls{grid-template-columns:1fr}.soil-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.soil-lab-footer{display:block}.soil-lab-footer a{display:block;margin-top:13px}}
-@media(max-width:380px){.soil-lab-header h1{font-size:34px}.soil-missing{font-size:10px}.soil-lab-eyebrow{font-size:10px}}
+@media(max-width:380px){.soil-lab-header h1{font-size:34px}.soil-missing{font-size:12px;letter-spacing:0}.soil-lab-eyebrow{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.soil-droplets{animation:none;opacity:.25}.soil-work-bar i{transition:none}}

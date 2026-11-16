@@ -26,6 +26,9 @@ test('each soil-cover and irrigation choice changes two fictional plots but neve
   assert.notEqual(changed.livelihoodTokens, before.livelihoodTokens);
   game.setTurn('single_fast');
   assert.notEqual(game.compare().runoffRiskTokens, changed.runoffRiskTokens);
+  const soilScore = game.compare().narrativeScore;
+  game.setPriority('livelihood');
+  assert.notEqual(game.compare().narrativeScore, soilScore);
   assert.throws(() => game.setPractice('head', '__proto__'), /Unknown/);
   assert.throws(() => game.setTurn('actual_nasa_irrigation'), /Unknown/);
 });
@@ -53,6 +56,14 @@ test('work budget prevents impossible all-benefits strategy, and alternative out
   const risky = rushed.commit();
   assert.equal(risky.ending, 'runoff_warning');
   assert.notEqual(risky.runoffRiskTokens, balanced.runoffRiskTokens);
+
+  const samePriorDifferentChoice = new Chapter3SoilMission(chapter2('evidence_pause'));
+  samePriorDifferentChoice.setPractice('head', 'bare_fallow');
+  samePriorDifferentChoice.setPractice('tail', 'bare_fallow');
+  samePriorDifferentChoice.setTurn('single_fast');
+  assert.equal(samePriorDifferentChoice.commit().ending, 'runoff_warning');
+  assert.notEqual(samePriorDifferentChoice.result.ending, balanced.ending,
+    'Chapter 3 choices must matter even after Chapter 2 elected to pause for evidence');
 });
 
 test('planner is deterministic, replayable, self-contained and does not alter Chapter 2', () => {

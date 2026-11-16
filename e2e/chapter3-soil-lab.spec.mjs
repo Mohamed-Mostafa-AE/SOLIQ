@@ -29,6 +29,10 @@ test('soil puzzle visibly enforces work budget and delivers an evidence-honest e
   await expect(lab.getByRole('button', {name: /Present the simulated plan/})).toBeDisabled();
   await lab.locator('#soil-tail').selectOption('bare_fallow');
   await expect(lab.getByRole('button', {name: /Present the simulated plan/})).toBeEnabled();
+  const scoreBefore = await lab.locator('.soil-priority-score strong').textContent();
+  await lab.locator('#soil-priority').selectOption('livelihood');
+  const scoreAfter = await lab.locator('.soil-priority-score strong').textContent();
+  expect(scoreAfter).not.toBe(scoreBefore);
   await lab.getByRole('button', {name: /Present the simulated plan/}).click();
   await expect(lab.getByText(/refuses to present invented infiltration or salinity numbers/)).toBeVisible();
   await expect(lab.getByText('SALINITY & INFILTRATION: UNAVAILABLE')).toBeVisible();
@@ -41,7 +45,7 @@ test('soil puzzle visibly enforces work budget and delivers an evidence-honest e
 });
 
 test('fictional pressure branch changes outcome without invented NASA or field data', async ({ page }) => {
-  await startSoilLab(page,'fictional_trial');
+  await startSoilLab(page,'evidence_pause');
   const lab = page.locator('#chapter3-soil-lab');
   await lab.locator('#soil-head').selectOption('bare_fallow');
   await lab.locator('#soil-tail').selectOption('bare_fallow');
@@ -49,6 +53,7 @@ test('fictional pressure branch changes outcome without invented NASA or field d
   await lab.getByRole('button',{name:/Present the simulated plan/}).click();
   await expect(lab.getByText(/bare ground raises warning tokens/)).toBeVisible();
   await expect(lab.getByText('REAL FIELD ADVICE: NOT AVAILABLE')).toBeVisible();
+  await expect(lab.getByText('SALINITY & INFILTRATION: UNAVAILABLE')).toBeVisible();
 });
 
 test('soil laboratory is RTL accessible at 360px and works without WebGL', async ({ page }) => {

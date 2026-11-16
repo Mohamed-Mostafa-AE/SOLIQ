@@ -14,6 +14,7 @@ const translations = {
     water: '03 / THE WATER TURN', priority: '04 / WHAT MATTERS MOST?',
     budget: 'Family work tokens', cap: 'Available: 6', warning: 'Too much work for the fictional family. Adjust a cover choice or water rhythm before presenting it to the council.',
     profile: 'Story consequences', cover: 'Cover tokens', runoff: 'Runoff-warning tokens', tailAccess: 'Tail-access tokens', income: 'Short-term return tokens',
+    score: 'Fictional score under your selected priority',
     note: 'These are dimensionless story tokens, not a hydrologic, economic, infiltration or crop-yield model.',
     commit: 'Present the simulated plan →', result: 'THE VILLAGE REACTS',
     decision: 'No field advice was made. The council still needs local infiltration, salinity and weather evidence.',
@@ -34,6 +35,7 @@ const translations = {
     water: '٠٣ / نوبة المياه', priority: '٠٤ / الأهم عندك',
     budget: 'نقاط المجهود الأسري', cap: 'المتاح: ٦', warning: 'المجهود أكبر من قدرة الأسرة الخيالية. غيّر الغطاء أو نظام المياه قبل العرض على المجلس.',
     profile: 'نتائج القصة', cover: 'نقاط الغطاء', runoff: 'نقاط تحذير الجريان', tailAccess: 'نقاط آخر المسقة', income: 'نقاط العائد القصير',
+    score: 'تقييم خيالي وفق أولويتك المختارة',
     note: 'دي نقاط قصة بلا وحدات، مش نموذج هيدرولوجي أو اقتصادي أو قياس ترشح أو تنبؤ بإنتاج محصول.',
     commit: 'اعرض الخطة الافتراضية ←', result: 'رد القرية',
     decision: 'لم تُقدَّم أي توصية حقلية. المجلس ما زال محتاج قياسات ترشح وملوحة محلية ودليل طقس.',
@@ -146,6 +148,7 @@ export function attachChapter3Game({ host = document.body, chapter2, language = 
                 <div><span>${t.tailAccess}</span><strong>${current.tailAccessTokens}</strong></div>
                 <div><span>${t.income}</span><strong>${current.livelihoodTokens}</strong></div>
               </div>
+              <div class="soil-priority-score"><span>${t.score}</span><strong>${current.narrativeScore}</strong></div>
               <div class="soil-work-budget ${current.canCommit?'':'is-over'}"><span>${t.budget} <b>${current.workTokens} / ${current.workBudget}</b></span><div class="soil-work-bar"><i style="width:${Math.min(100,Math.round(current.workTokens/current.workBudget*100))}%"></i></div><small>${t.cap}</small></div>
               ${current.canCommit?'':`<p class="soil-budget-warning" role="alert">${t.warning}</p>`}
               <p class="soil-simulated-note">${t.note}</p>
@@ -154,6 +157,7 @@ export function attachChapter3Game({ host = document.body, chapter2, language = 
               <div class="soil-verdict" role="status"><span class="soil-lab-section-kicker">${t.result}</span><span class="soil-lab-badge">SIMULATED</span>
                 <h2>${mission.result.summary[lang]}</h2><p>${t.decision}</p>
                 <div class="soil-metrics"><div><span>${t.cover}</span><strong>${mission.result.coverTokens}</strong></div><div><span>${t.runoff}</span><strong>${mission.result.runoffRiskTokens}</strong></div><div><span>${t.tailAccess}</span><strong>${mission.result.tailAccessTokens}</strong></div><div><span>${t.income}</span><strong>${mission.result.livelihoodTokens}</strong></div></div>
+                <div class="soil-priority-score"><span>${t.score}</span><strong>${mission.result.narrativeScore}</strong></div>
                 <button type="button" class="soil-commit" data-action="replay">${t.replay}</button></div>`}
           </section>
         </div>
