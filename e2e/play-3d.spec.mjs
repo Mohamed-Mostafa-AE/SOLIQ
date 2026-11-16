@@ -265,7 +265,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#hud-objective-title')).toContainText('Chapter 0:');
   });
 
-  test('Evidence Notebook opens the actual crop-rotation decision workspace', async ({ page }) => {
+  test('Evidence Notebook opens the actual evidence-first crop-rotation workspace', async ({ page }) => {
     test.setTimeout(90_000); // Popup navigation can lag under software WebGL.
     await startSession(page);
     await page.locator('#btn-notebook').click();
@@ -273,16 +273,18 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     const link = page.locator('#open-rotation-workspace');
     await expect(link).toBeVisible();
     await expect(link).toContainText('Crop Rotation');
-    await expect(link).toHaveAttribute('href', '../../#rotations');
+    await expect(link).toHaveAttribute('href', '../../walkthrough/?from=seventh-field');
     await expect(link).toHaveAttribute('rel', /noopener/);
     const [rotationPage] = await Promise.all([
       page.waitForEvent('popup'),
       link.click(),
     ]);
     await rotationPage.waitForLoadState('domcontentloaded');
-    await expect(rotationPage).toHaveURL(/\/#rotations$/);
-    await expect(rotationPage).toHaveTitle(/Soil-IQ.*Crop rotation explorer/);
-    await expect(rotationPage.locator('[data-view="rotations"]').first()).toBeVisible();
+    await expect(rotationPage).toHaveURL(/\/walkthrough\/\?from=seventh-field$/);
+    await expect(rotationPage).toHaveTitle(/Soil-IQ.*Evidence-first walkthrough/);
+    await expect(rotationPage.locator('#game-handoff')).toContainText('SIMULATED');
+    await expect(rotationPage.locator('#source')).toContainText('UNAVAILABLE');
+    await expect(rotationPage.locator('#compare')).toBeDisabled();
     await rotationPage.close();
   });
 
@@ -380,7 +382,8 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#story-choice-list button')).toHaveCount(3);
     await page.locator('#story-choice-list button').nth(1).press('Enter');
     await expect(page.locator('#story-beat-title')).toContainText('water turn has consequences');
-    await expect(page.locator('#story-rotation-link')).toHaveAttribute('href', '../../#rotations');
+    await expect(page.locator('#story-rotation-link')).toHaveAttribute('href',
+      '../../walkthrough/?from=seventh-field&hypothesis=cover_first');
     await page.keyboard.press('Escape');
     await expect(page.locator('#story-desk-overlay')).toBeHidden();
     await expect(page.locator('#renderCanvas')).toHaveJSProperty('inert', false);

@@ -1,4 +1,5 @@
 import { getSeasonStoryBeat } from '../core/season-story.js';
+import { buildGameEvidenceHandoff } from '../core/evidence-handoff.js';
 import { Chapter0Checkpoint } from '../core/chapter-checkpoint.js';
 
 const SCENES = Object.freeze([
@@ -71,7 +72,7 @@ export class AccessibleStoryDesk {
             </div>
             <p id="story-checkpoint-status" role="status" aria-live="polite" aria-atomic="true">Save is optional.</p>
           </section>
-          <a id="story-rotation-link" href="../../#rotations" target="_blank" rel="noopener noreferrer">
+          <a id="story-rotation-link" href="../../walkthrough/?from=seventh-field" target="_blank" rel="noopener noreferrer">
             Open the real Crop Rotation Workspace ↗
           </a>
           <p id="story-desk-limit" class="story-desk-limit">The 3D free-roam world is visual; this
@@ -167,6 +168,10 @@ export class AccessibleStoryDesk {
 
   refresh() {
     const beat = getSeasonStoryBeat(this.mission.flags, this.mission.activeOutcome);
+    // URL includes only an enum describing a fictional story question. The
+    // scientific tool must still ask for fresh consent and weather evidence.
+    this.root.querySelector('#story-rotation-link').href =
+      buildGameEvidenceHandoff(this.mission.flags.cropHypothesis);
     this._set('story-beat-title', beat.titleEn, beat.titleAr);
     this._set('story-beat-text', beat.textEn, beat.textAr);
     this._renderOpeningThreads();
