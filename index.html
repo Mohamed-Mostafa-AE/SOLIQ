@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#08090e">
   <meta name="description" content="Explore crop rotations with transparent weather evidence and water accounting.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/pwa/icon-192.png">
   <title>Soil-IQ · Crop rotation explorer</title>
   <link rel="icon" type="image/png" href="soil-iq-logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +17,7 @@
   <link rel="stylesheet" href="outlook.css">
   <link rel="stylesheet" href="website-theme.css">
   <link rel="stylesheet" href="plant-art.css">
+  <link rel="stylesheet" href="/pwa/install.css">
 </head>
 <body>
   <a class="skip" href="#content">Skip to workspace</a>
@@ -55,6 +58,7 @@
           <button id="research-mode" aria-pressed="false">Research view</button>
         </div>
         <button class="button language-button" id="language-toggle" lang="ar">العربية</button>
+        <button class="button" id="install-soiliq" type="button" aria-label="Install Soil-IQ app">Install app</button>
         <span class="pill" id="source-pill">Illustrative data</span>
         <button class="button quiet" id="save-report">↓ Export report</button>
       </div>
@@ -195,6 +199,13 @@
     </div>
   </dialog>
   <input type="file" id="weather-file" accept=".json,.csv" hidden>
+  <dialog id="pwa-install-help" aria-labelledby="pwa-install-title">
+    <h2 id="pwa-install-title">Install Soil-IQ</h2>
+    <p id="pwa-install-explanation">Your browser may offer Add to Home Screen.</p>
+    <p>This is an installable web app, not a native Android/iOS app. NASA evidence and scientific comparisons require internet; no field or evidence data is cached by the install feature.</p>
+    <button id="pwa-install-close" type="button">Got it</button>
+  </dialog>
+  <script type="module" src="/pwa/install.js"></script>
   <script type="module" src="app.js"></script>
 </body>
 </html>
