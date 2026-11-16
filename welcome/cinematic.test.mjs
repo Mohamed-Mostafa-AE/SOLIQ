@@ -4,8 +4,10 @@ import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
 
 const html=readFileSync(new URL('./index.html',import.meta.url),'utf8');
-const css=readFileSync(new URL('./cinematic.css',import.meta.url),'utf8');
-const source=readFileSync(new URL('./cinematic.js',import.meta.url),'utf8');
+const css=readFileSync(new URL('./refinement.css',import.meta.url),'utf8');
+const site=readFileSync(new URL('./site.js',import.meta.url),'utf8');
+const source=site.split('/* P1-09:BEGIN_CINEMATIC_PREVIEW */')[1]?.split('/* P1-09:END_CINEMATIC_PREVIEW */')[0];
+assert.ok(source,'cinematic preview must be bundled into the public site module');
 
 test('P1-09: story preview is supplemental to the scientific product and keeps distinct routes',()=>{
  assert.match(html,/ONE CANAL/);
@@ -14,8 +16,9 @@ test('P1-09: story preview is supplemental to the scientific product and keeps d
  }
  assert.match(html,/SIMULATED STORY/);
  assert.match(html,/Illustrative story preview, not an Earth observation/);
- assert.match(html,/href="cinematic.css"/);
- assert.match(html,/src="cinematic.js"/);
+ assert.match(html,/href="refinement.css"/);
+ assert.match(html,/src="site.js"/);
+ assert.doesNotMatch(html,/cinematic\\.(css|js)/);
  assert.equal((html.match(/data-preview-choice="/g)||[]).length,3);
 });
 
