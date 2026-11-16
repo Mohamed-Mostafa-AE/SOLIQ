@@ -234,13 +234,15 @@ body.reduced-motion .opening-hook *::after { animation: none !important; transit
   top: 16px;
   left: 16px;
   right: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 345px) minmax(0, 1fr);
+  align-items: start;
+  column-gap: 14px;
   pointer-events: auto;
 }
 
 .hud-title-zone {
+  min-width: 0;
   background: var(--bg-card);
   backdrop-filter: blur(8px);
   padding: 8px 16px;
@@ -265,7 +267,10 @@ body.reduced-motion .opening-hook *::after { animation: none !important; transit
 
 .hud-quick-tools {
   display: flex;
+  min-width: 0;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .hud-tool-btn {
@@ -812,7 +817,12 @@ body.reduced-motion .opening-hook *::after { animation: none !important; transit
     top: 8px;
     left: 8px;
     right: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 7px;
   }
+  .hud-title-zone { max-width: 100%; }
+  .hud-quick-tools { gap: 5px; }
+  .hud-tool-btn { padding: 8px; }
   .hud-mission-title {
     font-size: 0.95rem;
   }
@@ -961,7 +971,9 @@ body.reduced-motion .game-loader * {
 .game-loader {
   justify-content: flex-end;
   padding: clamp(16px, 5vw, 70px);
-  background: linear-gradient(90deg, #05130ef0 0%, #06130ad1 31%, #06150c25 67%, #06150a22 100%);
+  /* This layer sits above the actual rendered village. Keep the landscape,
+     teal canal and sakia visible throughout the very first interaction. */
+  background: linear-gradient(90deg, #041b1845 0%, #051b1840 37%, #06150c24 62%, #06150a3b 100%);
   isolation: isolate;
 }
 .game-loader::before {
@@ -974,12 +986,13 @@ body.reduced-motion .game-loader * {
 .loader-world-title {
   position: absolute;
   top: clamp(22px, 6vh, 75px);
-  right: clamp(18px, 5vw, 75px);
+  left: clamp(18px, 4vw, 65px);
+  right: auto;
   max-width: 25rem;
   color: #fff0d2d6;
   font: 400 clamp(1.5rem, 3.8vw, 3.5rem)/.9 Georgia, Cambria, serif;
   letter-spacing: -.055em;
-  text-align: right;
+  text-align: left;
   text-shadow: 0 8px 25px #000b;
 }
 .loader-world-title span {
@@ -1128,8 +1141,8 @@ body.reduced-motion .game-loader * {
 .hook-wide-view .hook-stage { width: min(470px, 43vw); background: linear-gradient(110deg, #0b2721d9, #14271ed2 56%, #302516d9); }
 
 @media (max-width: 700px) {
-  .game-loader { justify-content: flex-end; padding: 8px 0 0; background: linear-gradient(180deg, #07160a39, #07160ab0 35%, #06140de9 65%); }
-  .loader-world-title { top: 30px; right: 20px; font-size: 2rem; }
+  .game-loader { justify-content: flex-end; padding: 8px 0 0; background: linear-gradient(180deg, #07160a35, #07160a40 35%, #06140d9e 65%); }
+  .loader-world-title { top: 30px; left: 20px; right: auto; font-size: 2rem; }
   .loader-content { width: 100%; padding: 20px; border-radius: 18px 18px 0 0; max-height: 76dvh; overflow-y: auto; }
   .loader-title { font-size: 2.3rem; }
   .opening-hook { background: linear-gradient(180deg, #06100c18, #061a1359 30%, #030c0bee); }

@@ -8,10 +8,13 @@ test('Chapter 0 opens over real 3D, previews both witnesses, then restores playa
   // The actual scene is rendered beneath the transparent opening screen.
   const initial = await page.evaluate(() => {
     const game = window.__seventhFieldGame;
-    return { meshes: game.renderSetup.scene.meshes.length, initialized: game.isInitialized };
+    const canal = game.renderSetup.scene.getMeshByName('scenicMesqaStillWater');
+    return { meshes: game.renderSetup.scene.meshes.length, initialized: game.isInitialized,
+      scenicWater: Boolean(canal?.isEnabled() && canal.isVisible) };
   });
   expect(initial.initialized).toBe(true);
   expect(initial.meshes).toBeGreaterThan(50);
+  expect(initial.scenicWater).toBe(true);
   await page.screenshot({ path: 'test-results/seventh-field-cinematic-splash.png' });
 
   await page.locator('#btn-start-game').click();
@@ -49,6 +52,46 @@ test('Chapter 0 opens over real 3D, previews both witnesses, then restores playa
     return game.renderSetup.cameras.follow.target.z - game.characters.nada.root.position.z > 3;
   });
   await page.screenshot({ path: 'test-results/seventh-field-cinematic-after-intro.png' });
+});
+
+test('splash reveals the actual village and HUD tools never collide with the chapter title', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('/experience/play/');
+  await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
+  await expect(page.locator('#game-loader')).toBeVisible();
+  await expect(page.locator('#btn-start-game')).toBeVisible();
+  const splash = await page.evaluate(() => {
+    const loader = document.getElementById('game-loader');
+    const canvas = document.getElementById('renderCanvas');
+    const scene = window.__seventhFieldGame.renderSetup.scene;
+    return { renderer: canvas.width > 0 && canvas.height > 0,
+      actualCanal: Boolean(scene.getMeshByName('scenicMesqaStillWater')),
+      loaderBackground: getComputedStyle(loader).backgroundImage };
+  });
+  expect(splash.renderer && splash.actualCanal).toBe(true);
+  // The splash is a translucent overlay on live 3D, not the old opaque card.
+  expect(splash.loaderBackground).toContain('linear-gradient');
+  await page.screenshot({ path: 'test-results/seventh-field-live-3d-splash.png' });
+  await page.locator('#btn-start-game').click();
+  await page.locator('#hook-skip').click();
+
+  async function checkToolbarIsReadable() {
+    const geometry = await page.evaluate(() => {
+      const header = document.querySelector('.hud-title-zone').getBoundingClientRect();
+      const controls = [...document.querySelectorAll('.hud-quick-tools .hud-tool-btn')]
+        .map(node => node.getBoundingClientRect());
+      return { viewport: window.innerWidth,
+        overlaps: controls.map(rect => Math.max(0, Math.min(header.right, rect.right) - Math.max(header.left, rect.left))
+          * Math.max(0, Math.min(header.bottom, rect.bottom) - Math.max(header.top, rect.top))),
+        outside: controls.some(rect => rect.left < -1 || rect.right > window.innerWidth + 1) };
+    });
+    expect(geometry.overlaps.every(area => area === 0)).toBe(true);
+    expect(geometry.outside).toBe(false);
+  }
+  await checkToolbarIsReadable();
+  await page.setViewportSize({ width: 360, height: 740 });
+  await checkToolbarIsReadable();
+  await page.screenshot({ path: 'test-results/seventh-field-responsive-hud-360.png' });
 });
 
 test('water-thread entry keeps the village canal visually substantial behind Nada', async ({ page }) => {
