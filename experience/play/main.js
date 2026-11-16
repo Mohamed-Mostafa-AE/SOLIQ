@@ -74,15 +74,17 @@ class SeventhFieldGame {
     // Aim at the actual playable heroine before the first rendered frame.
     // Otherwise ArcRotateCamera's origin target shows empty soil rather than
     // the heroine and the planted canal edge, making the game feel lifeless.
-    cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0.5, 1.55, 3.4)));
+    cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0.5, 1.55, 4.2)));
     // ArcRotateCamera.setTarget preserves eye position and therefore silently
     // expands the radius; restore the intended human-scale follow framing.
     // Frame Nada diagonally with the canal, crops and village behind her.
     // Looking straight along the path left most of the meaningful world out
     // of the first controllable view, even after the opening shot ended.
-    cameras.follow.alpha = -2.20;
-    cameras.follow.radius = 10.5;
-    cameras.follow.beta = 0.98;
+    cameras.follow.alpha = -2.05;
+    cameras.follow.radius = 9.2;
+    // A lower over-shoulder camera reveals the horizon and canal behind Nada;
+    // the previous steep isometric angle showed mostly bare brown dirt.
+    cameras.follow.beta = 1.23;
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
@@ -329,7 +331,7 @@ class SeventhFieldGame {
     // its update so walking never silently returns to an empty soil closeup.
     if (!this.cinematicDirector?.active && !this.playerController.isCameraIso) {
       const p = this.characters.nada.root.position;
-      this.renderSetup.cameras.follow.target.set(p.x + 0.5, p.y + 1.55, p.z + 3.4);
+      this.renderSetup.cameras.follow.target.set(p.x + 0.5, p.y + 1.55, p.z + 4.2);
     }
 
     // 2. Update character skeletal animations

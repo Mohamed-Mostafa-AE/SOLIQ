@@ -51,6 +51,33 @@ test('Chapter 0 opens over real 3D, previews both witnesses, then restores playa
   await page.screenshot({ path: 'test-results/seventh-field-cinematic-after-intro.png' });
 });
 
+test('water-thread entry keeps the village canal visually substantial behind Nada', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('/experience/play/');
+  await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
+  await page.locator('#btn-start-game').click();
+  await page.locator('#hook-clue-water').click();
+  const view = await page.evaluate(() => {
+    const g = window.__seventhFieldGame;
+    const scene = g.renderSetup.scene;
+    const engine = g.renderSetup.engine;
+    const width = engine.getRenderWidth(), height = engine.getRenderHeight();
+    const viewport = g.renderSetup.cameras.follow.viewport.toGlobal(width, height);
+    const project = v => BABYLON.Vector3.Project(v, BABYLON.Matrix.Identity(), scene.getTransformMatrix(), viewport);
+    const nearBank = project(new BABYLON.Vector3(-4, .15, 7));
+    const farBank = project(new BABYLON.Vector3(-4, .15, 12));
+    return {
+      waterWidthPixels: Math.abs(farBank.y - nearBank.y),
+      withinViewport: [nearBank, farBank].every(p => p.x > 0 && p.x < width && p.y > 0 && p.y < height),
+      clue: g.mission.flags.firstClue,
+    };
+  });
+  expect(view.clue).toBe('water');
+  expect(view.withinViewport).toBe(true);
+  expect(view.waterWidthPixels).toBeGreaterThan(25);
+  await page.screenshot({ path: 'test-results/seventh-field-water-choice-first-frame.png' });
+});
+
 test('Chapter 0 preview respects reduced motion and the keyboard skip path', async ({ page }) => {
   test.setTimeout(90_000);
   await page.emulateMedia({ reducedMotion: 'reduce' });
