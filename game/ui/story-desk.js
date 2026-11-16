@@ -114,6 +114,9 @@ export class AccessibleStoryDesk {
       button.addEventListener('click', () => {
         this.activeScene = scene.id;
         this.refresh();
+        const speaker = this.root.querySelector('#story-speaker').textContent;
+        const dialogueText = this.root.querySelector('#story-dialogue-text').textContent;
+        this.root.querySelector('#story-announcement').textContent = `${speaker}. ${dialogueText}`;
         const firstChoice = this.root.querySelector('#story-choice-list button');
         if (firstChoice) firstChoice.focus();
       });
@@ -138,6 +141,7 @@ export class AccessibleStoryDesk {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'story-choice-btn';
+      button.setAttribute('aria-describedby', 'story-dialogue-text');
       button.textContent = this._localize(choice.labelEn, choice.labelAr);
       button.addEventListener('click', () => {
         choice.onSelect?.();
