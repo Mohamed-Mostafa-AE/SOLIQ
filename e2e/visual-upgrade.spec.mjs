@@ -31,7 +31,7 @@ test('visual upgrade populates real 3D crop geometry while preserving playable a
   expect(state.thinInstances).toBeGreaterThan(1000);
  }
  expect(state.hasNada&&state.hasHassan&&state.hasMaryam).toBe(true);
- // The low preset preserves base actor rigs and gameplay, while omitting
+ // The low preset preserves base procedural actor nodes and gameplay, while omitting
  // decorative PBR face/clothing meshes on software / low-end renderers.
  if(state.quality==='low'){
   expect(state.actors).toBe(0);
