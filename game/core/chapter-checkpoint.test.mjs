@@ -121,3 +121,35 @@ test('3D rehydration reuses fictional solver inputs but never duplicates noteboo
     ['simulate', 235, [32, 41, 54, 37, 23, 28], 'proportional']);
   assert.equal(resumed.notebookReceipts.length, before);
 });
+
+test('Explicit save/reload preserves the actually executed council capacity policy', () => {
+  const store = memoryStore();
+  const first = mission();
+  first.getDialogueForTarget({ id: 'maryam' }).choices.find(c => c.id === 'maryam_align_proportional').onSelect();
+  assert.equal(first.flags.selectedPolicy, 'proportional');
+  first.getDialogueForTarget({ id: 'pumpStation' }).choices.find(c => c.id === 'council_bottleneck').onSelect();
+  const save = new Chapter0Checkpoint(first, { storageProvider: () => store });
+  assert.deepEqual(save.save(), { ok: true });
+  const second = mission();
+  const reload = new Chapter0Checkpoint(second, { storageProvider: () => store });
+  assert.deepEqual(reload.resume(), { ok: true });
+  assert.equal(second.flags.selectedPolicy, 'capacity_limited');
+  assert.equal(second.flags.councilMode, 'bottleneck_overload');
+  assert.equal(second.activeOutcome, 'bottleneck');
+});
+
+test('Inconsistent persisted council policy is rejected instead of replaying the wrong scenario', () => {
+  const store = memoryStore();
+  const first = mission();
+  first.executeOutcome('bottleneck');
+  const saved = new Chapter0Checkpoint(first, { storageProvider: () => store });
+  assert.deepEqual(saved.save(), { ok: true });
+  const altered = JSON.parse(store.map.get(CHAPTER0_CHECKPOINT_KEY));
+  altered.flags.selectedPolicy = 'proportional';
+  store.map.set(CHAPTER0_CHECKPOINT_KEY, JSON.stringify(altered));
+  const second = mission();
+  const before = second.getSerializableState();
+  const resumed = new Chapter0Checkpoint(second, { storageProvider: () => store });
+  assert.deepEqual(resumed.resume(), { ok: false, reason: 'invalid_checkpoint' });
+  assert.deepEqual(second.getSerializableState(), before);
+});
