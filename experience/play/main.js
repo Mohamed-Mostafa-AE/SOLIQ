@@ -147,6 +147,7 @@ class SeventhFieldGame {
   }
 
   start() {
+    document.body.classList.remove('game-intro-active');
     if (this.previewTimer !== null) {
       window.clearInterval(this.previewTimer);
       this.previewTimer = null;

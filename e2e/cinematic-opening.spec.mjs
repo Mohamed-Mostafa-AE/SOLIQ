@@ -62,6 +62,7 @@ test('splash reveals the actual village and HUD tools never collide with the cha
   await page.waitForFunction(() => window.__seventhFieldGame?.previewFrames >= 3, { timeout: 15_000 });
   await expect(page.locator('#game-loader')).toBeVisible();
   await expect(page.locator('#btn-start-game')).toBeVisible();
+  await expect(page.locator('.hud-top-bar')).toBeHidden();
   const splash = await page.evaluate(() => {
     const loader = document.getElementById('game-loader');
     const canvas = document.getElementById('renderCanvas');
@@ -80,6 +81,7 @@ test('splash reveals the actual village and HUD tools never collide with the cha
   await page.screenshot({ path: 'test-results/seventh-field-live-3d-splash.png' });
   await page.locator('#btn-start-game').click();
   await page.locator('#hook-skip').click();
+  await expect(page.locator('.hud-top-bar')).toBeVisible();
 
   async function checkToolbarIsReadable() {
     const geometry = await page.evaluate(() => {

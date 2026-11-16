@@ -976,6 +976,9 @@ body.reduced-motion .game-loader * {
   background: linear-gradient(90deg, #041b1845 0%, #051b1840 37%, #06150c24 62%, #06150a3b 100%);
   isolation: isolate;
 }
+/* The splash has its own cinematic chapter headline. The regular in-game HUD
+   must wait until Play, or two titles overlap the live canal image. */
+.game-intro-active .hud-top-bar { visibility: hidden; }
 .game-loader::before {
   content: '';
   position: absolute;
