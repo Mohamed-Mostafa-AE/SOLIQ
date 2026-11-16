@@ -1,5 +1,5 @@
 /**
- * SOLIQ: The Seventh Field - Mission Chapter 0: "المية وصلت!"
+ * Soil-IQ: The Seventh Field - Mission Chapter 0: "An Unwritten Season"
  * Authored interactive quest graph with player agency within 10 seconds,
  * branching dialogues, pump/gate actions, and three distinct outcomes.
  */
