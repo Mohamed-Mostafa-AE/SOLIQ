@@ -7,7 +7,15 @@ test('P1-11: 3D Delta scene is truthful, responsive and coupled to preview decis
   await art.scrollIntoViewIfNeeded();
   await expect(page.locator('#delta-diorama-canvas')).toBeVisible();
   await expect(art).toHaveAttribute('data-diorama-ready','true',{timeout:20000});
+  await expect(art).toHaveAttribute('data-diorama-rendered','true');
+  const gpuDraw=await art.evaluate(element=>({
+    calls:Number(element.dataset.dioramaDrawCalls),
+    triangles:Number(element.dataset.dioramaTriangles),
+  }));
+  expect(gpuDraw.calls).toBeGreaterThan(10);
+  expect(gpuDraw.triangles).toBeGreaterThan(1000);
   await expect(page.locator('.diorama-view-label')).toContainText('NOT SATELLITE IMAGERY');
+  await expect.poll(()=>page.locator('#delta-diorama-canvas').evaluate(canvas=>Number(getComputedStyle(canvas).opacity))).toBeGreaterThan(.9);
   const initial=await page.locator('#delta-diorama-canvas').evaluate(canvas=>{
     const style=getComputedStyle(canvas);
     return {width:canvas.width,height:canvas.height,opacity:Number(style.opacity)};

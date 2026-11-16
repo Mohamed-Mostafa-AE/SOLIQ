@@ -96,6 +96,11 @@ export async function mountDeltaDiorama(host) {
     camera.position.z = (mobile() ? 19.7 : 17.3) + hoverY * .75;
     camera.lookAt(0, -.15, 0);
     renderer.render(scene, camera);
+    if (!host.dataset.dioramaRendered && renderer.info.render.triangles > 0) {
+      host.dataset.dioramaRendered = 'true';
+      host.dataset.dioramaDrawCalls = String(renderer.info.render.calls);
+      host.dataset.dioramaTriangles = String(renderer.info.render.triangles);
+    }
     if (!reduceMotion.matches) request();
   }
 
@@ -149,7 +154,8 @@ export async function mountDeltaDiorama(host) {
     const wetBank = mat('#5e7753');
     const waterMaterial = new THREE.MeshPhysicalMaterial({color:'#278e9b', metalness:.14, roughness:.25, transparent:true, opacity:.9, emissive:'#174f5a', emissiveIntensity:.28, clearcoat:.75, clearcoatRoughness:.16});
     water = new THREE.Mesh(new THREE.BoxGeometry(3.28,.15,16.9),waterMaterial);
-    water.position.set(0,.035,0);
+    // Recess the canal below the surrounding planted beds, never flood them.
+    water.position.set(0,-.065,0);
     scene.add(water);
     for (const side of [-1,1]) {
       const sideBank = new THREE.Mesh(new THREE.BoxGeometry(.62,.32,16.3),embankmentMat);
@@ -164,7 +170,7 @@ export async function mountDeltaDiorama(host) {
     ripples = new THREE.Group();
     for (let n=0;n<17;n++) {
       const line = new THREE.Mesh(rippleGeo,rippleMat);
-      line.position.set(Math.sin(n*2.3)*.25,.13,(n-8)*1.2);
+      line.position.set(Math.sin(n*2.3)*.25,.018,(n-8)*1.2);
       line.scale.x = .2 + (n%4)*.19;
       ripples.add(line);
     }
