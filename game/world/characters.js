@@ -1,7 +1,8 @@
 /**
- * SOLIQ: The Seventh Field - 3D Rigged Human Character Pipeline
- * Playable protagonist Nada + Expressive NPCs Uncle Hassan and Maryam.
- * Full anatomical skeletal rigs with smooth bone skinning and expressive procedural animations.
+ * Soil-IQ: The Seventh Field - original procedural character pipeline.
+ * Playable Nada and fictional Delta residents Hassan and Maryam use linked
+ * transform joints, NOT imported GLB meshes or smooth-skinned skeletal rigs.
+ * These restrained low-poly silhouettes are a performance-safe interim asset.
  */
 
 export class CharacterSystem {
@@ -11,6 +12,9 @@ export class CharacterSystem {
     this.nada = null;
     this.hassan = null;
     this.maryam = null;
+    this.reducedMotion = Boolean(
+      typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    );
 
     this.materials = {};
     this._initMaterials();
@@ -98,7 +102,7 @@ export class CharacterSystem {
   _createRiggedHuman(id, skinMat, clothesMat, height = 1.72) {
     const root = new BABYLON.TransformNode(`${id}_root`, this.scene);
 
-    // Anatomical Skeletal Hierarchy using TransformNodes
+    // Joint hierarchy using TransformNodes (no claim of mesh skinning).
     const hips = new BABYLON.TransformNode(`${id}_Hips`, this.scene);
     hips.parent = root;
     hips.position.y = height * 0.54;
@@ -198,6 +202,27 @@ export class CharacterSystem {
     hipsMesh.parent = hips;
     hipsMesh.material = clothesMat;
 
+    // Distinct Delta clothing silhouettes are part of the inexpensive base
+    // meshes. Parenting to the low-detail body pieces means the higher-quality
+    // sculpted-character pass can disable both without overlapping geometry.
+    if (id === 'hassan' || id === 'maryam') {
+      const hem = BABYLON.MeshBuilder.CreateCylinder(
+        id === 'hassan' ? 'hassanGalabeyaHem' : 'maryamDressHem',
+        { diameterTop: 0.34, diameterBottom: id === 'hassan' ? 0.55 : 0.62,
+          height: 0.55, tessellation: 10 }, this.scene
+      );
+      hem.parent = hipsMesh;
+      hem.position.y = -0.26;
+      hem.material = clothesMat;
+    } else if (id === 'nada') {
+      const jacketHem = BABYLON.MeshBuilder.CreateBox(
+        'nadaJacketHem', { width: 0.39, height: 0.16, depth: 0.26 }, this.scene
+      );
+      jacketHem.parent = chestMesh;
+      jacketHem.position.y = -0.23;
+      jacketHem.material = clothesMat;
+    }
+
     // Limb Meshes
     const limbMat = clothesMat;
     const makeLimb = (name, parent, len, radius) => {
@@ -253,6 +278,7 @@ export class CharacterSystem {
       },
       headMesh,
       eyes: [leftEye, rightEye],
+      height,
       animTime: 0,
       state: 'idle', // 'idle' | 'walk' | 'run' | 'interact' | 'talk'
     };
@@ -347,6 +373,16 @@ export class CharacterSystem {
     scarf.position.set(0, 0.04, -0.02);
     scarf.material = this.materials.maryamScarf;
 
+    // One folded cloth tail distinguishes Maryam's original rural headscarf
+    // from a rigid helmet while adding only one small low-poly mesh.
+    const scarfTail = BABYLON.MeshBuilder.CreateCylinder('maryamScarfTail', {
+      diameterTop: 0.075, diameterBottom: 0.12, height: 0.31, tessellation: 8,
+    }, this.scene);
+    scarfTail.parent = actor.bones.head;
+    scarfTail.position.set(0.08, -0.15, -0.12);
+    scarfTail.rotation.z = -0.2;
+    scarfTail.material = this.materials.maryamScarf;
+
     // Irrigation schedule ledger in hands
     const clipboard = BABYLON.MeshBuilder.CreateBox('maryamBoard', { width: 0.22, height: 0.28, depth: 0.02 }, this.scene);
     clipboard.parent = actor.bones.rightHand;
@@ -369,11 +405,39 @@ export class CharacterSystem {
 
   updateAnimations(deltaTime) {
     const actors = [this.nada, this.hassan, this.maryam].filter(Boolean);
+    // A suspended tab must not jump the pose on resume or amplify animations.
+    const frame = Number.isFinite(deltaTime) ? Math.max(0, Math.min(deltaTime, 0.05)) : 0;
+    // The in-game accessibility toggle also sets this body class; honor it
+    // without requiring HUD code to know about character joint internals.
+    const reduceMotionNow = this.reducedMotion || Boolean(
+      typeof document !== 'undefined' && document.body?.classList?.contains('reduced-motion')
+    );
 
     for (const a of actors) {
-      a.animTime += deltaTime;
+      a.animTime += frame;
       const t = a.animTime;
       const b = a.bones;
+
+      // Fully reset transient poses before applying the current state. Without
+      // this, an interaction freezes Nada's forearm or the run hip bob in idle.
+      b.hips.position.y = a.height * 0.54;
+      b.spine.rotation.x = 0;
+      b.spine.rotation.z = 0;
+      b.head.rotation.x = 0;
+      b.head.rotation.y = 0;
+      b.chest.rotation.x = 0;
+      b.leftThigh.rotation.x = 0;
+      b.rightThigh.rotation.x = 0;
+      b.leftShin.rotation.x = 0;
+      b.rightShin.rotation.x = 0;
+      b.leftArm.rotation.x = 0;
+      b.rightArm.rotation.x = 0;
+      b.leftForearm.rotation.x = 0;
+      b.rightForearm.rotation.x = 0;
+
+      // Captions/text UI convey interactions; no limb or camera motion is
+      // required to understand them when reduced-motion is requested.
+      if (reduceMotionNow) continue;
 
       // 1. Idle breathing (all actors have subtle natural chest & head motion)
       const breath = Math.sin(t * 2.2) * 0.03;
@@ -399,7 +463,7 @@ export class CharacterSystem {
         b.rightArm.rotation.x = legCycle * ampArm;
 
         // Subtle hip bob
-        b.hips.position.y = (a.id === 'nada' ? 1.68 : 1.74) * 0.54 + Math.abs(Math.sin(t * freq)) * 0.04;
+        b.hips.position.y = a.height * 0.54 + Math.abs(Math.sin(t * freq)) * 0.04;
       } else if (a.state === 'interact') {
         // Reaching out right hand to interact
         b.rightArm.rotation.x = -Math.PI / 2.8;
@@ -434,15 +498,19 @@ export class CharacterSystem {
     }
   }
 
+  setReducedMotion(enabled) {
+    this.reducedMotion = Boolean(enabled);
+  }
+
   setActorState(actorId, state) {
-    const actor = actorId === 'nada' ? this.nada : actorId === 'hassan' ? this.hassan : this.maryam;
+    const actor = { nada: this.nada, hassan: this.hassan, maryam: this.maryam }[actorId];
     if (actor) {
       actor.state = state;
     }
   }
 
   setActorEmotion(actorId, emotion) {
-    const actor = actorId === 'hassan' ? this.hassan : actorId === 'maryam' ? this.maryam : this.nada;
+    const actor = { nada: this.nada, hassan: this.hassan, maryam: this.maryam }[actorId];
     if (actor) {
       actor.emotion = emotion;
     }
