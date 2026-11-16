@@ -44,6 +44,33 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await camBtn.click();
   });
 
+  test('native Tab focuses HUD, Space activates buttons, camera C only works on canvas', async ({ page }) => {
+    await startSession(page);
+    const canvas=page.locator('#renderCanvas');
+    const game=()=>page.evaluate(()=>window.__seventhFieldGame.playerController.isCameraIso);
+    await canvas.focus();
+    expect(await game()).toBe(false);
+
+    // Tab must navigate from the 3D canvas to the first HUD control without
+    // changing camera modes or being swallowed by a global key handler.
+    await page.keyboard.press('Tab');
+    await expect(page.locator('#btn-earth-lens')).toBeFocused();
+    expect(await game()).toBe(false);
+    await page.keyboard.press('KeyC');
+    expect(await game()).toBe(false);
+
+    // Space on a focused button must click it, rather than interact in the world.
+    await page.locator('#btn-settings').focus();
+    await page.keyboard.press('Space');
+    await expect(page.locator('#settings-modal')).toBeVisible();
+    await page.locator('#btn-close-settings').click();
+
+    await canvas.focus();
+    await page.keyboard.press('KeyC');
+    expect(await game()).toBe(true);
+    await expect(page.locator('#btn-camera')).toHaveAttribute('title','Switch camera (C)');
+  });
+
   test('real start reveals a dramatic two-plan prologue and records the chosen investigation', async ({ page }) => {
     await page.goto('/experience/play/');
     await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true);

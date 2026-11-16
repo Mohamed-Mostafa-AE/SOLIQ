@@ -43,7 +43,7 @@ export class GameHUD {
               <span class="icon">📜</span>
               <span class="label">Story mode</span>
             </button>
-            <button id="btn-camera" class="hud-tool-btn" title="تبديل الكاميرا (Tab)">
+            <button id="btn-camera" class="hud-tool-btn" title="Switch camera (C)">
               <span class="icon">🎥</span>
               <span class="label">استراتيجي</span>
             </button>
@@ -132,8 +132,8 @@ export class GameHUD {
               <label>
                 جودة الرسوم (Graphics Preset):
                 <select id="select-quality">
-                  <option value="balanced" selected>متوازن (Balanced 60fps)</option>
-                  <option value="low">منخفض للأجهزة القديمة (Low 30fps)</option>
+                  <option value="balanced" selected>متوازن</option>
+                  <option value="low">منخفض للأجهزة القديمة</option>
                   <option value="ultra">فائق (Ultra Shadows & Bloom)</option>
                 </select>
               </label>

@@ -95,6 +95,7 @@ class SeventhFieldGame {
     // 7. Diegetic HUD & Event Wiring
     this._setupHUD();
     this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
+    this.nasaBrowseOverlay.setLanguage(this.hud.lang);
     this._setupPlayerControls(cameras);
 
     this.isInitialized = true;
@@ -184,6 +185,7 @@ class SeventhFieldGame {
       onLanguageChange: (language) => {
         this.storyDesk?.setLanguage(language);
         this.openingHook?.setLanguage(language);
+        this.nasaBrowseOverlay?.setLanguage(language);
       },
       onToggleCamera: () => {
         this.playerController?.toggleCameraMode();
