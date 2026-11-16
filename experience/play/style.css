@@ -116,6 +116,8 @@ body, html {
   margin-top: 18px;
   opacity: 0.8;
 }
+.loader-note a { color: #cff1bb; text-underline-offset: 4px; }
+.loader-note a:focus-visible { outline: 3px solid #ffe19c; outline-offset: 4px; }
 
 /* In-Game HUD Layer */
 .hud-layer {
