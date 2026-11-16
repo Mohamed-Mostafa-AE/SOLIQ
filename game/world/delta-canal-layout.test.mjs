@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { planVisibleCanalBanks } from './delta-canal-layout.js';
+import { planVisibleCanalBanks, planCanalBridge } from './delta-canal-layout.js';
 
 const river = [
   { x: -15, y: -0.6, z: 10 },
@@ -34,4 +34,17 @@ test('canal art rejects invalid geometry rather than building an invisible/misle
   assert.throws(() => planVisibleCanalBanks([]), /two or more/);
   assert.throws(() => planVisibleCanalBanks([{ x: 0, y: 0, z: 0 }]), /two or more/);
   assert.throws(() => planVisibleCanalBanks([{ x: 0, y: 0, z: 0 }, { x: 4, y: 0, z: NaN }]), /finite/);
+});
+
+test('canal footbridge geometry spans the mesqa with solid planks and stable stone abutments', () => {
+  const bridge = planCanalBridge({ crossingX: 16, canalZ: 8, width: 2.6, span: 6.8 });
+  assert.equal(bridge.crossingX, 16);
+  assert.equal(bridge.canalZ, 8);
+  assert.ok(bridge.planks.length >= 18);
+  assert.equal(bridge.posts.length, 8);
+  assert.equal(bridge.rails.length, 2);
+  assert.equal(bridge.abutments.length, 2);
+  assert.ok(bridge.deck.thickness > 0.1);
+  assert.ok(bridge.abutments[0].z < bridge.canalZ);
+  assert.ok(bridge.abutments[1].z > bridge.canalZ);
 });
