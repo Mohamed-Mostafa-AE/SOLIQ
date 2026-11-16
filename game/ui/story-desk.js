@@ -1,4 +1,5 @@
 import { getSeasonStoryBeat } from '../core/season-story.js';
+import { Chapter0Checkpoint } from '../core/chapter-checkpoint.js';
 
 const SCENES = Object.freeze([
   { id: 'hassan', en: 'Hassan · Water turns', ar: 'حسن · دور المياه' },
@@ -19,6 +20,10 @@ export class AccessibleStoryDesk {
     this.host = host;
     this.mission = mission;
     this.callbacks = callbacks;
+    this.checkpoint = new Chapter0Checkpoint(mission, {
+      ...(callbacks.storageProvider ? { storageProvider: callbacks.storageProvider } : {}),
+    });
+    this.checkpointMessage = { en: 'Save is optional.', ar: 'الحفظ اختياري.' };
     this.lang = 'en';
     this.activeScene = null;
     this.isOpen = false;
@@ -56,6 +61,16 @@ export class AccessibleStoryDesk {
             <div id="story-choice-list" class="story-choice-list" role="group" aria-label="Dialogue choices"></div>
           </section>
           <p id="story-announcement" class="story-announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+          <section id="story-checkpoint" class="story-checkpoint" aria-labelledby="story-checkpoint-title">
+            <h3 id="story-checkpoint-title">Optional local story checkpoint</h3>
+            <p id="story-checkpoint-help">Nothing is saved automatically. Save stores only fictional Chapter 0 choices and receipts on this browser profile. No GPS or NASA raw data. Reset deletes this story checkpoint.</p>
+            <div class="story-checkpoint-buttons" role="group" aria-label="Manage local Chapter 0 progress">
+              <button type="button" id="story-checkpoint-save">Save progress</button>
+              <button type="button" id="story-checkpoint-resume">Resume saved progress</button>
+              <button type="button" id="story-checkpoint-reset">Reset and delete</button>
+            </div>
+            <p id="story-checkpoint-status" role="status" aria-live="polite" aria-atomic="true">Save is optional.</p>
+          </section>
           <a id="story-rotation-link" href="../../#rotations" target="_blank" rel="noopener noreferrer">
             Open the real Crop Rotation Workspace ↗
           </a>
@@ -65,6 +80,9 @@ export class AccessibleStoryDesk {
       </section>`;
     host.appendChild(this.root);
     this.root.querySelector('#story-desk-close').addEventListener('click', () => this.close());
+    this.root.querySelector('#story-checkpoint-save').addEventListener('click', () => this._actCheckpoint('save'));
+    this.root.querySelector('#story-checkpoint-resume').addEventListener('click', () => this._actCheckpoint('resume'));
+    this.root.querySelector('#story-checkpoint-reset').addEventListener('click', () => this._actCheckpoint('reset'));
     this.root.addEventListener('keydown', (event) => this._onKeyDown(event));
     this.refresh();
   }
@@ -75,6 +93,40 @@ export class AccessibleStoryDesk {
 
   _set(id, en, ar) {
     this.root.querySelector('#' + id).textContent = this._localize(en, ar);
+  }
+
+  _actCheckpoint(action) {
+    const result = this.checkpoint[action]();
+    const messages = result.ok
+      ? {
+          save: { en: 'Saved on this device. Nothing was sent to a server.', ar: 'اتحفظت القصة على الجهاز ده فقط، من غير إرسال للسيرفر.' },
+          resume: { en: 'Resumed your saved fictional choices.', ar: 'استكملنا اختياراتك الافتراضية المحفوظة.' },
+          reset: { en: 'Story reset; local checkpoint deleted.', ar: 'اتصفّرت القصة واتمسح الحفظ المحلي.' },
+        }[action]
+      : ({
+          not_found: { en: 'No checkpoint saved on this device yet.', ar: 'ما فيش قصة محفوظة على الجهاز ده.' },
+          unsupported_version: { en: 'This checkpoint is from an older or unsupported version. Reset it to start again.', ar: 'نسخة قديمة أو غير مدعومة من الحفظ. اختار إعادة البدء لمسحها.' },
+          invalid_checkpoint: { en: 'Saved data is damaged or unsafe. No progress was changed; reset it to start again.', ar: 'ملف الحفظ تالف أو غير آمن. القصة ما اتغيرتش؛ اختار إعادة البدء.' },
+          storage_unavailable: { en: 'Local storage is blocked or full; no save or reset was confirmed.', ar: 'التخزين المحلي ممنوع أو ممتلئ؛ ما نقدرش نؤكد الحفظ أو المسح.' },
+        })[result.reason] || { en: 'Checkpoint action was unavailable.', ar: 'إجراء الحفظ غير متاح.' };
+    this.checkpointMessage = messages;
+    this._set('story-checkpoint-status', messages.en, messages.ar);
+    if (!result.ok) return;
+    if (action === 'resume') {
+      const flags = this.mission.flags;
+      this.activeScene = flags.questionedFuture ? 'pumpStation'
+        : flags.talkedToMaryam ? 'timeEcho'
+          : flags.talkedToHassan ? 'maryam'
+            : flags.firstClue ? 'hassan' : null;
+      this.refresh();
+      this.callbacks.onCheckpointRestored?.();
+    }
+    if (action === 'reset') {
+      this.activeScene = null;
+      this.refresh();
+      this.callbacks.onCheckpointReset?.();
+    }
+    this.callbacks.onMissionChanged?.();
   }
 
   setLanguage(language) {
@@ -93,6 +145,14 @@ export class AccessibleStoryDesk {
     this._set('story-thread-help',
       'Both are untested story questions. You can visit anyone without choosing.',
       'الاتنين أسئلة قصة غير مختبرة. تقدر تزور أي شخصية من غير ما تختار.');
+    this._set('story-checkpoint-title', 'Optional local story checkpoint', 'حفظ اختياري للقصة على الجهاز');
+    this._set('story-checkpoint-help',
+      'Nothing is saved automatically. Save stores only fictional Chapter 0 choices and receipts on this browser profile. No GPS or NASA raw data. Reset deletes this story checkpoint.',
+      'ما بنحفظش تلقائيًا. زر الحفظ بيخزن اختيارات الفصل صفر وإيصالاته الافتراضية على المتصفح ده فقط، من غير موقع GPS أو بيانات NASA الخام. إعادة البدء بتمسح الحفظ.');
+    this._set('story-checkpoint-save', 'Save progress', 'احفظ التقدم');
+    this._set('story-checkpoint-resume', 'Resume saved progress', 'استكمل المحفوظ');
+    this._set('story-checkpoint-reset', 'Reset and delete', 'ابدأ من جديد وامسح');
+    this._set('story-checkpoint-status', this.checkpointMessage.en, this.checkpointMessage.ar);
     this.root.querySelector('#story-thread-list').setAttribute('aria-label',
       this._localize('Opening investigation', 'بداية التحقيق'));
     this._set('story-rotation-link', 'Open the real Crop Rotation Workspace ↗', 'افتح أداة مقارنة دورات المحاصيل الحقيقية ↗');
