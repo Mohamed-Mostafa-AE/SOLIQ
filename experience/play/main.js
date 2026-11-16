@@ -47,6 +47,8 @@ class SeventhFieldGame {
     this.openingHook = null;
 
     this.isReady = false;
+    this.renderLoopStarted = false;
+    this.previewFrames = 0;
   }
 
   async init() {
@@ -112,9 +114,15 @@ class SeventhFieldGame {
     this.cinematicDirector = new CinematicDirector(this.renderSetup, this.characters, this.playerController);
 
     this.isInitialized = true;
-    // The first impression must display the *actual* Delta scene, not a
-    // permanently opaque splash while the renderer waits for a click.
-    this.renderSetup.scene.render();
+    // The first impression needs living WebGL frames even *before* Start.
+    // One scene.render() is not enough: browsers may discard its backbuffer
+    // before compositing the translucent intro. Do not advance game time or
+    // NPC/controller state during preview, only redraw the real village.
+    this.renderSetup.startRenderLoop(deltaTime => {
+      if (this.isReady) this.tick(deltaTime);
+      else this.previewFrames += 1;
+    });
+    this.renderLoopStarted = true;
     this._updateProgress(100, 'اكتملت التهيئة بنجاح!');
     this._showStartButton();
   }
@@ -146,10 +154,11 @@ class SeventhFieldGame {
       this.audio.resume();
     }
 
-    if (this.renderSetup) {
+    if (this.renderSetup && !this.renderLoopStarted) {
       this.renderSetup.startRenderLoop((deltaTime) => {
         this.tick(deltaTime);
       });
+      this.renderLoopStarted = true;
     }
 
     this.isReady = true;

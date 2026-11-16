@@ -4,6 +4,7 @@ test('Chapter 0 opens over real 3D, previews both witnesses, then restores playa
   test.setTimeout(90_000);
   await page.goto('/experience/play/');
   await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__seventhFieldGame?.previewFrames >= 3, { timeout: 15_000 });
 
   // The actual scene is rendered beneath the transparent opening screen.
   const initial = await page.evaluate(() => {
@@ -58,17 +59,18 @@ test('splash reveals the actual village and HUD tools never collide with the cha
   test.setTimeout(90_000);
   await page.goto('/experience/play/');
   await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__seventhFieldGame?.previewFrames >= 3, { timeout: 15_000 });
   await expect(page.locator('#game-loader')).toBeVisible();
   await expect(page.locator('#btn-start-game')).toBeVisible();
   const splash = await page.evaluate(() => {
     const loader = document.getElementById('game-loader');
     const canvas = document.getElementById('renderCanvas');
     const scene = window.__seventhFieldGame.renderSetup.scene;
-    return { renderer: canvas.width > 0 && canvas.height > 0,
+    return { renderer: canvas.width > 0 && canvas.height > 0, previewFrames: window.__seventhFieldGame.previewFrames,
       actualCanal: Boolean(scene.getMeshByName('scenicMesqaStillWater')),
       loaderBackground: getComputedStyle(loader).backgroundImage };
   });
-  expect(splash.renderer && splash.actualCanal).toBe(true);
+  expect(splash.renderer && splash.actualCanal && splash.previewFrames >= 3).toBe(true);
   // The splash is a translucent overlay on live 3D, not the old opaque card.
   expect(splash.loaderBackground).toContain('linear-gradient');
   await page.screenshot({ path: 'test-results/seventh-field-live-3d-splash.png' });
