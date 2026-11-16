@@ -1,5 +1,6 @@
 import { mountOutlook } from '../outlook-view.js';
 import { mountEarthScene } from './earth-scene.js';
+import { mountDeltaDiorama } from './delta-diorama.js';
 
 mountOutlook(document.querySelector('#living-outlook'));
 mountEarthScene({
@@ -8,6 +9,7 @@ mountEarthScene({
   story: document.querySelector('.earth-story'),
   status: document.querySelector('#earth-status')
 });
+mountDeltaDiorama(document.querySelector('#delta-art'));
 
 const menuToggle = document.querySelector('.menu-toggle');
 const primaryNav = document.querySelector('#primary-nav');

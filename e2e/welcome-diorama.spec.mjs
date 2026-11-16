@@ -1,0 +1,47 @@
+import {test,expect} from '@playwright/test';
+
+test('P1-11: 3D Delta scene is truthful, responsive and coupled to preview decisions',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto('/welcome/');
+  const art=page.locator('#delta-art');
+  await art.scrollIntoViewIfNeeded();
+  await expect(page.locator('#delta-diorama-canvas')).toBeVisible();
+  await expect(art).toHaveAttribute('data-diorama-ready','true',{timeout:20000});
+  await expect(page.locator('.diorama-view-label')).toContainText('NOT SATELLITE IMAGERY');
+  const initial=await page.locator('#delta-diorama-canvas').evaluate(canvas=>{
+    const style=getComputedStyle(canvas);
+    return {width:canvas.width,height:canvas.height,opacity:Number(style.opacity)};
+  });
+  expect(initial.width).toBeGreaterThan(300);
+  expect(initial.height).toBeGreaterThan(200);
+  expect(initial.opacity).toBeGreaterThan(.9);
+  await art.screenshot({path:'test-results/p1-11-desktop-diorama.png'});
+
+  await page.getByRole('button',{name:/Protect soil/}).click();
+  await expect(art).toHaveAttribute('data-mode','soil');
+  await expect(art).toHaveAttribute('data-diorama-state',/Living ground cover/);
+  await page.getByRole('button',{name:/Ask for evidence/}).click();
+  await expect(art).toHaveAttribute('data-diorama-state',/Missing field evidence/);
+  await expect(page.locator('#decision-result')).toContainText('NASA DATA UNAVAILABLE IN THIS PREVIEW');
+  await expect(page.locator('.decision-primary')).toHaveAttribute('href','../walkthrough/');
+
+  await page.setViewportSize({width:360,height:800});
+  await art.scrollIntoViewIfNeeded();
+  await expect(art).toBeInViewport();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+  await art.screenshot({path:'test-results/p1-11-mobile-diorama.png'});
+});
+
+test('P1-11: reduced motion still permits button choices with readable feedback',async({page})=>{
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.goto('/welcome/');
+  const art=page.locator('#delta-art');
+  await art.scrollIntoViewIfNeeded();
+  await page.getByRole('button',{name:/Share water/}).focus();
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button',{name:/Protect soil/})).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#decision-result')).toContainText('No soil moisture is measured');
+  const motion=await page.locator('#delta-diorama-canvas').evaluate(canvas=>getComputedStyle(canvas).transitionDuration);
+  expect(motion).toBe('0s');
+});
