@@ -16,6 +16,8 @@ test('P1-09: story preview is supplemental to the scientific product and keeps d
  }
  assert.match(html,/SIMULATED STORY/);
  assert.match(html,/Illustrative story preview, not an Earth observation/);
+ assert.match(html,/class="decision-primary" href="\.\.\/#rotations"/,'science CTA must be primary');
+ assert.match(html,/class="decision-secondary" href="\.\.\/experience\/play\/"/,'game must remain supplemental');
  assert.match(html,/href="refinement.css"/);
  assert.match(html,/src="site.js"/);
  assert.doesNotMatch(html,/cinematic\\.(css|js)/);
@@ -53,6 +55,11 @@ test('P1-09: motion is optional and buttons expose keyboard focus',()=>{
  assert.match(css,/\.decision-preview \*::after\{animation:none!important/);
  assert.match(css,/button:focus-visible/);
  assert.match(html,/role="status" aria-live="polite"/);
+ for(const name of ['delta-village','delta-palm--left','delta-palm--right','delta-sluice']){
+  assert.match(html,new RegExp(name),'delta scene needs original local '+name+' art');
+ }
+ assert.match(css,/@keyframes delta-palm-sway/,'canal landscape should animate without WebGL');
+ assert.match(css,/\.delta-house::before\{[\s\S]*?border-top:/,'Egyptian village buildings use flat roofs');
 });
 
 

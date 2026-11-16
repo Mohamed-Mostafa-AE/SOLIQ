@@ -1905,6 +1905,7 @@ html, body { overflow-x: clip; }
   min-height:52px;padding:12px 21px;
   border-radius:9px;background:var(--cin-gold);color:#091a17;
   font:800 .9rem/1.35 "Space Grotesk",sans-serif;
+  box-shadow:0 11px 30px rgba(244,200,121,.17);
 }
 .decision-preview-actions .decision-primary:hover{background:#ffe3ac}
 .decision-preview-actions .decision-secondary{
@@ -1915,6 +1916,7 @@ html, body { overflow-x: clip; }
 .decision-disclosure{font-size:.78rem;color:#bfcabd;max-width:550px;margin-top:18px}
 .delta-art{
   position:relative;
+  perspective:900px;
   height:clamp(440px,46vw,660px);
   overflow:hidden;
   border:1px solid rgba(244,200,121,.29);
@@ -1933,6 +1935,38 @@ html, body { overflow-x: clip; }
   background:#f6d3a0;box-shadow:0 0 65px 40px rgba(250,212,147,.26),0 0 130px 70px rgba(250,212,147,.11);
 }
 .delta-horizon{position:absolute;top:35%;width:100%;height:8%;background:linear-gradient(180deg,rgba(24,69,57,0),#2e5642)}
+.delta-village{
+  position:absolute;z-index:1;left:4%;top:31%;width:32%;height:12%;
+  background:linear-gradient(180deg,#b5a186,#95785b);
+  clip-path:polygon(0 38%,9% 38%,9% 16%,27% 16%,27% 36%,36% 36%,36% 0,62% 0,62% 31%,72% 31%,72% 11%,90% 11%,90% 43%,100% 43%,100% 100%,0 100%);
+  box-shadow:0 8px 15px rgba(27,51,42,.15);
+  opacity:.84;
+}
+.delta-village::after{
+  content:"";position:absolute;inset:40% 0 8%;
+  background:repeating-linear-gradient(90deg,transparent 0 19px,#4f6551 20px 23px,transparent 24px 43px);
+  opacity:.36;
+}
+.delta-palm{
+  position:absolute;z-index:2;top:25%;height:22%;width:7px;
+  background:linear-gradient(90deg,#6a503a,#926e48 52%,#4a3e30);
+  border-radius:60% 30% 15% 10%;transform:rotate(8deg);
+  transform-origin:bottom center;
+  box-shadow:4px 5px 11px rgba(1,19,14,.18);
+}
+.delta-palm--left{left:32%;height:21%;top:23%;transform:rotate(7deg)}
+.delta-palm--right{left:83%;height:18%;top:29%;transform:rotate(-6deg);filter:brightness(.7)}
+.delta-palm::before{
+  content:"";position:absolute;bottom:calc(100% - 5px);left:50%;width:95px;height:61px;
+  transform:translateX(-50%) rotate(-3deg);transform-origin:50% 75%;
+  background:conic-gradient(from -8deg at 50% 72%,#254c36 0 13deg,transparent 13deg 38deg,#356044 38deg 54deg,transparent 54deg 82deg,#31563b 82deg 99deg,transparent 99deg 130deg,#254c36 130deg 147deg,transparent 147deg 181deg,#31553b 181deg 199deg,transparent 199deg 234deg,#315c42 234deg 255deg,transparent 255deg 289deg,#264c35 289deg 307deg,transparent 307deg 346deg,#31553b 346deg 360deg);
+  clip-path:ellipse(50% 47% at 50% 52%);
+  animation:delta-palm-sway 7s ease-in-out infinite alternate;
+}
+.delta-palm::after{
+  content:"";position:absolute;top:4px;left:-5px;width:19px;height:10px;
+  background:radial-gradient(circle at 28% 50%,#4e5b2e 0 4px,transparent 5px),radial-gradient(circle at 75% 50%,#5d532e 0 4px,transparent 5px);
+}
 .delta-bank{position:absolute;inset:42% -7% -10%;transform:perspective(700px) rotateX(43deg);transform-origin:50% 20%;background:repeating-linear-gradient(98deg,#41653e 0 22px,#536d3d 22px 38px,#b6a367 38px 48px,#557b42 49px 72px);filter:saturate(.85)}
 .delta-canal{
   position:absolute;
@@ -1947,6 +1981,22 @@ html, body { overflow-x: clip; }
   content:"";position:absolute;inset:-100% -60%;
   background:repeating-linear-gradient(174deg,transparent 0 20px,rgba(220,255,236,.28) 21px 23px,transparent 25px 55px);
   animation:canal-current 9s linear infinite;
+}
+.delta-sluice{
+  position:absolute;z-index:4;left:51%;top:45%;width:17%;height:10%;
+  border-left:7px solid #b2a185;border-right:7px solid #b2a185;
+  background:repeating-linear-gradient(90deg,transparent 0 10px,rgba(32,58,52,.7) 11px 13px);
+  box-shadow:0 7px 10px rgba(7,34,33,.28);
+  transform:skewY(-9deg);
+  opacity:.95;
+}
+.delta-sluice::before{
+  content:"";position:absolute;top:-6px;left:-13px;right:-13px;height:7px;
+  background:linear-gradient(#e0cfaa,#8b7457);border-radius:2px;
+}
+.delta-sluice::after{
+  content:"";position:absolute;left:46%;top:-15px;width:6px;height:20px;
+  background:#a3926d;border-radius:3px;box-shadow:0 -4px 0 2px #655b46;
 }
 .delta-bridge{
   position:absolute;left:23%;top:56%;width:58%;height:15px;
@@ -1968,13 +2018,20 @@ html, body { overflow-x: clip; }
 .delta-field--near{left:-5%;transform:skewY(10deg) rotate(-3deg)}
 .delta-field--far{right:-3%;bottom:24%;height:20%;transform:skewY(-12deg) rotate(8deg)}
 .delta-house{
-  position:absolute;top:37%;left:13%;width:65px;height:40px;
-  background:linear-gradient(140deg,#d1a575,#b88560);
-  box-shadow:6px 8px 0 #86563f;
+  position:absolute;z-index:3;top:37%;left:13%;width:78px;height:47px;
+  background:linear-gradient(140deg,#d1ae88,#aa8161);
+  box-shadow:5px 7px 0 #735c47,0 12px 17px rgba(25,45,36,.24);
 }
 .delta-house::before{
-  content:"";position:absolute;left:-6px;right:-6px;top:-23px;height:25px;
-  background:#6e4c39;clip-path:polygon(50% 0,100% 100%,0 100%);
+  content:"";position:absolute;left:-4px;right:-4px;top:-7px;height:10px;
+  background:linear-gradient(180deg,#9f8264,#745b46);
+  border-top:2px solid #e4c5a0;
+  box-shadow:0 -3px 0 -1px #b89a77;
+}
+.delta-house::after{
+  content:"";position:absolute;bottom:0;left:14px;width:14px;height:26px;
+  background:#665c4a;border-radius:7px 7px 0 0;
+  box-shadow:34px -7px 0 -3px #606b5b;
 }
 .delta-chapter-tag,.delta-fiction{
   position:absolute;z-index:8;
@@ -1992,6 +2049,7 @@ html, body { overflow-x: clip; }
 .delta-art[data-mode="evidence"] .delta-chapter-tag{color:#f8ecbd}
 .delta-art[data-mode="evidence"] .delta-canal::after{animation-play-state:paused}
 @keyframes canal-current{from{transform:translateY(-14%)}to{transform:translateY(18%)}}
+@keyframes delta-palm-sway{from{transform:translateX(-50%) rotate(-4deg)}to{transform:translateX(-50%) rotate(4deg)}}
 @media(max-width:1050px){
   .hero-panel .hero-copy h1{font-size:clamp(3rem,6.8vw,5.2rem)}
   .decision-grid{grid-template-columns:1fr}

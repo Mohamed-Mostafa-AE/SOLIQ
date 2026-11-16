@@ -19,6 +19,12 @@ test('P1-09 cinematic Welcome preview: accessible choices, routes and mobile red
  await expect(page.locator('#delta-art')).toHaveAttribute('data-mode','evidence');
  const motion=await page.evaluate(()=>getComputedStyle(document.querySelector('.delta-canal'),'::after').animationName);
  expect(motion).toBe('none');
+ const palmReduced=await page.evaluate(()=>getComputedStyle(document.querySelector('.delta-palm'),'::before').animationName);
+ expect(palmReduced).toBe('none');
+ await page.emulateMedia({reducedMotion:'no-preference'});
+ const palmAnimated=await page.evaluate(()=>getComputedStyle(document.querySelector('.delta-palm'),'::before').animationName);
+ expect(palmAnimated).toBe('delta-palm-sway');
+ await page.emulateMedia({reducedMotion:'reduce'});
  const mobileGeometry=await page.evaluate(()=>{
   const width=innerWidth,buttons=[...document.querySelectorAll('#decision-preview .decision-choices button')];
   return {pageOverflow:document.documentElement.scrollWidth-width,buttonsFit:buttons.every(button=>{
@@ -33,4 +39,6 @@ test('P1-09 cinematic Welcome preview: accessible choices, routes and mobile red
  await preview.screenshot({path:'test-results/p1-09-desktop.png',animations:'disabled'});
  await expect(preview.getByRole('link',{name:/Enter The Seventh Field/})).toHaveAttribute('href','../experience/play/');
  await expect(preview.getByRole('link',{name:/Compare real crop rotations/})).toHaveAttribute('href','../#rotations');
+ await expect(preview.locator('.decision-preview-actions .decision-primary')).toHaveAttribute('href','../#rotations');
+ await expect(preview.locator('.decision-preview-actions .decision-secondary')).toHaveAttribute('href','../experience/play/');
 });
