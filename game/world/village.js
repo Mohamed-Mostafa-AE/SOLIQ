@@ -3,6 +3,8 @@
  * Rich Egyptian Delta village: organic farmland, realistic canal, diesel pump, crops, farmhouses.
  */
 
+import { planVisibleCanalBanks } from './delta-canal-layout.js';
+
 export class DeltaVillage {
   constructor(scene, shadowGenerator) {
     this.scene = scene;
@@ -174,6 +176,26 @@ export class DeltaVillage {
     canalBed.position.y = -0.2;
     canalBed.material = this.materials.wetMud;
     canalBed.receiveShadows = true;
+
+    // The first playable camera review revealed that the below-ground tube
+    // disappears behind the flat terrain. Add bank contours and a visible
+    // wet-silt bed at ground level: this makes the canal identifiable even
+    // before an irrigation turn, without altering the water solver or
+    // pretending an OFF pump means that the real canal has disappeared.
+    const bankRibbons = planVisibleCanalBanks(canalPoints);
+    for (const [name, strips] of Object.entries(bankRibbons)) {
+      const mesh = BABYLON.MeshBuilder.CreateRibbon(
+        `visible${name[0].toUpperCase()}${name.slice(1)}`,
+        {
+          pathArray: strips.map(strip => strip.map(point =>
+            new BABYLON.Vector3(point.x, point.y, point.z))),
+          sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+        },
+        this.scene
+      );
+      mesh.material = name === 'channelBed' ? this.materials.wetMud : this.materials.path;
+      mesh.receiveShadows = true;
+    }
 
     // Stone retaining wall near the pump station
     const stoneWall = BABYLON.MeshBuilder.CreateBox(
@@ -521,6 +543,29 @@ export class DeltaVillage {
         frond.rotation.x = 0.45;
         frond.material = this.materials.palm;
         if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(frond);
+      }
+    });
+
+    // Repeatable reed silhouettes along the raised mesqa bank. These are
+    // decorative proxy plants, not remotely sensed crop cover or a claim
+    // about the real field's species distribution. Keep counts modest for WebGL.
+    const reedClumps = [
+      [-22, 8.3], [-16, 7.8], [-10, 7.3], [-5, 6.9], [0, 6.6],
+      [6, 6.1], [12, 5.6], [18, 5.1], [26, 4.4],
+    ];
+    reedClumps.forEach(([x, z], group) => {
+      for (let stem = 0; stem < 3; stem++) {
+        const height = 0.85 + 0.18 * stem;
+        const stalk = BABYLON.MeshBuilder.CreateCylinder(`canalReed_${group}_${stem}`,
+          { diameterTop: 0.018, diameterBottom: 0.075, height, tessellation: 6 }, this.scene);
+        stalk.position.set(x + stem * 0.19 - 0.18, 0.58 + height / 2, z + stem * 0.13);
+        stalk.rotation.z = (stem - 1) * 0.12;
+        stalk.material = this.materials.palm;
+        const seed = BABYLON.MeshBuilder.CreateSphere(`canalReedHead_${group}_${stem}`,
+          { diameter: 1, segments: 8 }, this.scene);
+        seed.position.set(stalk.position.x, stalk.position.y + height / 2, stalk.position.z);
+        seed.scaling.set(0.055, 0.12, 0.055);
+        seed.material = this.materials.wheat;
       }
     });
   }
