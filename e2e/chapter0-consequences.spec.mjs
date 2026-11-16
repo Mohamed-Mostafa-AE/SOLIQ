@@ -52,3 +52,14 @@ test('Chapter 0 accessible route supports Egyptian Arabic and responsible NASA-e
   await expect(page.locator('#story-announcement')).toContainText('الحالة:');
   await expect(page.locator('[data-choice-id="maryam_soil_cover_pact"]')).toBeVisible();
 });
+
+test('Chapter 0 Field7 hypothesis changes subsequent Council text without inventing NASA results', async ({ page }) => {
+  await page.goto('/experience/play/story.html');
+  await page.locator('[data-story-target="timeEcho"]').click();
+  await page.locator('[data-choice-id="f7_hypothesis_water_saving"]').press('Enter');
+  await page.locator('[data-story-target="pumpStation"]').click();
+  await expect(page.locator('#story-dialogue-text')).toContainText('Calendar B');
+  await expect(page.locator('#story-dialogue-text')).toContainText('untested');
+  await expect(page.locator('#story-desk-source')).toContainText('SIMULATED');
+  expect(await page.evaluate(() => window.__soilIqTextGame.water.currentSimulation)).toBeNull();
+});
