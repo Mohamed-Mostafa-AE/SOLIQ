@@ -36,6 +36,7 @@ let current=Math.max(0,Math.min(slides.length-1,Number(location.hash.slice(1))-1
 
 // Short, directional transitions keep the slides readable while giving the scenes depth.
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const mobileReading=window.matchMedia('(max-width: 700px)');
 let motionRevision=0,animations=[];
 function show(index){
  const nextIndex=Math.max(0,Math.min(slides.length-1,index)),outgoing=stage.querySelector('.slide.active');
@@ -47,10 +48,12 @@ function show(index){
  stage.querySelectorAll('.slide').forEach((el,i)=>{el.classList.toggle('active',i===current);el.setAttribute('aria-hidden',String(i!==current));});
  nav.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
  document.querySelector('#counter').textContent=(current+1)+' / '+slides.length;
+ document.querySelector('#slide-announcement').textContent='Slide '+(current+1)+' of '+slides.length+': '+slides[current].title.replaceAll('\n',' ');
  document.querySelector('#previous').disabled=current===0;document.querySelector('#next').disabled=current===slides.length-1;
  document.querySelector('#speaker-notes p').textContent=slides[current].notes;history.replaceState(null,'','#'+(current+1));
  const incoming=stage.querySelector('.slide.active');moveField(current);
- if(reducedMotion.matches)return;
+ if(mobileReading.matches&&outgoing)document.querySelector('#viewport').scrollIntoView({block:'start',behavior:'instant'});
+ if(reducedMotion.matches||mobileReading.matches)return;
  const animate=(el,frames,options)=>{const a=el.animate(frames,options);animations.push(a);return a;};
  if(outgoing){
   outgoing.classList.add('leaving');
@@ -62,8 +65,9 @@ function show(index){
  const scene=incoming.querySelector('.scene');
  if(scene)animate(scene,[{opacity:0,transform:'perspective(1400px) translateY(26px) rotateY(-15deg) rotateX(6deg)'},{opacity:1,transform:'perspective(1400px) translateY(0) rotateY(-8deg) rotateX(3deg)'}],{duration:900,delay:70,easing:'cubic-bezier(.22,.61,.36,1)',fill:'backwards'});
 }
-function fit(){const viewport=document.querySelector('#viewport'),scale=Math.min(viewport.clientWidth/1280,viewport.clientHeight/720);stage.style.transform='scale('+scale+')';}
+function fit(){const viewport=document.querySelector('#viewport'),scale=Math.min(viewport.clientWidth/1280,viewport.clientHeight/720);stage.style.transform=mobileReading.matches?'none':'scale('+scale+')';}
 function toggleNotes(){const notes=document.querySelector('#speaker-notes');notes.hidden=!notes.hidden;document.querySelector('#notes-toggle').setAttribute('aria-pressed',String(!notes.hidden));}
+document.querySelector('#close-notes').onclick=()=>{if(!document.querySelector('#speaker-notes').hidden)toggleNotes();document.querySelector('#notes-toggle').focus();};
 document.querySelector('#previous').onclick=()=>show(current-1);document.querySelector('#next').onclick=()=>show(current+1);document.querySelector('#notes-toggle').onclick=toggleNotes;
 document.querySelector('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notice('Full screen is unavailable here. Use your browser’s presentation/full-screen command.');}};
 document.querySelector('#print-deck').onclick=()=>window.print();
