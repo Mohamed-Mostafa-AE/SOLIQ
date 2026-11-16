@@ -24,8 +24,8 @@ Challenge statement: [NASA Space Apps 2026 — Field Shift: Adapting Farms with 
 2. Load a complete NASA POWER weather year or a documented CSV. Preserve source, date coverage, units and checksum where supported.
 3. Open **Crop plans**, compare baseline and alternative crop rotations under the same assumptions and user priorities. Interpret shortfall and irrigation rather than promise future harvest or automatic farm actions.
 4. Switch to **Research view** to inspect source limitations, sensitivity, derived metrics and evidence export.
-5. Optionally enter **The Seventh Field** 3D village. A fictional pump dialogue requires equipment, canal and heat-safety training; the player may defer, then review fictional water-allocation and SDG learning receipts.
-6. From the game **Evidence Notebook → Sources & Limits**, open **Crop Rotation Workspace**. This navigates to the actual scientific app; it **does not** silently mix game simulation with the user's field data.
+5. Optionally enter **The Seventh Field** 3D village. Hear the farmer perspectives, investigate the seventh-field crop-calendar mystery and test coordinated, limited, or deferred fictional water turns. SDG learning is about trade-offs, not verified achievements.
+6. From the game **Evidence Notebook → Sources & Limits**, open **Crop Rotation Workspace**. This navigates to the actual scientific app; it **does not** silently mix game simulation with the user's field data. Anyone who cannot use 3D can also choose the no-WebGL text-first story from the game splash screen.
 
 ## Evidence categories and hard-stop rules
 
@@ -34,7 +34,7 @@ Challenge statement: [NASA Space Apps 2026 — Field Shift: Adapting Farms with 
 - **ASSUMED:** user-specified agronomic inputs, crop calendars and scenario coefficients.
 - **SIMULATED:** fictional characters, village pump flows, safety-awareness scenes, SDG learning cards and illustrated future worlds.
 - **UNAVAILABLE:** a required source or model output that is not loaded or is unverified. UI must say so explicitly.
-- Never imply that checking a fictional pump means a real machine is safe to operate. Never fabricate pest treatment instructions, soil measurements, saving percentages, carbon credits, yield, or NASA/UN endorsement.
+- No mandatory equipment-inspection gate appears in the central game narrative. Never fabricate pest treatment instructions, soil measurements, saving percentages, carbon credits, yield, or NASA/UN endorsement.
 
 ## Acceptance tests / release gate
 
@@ -42,7 +42,7 @@ Challenge statement: [NASA Space Apps 2026 — Field Shift: Adapting Farms with 
 |---|---|
 | Scientific core | `npm test`, `npm run benchmark`, NASA POWER historical coverage and numerical validation jobs pass. |
 | Real browser workflow | Playwright runs the crop workflow, seasons, English/Arabic language, 3D world, safety interactions and the live crop-rotation navigation. |
-| Dialogue accessibility | A real click on each safety choice must work; the desktop should never have a huge invisible joystick capturing pointer events. Real touch hardware must be verified separately. |
+| Dialogue accessibility | A real click on each canal-council choice must work; desktop joystick hitboxes cannot intercept it. Chapter 0 has a keyboard/screen-reader companion and a no-WebGL route; independent accessibility testing remains necessary. |
 | Evidence integrity | Simulated receipt identifiers are marked `SIM ID`, never misrepresented as SHA hashes or observed measurements. |
 | Deployment | Keep NASA submission/archive and production unchanged until reviewed; record immutable commit/CI evidence. |
 | Visual quality | Review screenshots at desktop and 360px; check animation, text contrast, focus, overflow, reduced-motion, WebGL error paths and frame-time on real devices. |
