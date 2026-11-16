@@ -78,10 +78,11 @@ test('Babylon council outcome genuinely unlocks Chapters 1–4 and the fictional
     const intersection = (a,b) => Math.max(0, Math.min(a.right,b.right)-Math.max(a.left,b.left))
       * Math.max(0, Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
     return { allVisible: boxes.every(rect=>rect.width>0&&rect.height>0),
+      readingOrder: boxes.every((rect,i)=>i===0 || boxes[i-1].bottom<=rect.top),
       railCollision: boxes.some(a=>rail.some(b=>intersection(a,b)>0)),
       selfCollision: boxes.some((a,i)=>boxes.slice(i+1).some(b=>intersection(a,b)>0)) };
   });
-  expect(dock).toEqual({ allVisible: true, railCollision: false, selfCollision: false });
+  expect(dock).toEqual({ allVisible: true, readingOrder: true, railCollision: false, selfCollision: false });
   await page.screenshot({ path: 'test-results/seventh-field-four-chapter-mobile-dock.png' });
 });
 
@@ -90,7 +91,15 @@ test('Arabic 360px no-WebGL journey reaches finale, then replay invalidates down
   await page.setViewportSize({ width: 360, height: 780 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/experience/play/story.html');
+  // The text-first route intentionally opens its Chapter 0 dialog immediately.
+  // Close it using the actual accessible control before changing the language
+  // in the underlying shell, then resume the story in Arabic. An in-dialog
+  // inert background must never be bypassed with a forced click.
+  await expect(page.locator('#story-desk')).toBeVisible();
+  await page.locator('#story-desk-close').click();
   await page.locator('#story-language').selectOption('ar');
+  await page.locator('#btn-open-story').click();
+  await expect(page.locator('#story-desk')).toHaveAttribute('dir', 'rtl');
   await resolveCouncil(page);
   await completeSequence(page);
   const ending = await page.evaluate(() => {
@@ -101,6 +110,9 @@ test('Arabic 360px no-WebGL journey reaches finale, then replay invalidates down
   expect(ending.result.observedWeather).toBeNull();
   expect(ending.result.hasFieldAdvice).toBe(false);
   expect(ending.launchText).toContain('الفصل الرابع');
+  // The non-WebGL launchers are ordinary reading-order actions, not a
+  // floating canvas dock that can cover the story's controls on a phone.
+  await expect(page.locator('#chapter4-launch')).toHaveCSS('position', 'relative');
   await page.screenshot({ path: 'test-results/seventh-field-four-chapter-finale-ar360.png' });
 
   await page.locator('#chapter4-harvest-council .harvest-close').click();

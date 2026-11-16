@@ -21,6 +21,12 @@ export class OpeningHook {
     this.root.setAttribute('aria-describedby', 'hook-premise');
     this.root.hidden = true;
     this.root.innerHTML = `
+      <aside class="hook-world-caption" aria-hidden="true">
+        <span class="hook-episode" data-i18n="worldEpisode">SOIL-IQ ORIGINAL STORY · THE NILE DELTA</span>
+        <span class="hook-world-title" data-i18n="worldTitle">One canal.\nTwo futures.</span>
+        <span class="hook-world-location" id="hook-world-location">01 / THE DAWN COUNCIL</span>
+        <span class="hook-world-instruction" data-i18n="worldInstruction">The living village is behind this dossier. Focus a clue to look toward its witness.</span>
+      </aside>
       <div class="hook-stage">
         <div class="hook-atmosphere" aria-hidden="true">
           <div class="hook-horizon"></div>
@@ -38,6 +44,7 @@ export class OpeningHook {
               <button type="button" id="hook-skip" class="hook-skip" data-i18n="skip">Skip intro →</button>
             </div>
           </div>
+          <div class="hook-field-report" aria-hidden="true"><span class="hook-record-dot"></span> FIELD RECORD / <span id="hook-scene-label">DAWN OVER THE CANAL</span></div>
           <p class="hook-eyebrow" data-i18n="eyebrow">SIX FIELDS. ONE CANAL. ONE MISSING ANSWER.</p>
           <h1 id="hook-title">The Seventh Field</h1>
           <p id="hook-premise" class="hook-premise" data-i18n="premise">
@@ -54,6 +61,7 @@ export class OpeningHook {
             <h2 data-i18n="question">Which clue will you follow first?</h2>
             <p data-i18n="questionHelp">This sets your opening investigation, not the winning crop. You can explore both questions later.</p>
           </div>
+          <p class="hook-camera-instruction" data-i18n="cameraHelp">Preview a clue to see its witness in the living 3D village.</p>
           <div class="hook-choices" role="group" aria-label="Choose your first investigation">
             <button type="button" id="hook-clue-water" class="hook-choice hook-choice-water">
               <span class="hook-choice-number">01 / THE WATER LEDGER</span>
@@ -73,6 +81,7 @@ export class OpeningHook {
             </button>
           </div>
           <div class="hook-footer">
+            <button type="button" class="hook-view-village" id="hook-view-village" aria-pressed="false" data-i18n="viewVillage">Widen the village view ↗</button>
             <a href="story.html" id="hook-text-story" data-i18n="text">Text-only play · keyboard and screen reader</a>
             <p class="hook-disclaimer" data-i18n="disclaimer">Story choices are fictional. No live NASA observation, field measurement or verified crop comparison is represented in this scene.</p>
           </div>
@@ -82,7 +91,37 @@ export class OpeningHook {
     this.root.querySelector('#hook-clue-water').addEventListener('click', () => this._choose('water'));
     this.root.querySelector('#hook-clue-soil').addEventListener('click', () => this._choose('soil'));
     this.root.querySelector('#hook-skip').addEventListener('click', () => this.close());
+    for (const [id, clue] of [['hook-clue-water', 'water'], ['hook-clue-soil', 'soil']]) {
+      const element = this.root.querySelector('#' + id);
+      element.addEventListener('focus', () => this._preview(clue));
+      element.addEventListener('pointerenter', () => this._preview(clue));
+    }
+    this.root.querySelector('#hook-view-village').addEventListener('click', () => {
+      const isWide = this.root.classList.toggle('hook-wide-view');
+      this.root.querySelector('#hook-view-village').setAttribute('aria-pressed', String(isWide));
+      this._updateViewLabel();
+      this._preview(isWide ? 'overview' : this.previewClue || 'overview');
+    });
     this.root.addEventListener('keydown', (event) => this._onKeyDown(event));
+  }
+
+  _preview(clue) {
+    if (!this.isOpen) return;
+    this.previewClue = clue;
+    this.root.dataset.preview = clue;
+    const label = this.lang === 'ar'
+      ? { overview: ['الفجر فوق المسقة', '١ / مجلس الفجر'], water: ['حسن / المياه المشتركة', '٢ / بوابة المسقة'], soil: ['مريم / غطاء التربة', '٣ / الغيط'] }
+      : { overview: ['DAWN OVER THE CANAL', '01 / THE DAWN COUNCIL'], water: ['HASSAN / SHARED WATER', '02 / THE CANAL GATE'], soil: ['MARYAM / LIVING SOIL', '03 / THE CROP FIELD'] };
+    this.root.querySelector('#hook-scene-label').textContent = label[clue][0];
+    this.root.querySelector('#hook-world-location').textContent = label[clue][1];
+    this.callbacks.onPreview?.(clue);
+  }
+
+  _updateViewLabel() {
+    const wide = this.root.classList.contains('hook-wide-view');
+    this.root.querySelector('#hook-view-village').textContent = this.lang === 'ar'
+      ? (wide ? 'ارجع للملف ↙' : 'شوف القرية بوضوح ↗')
+      : (wide ? 'Return to the dossier ↙' : 'Widen the village view ↗');
   }
 
   setLanguage(lang) {
@@ -96,7 +135,10 @@ export class OpeningHook {
       waterTitle: 'اتبع المياه', waterText: 'مين هياخد آخر نوبة ري لو السعة محدودة؟', waterAction: 'اتكلم مع حسن ←',
       soilTitle: 'اتبع التربة', soilText: 'هل غطاء التربة لفترة أطول يستحق احتياجات مياه مختلفة؟', soilAction: 'اتكلم مع مريم ←',
       skip: 'تخطى المقدمة ←', text: 'اللعبة النصية · لوحة مفاتيح وقارئ شاشة',
+      viewVillage: 'شوف القرية بوضوح ↗', cameraHelp: 'ركز على أحد الخيطين لتشوف صاحبه في القرية ثلاثية الأبعاد.',
       disclaimer: 'الاختيارات قصة افتراضية؛ لا توجد بيانات NASA حية أو قياس حقلي أو مقارنة محاصيل مثبتة في هذا المشهد.',
+      worldEpisode: 'قصة أصلية من SOIL-IQ · دلتا النيل', worldTitle: 'مسقة واحدة.\nمستقبلان.',
+      worldInstruction: 'القرية الحية وراء الملف. ركّز على أحد الخيطين لتشوف الشخصية في العالم ثلاثي الأبعاد.',
     };
     const en = {
       chapter: 'CHAPTER 0 / THE DAWN COUNCIL', type: 'FICTIONAL INTERACTIVE STORY',
@@ -107,12 +149,17 @@ export class OpeningHook {
       waterTitle: 'Follow the Water', waterText: 'Who gets the last irrigation turn when capacity is limited?', waterAction: 'Investigate with Hassan →',
       soilTitle: 'Follow the Soil', soilText: 'Can a longer period of soil cover justify different water needs?', soilAction: 'Investigate with Maryam →',
       skip: 'Skip intro →', text: 'Text-only play · keyboard and screen reader',
+      viewVillage: 'Widen the village view ↗', cameraHelp: 'Preview a clue to see its witness in the living 3D village.',
       disclaimer: 'Story choices are fictional. No live NASA observation, field measurement or verified crop comparison is represented in this scene.',
+      worldEpisode: 'SOIL-IQ ORIGINAL STORY · THE NILE DELTA', worldTitle: 'One canal.\nTwo futures.',
+      worldInstruction: 'The living village is behind this dossier. Focus a clue to look toward its witness.',
     };
     for (const node of this.root.querySelectorAll('[data-i18n]')) {
       node.textContent = (this.lang === 'ar' ? ar : en)[node.dataset.i18n];
     }
     this.root.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+    this._updateViewLabel();
+    if (this.isOpen) this._preview(this.previewClue || 'overview');
   }
 
   _choose(clue) {
@@ -132,13 +179,18 @@ export class OpeningHook {
       .map((element) => ({ element, wasInert: element.inert }));
     for (const { element } of this.backgroundInert) element.inert = true;
     this.root.hidden = false;
+    this.previewClue = 'overview';
+    this._preview('overview');
     this.root.querySelector('#hook-clue-water').focus();
   }
 
   close() {
     if (!this.isOpen) return;
     this.isOpen = false;
+    this.callbacks.onPreview?.('exit');
     this.root.hidden = true;
+    this.root.classList.remove('hook-wide-view');
+    this.root.querySelector('#hook-view-village').setAttribute('aria-pressed', 'false');
     for (const { element, wasInert } of this.backgroundInert) element.inert = wasInert;
     this.backgroundInert = [];
     if (this.returnFocus?.isConnected && !this.returnFocus.closest('#game-loader, [hidden]')
