@@ -5,7 +5,7 @@
  */
 
 import { sharedEvents, EMOTIONS, GESTURES, OUTCOMES } from '../core/events.js';
-import { sustainabilityLesson } from '../core/safety-sustainability.js';
+import { sustainabilityLesson } from '../core/sustainability.js';
 
 export class Chapter0Mission {
   constructor(village, characters, waterEngine, audio) {
