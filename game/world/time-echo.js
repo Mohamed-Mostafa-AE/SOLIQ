@@ -61,6 +61,22 @@ export class TimeEchoSystem {
     this.echoScenarioB = echoB;
   }
 
+  // Public contract used by the game interaction loop and existing E2E/unit tests.
+  // Entering or leaving the Seventh Field toggles every visual scenario together.
+  checkPlayerInside(playerPos) {
+    const isInside =
+      playerPos.x >= this.bounds.minX &&
+      playerPos.x <= this.bounds.maxX &&
+      playerPos.z >= this.bounds.minZ &&
+      playerPos.z <= this.bounds.maxZ;
+
+    if (isInside !== this.isActive) {
+      this.setEchoActive(isInside);
+    }
+
+    return this.isActive;
+  }
+
   setEchoActive(active) {
     this.isActive = active;
     if (this.echoMesh) {
