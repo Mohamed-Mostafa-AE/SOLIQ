@@ -474,6 +474,31 @@ body, html {
   color: #fff;
 }
 
+/* The science workflow is adjacent to the game, never fictional evidence. */
+.rotation-bridge {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--accent-gold);
+  border-radius: 12px;
+  background: rgba(36, 91, 79, 0.16);
+}
+
+.rotation-bridge h3 { margin: 0 0 8px; }
+.rotation-bridge p { line-height: 1.55; color: var(--text-muted); }
+.rotation-bridge a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rotation-bridge a:hover { text-decoration: underline; }
+.rotation-bridge a:focus-visible { outline: 3px solid var(--accent-gold); outline-offset: 3px; }
+
 .receipt-card {
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--border-color);
