@@ -175,6 +175,47 @@ export class Chapter0Mission {
     return true;
   }
 
+  /**
+   * Explicitly rehydrate fictional 3D scene visuals after a user-selected
+   * resume. State restore alone stays pure; this does not add receipts or
+   * replay any observed NASA evidence. It does rerun the same modelled
+   * scenario from its declared assumptions, not actual canal hydraulics.
+   */
+  rehydrateWorldEffects() {
+    const outcome = this.activeOutcome;
+    if (outcome === OUTCOMES.NONE) return false;
+    if (outcome === OUTCOMES.DEFERRAL) {
+      this.waterEngine.setPumpState(false);
+      for (const gate of ['gate_head', 'gate_hassan', 'gate_maryam']) {
+        this.village.setGateOpen(gate, false);
+      }
+      return true;
+    }
+    const coverBuffered = outcome === OUTCOMES.EQUILIBRIUM &&
+      this.flags.councilMode === 'cover_buffered_turn' && this.flags.inspectedSoil &&
+      this.flags.soilCoverChoice === 'living_cover';
+    const supply = outcome === OUTCOMES.EQUILIBRIUM ? 235 : 120;
+    const policy = outcome === OUTCOMES.EQUILIBRIUM ? 'proportional' : 'capacity_limited';
+    this.waterEngine.setPumpState(true, false);
+    const result = this.waterEngine.runSimulation(supply, this._scenarioDemands(outcome, coverBuffered), policy);
+    this.waterEngine.applySimulationToWorld(result);
+    for (const gate of ['gate_head', 'gate_hassan', 'gate_maryam']) {
+      this.village.setGateOpen(gate, true);
+    }
+    const emotion = outcome === OUTCOMES.EQUILIBRIUM ? EMOTIONS.SATISFIED : EMOTIONS.CONCERNED;
+    this.characters.setActorEmotion('hassan', emotion);
+    this.characters.setActorEmotion('maryam', emotion);
+    return true;
+  }
+
+  _scenarioDemands(outcome, coverBuffered = false) {
+    return coverBuffered
+      ? [32, 41, 54, 37, 23, 28]
+      : outcome === OUTCOMES.BOTTLENECK && this.flags.hassanStance === 'head_priority'
+        ? [45, 50, 60, 40, 25, 30]
+        : [35, 45, 60, 40, 25, 30];
+  }
+
   /** The opening branch is a research question, never a crop recommendation. */
   beginInvestigation(clue) {
     if (!['water', 'soil'].includes(clue)) {
@@ -576,11 +617,7 @@ export class Chapter0Mission {
         ? 'bottleneck_overload'
         : coverBuffered ? 'cover_buffered_turn' : 'standard_proportional';
 
-    const demands = coverBuffered
-      ? [32, 41, 54, 37, 23, 28] // ASSUMED; no measured evaporation or soil calibration
-      : outcome === OUTCOMES.BOTTLENECK && this.flags.hassanStance === 'head_priority'
-        ? [45, 50, 60, 40, 25, 30] // livelihood stress-test assumption, NOT hydraulic priority
-        : [35, 45, 60, 40, 25, 30]; // 6 fictional fields
+    const demands = this._scenarioDemands(outcome, coverBuffered); // ASSUMED six-field scenario, never measured
 
     if (outcome === OUTCOMES.EQUILIBRIUM) {
       // Outcome 1: Proportional Fair Allocation
