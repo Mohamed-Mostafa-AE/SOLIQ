@@ -274,8 +274,11 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#text-receipts')).toContainText('Sustainability trade-offs');
     await page.keyboard.press('Escape');
     await expect(page.locator('#story-desk-overlay')).toBeHidden();
+    await page.locator('#story-language').selectOption('ar');
+    await expect(page.locator('#text-progress')).toContainText('قرار المياه');
     await page.locator('#btn-open-story').click();
     await expect(page.locator('#story-desk')).toBeVisible();
+    await expect(page.locator('#story-desk-title')).toContainText('الموسم');
   });
 
   test('Text-first story route is playable with keyboard, captions and reduced motion', async ({ page }) => {
