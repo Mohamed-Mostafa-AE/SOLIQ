@@ -148,7 +148,7 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   // Hassan interaction
   const hassanDlg = mission.getDialogueForTarget({ id: 'hassan' });
   assert.ok(hassanDlg);
-  assert.equal(hassanDlg.choices.length, 2);
+  assert.equal(hassanDlg.choices.length, 3);
   assert.match(hassanDlg.textEn, /ledger|schedule/i);
   const soilThread = new Chapter0Mission(mockVillage, mockChars, mockWater, mockAudio);
   soilThread.beginInvestigation('soil');
@@ -173,7 +173,7 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   const mystery = mission.getDialogueForTarget({ id: 'timeEcho' });
   mystery.choices[0].onSelect();
   assert.equal(mission.flags.questionedFuture, true);
-  assert.ok(mission.notebookReceipts.some(r => r.id === 'FUTURE_ROTATION_MYSTERY'));
+  assert.ok(mission.notebookReceipts.some(r => r.id === 'FUTURE_ROTATION_COVER'));
 
   // Outcome 1: Equilibrium
   mission.executeOutcome(OUTCOMES.EQUILIBRIUM);

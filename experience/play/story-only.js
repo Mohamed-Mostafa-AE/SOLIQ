@@ -37,6 +37,14 @@ function renderNotes() {
 
 const desk = new AccessibleStoryDesk(document.getElementById('text-game'), mission, {
   onMissionChanged: renderNotes,
+  onCheckpointRestored: () => {
+    mission.rehydrateWorldEffects();
+    renderNotes();
+  },
+  onCheckpointReset: () => {
+    water.currentSimulation = null;
+    renderNotes();
+  },
 });
 document.getElementById('btn-open-story').addEventListener('click', () => desk.open());
 document.getElementById('story-language').addEventListener('change', (event) => {

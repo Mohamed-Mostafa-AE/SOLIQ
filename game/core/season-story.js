@@ -5,13 +5,27 @@
 export function getSeasonStoryBeat(flags = {}, activeOutcome = 'none') {
   const heard = Number(flags.talkedToHassan === true) + Number(flags.talkedToMaryam === true);
   const futureQuestion = flags.questionedFuture === true;
+  const consequenceEn = flags.evidenceRequested
+    ? 'You asked for NASA evidence; open the separate scientific workspace before treating either crop plan as tested.'
+    : flags.inspectedSoil && flags.soilCoverChoice === 'living_cover'
+      ? 'Your soil check and Maryam’s living-cover pledge unlock a fourth, explicitly assumed council experiment.'
+      : flags.cooperationRiskFlag
+        ? 'Your water-turn negotiations revealed unresolved cooperation risk; limited capacity cannot prove real head-to-tail pressure.'
+        : '';
+  const consequenceAr = flags.evidenceRequested
+    ? 'طلبتي دليل NASA؛ افتحي أداة المحاصيل العلمية قبل اعتبار أي تقويم مختبرًا.'
+    : flags.inspectedSoil && flags.soilCoverChoice === 'living_cover'
+      ? 'فحص التربة واتفاق الغطاء الحي مع مريم فتحا تجربة رابعة افتراضية في المجلس.'
+      : flags.cooperationRiskFlag
+        ? 'مفاوضات الأدوار كشفت مخاطر تعاون غير محسومة؛ السعة المحدودة لا تثبت ضغط المياه في آخر المسقة.'
+        : '';
   if (['equilibrium', 'bottleneck', 'deferral'].includes(activeOutcome)) {
     return Object.freeze({
       stage: 'decision-recorded', heard, futureQuestion,
       titleEn: 'The water turn has consequences — the season is still unwritten',
       titleAr: 'قرار المياه اتسجل — لكن الموسم لسه ما اتكتبش',
-      textEn: 'Compare the fictional water ledger and community trade-offs. No real crop-rotation winner is known until you inspect NASA weather context, soil assumptions and farmer priorities in the scientific workspace.',
-      textAr: 'راجع حسابات المياه الافتراضية ومفاضلات المجتمع. لا يوجد محصول أو دورة فائزة على أرض الواقع قبل مراجعة طقس NASA وافتراضات التربة وأولويات الفلاح في الأداة العلمية.',
+      textEn: `Compare the fictional water ledger and community trade-offs. ${consequenceEn} No real crop-rotation winner is known until you inspect NASA weather context, soil assumptions and farmer priorities in the scientific workspace.`,
+      textAr: `راجع حسابات المياه الافتراضية ومفاضلات المجتمع. ${consequenceAr} لا يوجد محصول أو دورة فائزة على أرض الواقع قبل مراجعة طقس NASA وافتراضات التربة وأولويات الفلاح في الأداة العلمية.`,
       sourceType: 'simulated',
     });
   }
@@ -45,8 +59,8 @@ export function getSeasonStoryBeat(flags = {}, activeOutcome = 'none') {
       stage: 'council', heard, futureQuestion,
       titleEn: 'Two families heard. Now weigh the trade-offs.',
       titleAr: 'سمعت العيلتين — حان وقت الموازنة',
-      textEn: 'Hassan values reliable turns. Maryam cares about soil cover and tomorrow. At the canal council, run a transparent allocation experiment or defer for field evidence. No choice produces a guaranteed harvest.',
-      textAr: 'حسن محتاج انتظام الدور، ومريم شايفة قيمة الغطاء النباتي والموسم الجاي. في مجلس المسقة جرّب توزيعًا افتراضيًا أو أجّل لحين دليل حقلي. مفيش اختيار بيضمن محصول.',
+      textEn: `Hassan values reliable turns. Maryam cares about soil cover and tomorrow. ${consequenceEn} At the canal council, run a transparent allocation experiment or defer for field evidence. No choice produces a guaranteed harvest.`,
+      textAr: `حسن محتاج انتظام الدور، ومريم شايفة قيمة الغطاء النباتي والموسم الجاي. ${consequenceAr} في مجلس المسقة جرّب توزيعًا افتراضيًا أو أجّل لحين دليل حقلي. مفيش اختيار بيضمن محصول.`,
       sourceType: 'simulated',
     });
   }

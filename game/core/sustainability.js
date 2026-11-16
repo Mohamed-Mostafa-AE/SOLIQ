@@ -2,7 +2,7 @@
  * Sustainability themes for a fictional six-field water turn.
  * These notes never assert measured SDG achievement or NASA/UN endorsement.
  */
-export function sustainabilityLesson(outcome, result = null) {
+export function sustainabilityLesson(outcome, result = null, context = {}) {
   if (!['equilibrium', 'bottleneck', 'deferral'].includes(outcome)) {
     throw new RangeError('Unknown game outcome');
   }
@@ -34,5 +34,15 @@ export function sustainabilityLesson(outcome, result = null) {
     evidenceClass: 'simulated',
     realWorldImpactVerified: false,
     metrics: measured,
+    tradeoffAxes: Object.freeze({
+      // The capacity-sharing solver does NOT resolve head-to-tail hydraulic pressure;
+      // this key describes simulated aggregate shortfall only.
+      waterFairness: outcome === 'deferral' ? 'untested_deferred'
+        : outcome === 'bottleneck' ? 'simulated_allocation_shortfall' : 'high_simulated',
+      soilCover: context.soilCoverChoice || 'unspecified',
+      livelihoodTension: context.livelihoodPriority || 'balanced',
+      uncertaintyNoteEn: 'All game outcomes are simulated. The solver does not model head-to-tail hydraulic pressure. For real weather context and declared soil assumptions, inspect the independent Crop Rotation Workspace.',
+      uncertaintyNoteAr: 'كل نتائج اللعبة افتراضية. المحرك لا يحاكي فرق ضغط المياه بين أول وآخر المسقة. راجع بيانات الطقس وافتراضات التربة في أداة المحاصيل المستقلة.',
+    }),
   });
 }
