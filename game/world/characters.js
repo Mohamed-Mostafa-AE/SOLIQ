@@ -407,6 +407,11 @@ export class CharacterSystem {
     const actors = [this.nada, this.hassan, this.maryam].filter(Boolean);
     // A suspended tab must not jump the pose on resume or amplify animations.
     const frame = Number.isFinite(deltaTime) ? Math.max(0, Math.min(deltaTime, 0.05)) : 0;
+    // The in-game accessibility toggle also sets this body class; honor it
+    // without requiring HUD code to know about character joint internals.
+    const reduceMotionNow = this.reducedMotion || Boolean(
+      typeof document !== 'undefined' && document.body?.classList?.contains('reduced-motion')
+    );
 
     for (const a of actors) {
       a.animTime += frame;
@@ -432,7 +437,7 @@ export class CharacterSystem {
 
       // Captions/text UI convey interactions; no limb or camera motion is
       // required to understand them when reduced-motion is requested.
-      if (this.reducedMotion) continue;
+      if (reduceMotionNow) continue;
 
       // 1. Idle breathing (all actors have subtle natural chest & head motion)
       const breath = Math.sin(t * 2.2) * 0.03;

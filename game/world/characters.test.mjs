@@ -81,3 +81,18 @@ test('reduced-motion mode preserves readable static poses and unknown IDs do not
     assert.equal(actors.maryam.state, before);
   });
 });
+
+test('the existing HUD reduced-motion class also disables animated joints', () => {
+  const previous = globalThis.document;
+  globalThis.document = { body: { classList: { contains: name => name === 'reduced-motion' } } };
+  try {
+    withBabylonStub(actors => {
+      actors.setActorState('nada', 'run');
+      actors.updateAnimations(0.04);
+      assert.equal(actors.nada.bones.leftThigh.rotation.x, 0);
+      assert.equal(actors.nada.bones.hips.position.y, 1.68 * 0.54);
+    });
+  } finally {
+    globalThis.document = previous;
+  }
+});
