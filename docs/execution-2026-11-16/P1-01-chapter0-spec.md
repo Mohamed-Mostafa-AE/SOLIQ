@@ -11,7 +11,7 @@ This document is the **target narrative and systems specification**, not a claim
 
 Code-level parity already implemented in PR #46: stable Hassan/Maryam/Seventh Field choice IDs, conditional cover-buffered Council option, assumed/simulated scenario receipts, English default with optional Arabic, text-only/3D choice rendering, `flags.relationships`, strict versioned snapshot serialization, and regression tests. PR #48 adds an **explicit user-action-only** local browser checkpoint; saving does not happen automatically and no GPS/NASA raw payload is included.
 
-**Remaining acceptance review:** the Field 7 opening dialogue currently explains both hypotheses generically; its combined Hassan/Maryam-specific entry line below remains a narrative target. Two Field 7 hypothesis selections currently register distinct receipts, while their distinct effect on the *next* playable question needs a direct E2E assertion. Verify that `flags.selectedPolicy` records the **final Council-selected** solver policy (not only a prior NPC proposal), especially after Hassan head-priority followed by proportional Council, or Maryam proportional followed by bottleneck Council. The chapter's fictional head-first negotiation does **not** model measured head-to-tail canal pressure. Manual screen-reader/device checks, actual GLB human animation, and the full browser CI remain release gates.
+**Remaining acceptance review:** the Field 7 opening dialogue currently explains both hypotheses generically; its combined Hassan/Maryam-specific entry line below remains a narrative target. The `cropHypothesis` values (`cover_first`, `water_saving`, `deferred_for_nasa`) are stored and serialized, and the corresponding Field 7 choices emit distinct simulated receipts. **Current PR #46 never reads `cropHypothesis` after selection**: A and B do not yet change the next Council question, available choices, or simulation demand. Only the third choice sets `evidenceRequested`, which separately changes Council framing. Branch-specific downstream follow-up is therefore **not implemented**; add a playable, explicitly uncalibrated comparison or adjust acceptance, then assert two separate A/B pathways in E2E. Verify that `flags.selectedPolicy` records the **final Council-selected** solver policy (not only a prior NPC proposal), especially after Hassan head-priority followed by proportional Council, or Maryam proportional followed by bottleneck Council. The chapter's fictional head-first negotiation does **not** model measured head-to-tail canal pressure. Manual screen-reader/device checks, actual GLB human animation, and the full browser CI remain release gates.
 
 Runnable coverage belongs to `e2e/chapter0-consequences.spec.mjs` (PR #46), `e2e/chapter0-checkpoint.spec.mjs` (PR #48), and the continuing `e2e/play-3d.spec.mjs` regression suite. The detailed examples in Section 6 are **acceptance illustrations**: use the implementation's actual localized phrasing and current selectors when running them.
 
@@ -235,7 +235,7 @@ These are illustrative acceptance examples; executable P1-01 tests are tracked i
 
     // 3. Maryam's opening line must reflect Hassan's soil inspection
     await page.locator('[data-story-target="maryam"]').click();
-    await expect(page.locator('#story-dialogue-text')).toContainText('checked under the soil crust');
+    await expect(page.locator('#story-dialogue-text')).toContainText('checked below the soil crust');
     await page.locator('[data-choice-id="maryam_soil_cover_pact"]').press('Enter');
 
     // 4. Seventh Field: pick cover hypothesis
