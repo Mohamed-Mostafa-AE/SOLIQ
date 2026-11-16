@@ -44,6 +44,11 @@ test('Chapter 0 opens over real 3D, previews both witnesses, then restores playa
   });
   expect(after).toEqual({ camera: 'follow', input: true, clue: 'soil', beacon: true });
   await expect(page.locator('#telemetry-toast')).toContainText('Maryam');
+  await page.waitForFunction(() => {
+    const game = window.__seventhFieldGame;
+    return game.renderSetup.cameras.follow.target.z - game.characters.nada.root.position.z > 3;
+  });
+  await page.screenshot({ path: 'test-results/seventh-field-cinematic-after-intro.png' });
 });
 
 test('Chapter 0 preview respects reduced motion and the keyboard skip path', async ({ page }) => {
