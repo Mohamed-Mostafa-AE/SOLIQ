@@ -79,3 +79,51 @@ test('Choice IDs are stable, unique and do not imply a measured NASA result', ()
   assert.ok(mission.getDialogueForTarget({ id: 'pumpStation' }).choices.every(
     choice => choice.id !== 'council_cover_buffered'));
 });
+
+test('Versioned Chapter 0 state round-trips deterministic choices without storing location', () => {
+  const { mission, choose } = makeMission();
+  mission.beginInvestigation('soil');
+  choose('hassan', 'hassan_inspect_soil_first');
+  choose('maryam', 'maryam_soil_cover_pact');
+  choose('timeEcho', 'f7_hypothesis_cover');
+  const snapshot = mission.getSerializableState();
+  assert.equal(snapshot.version, 1);
+  assert.deepEqual(snapshot.flags.relationships, { hassanTrust: 1, maryamTrust: 1 });
+  assert.deepEqual(Object.keys(snapshot).sort(), ['version', 'stage', 'activeOutcome', 'flags', 'notebookReceipts'].sort());
+  assert.doesNotMatch(JSON.stringify(snapshot), /latitude|longitude|coordinates|deviceId|gps/i);
+  const restored = makeMission().mission;
+  restored.restoreState(snapshot);
+  assert.deepEqual(restored.getSerializableState(), snapshot);
+  snapshot.flags.relationships.hassanTrust = 0;
+  assert.equal(restored.flags.relationships.hassanTrust, 1, 'snapshot cannot mutate mission by reference');
+});
+
+test('Chapter 0 rejects malformed, future-version and injected snapshots without partial mutation', () => {
+  const { mission } = makeMission();
+  const fresh = mission.getSerializableState();
+  const bad = (modify) => {
+    const snapshot = structuredClone(fresh);
+    modify(snapshot);
+    assert.throws(() => mission.restoreState(snapshot), /Invalid|Unsupported|Unsafe/i);
+    assert.deepEqual(mission.getSerializableState(), fresh, 'invalid restore is atomic');
+  };
+  bad(s => { s.version = 2; });
+  bad(s => { s.flags.latitude = 30.9; });
+  bad(s => { s.flags.relationships.hassanTrust = 3; });
+  bad(s => { s.flags.councilMode = 'magic_impact_certified'; });
+  bad(s => { s.notebookReceipts[0].detailsEn = '<img src=x onerror=alert(1)>'; });
+  bad(s => { s.activeOutcome = 'equilibrium'; }); // inconsistent with non-executed stage
+});
+
+test('Completed fictional council outcome restores as a receipt-only checkpoint without replaying pump effects', () => {
+  const { mission, choose } = makeMission();
+  choose('pumpStation', 'council_proportional');
+  const snapshot = mission.getSerializableState();
+  const next = makeMission();
+  next.mission.restoreState(snapshot);
+  assert.equal(next.mission.stage, 'executed');
+  assert.equal(next.mission.activeOutcome, 'equilibrium');
+  assert.equal(next.mission.flags.pumpStarted, true);
+  assert.deepEqual(next.calls, [], 'restore must not restart world pump or recalculate evidence');
+  assert.deepEqual(next.mission.getSerializableState(), snapshot);
+});
