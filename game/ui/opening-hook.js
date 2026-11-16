@@ -10,6 +10,7 @@ export class OpeningHook {
     this.callbacks = callbacks;
     this.isOpen = false;
     this.returnFocus = null;
+    this.backgroundInert = [];
     this.lang = 'en';
     this.root = document.createElement('section');
     this.root.id = 'opening-hook';
@@ -79,7 +80,7 @@ export class OpeningHook {
     this.root.querySelector('#hook-clue-water').addEventListener('click', () => this._choose('water'));
     this.root.querySelector('#hook-clue-soil').addEventListener('click', () => this._choose('soil'));
     this.root.querySelector('#hook-skip').addEventListener('click', () => this.close());
-    this.root.addEventListener('keydown', (event) => this._onKeyDown(event), true);
+    this.root.addEventListener('keydown', (event) => this._onKeyDown(event));
   }
 
   setLanguage(lang) {
@@ -122,6 +123,12 @@ export class OpeningHook {
     if (this.isOpen) return;
     this.isOpen = true;
     this.returnFocus = document.activeElement;
+    // A modal must exclude the moving 3D world and HUD from keyboard and
+    // assistive-technology navigation until the player chooses a thread.
+    this.backgroundInert = [...document.body.children]
+      .filter((element) => element !== this.root && element.tagName !== 'SCRIPT')
+      .map((element) => ({ element, wasInert: element.inert }));
+    for (const { element } of this.backgroundInert) element.inert = true;
     this.root.hidden = false;
     this.root.querySelector('#hook-clue-water').focus();
   }
@@ -130,6 +137,8 @@ export class OpeningHook {
     if (!this.isOpen) return;
     this.isOpen = false;
     this.root.hidden = true;
+    for (const { element, wasInert } of this.backgroundInert) element.inert = wasInert;
+    this.backgroundInert = [];
     if (this.returnFocus?.isConnected && !this.returnFocus.closest('#game-loader, [hidden]')
       && typeof this.returnFocus.focus === 'function') {
       this.returnFocus.focus();

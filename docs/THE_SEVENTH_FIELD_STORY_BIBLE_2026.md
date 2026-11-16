@@ -35,7 +35,7 @@ The game remains a major playable part **inside** the existing Soil-IQ website/a
 
 ## Prologue — shot/interaction sequence (implement before more unrelated features)
 1. **Playable cold open (implemented):** after the 3D loader, a visually layered sunrise/canal composition frames the question "Six fields. One canal. One missing answer." Text is sufficient; sound is not needed. A large chapter title, three clear stakes and two hypothesis cards replace the passive splash.
-2. **The object and first agency (implemented in prologue, further scene art planned):** Nada finds a torn ledger and two untested plans. Choose **Follow the Water** (Hassan's schedule question) or **Follow the Soil** (Maryam's crop-calendar question), or skip to free-roam without choosing. Either branch records a *simulated research question*, changes the first story beat and never declares a scientific winner. Later routes remain open.
+2. **The object and first agency (implemented in prologue, further scene art planned):** Nada finds a torn ledger and two untested plans. Choose **Follow the Water** (Hassan's schedule question) or **Follow the Soil** (Maryam's crop-calendar question), or skip to free-roam without choosing. Either branch records a *simulated research question*, changes the first story beat **and how Hassan and Maryam greet the investigation**, and never declares a scientific winner. Later routes remain open.
 3. **First person, Hassan:** he wants reliable water timing. His voice is not 'the truth'; listening unlocks context and a notebook receipt.
 4. **Second person, Maryam:** she worries about the next season and sustaining soil cover. Her trade-off is not a fixed fertilizer/carbon claim.
 5. **Player choice:** follow a crop-calendar mystery, test a coordinated fictional water turn, test a constrained fictional one, or defer to request field evidence.
@@ -54,7 +54,7 @@ The game remains a major playable part **inside** the existing Soil-IQ website/a
 There is no villain; the antagonist is uncertainty, conflicting priorities and a limited shared resource. The seventh field represents the ethical cost of pretending a single forecast is a guarantee.
 
 ## Artistic direction to earn attention, not '3D everywhere'
-- **Implemented:** coherent opening title treatment, painted-in-CSS canal/field geometry and sunrise glow with a functional reduced-motion fallback, tactile paired plan cards and mobile-first scrolling.
+- **Implemented:** coherent opening title treatment, painted-in-CSS canal/field geometry and sunrise glow with a functional reduced-motion fallback, tactile paired plan cards, modal background isolation and mobile-first scrolling. Browser regression captures desktop and 360px prologue screenshots as CI artifacts.
 - **Still planned:** author an actual 3D opening camera move, animated paper ledger, more believable field boundaries, human-scale scene lighting and ambient day/night variations. Do not describe CSS illustration as 3D cinematics.
 - Add readable reactions and small activity loops for named characters; avoid generic idle skeleton animations after dialogue.
 - Keep a mobile-balanced tier with measured frame time, optional reduced motion, real subtitles and low-texture graphics fallback.

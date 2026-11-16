@@ -102,11 +102,21 @@ export class Chapter0Mission {
 
   _getHassanDialogue() {
     if (!this.flags.talkedToHassan) {
+      const introEn = this.flags.firstClue === 'water'
+        ? 'You brought the old water-turn ledger, Nada. A schedule only works if the canal has enough capacity; let us test it before promising anyone a full turn. Maryam may see what this misses about next season.'
+        : this.flags.firstClue === 'soil'
+          ? 'You started with the soil calendar, Nada? That is worth asking about. But no crop plan works if we ignore when the canal can actually deliver water. Let us test the turn, then hear Maryam.'
+          : 'Welcome, Nada! The turn has begun. If canal and pump capacity are sufficient we can all irrigate. Let us inspect this turn rather than assume a fault or tail shortage.';
+      const introAr = this.flags.firstClue === 'water'
+        ? 'معاكي دفتر نوبات المياه القديم يا ندى؟ أي جدول محتاج سعة كافية. لازم نحسب قبل ما نوعد حد بدوره كامل. ومريم ممكن تشوف حاجة تانية تخص الموسم الجاي.'
+        : this.flags.firstClue === 'soil'
+          ? 'بدأتي من تقويم التربة يا ندى؟ سؤال مهم. بس أي دورة زراعية محتاجة نعرف المسقة توصل مياه إمتى. تعالي نحسب الدور ونسمع مريم.'
+          : 'يا أهلاً يا باشمهندسة ندى! المية وصلت. لو التصرف والسعة كافيين كلنا ممكن نروي. خلينا نفحص الطلمبة ووقت النوبة؛ العطل أو ضعف الضغط احتمال مش قاعدة ثابتة.';
       return {
         speakerAr: 'عم حسن (مزارع قمح)',
         speakerEn: 'Uncle Hassan (Wheat Farmer)',
-        textAr: 'يا أهلاً يا باشمهندسة ندى! المية وصلت. لو التصرف والسعة كافيين كلنا ممكن نروي. خلينا نفحص الطلمبة ووقت النوبة؛ العطل أو ضعف الضغط احتمال مش قاعدة ثابتة.',
-        textEn: 'Welcome, Nada! The turn has begun. If canal and pump capacity are sufficient we can all irrigate. Let us inspect this turn rather than assume a fault or tail shortage.',
+        textAr: introAr,
+        textEn: introEn,
         emotion: EMOTIONS.EXPLAINING,
         choices: [
           {
@@ -161,11 +171,21 @@ export class Chapter0Mission {
   }
 
   _getMaryamDialogue() {
+    const introEn = this.flags.firstClue === 'soil'
+      ? 'You found the torn crop calendar, Nada. More weeks of soil cover may matter, but that alone cannot prove which rotation is best. Let us compare the water assumptions and bring the unanswered question to the council.'
+      : this.flags.firstClue === 'water'
+        ? 'You began with Hassan\'s water ledger. Fair turns matter, and so does what the soil needs next season. Let us calculate supply carefully and keep both crop calendars open to evidence.'
+        : 'Good morning, Nada. The lesson compares a sufficient-supply turn with a limited-capacity turn; we should calculate the actual water delivered in each window.';
+    const introAr = this.flags.firstClue === 'soil'
+      ? 'لقيتي تقويم المحاصيل الممزق يا ندى. الغطاء النباتي ممكن يفرق، لكن ده لوحده مش دليل إن دورة زراعية أفضل. تعالي نفحص افتراضات المياه ونطرح السؤال على المجلس.'
+      : this.flags.firstClue === 'water'
+        ? 'بدأتي بدفتر المياه بتاع حسن. عدالة الأدوار مهمة، وكمان التربة الموسم الجاي. تعالي نحسب السعة ونسيب الخطتين مفتوحين للدليل.'
+        : 'صباح الخير يا ندى. البرسيم عندي محتاج رية محسوبة. قدامنا مثالين افتراضيين: سعة تكفي الستة، أو سعة أقل من الطلب. لازم نحسب النتيجة من نافذة الري نفسها.';
     return {
       speakerAr: 'مريم (مزارعة برسيم)',
       speakerEn: 'Maryam (Clover Farmer)',
-      textAr: 'صباح الخير يا ندى. البرسيم عندي محتاج رية محسوبة. قدامنا مثالين افتراضيين: سعة تكفي الستة، أو سعة أقل من الطلب. لازم نحسب النتيجة من نافذة الري نفسها.',
-      textEn: 'Good morning, Nada. The lesson compares a sufficient-supply turn with a limited-capacity turn; we should calculate the actual water delivered in each window.',
+      textAr: introAr,
+      textEn: introEn,
       emotion: EMOTIONS.EXPLAINING,
       choices: [
         {

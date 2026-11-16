@@ -149,6 +149,12 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   const hassanDlg = mission.getDialogueForTarget({ id: 'hassan' });
   assert.ok(hassanDlg);
   assert.equal(hassanDlg.choices.length, 2);
+  assert.match(hassanDlg.textEn, /ledger|schedule/i);
+  const soilThread = new Chapter0Mission(mockVillage, mockChars, mockWater, mockAudio);
+  soilThread.beginInvestigation('soil');
+  assert.notEqual(soilThread.getDialogueForTarget({ id: 'hassan' }).textEn, hassanDlg.textEn);
+  assert.notEqual(soilThread.getDialogueForTarget({ id: 'maryam' }).textEn,
+    mission.getDialogueForTarget({ id: 'maryam' }).textEn);
   hassanDlg.choices[0].onSelect(); // Choose coordinated turns
   assert.equal(mission.flags.talkedToHassan, true);
 
