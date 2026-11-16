@@ -12,6 +12,8 @@ async function resolveChapter0InStoryDesk(page) {
 }
 
 async function advanceToChapter2(page) {
+  await expect(page.locator('#chapter1-launch')).toHaveCount(1);
+  await expect(page.locator('#chapter2-launch')).toHaveCount(1);
   await expect(page.locator('#chapter1-launch')).toBeVisible();
   await expect(page.locator('#chapter2-launch')).toBeHidden();
   await page.locator('#chapter1-launch').click();
