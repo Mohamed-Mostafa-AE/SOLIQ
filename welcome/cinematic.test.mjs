@@ -54,3 +54,17 @@ test('P1-09: motion is optional and buttons expose keyboard focus',()=>{
  assert.match(css,/button:focus-visible/);
  assert.match(html,/role="status" aria-live="polite"/);
 });
+
+
+test('P1-09: every local Welcome script and stylesheet resolves through production-like preview allowlist',async()=>{
+ const {resolvePublicPath}=await import('../dev-server.mjs');
+ const urls=[...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(x=>x[1]);
+ urls.push(...[...html.matchAll(/<script[^>]+src="([^"]+)"/g)].map(x=>x[1]));
+ for(const path of urls){
+  if(/^https?:/.test(path))continue;
+  const normalized=new URL(path,'http://localhost/welcome/').pathname;
+  assert.ok(resolvePublicPath(normalized),normalized+' must be served by the app preview');
+ }
+ assert.equal(resolvePublicPath('/welcome/cinematic.js'),null,'no dead unserved module');
+ assert.equal(resolvePublicPath('/welcome/cinematic.css'),null,'no dead unserved stylesheet');
+});
