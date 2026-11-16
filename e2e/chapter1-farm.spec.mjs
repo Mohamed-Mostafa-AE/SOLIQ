@@ -46,7 +46,8 @@ test('a Chapter 0 council outcome unlocks a playable 2-season/3-field puzzle wit
   await page.locator('button[data-strategy="balanced"]').click();
   const balanced = await page.evaluate(() => window.__chapter1TestBoard.game.getComparison());
   expect(balanced.plans[1].fairness).toBeGreaterThan(head.plans[1].fairness);
-  await page.screenshot({ path: testInfo.outputPath('chapter1-desktop.png'), fullPage: true });
+  await page.locator('#chapter1-overlay').evaluate(element => { element.scrollTop = 0; });
+  await page.locator('#chapter1-overlay').screenshot({ path: testInfo.outputPath('chapter1-desktop.png') });
   await page.locator('#chapter1-commit').click();
   await expect(page.locator('#ch1-source')).toContainText('SIMULATED');
   await expect(page.locator('#ch1-content')).toContainText('The fields remember');
@@ -66,9 +67,11 @@ test('Chapter 1 is usable in Arabic at 360px, with keyboard and motion-safe boar
   await page.evaluate(() => window.__chapter1TestBoard.setLanguage('ar'));
   await page.locator('#chapter1-launch').click();
   await expect(page.locator('.ch1-window')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('#ch1-close')).toHaveAccessibleName('إغلاق الفصل الأول');
+  await expect(page.locator('#ch1-close')).toHaveText('✕');
   await expect(page.locator('#ch1-source')).toContainText('افتراضية');
   await expect(page.locator('.ch1-budget')).toContainText('95');
-  await page.screenshot({ path: testInfo.outputPath('chapter1-mobile-ar.png'), fullPage: true });
+  await page.locator('#chapter1-overlay').screenshot({ path: testInfo.outputPath('chapter1-mobile-ar.png') });
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
   await page.locator('#chapter1-commit').press('Enter');

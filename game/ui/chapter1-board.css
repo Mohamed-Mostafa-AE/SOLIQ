@@ -55,7 +55,7 @@
 .ch1-kicker { letter-spacing: .14em; font-size: .73rem; font-weight: 900; color: #ffdb97; text-transform: uppercase; margin: 0 0 6px; }
 .ch1-top h2 { margin: 0; font: 500 clamp(2rem,5.3vw,4.8rem)/1.05 Georgia,'Times New Roman',serif; letter-spacing: -.03em; text-shadow: 0 3px 18px #00140d; }
 .ch1-subtitle { margin-top: 14px; font-size: clamp(.88rem,1.6vw,1.1rem); line-height: 1.65; color: #fbf0d7; text-shadow: 0 2px 6px #07251a; }
-.ch1-close { flex: 0 0 auto; min-height: 44px; border: 1px solid #efd8a4aa; border-radius: 10px; padding: 10px; background: #082b26e5; color: #fff4da; font: 750 .85rem system-ui; cursor: pointer; }
+.ch1-close { flex: 0 0 auto; width: 44px; min-height: 44px; border: 1px solid #efd8a4aa; border-radius: 10px; padding: 9px; background: #082b26e5; color: #fff4da; font: 750 1rem system-ui; cursor: pointer; }
 .ch1-evidence { padding: 11px clamp(18px,3vw,32px); background: #041b1bea; border-block: 1px solid #e3d1ab70; color: #ffe7a8; font-size: .75rem; font-weight: 900; letter-spacing: .075em; }
 .ch1-content { padding: clamp(16px,2.8vw,32px); }
 .ch1-premise { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
@@ -124,7 +124,7 @@
   .ch1-overlay { padding: 5px; }
   .ch1-window { border-radius: 9px; }
   .ch1-top { padding: 14px; }
-  .ch1-close { font-size: .69rem; max-width: 90px; }
+  .ch1-close { font-size: 1rem; }
   .ch1-content { padding: 12px; }
   .ch1-plan { padding: 10px; }
   .ch1-plan-head { gap: 7px; }

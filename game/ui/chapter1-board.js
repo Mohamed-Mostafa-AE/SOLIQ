@@ -160,8 +160,10 @@ export class Chapter1Board {
     this.launch.textContent = this.game.canStart ? l.launch : `🔒 ${l.lockedLaunch}`;
     this.launch.setAttribute('aria-label', this.launch.textContent);
     this.overlay.querySelector('.ch1-window').dir = this.language === 'ar' ? 'rtl' : 'ltr';
-    const strings = { 'ch1-kicker': l.kicker, 'ch1-title': l.title, 'ch1-subtitle': l.subtitle, 'ch1-source': l.source, 'ch1-close': `✕ ${l.close}` };
+    const strings = { 'ch1-kicker': l.kicker, 'ch1-title': l.title, 'ch1-subtitle': l.subtitle, 'ch1-source': l.source, 'ch1-close': '✕' };
     Object.entries(strings).forEach(([id, value]) => { this.overlay.querySelector('#' + id).textContent = value; });
+    // Icon-only on narrow screens, but always has an explicit localized label.
+    this.overlay.querySelector('#ch1-close').setAttribute('aria-label', l.close);
     if (this.isOpen) this._renderContent();
   }
 
