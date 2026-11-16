@@ -751,6 +751,7 @@ body, html {
   border-radius: 16px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
 }
+.story-desk, .story-desk * { user-select: text; }
 .story-desk-header {
   display: flex;
   align-items: flex-start;
