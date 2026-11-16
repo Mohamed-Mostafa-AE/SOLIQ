@@ -62,6 +62,12 @@ const copy = {
 const escapeAttr = string => String(string).replace(/[&"<>]/g, char => ({'&':'&amp;','"':'&quot;','<':'&lt;','>':'&gt;'})[char]);
 const promiseNames = { water: 'water', soil: 'soilPledge', livelihood: 'livelihood' };
 const order = ['water','soil','livelihood'];
+const previousSoilTitles = Object.freeze({
+  prepared_for_measurement: {en:'Waiting for field measurements',ar:'بانتظار قياسات من الحقل'},
+  runoff_warning: {en:'Runoff warning',ar:'تحذير من جريان المياه'},
+  shared_soil_cover: {en:'Shared soil cover',ar:'غطاء تربة مشترك'},
+  hard_tradeoff: {en:'A difficult compromise',ar:'مفاضلة صعبة'},
+});
 
 /** Mount on Babylon or no-WebGL text entry. No external data or dependencies. */
 export function attachChapter4Game({ host = document.body, chapter3, language = 'en', onStateChange } = {}) {
@@ -123,7 +129,7 @@ export function attachChapter4Game({ host = document.body, chapter3, language = 
           <h1 id="harvest-title">${t.title}</h1><p>${t.intro}</p>
           <div class="harvest-timeline" aria-label="${t.previous}">
             <span><small>${t.plan}</small><strong>${mission.prior.previousPlanId}</strong></span>
-            <span><small>${t.soil}</small><strong>${escapeAttr(mission.prior.ending.replaceAll('_',' '))}</strong></span>
+            <span><small>${t.soil}</small><strong>${escapeAttr(previousSoilTitles[mission.prior.ending][lang])}</strong></span>
             <span><small>${t.trust}</small><strong>${mission.prior.evidenceDecision==='evidence_pause'?t.pause:t.trial}</strong></span>
           </div>
         </header>

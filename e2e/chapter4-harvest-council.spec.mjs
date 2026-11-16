@@ -75,6 +75,8 @@ test('360px Arabic text-only finale is keyboard accessible without motion or hor
   const council=page.locator('#chapter4-harvest-council');
   await expect(council).toHaveAttribute('dir','rtl');
   await expect(council.getByText('المستقبل مش حصاد واحد.')).toBeVisible();
+  await expect(council.getByText('غطاء تربة مشترك')).toBeVisible();
+  await expect(council.getByText('Shared Soil Cover')).toHaveCount(0);
   await council.locator('#harvest-livelihood').selectOption('3');
   await council.locator('#harvest-water').selectOption('1');
   await council.locator('#harvest-soil').selectOption('1');
