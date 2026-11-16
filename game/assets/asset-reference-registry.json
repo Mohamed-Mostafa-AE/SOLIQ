@@ -12,7 +12,7 @@
       "purpose": "Animated playable character Nada",
       "status": "integrated",
       "localPath": "game/assets/models/nada.glb",
-      "sha256": "ec887942a4662d994264231123b9e1b196a8cf226539dcf9db99ddfab5fb0f15",
+      "sha256": "58ecb10617df774aad62679cd5160ef7bfd5c31b05c42b8726dfdd390b68990e",
       "redistributionReviewed": true
     },
     {
@@ -25,7 +25,7 @@
       "purpose": "Animated fictional elder farmer Hassan",
       "status": "integrated",
       "localPath": "game/assets/models/hassan.glb",
-      "sha256": "f8ddff64423a857f4c9579c94cd8ce15b5f29533da60d84063f854cd22c49bf4",
+      "sha256": "a85bbfa428ca8940c5e1a465ab8644785631207b18c9e6b7a66ad50aef5a3c30",
       "redistributionReviewed": true
     },
     {
@@ -38,7 +38,7 @@
       "purpose": "Animated fictional cooperative farmer Maryam",
       "status": "integrated",
       "localPath": "game/assets/models/maryam.glb",
-      "sha256": "53e77bd31ddeb7fa64f7890f963d4c534237e6e4d29ed0d14ae436e8a79d7684",
+      "sha256": "38747e91a28c22d0add982d5c3bab08101cf160f61712ad3e76845aa89b88131",
       "redistributionReviewed": true
     },
     {

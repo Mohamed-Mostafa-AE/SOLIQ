@@ -546,6 +546,7 @@ export class CharacterSystem {
     const fallback = smallMemory ? ['hassan', 'maryam'] : [];
     await Promise.all(list.map(async actor => {
       let result;
+      let priorMeshStates = [];
       try {
         result = await BABYLON.SceneLoader.ImportMeshAsync(
           '', ACTOR_ASSET_ROOT, `${actor.id}.glb`, this.scene
@@ -572,6 +573,10 @@ export class CharacterSystem {
         // Geometry from the existing non-destructive detail pass is also hidden.
         const originalMeshes = actor.root.getChildMeshes?.(false)
           .filter(mesh => !imported.has(mesh)) ?? [];
+        priorMeshStates = originalMeshes.map(mesh => ({
+          mesh,
+          enabled: mesh.isEnabled?.() ?? true,
+        }));
         for (const mesh of originalMeshes) mesh.setEnabled(false);
         actor.motionClips = clips;
         actor.visualMode = 'skinned-glb';
@@ -586,8 +591,11 @@ export class CharacterSystem {
       } catch (error) {
         // An invalid asset must never leave a second half-rendered character
         // layered over the fully functional fallback.
+        for (const { mesh, enabled } of priorMeshStates) mesh.setEnabled(enabled);
         for (const mesh of result?.meshes ?? []) mesh.dispose?.();
         for (const group of result?.animationGroups ?? []) group.dispose?.();
+        delete actor.motionClips;
+        actor.activeClip = null;
         actor.visualMode = 'procedural-fallback';
         actor.visualAssetError = String(error?.message ?? error);
         fallback.push(actor.id);

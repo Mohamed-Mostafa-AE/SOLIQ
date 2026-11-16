@@ -11,9 +11,9 @@ redistribution beyond this project.
 
 | Asset | SHA-256 | Bytes | Skin joints | Named animations |
 | --- | --- | ---: | ---: | --- |
-| `nada.glb` | `ec887942a4662d994264231123b9e1b196a8cf226539dcf9db99ddfab5fb0f15` | 505528 | 17 | Idle, Walk, Run, Talk, Interact |
-| `hassan.glb` | `f8ddff64423a857f4c9579c94cd8ce15b5f29533da60d84063f854cd22c49bf4` | 513952 | 17 | Idle, Walk, Run, Talk, Interact |
-| `maryam.glb` | `53e77bd31ddeb7fa64f7890f963d4c534237e6e4d29ed0d14ae436e8a79d7684` | 501152 | 17 | Idle, Walk, Run, Talk, Interact |
+| `nada.glb` | `58ecb10617df774aad62679cd5160ef7bfd5c31b05c42b8726dfdd390b68990e` | 506532 | 17 | Idle, Walk, Run, Talk, Interact |
+| `hassan.glb` | `a85bbfa428ca8940c5e1a465ab8644785631207b18c9e6b7a66ad50aef5a3c30` | 512180 | 17 | Idle, Walk, Run, Talk, Interact |
+| `maryam.glb` | `38747e91a28c22d0add982d5c3bab08101cf160f61712ad3e76845aa89b88131` | 504796 | 17 | Idle, Walk, Run, Talk, Interact |
 
 Geometry: stylized skin-weighted segmented parts with sculpted faces, clothing,
 hair and authentic fictional Delta-inspired accessories, **not continuous-film

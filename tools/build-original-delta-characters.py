@@ -14,18 +14,18 @@ DEST = Path(__file__).resolve().parents[1] / "game" / "assets" / "models"
 DEST.mkdir(parents=True, exist_ok=True)
 
 PALETTES = {
-    "nada": dict(skin=(0.47, .285, .20), skin_light=(.63, .39, .27),
-                 hair=(.045, .032, .028), cloth=(.13, .35, .31),
-                 cloth_dark=(.085, .20, .205), accent=(.90, .49, .25),
-                 pants=(.225, .225, .19), scarf=(.90, .47, .24)),
-    "hassan": dict(skin=(.40, .245, .17), skin_light=(.57, .36, .265),
-                   hair=(.54, .54, .50), cloth=(.62, .70, .74),
-                   cloth_dark=(.38, .49, .55), accent=(.78, .63, .42),
-                   pants=(.39, .43, .43), scarf=(.93, .91, .83)),
-    "maryam": dict(skin=(.45, .285, .205), skin_light=(.61, .397, .29),
-                   hair=(.048, .033, .03), cloth=(.17, .22, .41),
-                   cloth_dark=(.10, .13, .245), accent=(.93, .71, .43),
-                   pants=(.15, .20, .38), scarf=(.70, .25, .245)),
+    "nada": dict(skin=(0.39, .225, .15), skin_light=(.51, .31, .205),
+                 hair=(.022, .016, .014), cloth=(.048, .205, .195),
+                 cloth_dark=(.022, .085, .091), accent=(.90, .34, .095),
+                 pants=(.115, .128, .102), scarf=(.78, .29, .09)),
+    "hassan": dict(skin=(.34, .205, .14), skin_light=(.47, .292, .205),
+                   hair=(.30, .28, .26), cloth=(.38, .45, .44),
+                   cloth_dark=(.19, .27, .30), accent=(.62, .41, .18),
+                   pants=(.26, .30, .27), scarf=(.70, .68, .60)),
+    "maryam": dict(skin=(.37, .225, .16), skin_light=(.50, .318, .23),
+                   hair=(.026, .018, .017), cloth=(.068, .102, .25),
+                   cloth_dark=(.032, .048, .127), accent=(.84, .53, .23),
+                   pants=(.052, .079, .16), scarf=(.39, .073, .09)),
 }
 
 
@@ -150,7 +150,7 @@ def build_actor(name, palette):
     p = palette
     materials = {key: mat(f'{name} {key}', color) for key, color in p.items()}
     eye = mat(f'{name} brown iris', (.12, .065, .037), .25)
-    eye_white = mat(f'{name} warm sclera', (.92, .86, .76), .26)
+    eye_white = mat(f'{name} warm sclera', (.73, .66, .57), .26)
     seam = mat(f'{name} dark seams', (.11, .115, .12))
     blush = mat(f'{name} lip pigment', (.42, .19, .16))
     rig = create_armature(name)
@@ -159,36 +159,36 @@ def build_actor(name, palette):
     sphere('shouldered torso', (0, 0, 1.17), (.235, .16, .275), rig, 'Spine', materials['cloth'], 24, 16)
     sphere('waist', (0, .01, .94), (.18, .145, .16), rig, 'Hips', materials['cloth'], 20, 12)
     sphere('neck skin', (0, 0, 1.43), (.073, .071, .115), rig, 'Neck', skin_color, 14, 10)
-    sphere('sculpted head', (0, -.005, 1.61), (.133, .115, .178), rig, 'Head', skin_color, 24, 18)
-    sphere('nose', (0, -.126, 1.59), (.027, .052, .046), rig, 'Head', skin_color, 14, 10)
+    sphere('sculpted head', (0, -.005, 1.61), (.130, .113, .174), rig, 'Head', skin_color, 24, 18)
+    sphere('nose', (0, -.121, 1.59), (.023, .038, .044), rig, 'Head', skin_color, 14, 10)
     sphere('chin', (0, -.078, 1.48), (.085, .048, .037), rig, 'Head', skin_color)
     for sign, side in ((-1, 'L'), (1, 'R')):
         sphere(f'{side} ear', (sign*.128, 0, 1.60), (.031, .028, .066), rig, 'Head', skin_color)
-        sphere(f'{side} eye white', (sign*.052, -.111, 1.636), (.034, .018, .025), rig, 'Head', eye_white, 16, 10)
-        sphere(f'{side} dark pupil', (sign*.052, -.127, 1.635), (.016, .009, .018), rig, 'Head', eye, 14, 10)
-        tube(f'{side} eyebrow', [(sign*.027, -.122, 1.677),
-             (sign*.052, -.121, 1.683), (sign*.084, -.102, 1.674)], .006,
+        sphere(f'{side} eye white', (sign*.051, -.105, 1.633), (.025, .014, .016), rig, 'Head', eye_white, 16, 10)
+        sphere(f'{side} dark pupil', (sign*.051, -.117, 1.632), (.012, .007, .012), rig, 'Head', eye, 14, 10)
+        tube(f'{side} eyebrow', [(sign*.027, -.111, 1.661),
+             (sign*.052, -.113, 1.668), (sign*.08, -.098, 1.658)], .006,
              rig, 'Head', materials['hair'])
-        sphere(f'{side} upper arm', (sign*.275, -.005, 1.17), (.086, .086, .155),
+        sphere(f'{side} upper arm', (sign*.275, -.005, 1.17), (.073, .071, .16),
                rig, f'UpperArm.{side}', materials['cloth'], 18, 12)
-        sphere(f'{side} forearm', (sign*.37, -.025, .95), (.068, .067, .138),
+        sphere(f'{side} forearm', (sign*.37, -.025, .95), (.058, .056, .137),
                rig, f'Forearm.{side}', materials['cloth_dark'], 16, 10)
-        sphere(f'{side} hand', (sign*.39, -.06, .79), (.047, .038, .075),
+        sphere(f'{side} hand', (sign*.39, -.06, .79), (.044, .038, .064),
                rig, f'Hand.{side}', skin_color)
-        sphere(f'{side} thigh', (sign*.125, .005, .67), (.108, .116, .225),
+        sphere(f'{side} thigh', (sign*.125, .005, .67), (.089, .098, .235),
                rig, f'Thigh.{side}', materials['pants'], 20, 12)
-        sphere(f'{side} shin', (sign*.125, .008, .325), (.089, .095, .20),
+        sphere(f'{side} shin', (sign*.125, .008, .325), (.073, .079, .21),
                rig, f'Shin.{side}', materials['pants'], 18, 10)
-        sphere(f'{side} shoe', (sign*.125, -.09, .09), (.103, .19, .09),
+        sphere(f'{side} shoe', (sign*.125, -.09, .09), (.088, .165, .073),
                rig, f'Foot.{side}', materials['cloth_dark'], 18, 10)
-    tube('natural smile', [(-.045, -.124, 1.526), (0, -.135, 1.515),
-         (.046, -.124, 1.526)], .005, rig, 'Head', blush)
+    tube('natural smile', [(-.039, -.112, 1.526), (0, -.125, 1.516),
+         (.039, -.112, 1.526)], .0035, rig, 'Head', blush)
 
     if name == 'nada':
         # Field researcher: tailored indigo trousers, olive vest, pockets, orange scarf.
-        sphere('dark hair crown', (0, .023, 1.746), (.133, .123, .091),
+        sphere('dark hair crown', (0, .027, 1.750), (.125, .121, .079),
                rig, 'Head', materials['hair'], 20, 12)
-        sphere('pony tail', (0, .126, 1.61), (.065, .068, .205),
+        sphere('pony tail', (0, .118, 1.61), (.052, .057, .175),
                rig, 'Head', materials['hair'])
         cyl('field vest hem', (0, 0, .998), .19, .23, rig, 'Hips', materials['cloth_dark'], radius_top=.208)
         for sign in (-1, 1):
@@ -199,6 +199,12 @@ def build_actor(name, palette):
                  rig, 'Spine', materials['accent'])
         tube('field scarf drape', [(-.06, -.115, 1.417), (0, -.10, 1.39),
              (.11, -.03, 1.415)], .027, rig, 'Neck', materials['scarf'])
+        tube('field vest zipper', [(0, -.159, 1.33), (0, -.164, 1.19),
+             (0, -.155, 1.04)], .0045, rig, 'Spine', materials['accent'])
+        for sign in (-1, 1):
+            tube('cotton elbow cuff seam', [(sign*.338, -.069, .96),
+                 (sign*.385, -.077, .92), (sign*.425, -.044, .92)], .004,
+                 rig, f'Forearm.{"L" if sign < 0 else "R"}', materials['accent'])
         block('water data tablet', (.39, -.124, .78), (.16, .034, .22),
               rig, 'Hand.R', seam)
         block('tablet blue glass', (.39, -.145, .78), (.135, .005, .175),
@@ -213,7 +219,7 @@ def build_actor(name, palette):
                  rig, 'Hips', materials['cloth_dark'])
         cyl('white cotton prayer cap', (0, 0, 1.78), .13, .105,
             rig, 'Head', materials['scarf'], radius_top=.115, vertices=28)
-        sphere('silver beard', (0, -.079, 1.493), (.099, .085, .102),
+        sphere('silver beard', (0, -.079, 1.493), (.082, .079, .083),
                rig, 'Head', materials['hair'], 20, 14)
         for sign in (-1, 1):
             sphere('beard cheek', (sign*.087, -.065, 1.51), (.04, .06, .066),
@@ -221,19 +227,25 @@ def build_actor(name, palette):
         # Cane follows the left hand, is floor-reaching and remains a prop.
         cyl('lightweight wooden staff', (-.405, -.08, .43), .019, .85,
             rig, 'Hand.L', materials['accent'], vertices=10)
+        tube('galabeya embroidered neckline', [(-.09, -.115, 1.355),
+             (0, -.16, 1.31), (.09, -.115, 1.355)], .010,
+             rig, 'Spine', materials['accent'])
+        tube('galabeya hem edge', [(-.24, -.16, .28), (-.12, -.25, .28),
+             (0, -.26, .28), (.12, -.25, .28), (.24, -.16, .28)], .008,
+             rig, 'Hips', materials['cloth_dark'])
     else:
         # Maryam: indigo layered rural tunic, rose tarha with fabric tail, ledger.
         cyl('indigo working dress', (0, 0, .81), .30, 1.0, rig, 'Hips',
             materials['cloth'], radius_top=.17, vertices=28)
         tube('embroidered dress neckline', [(-.10, -.13, 1.36), (0, -.165, 1.315),
              (.10, -.13, 1.36)], .012, rig, 'Spine', materials['accent'])
-        sphere('headscarf crown', (0, .025, 1.76), (.147, .135, .092),
+        sphere('headscarf crown', (0, .025, 1.76), (.128, .125, .082),
                rig, 'Head', materials['scarf'], 24, 12)
         tube('headscarf frame', [(-.125, -.047, 1.695), (-.125, -.10, 1.605),
              (-.087, -.10, 1.50), (.087, -.10, 1.50),
              (.125, -.10, 1.605), (.125, -.047, 1.695)], .018,
              rig, 'Head', materials['scarf'])
-        sphere('folded scarf tail', (.16, .14, 1.52), (.075, .062, .215),
+        sphere('folded scarf tail', (.15, .132, 1.54), (.055, .050, .172),
                rig, 'Head', materials['scarf'])
         tube('tarha copper embroidery', [(-.12, .01, 1.764),
              (0, -.084, 1.794), (.12, .01, 1.764)], .008, rig, 'Head', materials['accent'])
@@ -241,6 +253,9 @@ def build_actor(name, palette):
               rig, 'Hand.R', materials['accent'])
         block('notebook cover', (.40, -.15, .785), (.205, .009, .265),
               rig, 'Hand.R', materials['cloth_dark'])
+        tube('dress handstitched side trim', [(-.17, -.09, 1.17),
+             (-.205, -.15, .9), (-.27, -.16, .38)], .006,
+             rig, 'Hips', materials['accent'])
 
     animate(rig, name)
     bpy.ops.object.select_all(action='DESELECT')
