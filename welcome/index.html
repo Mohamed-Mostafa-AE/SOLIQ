@@ -30,6 +30,8 @@
       <a href="#approach">How it works</a>
       <a href="#data">Earth data</a>
       <a href="#research">Research</a>
+      <a href="../experience/play/">The game</a>
+      <a href="../pitch-3d/">3D Pitch</a>
     </nav>
     <a class="nav-cta" href="../#overview">Open the app <span>↗</span></a>
     <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span></button>
@@ -42,15 +44,16 @@
           <article class="story-panel hero-panel" data-scroll-step="0">
             <div class="giant-title" aria-hidden="true">EARTH</div>
             <div class="hero-copy">
-              <p class="eyebrow"><span class="eyebrow-line"></span> NASA SPACE APPS / EARTH OBSERVATION</p>
-              <h1>SEE THE FIELD.<br>UNDERSTAND THE<br><em>SEASON.</em></h1>
-              <p class="hero-description">Crop-rotation choices are becoming harder as heat, rainfall and water availability shift. Soil-IQ turns environmental evidence and local farm context into comparisons farmers can explore.</p>
+              <p class="eyebrow"><span class="eyebrow-line"></span> A WORLD OF WATER. A WORLD OF CHOICES.</p>
+              <h1>ONE CANAL.<br><em>SIX FAMILIES.</em></h1>
+              <p class="hero-description">At dawn in the Nile Delta, six families face the same water turn—and no simple answer. Explore the fictional conflict in The Seventh Field, then test real crop-rotation questions with dated NASA weather and declared field assumptions.</p>
               <div class="hero-actions">
                 <a class="button button-primary" href="../#overview">Explore the app <span>↗</span></a>
                 <a class="button button-quiet" href="../experience/play/">Play the 3D prototype <span>↗</span></a>
                 <a class="button button-quiet" href="#challenge">Understand the challenge <span>↓</span></a>
               </div>
-              <p class="hero-disclaimer">A decision-support prototype — not an automated prescription.</p>
+              <div class="hero-proof-strip" aria-label="Soil-IQ evidence boundaries"><span><b>01</b> NASA WEATHER WHEN RETRIEVED</span><span><b>02</b> DECLARED FIELD ASSUMPTIONS</span><span><b>03</b> SIMULATED GAME CHOICES</span></div>
+              <p class="hero-disclaimer">The game is fictional; the decision tool compares scenarios, not field prescriptions.</p>
             </div>
             <div class="scroll-cue"><span class="scroll-line"></span><span>SCROLL TO EXPLORE</span><span>↓</span></div>
           </article>
@@ -118,6 +121,47 @@
       </div>
     </section>
 
+
+    <section class="decision-preview" id="decision-preview" aria-labelledby="decision-title">
+      <div class="decision-grid">
+        <div class="decision-copy">
+          <p class="decision-kicker">THE SEVENTH FIELD / CHAPTER 0</p>
+          <h2 id="decision-title">THE CANAL IS LOW.<em>WHO GOES FIRST?</em></h2>
+          <p class="decision-intro">An original Egyptian story with competing livelihoods, uncertain evidence and a shared resource. Preview the tensions below; your actual choices begin inside the playable chapter.</p>
+          <div class="decision-choices" role="group" aria-label="Preview a story theme">
+            <button type="button" data-preview-choice="water" aria-pressed="true">01 / Share water</button>
+            <button type="button" data-preview-choice="soil" aria-pressed="false">02 / Protect soil</button>
+            <button type="button" data-preview-choice="evidence" aria-pressed="false">03 / Ask for evidence</button>
+          </div>
+          <div class="decision-result" id="decision-result" role="status" aria-live="polite" aria-atomic="true">
+            <span class="decision-evidence" data-preview-label>SIMULATED STORY</span>
+            <h3 data-preview-title>Who receives the last turn?</h3>
+            <p data-preview-text>Six fictional families share one canal. A proportional schedule is a possibility to test—not evidence that downstream fields received water.</p>
+          </div>
+          <div class="decision-preview-actions">
+            <a class="decision-primary" href="../walkthrough/">Compare crop rotation scenarios <span aria-hidden="true">↗</span></a>
+            <a class="decision-secondary" href="../experience/play/">Enter The Seventh Field ↗</a>
+          </div>
+          <p class="decision-disclosure">Illustrative story preview, not an Earth observation or a live hydrological measurement. The scientific workspace remains the primary decision-support tool.</p>
+        </div>
+        <div class="delta-art" id="delta-art" data-mode="water" aria-hidden="true">
+          <div class="delta-sun"></div>
+          <div class="delta-horizon"></div>
+          <div class="delta-village"></div>
+          <div class="delta-palm delta-palm--left"></div>
+          <div class="delta-palm delta-palm--right"></div>
+          <div class="delta-bank"></div>
+          <div class="delta-field delta-field--near"></div>
+          <div class="delta-field delta-field--far"></div>
+          <div class="delta-canal"></div>
+          <div class="delta-sluice"></div>
+          <div class="delta-bridge"></div>
+          <div class="delta-house"></div>
+          <div class="delta-chapter-tag">EGYPTIAN DELTA / DAWN</div>
+          <div class="delta-fiction">ARTISTIC ILLUSTRATION · SIMULATED STORY</div>
+        </div>
+      </div>
+    </section>
 
     <section class="field-bridge" id="field-context" aria-labelledby="field-bridge-title">
       <div class="field-artwork" aria-hidden="true">
