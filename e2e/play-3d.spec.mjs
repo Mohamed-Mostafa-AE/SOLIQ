@@ -359,6 +359,8 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await page.locator('#btn-story-desk').click();
     const story = page.locator('#story-desk');
     await expect(story).toBeVisible();
+    await expect(story.locator('#story-checkpoint-save')).toBeVisible();
+    await expect(story.locator('#story-checkpoint-help')).toContainText('Nothing is saved automatically');
     await expect(page.locator('#story-desk-source')).toContainText('SIMULATED STORY');
     await expect(page.locator('#renderCanvas')).toHaveJSProperty('inert', true);
     await expect(page.locator('#story-beat-title')).toContainText('The Seventh Field');
