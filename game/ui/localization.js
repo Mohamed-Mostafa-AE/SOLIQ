@@ -9,6 +9,7 @@ const UI_TEXT = Object.freeze({
   '#btn-earth-lens .label': ['Earth Lens', 'عدسة الأرض'],
   '#btn-notebook .label': ['Evidence', 'دفتر الأدلة'],
   '#btn-camera .label': ['Camera', 'استراتيجي'],
+  '#btn-story-desk .label': ['Story mode', 'وضع القصة'],
   '.lens-label': ['View mode:', 'وضع الرؤية:'],
   '[data-lens="ground"]': ['🌱 Village Ground', '🌱 واقع القرية (Ground)'],
   '[data-lens="nasa"]': ['🛰️ NASA Source Context', '🛰️ رصد NASA الفضائي'],
@@ -48,15 +49,18 @@ const UI_TEXT = Object.freeze({
   '#btn-touch-interact': ['Interact ⚡', 'تفاعل ⚡'],
   '#btn-touch-lens': ['Lens 🛰️', 'عدسة 🛰️'],
   '#btn-touch-book': ['Notebook 📖', 'دفتر 📖'],
+  '#btn-touch-story': ['Story 📜', 'قصة 📜'],
 });
 const UI_TITLES = Object.freeze({
   '#btn-earth-lens': ['Earth Lens (1/2/3)', 'عدسة الأرض (1/2/3)'],
   '#btn-notebook': ['Evidence Notebook (N)', 'دفتر الأدلة (N)'],
   '#btn-camera': ['Switch camera (Tab)', 'تبديل الكاميرا (Tab)'],
+  '#btn-story-desk': ['Accessible text-first story mode', 'مسار القصة النصي الميسّر'],
   '#btn-settings': ['Settings', 'الإعدادات'],
   '#btn-touch-interact': ['Interact', 'تفاعل'],
   '#btn-touch-lens': ['Earth Lens', 'العدسة'],
   '#btn-touch-book': ['Evidence Notebook', 'الدفتر'],
+  '#btn-touch-story': ['Accessible story mode', 'وضع القصة الميسّر'],
 });
 const FORM_LABELS = Object.freeze({
   '#select-quality': ['Graphics quality:', 'جودة الرسوم (Graphics Preset):'],
