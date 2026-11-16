@@ -275,7 +275,7 @@ export class GameHUD {
     });
 
     // This setting previously rendered a checkbox without any behavior.
-    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
     el.chkReducedMotion.checked = prefersReducedMotion;
     document.body.classList.toggle('reduced-motion', prefersReducedMotion);
     el.chkReducedMotion.addEventListener('change', (e) => {
