@@ -23,15 +23,29 @@
 .chapter-later-launch:hover { filter: brightness(1.12); }
 .chapter-later-launch:focus-visible { outline: 3px solid #ffefb9; outline-offset: 3px; }
 @media (max-width: 640px) {
+  /* A narrow left-side chapter dock stays away from the fixed mobile
+     Interact / Lens / Notebook / Story rail on the right. */
+  #game-ui-container > #chapter1-launch {
+    left: 10px;
+    right: auto;
+    max-width: min(210px, calc(100vw - 90px));
+  }
+  #chapter2-launch {
+    top: 309px;
+    left: 10px;
+    right: auto;
+    width: min(220px, calc(100vw - 90px));
+  }
   .chapter-later-launch {
-    right: 14px;
-    width: min(275px, calc(100vw - 28px));
+    left: 10px;
+    right: auto;
+    width: min(220px, calc(100vw - 90px));
     padding: 8px 12px;
     min-height: 46px;
     font-size: .81rem;
   }
-  #chapter3-launch { top: 209px; }
-  #chapter4-launch { top: 268px; }
+  #chapter3-launch { top: 378px; }
+  #chapter4-launch { top: 448px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .chapter-later-launch { animation: none !important; transition: none !important; }

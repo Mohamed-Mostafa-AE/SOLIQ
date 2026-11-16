@@ -68,6 +68,21 @@ test('Babylon council outcome genuinely unlocks Chapters 1–4 and the fictional
   });
   expect(state).toEqual(['result', 'result', 'result', 'result', 'SIMULATED', false]);
   await page.screenshot({ path: 'test-results/seventh-field-four-chapter-finale-3d.png' });
+  await page.locator('#chapter4-harvest-council .harvest-close').click();
+  await page.setViewportSize({ width: 360, height: 740 });
+  const dock = await page.evaluate(() => {
+    const boxes = [1, 2, 3, 4].map(n => document.querySelector(`#chapter${n}-launch`).getBoundingClientRect());
+    const rail = [...document.querySelectorAll('.mobile-action-bar .mobile-btn')]
+      .filter(el => getComputedStyle(el).display !== 'none')
+      .map(el => el.getBoundingClientRect());
+    const intersection = (a,b) => Math.max(0, Math.min(a.right,b.right)-Math.max(a.left,b.left))
+      * Math.max(0, Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+    return { allVisible: boxes.every(rect=>rect.width>0&&rect.height>0),
+      railCollision: boxes.some(a=>rail.some(b=>intersection(a,b)>0)),
+      selfCollision: boxes.some((a,i)=>boxes.slice(i+1).some(b=>intersection(a,b)>0)) };
+  });
+  expect(dock).toEqual({ allVisible: true, railCollision: false, selfCollision: false });
+  await page.screenshot({ path: 'test-results/seventh-field-four-chapter-mobile-dock.png' });
 });
 
 test('Arabic 360px no-WebGL journey reaches finale, then replay invalidates downstream state', async ({ page }) => {
