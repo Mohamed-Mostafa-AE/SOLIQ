@@ -31,7 +31,7 @@ test('illustrative soil and crop materials have detail textures, not plain featu
  if(result.quality==='low')expect(result.plantCount).toBeGreaterThanOrEqual(250);
  else expect(result.plantCount).toBeGreaterThan(600);
  // Decorative sculpted details are intentionally omitted in low preset,
- // but all three rigged, playable actors must still exist and remain usable.
+ // but all three base playable actor nodes must still exist and remain usable.
  expect(result.playableActorsPresent).toBe(true);
  if(result.quality==='low'){
   expect(result.actors).toBe(0);
