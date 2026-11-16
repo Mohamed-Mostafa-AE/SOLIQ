@@ -1,7 +1,46 @@
 {
   "schemaVersion": 1,
-  "policy": "Reference-only candidates. No third-party character, texture, animation, movie still, voice or model is bundled until an exact per-file rights and quality review passes.",
+  "policy": "No third-party character, texture, animation, movie still, voice or model is bundled until per-file rights review. Original first-party GLB characters are audited below.",
   "items": [
+    {
+      "id": "original-nada-glb",
+      "kind": "human-base",
+      "creator": "Soil-IQ project (Blender-authored original fictional geometry and animation)",
+      "url": "https://github.com/Mohamed-Mostafa-AE/SOLIQ/tree/release/soil-iq-unified-20261116/game/assets/models",
+      "licenseUrl": "https://github.com/Mohamed-Mostafa-AE/SOLIQ/blob/release/soil-iq-unified-20261116/game/assets/models/PROVENANCE.md",
+      "expectedLicense": "Original first-party project asset; no third-party reuse, separate external permission required",
+      "purpose": "Animated playable character Nada",
+      "status": "integrated",
+      "localPath": "game/assets/models/nada.glb",
+      "sha256": "ec887942a4662d994264231123b9e1b196a8cf226539dcf9db99ddfab5fb0f15",
+      "redistributionReviewed": true
+    },
+    {
+      "id": "original-hassan-glb",
+      "kind": "human-base",
+      "creator": "Soil-IQ project (Blender-authored original fictional geometry and animation)",
+      "url": "https://github.com/Mohamed-Mostafa-AE/SOLIQ/tree/release/soil-iq-unified-20261116/game/assets/models",
+      "licenseUrl": "https://github.com/Mohamed-Mostafa-AE/SOLIQ/blob/release/soil-iq-unified-20261116/game/assets/models/PROVENANCE.md",
+      "expectedLicense": "Original first-party project asset; no third-party reuse, separate external permission required",
+      "purpose": "Animated fictional elder farmer Hassan",
+      "status": "integrated",
+      "localPath": "game/assets/models/hassan.glb",
+      "sha256": "f8ddff64423a857f4c9579c94cd8ce15b5f29533da60d84063f854cd22c49bf4",
+      "redistributionReviewed": true
+    },
+    {
+      "id": "original-maryam-glb",
+      "kind": "human-base",
+      "creator": "Soil-IQ project (Blender-authored original fictional geometry and animation)",
+      "url": "https://github.com/Mohamed-Mostafa-AE/SOLIQ/tree/release/soil-iq-unified-20261116/game/assets/models",
+      "licenseUrl": "https://github.com/Mohamed-Mostafa-AE/SOLIQ/blob/release/soil-iq-unified-20261116/game/assets/models/PROVENANCE.md",
+      "expectedLicense": "Original first-party project asset; no third-party reuse, separate external permission required",
+      "purpose": "Animated fictional cooperative farmer Maryam",
+      "status": "integrated",
+      "localPath": "game/assets/models/maryam.glb",
+      "sha256": "53e77bd31ddeb7fa64f7890f963d4c534237e6e4d29ed0d14ae436e8a79d7684",
+      "redistributionReviewed": true
+    },
     {
       "id": "makehuman-core-characters",
       "kind": "human-base",
