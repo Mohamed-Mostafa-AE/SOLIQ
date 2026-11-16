@@ -218,6 +218,26 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#hud-objective-title')).toContainText('Mission:');
   });
 
+  test('Evidence Notebook opens the actual crop-rotation decision workspace', async ({ page }) => {
+    await startSession(page);
+    await page.locator('#btn-notebook').click();
+    await page.locator('[data-nbtab="provenance"]').click();
+    const link = page.locator('#open-rotation-workspace');
+    await expect(link).toBeVisible();
+    await expect(link).toContainText('Crop Rotation');
+    await expect(link).toHaveAttribute('href', '../../#rotations');
+    await expect(link).toHaveAttribute('rel', /noopener/);
+    const [rotationPage] = await Promise.all([
+      page.waitForEvent('popup'),
+      link.click(),
+    ]);
+    await rotationPage.waitForLoadState('domcontentloaded');
+    await expect(rotationPage).toHaveURL(/\/#rotations$/);
+    await expect(rotationPage).toHaveTitle(/Soil-IQ.*Crop rotation explorer/);
+    await expect(rotationPage.locator('[data-view="rotations"]').first()).toBeVisible();
+    await rotationPage.close();
+  });
+
   test('Pump mission requires player safety checks before irrigation and logs SDG learning', async ({ page }) => {
     await startSession(page);
     for (let step = 0; step < 3; step++) {
