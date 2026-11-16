@@ -1,15 +1,14 @@
 import {test,expect} from '@playwright/test';
+import {readGameFrame,assertUsefulGameFrame} from './helpers/game-frame.mjs';
 test('Earth Lens future preserves natural soil, water and plants instead of fake cyan field blocks',async({page})=>{
  await page.goto('/experience/play/');
  await page.waitForFunction(()=>Boolean(window.__seventhFieldGame?.isInitialized),null,{timeout:30000});
  const initial=await page.evaluate(()=>{
   const g=window.__seventhFieldGame;
   return {colors:g.village.fields.slice(0,6).map(f=>f.material.albedoColor.asArray()),
-    roughness:g.village.fields.slice(0,6).map(f=>f.material.roughness),
-    radius:g.renderSetup.cameras.follow.radius,beta:g.renderSetup.cameras.follow.beta};
+    roughness:g.village.fields.slice(0,6).map(f=>f.material.roughness)};
  });
- expect(initial.radius).toBeLessThan(10);
- expect(initial.beta).toBeGreaterThan(1);
+ assertUsefulGameFrame(expect,await readGameFrame(page));
  const modes=await page.evaluate(()=>{
    const g=window.__seventhFieldGame;
    return ['future','nasa','ground'].map(mode=>{

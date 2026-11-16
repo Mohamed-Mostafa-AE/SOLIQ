@@ -1,6 +1,6 @@
 /**
- * SOLIQ: The Seventh Field - Main Game Orchestrator
- * Connects Babylon.js 3D world, rigged characters, real mesqa simulation,
+ * Soil-IQ: The Seventh Field - Main Game Orchestrator
+ * Connects Babylon.js 3D world, rigged characters, fictional mesqa simulation,
  * Chapter 0 mission, Earth Lens, Time Echo, and responsive diegetic HUD.
  */
 
@@ -20,6 +20,7 @@ import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
 import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
 import { OpeningHook } from '../../game/ui/opening-hook.js';
+import { CinematicDirector } from './cinematic-director.js';
 import { mountChapterSequence } from './chapter-progression.js';
 import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
@@ -47,6 +48,9 @@ class SeventhFieldGame {
     this.openingHook = null;
 
     this.isReady = false;
+    this.renderLoopStarted = false;
+    this.previewFrames = 0;
+    this.previewTimer = null;
   }
 
   async init() {
@@ -74,11 +78,17 @@ class SeventhFieldGame {
     // Aim at the actual playable heroine before the first rendered frame.
     // Otherwise ArcRotateCamera's origin target shows empty soil rather than
     // the heroine and the planted canal edge, making the game feel lifeless.
-    cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0,1.38,0)));
+    cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0.5, 1.55, 4.2)));
     // ArcRotateCamera.setTarget preserves eye position and therefore silently
     // expands the radius; restore the intended human-scale follow framing.
-    cameras.follow.radius=8.5;
-    cameras.follow.beta=1.20;
+    // Frame Nada diagonally with the canal, crops and village behind her.
+    // Looking straight along the path left most of the meaningful world out
+    // of the first controllable view, even after the opening shot ended.
+    cameras.follow.alpha = -2.05;
+    cameras.follow.radius = 9.2;
+    // A lower over-shoulder camera reveals the horizon and canal behind Nada;
+    // the previous steep isometric angle showed mostly bare brown dirt.
+    cameras.follow.beta = 1.23;
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
@@ -110,8 +120,20 @@ class SeventhFieldGame {
     this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
     this.nasaBrowseOverlay.setLanguage(this.hud.lang);
     this._setupPlayerControls(cameras);
+    this.cinematicDirector = new CinematicDirector(this.renderSetup, this.characters, this.playerController);
 
     this.isInitialized = true;
+    // The intro needs live WebGL frames even before Start; a single draw may
+    // lose its backbuffer before the translucent splash is composited. Cap
+    // preview at 24fps, pause when hidden, and stop after a few frames when
+    // reduced motion is requested. Never advance game/simulation time here.
+    this.renderSetup.scene.render();
+    this.previewFrames = 1;
+    this.previewTimer = window.setInterval(() => {
+      if (document.hidden || (this.renderSetup.reducedMotion && this.previewFrames >= 3)) return;
+      this.renderSetup.scene.render();
+      this.previewFrames += 1;
+    }, 1000 / 24);
     this._updateProgress(100, 'اكتملت التهيئة بنجاح!');
     this._showStartButton();
   }
@@ -133,6 +155,11 @@ class SeventhFieldGame {
   }
 
   start() {
+    document.body.classList.remove('game-intro-active');
+    if (this.previewTimer !== null) {
+      window.clearInterval(this.previewTimer);
+      this.previewTimer = null;
+    }
     if (this.loader) {
       this.loader.style.opacity = '0';
       this.loader.style.display = 'none';
@@ -143,10 +170,11 @@ class SeventhFieldGame {
       this.audio.resume();
     }
 
-    if (this.renderSetup) {
+    if (this.renderSetup && !this.renderLoopStarted) {
       this.renderSetup.startRenderLoop((deltaTime) => {
         this.tick(deltaTime);
       });
+      this.renderLoopStarted = true;
     }
 
     this.isReady = true;
@@ -238,14 +266,16 @@ class SeventhFieldGame {
     });
     this.storyDesk.setLanguage(this.hud.lang);
     this.openingHook = new OpeningHook(document.body, this.mission, {
+      onPreview: (clue) => this.cinematicDirector?.preview(clue),
       onInvestigation: (clue) => {
+        this.cinematicDirector?.choose(clue);
         this.storyDesk.refresh();
         const en = this.hud.lang === 'en';
         this.hud.showTelemetryToast(
           en ? (clue === 'water' ? 'Your first clue: the canal ledger' : 'Your first clue: the crop calendar')
             : (clue === 'water' ? 'أول خيط: دفتر المسقة' : 'أول خيط: تقويم المحاصيل'),
-          en ? 'A question, not an answer. Meet Hassan and Maryam; your investigation is recorded in the evidence notebook.'
-            : 'ده سؤال مش إجابة. اتكلم مع حسن ومريم؛ بداية بحثك اتسجلت في دفتر الأدلة.',
+          en ? `Your first witness: ${clue === 'water' ? 'Hassan by Canal Gate 1' : 'Maryam by the soil-cover field'}. Follow the glowing marker or open Story Mode. Both crop plans remain untested.`
+            : `أول شخصية هتقابلها: ${clue === 'water' ? 'حسن عند بوابة المسقة' : 'مريم عند غيط غطاء التربة'}. اتبع العلامة المضيئة أو افتح وضع القصة. الخطتان غير مختبرتين.`,
           'simulated'
         );
       },
@@ -323,6 +353,15 @@ class SeventhFieldGame {
   tick(deltaTime) {
     // 1. Update player locomotion and proximity
     this.playerController.update(deltaTime);
+    this.cinematicDirector?.tick(deltaTime);
+    // Place the human protagonist in the foreground while keeping the
+    // livelihood stakes (canal, sakia, crop fields) in the shot. Controls.js
+    // recentres the follow target on movement; re-apply this composition after
+    // its update so walking never silently returns to an empty soil closeup.
+    if (!this.cinematicDirector?.active && !this.playerController.isCameraIso) {
+      const p = this.characters.nada.root.position;
+      this.renderSetup.cameras.follow.target.set(p.x + 0.5, p.y + 1.55, p.z + 4.2);
+    }
 
     // 2. Update character skeletal animations
     this.characters.updateAnimations(deltaTime);

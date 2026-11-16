@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {readGameFrame,assertUsefulGameFrame} from './helpers/game-frame.mjs';
 
 test('illustrative soil and crop materials have detail textures, not plain featureless color blocks',async({page})=>{
  const pageErrors=[];
@@ -15,8 +16,7 @@ test('illustrative soil and crop materials have detail textures, not plain featu
     quality:g.renderSetup.quality,plantCount:g.visualArtReport.plants.plants,
     actors:g.visualArtReport.characters.enhanced,
     actorDetailReason:g.visualArtReport.characters.reason,
-    playableActorsPresent:!!(g.characters?.nada&&g.characters?.hassan&&g.characters?.maryam),
-    cameraRadius:g.renderSetup.cameras.follow.radius};
+    playableActorsPresent:!!(g.characters?.nada&&g.characters?.hassan&&g.characters?.maryam)};
  });
  expect(result.surface.textures).toBe(4);
  expect(result.surface.kind).toBe('original_procedural_illustrative_art');
@@ -37,6 +37,6 @@ test('illustrative soil and crop materials have detail textures, not plain featu
   expect(result.actors).toBe(0);
   expect(result.actorDetailReason).toBe('low performance preset');
  }else expect(result.actors).toBe(3);
- expect(result.cameraRadius).toBeLessThan(10);
+ assertUsefulGameFrame(expect,await readGameFrame(page));
  expect(pageErrors).toEqual([]);
 });
