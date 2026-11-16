@@ -47,6 +47,6 @@
 .evidence-panel footer a{color:#f7dd98;text-decoration:underline;text-underline-offset:3px;font-weight:700}
 [dir=rtl] .evidence-close{right:auto;left:clamp(14px,3vw,40px)}
 @keyframes soil-iq-current{from{translate:-5% 0}to{translate:5% 0}}
-@media(max-width:800px){.evidence-cards{grid-template-columns:1fr}.evidence-card{min-height:0}.evidence-actions{grid-template-columns:1fr}.evidence-close span{display:none}.evidence-panel footer{display:block}.evidence-prev{display:block}.evidence-prev>*{display:inline-block;margin:3px}}
+@media(max-width:800px){.evidence-moon{right:-18%;top:7%;opacity:.1}.evidence-cards{grid-template-columns:1fr}.evidence-card{min-height:0}.evidence-actions{grid-template-columns:1fr}.evidence-close span{display:none}.evidence-panel footer{display:block}.evidence-prev{display:block}.evidence-prev>*{display:inline-block;margin:3px}}
 @media(max-width:400px){.evidence-panel{padding:54px 16px 20px}.evidence-header h2{font-size:36px}.evidence-card{padding:18px}.evidence-kicker{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.evidence-ripples{animation:none}.evidence-card,.evidence-actions button{transition:none!important;transform:none!important}}

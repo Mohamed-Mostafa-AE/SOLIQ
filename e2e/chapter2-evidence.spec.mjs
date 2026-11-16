@@ -37,6 +37,8 @@ test('Chapter 2 is playable as a keyboard-accessible, honest evidence puzzle', a
   await board.getByRole('button', { name: /Pause for evidence/ }).click();
   await expect(board.getByText(/requests dated weather evidence and a local soil measurement/)).toBeVisible();
   await expect(board.locator('.evidence-badge')).toHaveText('SIMULATED GAME RESULT');
+  const titleTop = await board.locator('.evidence-header h2').evaluate(node => node.getBoundingClientRect().top);
+  expect(titleTop).toBeGreaterThanOrEqual(0);
   await page.screenshot({ path: 'test-results/chapter2-honest-evidence-desktop.png' });
 
   await board.getByRole('button', { name: 'Replay this puzzle' }).click();
@@ -51,6 +53,7 @@ test('Chapter 2 works at 360px with Arabic, reduced motion and no 3D canvas', as
   await loadEvidenceBoard(page, 'ar');
   await expect(page.locator('.soil-iq-evidence-board')).toHaveAttribute('dir', 'rtl');
   await expect(page.getByText('تنبؤ من غير مصدر؟')).toBeVisible();
+  await expect(page.locator('.evidence-prev strong')).toHaveText('B · أول المسقة أولًا');
   const state = await page.evaluate(() => ({
     outer: document.querySelector('.soil-iq-evidence-board').scrollWidth,
     inner: document.querySelector('.soil-iq-evidence-board').clientWidth,

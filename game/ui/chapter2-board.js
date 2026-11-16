@@ -3,6 +3,7 @@ import { Chapter2EvidenceMission, EVIDENCE_CARDS, EVIDENCE_CLASSES } from '../mi
 const words = {
   en: {
     chapter: 'CHAPTER 2 · THE EVIDENCE GAP', title: 'A forecast with no source?',
+    strategies: { balanced: 'shared turns', head_first: 'headgate first', tail_buffer: 'tail reserve' },
     premise: 'At the council, somebody declares that the Seventh Field will flourish. Nada asks a harder question: what do we actually know?',
     prior: 'YOUR FICTIONAL PREVIOUS PLAN', source: 'CLASSIFY THE EVIDENCE',
     instruction: 'Read each clue. Choose what its source status really is. The three correct classifications unlock the council response.',
@@ -19,6 +20,7 @@ const words = {
   },
   ar: {
     chapter: 'الفصل الثاني · فجوة الأدلة', title: 'تنبؤ من غير مصدر؟',
+    strategies: { balanced: 'نوبات مشتركة', head_first: 'أول المسقة أولًا', tail_buffer: 'احتياطي آخر المسقة' },
     premise: 'في المجلس حد بيقول إن الأرض السابعة هتنجح أكيد. ندى تسأل السؤال الأصعب: إحنا نعرف إيه فعلًا؟',
     prior: 'خطتك الخيالية السابقة', source: 'صنّف الأدلة',
     instruction: 'اقرأ كل دليل وحدد حالة مصدره الحقيقية. التصنيفات الثلاثة الصحيحة تفتح قرار المجلس.',
@@ -88,7 +90,7 @@ export function attachChapter2Game({ host = document.body, chapter1, language = 
           <span class="evidence-kicker">${t.chapter}</span>
           <button type="button" class="evidence-close" data-action="close">× <span>${t.close}</span></button>
           <h2>${t.title}</h2><p>${t.premise}</p>
-          <div class="evidence-prev"><span>${t.prior}</span><strong>${escapeHtml(mission.previous.planId)} · ${escapeHtml(mission.previous.strategy.replaceAll('_', ' '))}</strong><small>${t.model}</small></div>
+          <div class="evidence-prev"><span>${t.prior}</span><strong>${escapeHtml(mission.previous.planId)} · ${t.strategies[mission.previous.strategy]}</strong><small>${t.model}</small></div>
         </header>
         ${mission.phase === 'classify' ? `
           <div class="evidence-instruction"><h3>${t.source}</h3><p>${t.instruction}</p>
@@ -140,7 +142,15 @@ export function attachChapter2Game({ host = document.body, chapter1, language = 
       mission.replay(); render('#evidence-select-power'); onStateChange?.(mission);
     });
     root.querySelector('[data-action="close"]').addEventListener('click', close);
-    if (focusId) (root.querySelector(focusId) ?? root.querySelector('.evidence-close')).focus();
+    // Chapter panels are much shorter than the classification cards. Browser
+    // focus scrolling otherwise preserves the old card scroll position and
+    // crops the new chapter heading off-screen.
+    if (mission.phase !== 'classify') {
+      root.scrollTop = 0;
+      const heading = root.querySelector('.evidence-verdict h3');
+      heading?.setAttribute('tabindex', '-1');
+      heading?.focus({ preventScroll: true });
+    } else if (focusId) (root.querySelector(focusId) ?? root.querySelector('.evidence-close')).focus();
   }
 
   function handleKey(event) {
@@ -160,7 +170,9 @@ export function attachChapter2Game({ host = document.body, chapter1, language = 
     root.hidden = false;
     render();
     inertBackground();
-    (root.querySelector('[data-check]') || root.querySelector('[data-decision]') || root.querySelector('.evidence-close')).focus();
+    // Start at the visual top, not on the first card below the fold.
+    root.scrollTop = 0;
+    root.querySelector('.evidence-close').focus({ preventScroll: true });
   }
   function close() {
     if (root.hidden) return;
