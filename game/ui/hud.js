@@ -79,6 +79,7 @@ export class GameHUD {
             <div class="dialogue-avatar" id="dialogue-avatar">🧑‍🌾</div>
             <div class="dialogue-speaker" id="dialogue-speaker">عم حسن</div>
           </div>
+          <p id="dialogue-cue" class="dialogue-cue" role="status" aria-live="polite"></p>
           <div class="dialogue-content" id="dialogue-text">
             يا أهلاً يا باشمهندسة ندى...
           </div>
@@ -186,6 +187,7 @@ export class GameHUD {
       dialogueBox: q('#dialogue-box'),
       dialogueAvatar: q('#dialogue-avatar'),
       dialogueSpeaker: q('#dialogue-speaker'),
+      dialogueCue: q('#dialogue-cue'),
       dialogueText: q('#dialogue-text'),
       dialogueChoices: q('#dialogue-choices'),
       notebookModal: q('#notebook-modal'),
@@ -358,6 +360,8 @@ export class GameHUD {
     this.activeDialogue = dialogue;
     const el = this.elements;
     el.dialogueSpeaker.textContent = this.lang === 'ar' ? dialogue.speakerAr : dialogue.speakerEn;
+    const emotionAr = ({ neutral: 'محايد', hopeful: 'متفائل', concerned: 'قلق', satisfied: 'راضٍ', explaining: 'بيشرح', relieved: 'مرتاح' })[dialogue.emotion] || 'محايد';
+    el.dialogueCue.textContent = this.lang === 'ar' ? `الحالة: ${emotionAr}` : `Emotion: ${dialogue.emotion || 'neutral'}`;
     el.dialogueText.textContent = this.lang === 'ar' ? dialogue.textAr : dialogue.textEn;
 
     // Render choice buttons
@@ -365,6 +369,8 @@ export class GameHUD {
     dialogue.choices.forEach((c) => {
       const btn = document.createElement('button');
       btn.className = 'dialogue-choice-btn';
+      btn.type = 'button';
+      if (c.id) btn.dataset.choiceId = c.id;
       btn.textContent = this.lang === 'ar' ? c.labelAr : c.labelEn;
       btn.addEventListener('click', () => {
         c.onSelect?.();

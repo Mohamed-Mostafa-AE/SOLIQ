@@ -212,6 +212,18 @@ class SeventhFieldGame {
         this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
         this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
       },
+      onCheckpointRestored: () => {
+        // Reapply only fictional scene effects. The Chapter 0 snapshot never
+        // includes device location, NASA payloads or verified field evidence.
+        this.mission.rehydrateWorldEffects();
+        this.hud.updateNotebookReceipts(this.mission.notebookReceipts);
+        this.hud.updateWaterLedger(this.waterEngine.currentSimulation);
+      },
+      onCheckpointReset: () => {
+        // Rebuild the 3D world so previous gate, water and soil-material effects
+        // cannot linger after deleting/resetting fictional progress.
+        window.location.reload();
+      },
     });
     this.storyDesk.setLanguage(this.hud.lang);
     this.openingHook = new OpeningHook(document.body, this.mission, {

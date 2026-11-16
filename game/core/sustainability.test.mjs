@@ -14,5 +14,9 @@ test('outcome lessons never invent field-validated sustainability achievements',
   }
   assert.equal(sustainabilityLesson('deferral').metrics, null);
   assert.equal(sustainabilityLesson('equilibrium', { deliveredTotal: NaN, fairness: 1 }).metrics, null);
+  const limited = sustainabilityLesson('bottleneck', { deliveredTotal: 120, fairness: 0.85 });
+  assert.equal(limited.tradeoffAxes.waterFairness, 'simulated_allocation_shortfall');
+  assert.match(limited.tradeoffAxes.uncertaintyNoteEn, /head.to.tail|head.*tail/i,
+    'Never infer tail-end pressure from a supply-allocation solver');
   assert.throws(() => sustainabilityLesson('invented-success'), RangeError);
 });

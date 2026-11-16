@@ -894,6 +894,31 @@ body.reduced-motion .opening-hook *::after { animation: none !important; transit
 .story-scene-btn:hover, .story-choice-btn:hover { border-color: #f1ca7e; }
 .story-desk :is(button, a):focus-visible { outline: 3px solid #ffdf96; outline-offset: 3px; }
 .story-announcement { min-height: 1.6em; font-weight: 600; color: #e4d19f; }
+.story-checkpoint {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid #9cb5a5;
+  border-radius: 12px;
+  background: #173b32;
+}
+.story-checkpoint h3 { margin-top: 0; }
+#story-checkpoint-help { color: #e7f0e8; font-size: .9rem; }
+.story-checkpoint-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.story-checkpoint-buttons button {
+  flex: 1 1 145px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #b7d2bd;
+  background: #235b4d;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+#story-checkpoint-save { background: #c0e4ac; color: #10291f; }
+#story-checkpoint-reset { border-color: #dfbda7; }
+#story-checkpoint-status { min-height: 1.6em; color: #ffe4ac; font-weight: 700; }
 #story-rotation-link {
   display: inline-block;
   padding: 12px 16px;
