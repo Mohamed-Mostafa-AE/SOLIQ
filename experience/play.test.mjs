@@ -13,6 +13,11 @@ test('Dev server allows /experience/play/ and game/ assets', () => {
   assert.ok(resolvePublicPath('/experience/play/index.html'));
   assert.ok(resolvePublicPath('/experience/play/main.js'));
   assert.ok(resolvePublicPath('/experience/play/style.css'));
+  assert.ok(resolvePublicPath('/experience/play/story.html'));
+  assert.ok(resolvePublicPath('/experience/play/story-only.js'));
+  assert.ok(resolvePublicPath('/game/ui/story-desk.js'));
+  assert.ok(resolvePublicPath('/game/core/season-story.js'));
+
   assert.ok(resolvePublicPath('/game/render/engine-setup.js'));
   assert.ok(resolvePublicPath('/game/world/village.js'));
   assert.ok(resolvePublicPath('/game/assets/ATTRIBUTIONS.md'));
