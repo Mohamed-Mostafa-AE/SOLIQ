@@ -127,3 +127,43 @@ test('Completed fictional council outcome restores as a receipt-only checkpoint 
   assert.deepEqual(next.calls, [], 'restore must not restart world pump or recalculate evidence');
   assert.deepEqual(next.mission.getSerializableState(), snapshot);
 });
+
+test('Council proportional decision overrides Hassan head-priority capacity policy', () => {
+  const { mission, choose, calls } = makeMission();
+  choose('hassan', 'hassan_prioritize_wheat_livelihood');
+  assert.equal(mission.flags.selectedPolicy, 'capacity_limited');
+  choose('pumpStation', 'council_proportional');
+  assert.equal(mission.flags.selectedPolicy, 'proportional', 'the executed council outcome owns the simulated policy');
+  assert.equal(mission.flags.councilMode, 'standard_proportional');
+  assert.deepEqual(calls.find(([kind]) => kind === 'simulate')?.slice(1, 2), [235]);
+  assert.equal(mission.getSerializableState().flags.selectedPolicy, 'proportional');
+});
+
+test('Council bottleneck overrides Maryam agreement, while later deferral preserves the last simulated policy', () => {
+  const { mission, choose, calls } = makeMission();
+  choose('maryam', 'maryam_align_proportional');
+  assert.equal(mission.flags.selectedPolicy, 'proportional');
+  choose('pumpStation', 'council_bottleneck');
+  assert.equal(mission.flags.selectedPolicy, 'capacity_limited');
+  assert.equal(mission.flags.councilMode, 'bottleneck_overload');
+  assert.deepEqual(calls.find(([kind]) => kind === 'simulate')?.slice(1, 2), [120]);
+  choose('pumpStation', 'council_deferral');
+  assert.equal(mission.flags.selectedPolicy, 'capacity_limited', 'deferral does not run a new water policy');
+  assert.equal(mission.flags.pumpStarted, false);
+});
+
+test('Seventh Field crop hypothesis changes later Council narrative but not measured science', () => {
+  const cover = makeMission();
+  cover.choose('timeEcho', 'f7_hypothesis_cover');
+  const coverCouncil = cover.mission.getDialogueForTarget({ id: 'pumpStation' });
+  assert.match(coverCouncil.textEn, /Calendar A.*cover/i);
+  assert.match(coverCouncil.textAr, /التقويم.*أ.*غطاء/i);
+  assert.equal(cover.calls.some(([kind]) => kind === 'simulate'), false);
+
+  const water = makeMission();
+  water.choose('timeEcho', 'f7_hypothesis_water_saving');
+  const waterCouncil = water.mission.getDialogueForTarget({ id: 'pumpStation' });
+  assert.match(waterCouncil.textEn, /Calendar B.*peak water/i);
+  assert.notEqual(coverCouncil.textEn, waterCouncil.textEn);
+  assert.equal(water.calls.some(([kind]) => kind === 'simulate'), false);
+});
