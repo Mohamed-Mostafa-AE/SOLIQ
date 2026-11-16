@@ -37,6 +37,7 @@ test('final council offers real playable trade-offs and two distinct fictional e
   await council.getByRole('button',{name:/Conclude the village story/}).click();
   await expect(council.getByText(/Hassan gives the first water turn back/)).toBeVisible();
   await expect(council.getByText(/fictional ending, not a field recommendation/)).toBeVisible();
+  await expect(council.locator('#harvest-water')).toBeDisabled();
   await page.screenshot({path:'test-results/chapter4-council-final-desktop.png'});
   await council.getByRole('button',{name:'Rewrite the pact'}).click();
   await council.locator('#harvest-water').selectOption('1');

@@ -105,7 +105,7 @@ export function attachChapter4Game({ host = document.body, chapter3, language = 
     const label = t[promiseNames[id]];
     return `<div class="harvest-pledge" data-pledge="${id}">
       <label for="harvest-${id}"><span aria-hidden="true">${COUNCIL_PLEDGES[id].icon}</span><strong>${label}</strong></label>
-      <select id="harvest-${id}" data-allocation="${id}" aria-label="${label}">
+      <select id="harvest-${id}" data-allocation="${id}" aria-label="${label}" ${mission.phase === 'result'?'disabled':''}>
         ${[0,1,2,3].map(n=>`<option value="${n}" ${n===current?'selected':''}>${n} ${t.pledgeUnit}</option>`).join('')}
       </select><span class="harvest-pips" aria-hidden="true">${[1,2,3].map(n=>`<i class="${n<=current?'filled':''}"></i>`).join('')}</span>
     </div>`;
@@ -138,7 +138,7 @@ export function attachChapter4Game({ host = document.body, chapter3, language = 
             </div>
             ${status.canCommit ? '' : `<p class="harvest-error" role="alert">${status.spent===0?t.without:t.overspent}</p>`}
             <div class="harvest-mandate"><h3>${t.mandateTitle}</h3><p>${t.mandateIntro}</p>
-            ${Object.values(COUNCIL_MANDATES).map(m=>`<label class="harvest-mandate-option"><input type="radio" name="harvest-mandate" value="${m.id}" ${mission.mandate===m.id?'checked':''}><span>${m[lang]}</span></label>`).join('')}
+            ${Object.values(COUNCIL_MANDATES).map(m=>`<label class="harvest-mandate-option"><input type="radio" name="harvest-mandate" value="${m.id}" ${mission.mandate===m.id?'checked':''} ${mission.phase==='result'?'disabled':''}><span>${m[lang]}</span></label>`).join('')}
             <small>${t.mandateNote}</small></div>
             ${mission.phase === 'planning' ? `<div class="harvest-actions"><button type="button" class="harvest-primary" data-action="commit" ${status.canCommit?'':'disabled'}>${t.commit}</button><button type="button" class="harvest-secondary" data-action="reset">${t.reset}</button></div>` : ''}
           </section>
@@ -187,8 +187,9 @@ export function attachChapter4Game({ host = document.body, chapter3, language = 
       finally {if(url) setTimeout(()=>URL.revokeObjectURL(url),2000);}
     });
     if (mission.phase === 'result') {
-      root.scrollTop=0;
-      root.querySelector('.harvest-verdict h2').focus({preventScroll:true});
+      const verdict=root.querySelector('.harvest-verdict');
+      verdict.scrollIntoView({block:'start',behavior:'instant'});
+      verdict.querySelector('h2').focus({preventScroll:true});
     } else if (focusSelector) root.querySelector(focusSelector)?.focus({preventScroll:true});
   }
 
