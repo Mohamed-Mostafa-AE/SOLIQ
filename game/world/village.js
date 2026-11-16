@@ -3,7 +3,8 @@
  * Rich Egyptian Delta village: organic farmland, realistic canal, diesel pump, crops, farmhouses.
  */
 
-import { planVisibleCanalBanks } from './delta-canal-layout.js';
+import { planVisibleCanalBanks, planCanalBridge } from './delta-canal-layout.js';
+import { updateFieldSoilAppearance } from './delta-procedural-textures.js';
 
 export class DeltaVillage {
   constructor(scene, shadowGenerator) {
@@ -15,6 +16,9 @@ export class DeltaVillage {
     this.crops = [];
     this.smokeParticles = null;
     this.seventhFieldBoundary = null;
+    this.palms = [];
+    this.bridge = null;
+    this.zirs = [];
 
     this.materials = {};
     this._initMaterials();
@@ -102,6 +106,18 @@ export class DeltaVillage {
     const beanMat = new BABYLON.PBRMaterial('beanMat', s);
     beanMat.albedoColor = new BABYLON.Color3(0.22, 0.52, 0.3);
     this.materials.beans = beanMat;
+
+    // Terracotta clay jar (Zir - زير)
+    const zirMat = new BABYLON.PBRMaterial('zirMat', s);
+    zirMat.albedoColor = new BABYLON.Color3(0.68, 0.42, 0.28);
+    zirMat.roughness = 0.85;
+    this.materials.zir = zirMat;
+
+    // Date palm fruit clusters
+    const dateFruitMat = new BABYLON.PBRMaterial('dateFruitMat', s);
+    dateFruitMat.albedoColor = new BABYLON.Color3(0.82, 0.48, 0.12);
+    dateFruitMat.roughness = 0.65;
+    this.materials.dateFruit = dateFruitMat;
   }
 
   _buildTerrain() {
@@ -207,6 +223,54 @@ export class DeltaVillage {
     stoneWall.material = this.materials.brick;
     stoneWall.checkCollisions = true;
     if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(stoneWall);
+
+    // Egyptian timber and stone footbridge crossing the mesqa at x = 16
+    const bridgeLayout = planCanalBridge({ crossingX: 16.0, canalZ: 8.0, width: 2.6, span: 6.8 });
+    const bridgeGroup = new BABYLON.TransformNode('canalFootbridge', this.scene);
+
+    const deckMesh = BABYLON.MeshBuilder.CreateBox('bridgeDeck', {
+      width: bridgeLayout.deck.width,
+      height: bridgeLayout.deck.thickness,
+      depth: bridgeLayout.deck.length,
+    }, this.scene);
+    deckMesh.position.set(bridgeLayout.deck.center.x, bridgeLayout.deck.center.y, bridgeLayout.deck.center.z);
+    deckMesh.material = this.materials.trunk;
+    deckMesh.checkCollisions = true;
+    deckMesh.receiveShadows = true;
+    deckMesh.parent = bridgeGroup;
+    if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(deckMesh);
+
+    bridgeLayout.abutments.forEach((ab, i) => {
+      const abut = BABYLON.MeshBuilder.CreateBox(`bridgeAbutment_${i}`, {
+        width: ab.width, height: ab.height, depth: ab.depth,
+      }, this.scene);
+      abut.position.set(ab.x, ab.y, ab.z);
+      abut.material = this.materials.plaster;
+      abut.checkCollisions = true;
+      abut.receiveShadows = true;
+      abut.parent = bridgeGroup;
+      if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(abut);
+    });
+
+    bridgeLayout.posts.forEach((p, idx) => {
+      const post = BABYLON.MeshBuilder.CreateCylinder(`bridgePost_${idx}`, {
+        diameter: p.radius * 2, height: p.height, tessellation: 8,
+      }, this.scene);
+      post.position.set(p.x, p.y, p.z);
+      post.material = this.materials.trunk;
+      post.parent = bridgeGroup;
+    });
+
+    bridgeLayout.rails.forEach((r, idx) => {
+      const rail = BABYLON.MeshBuilder.CreateTube(`bridgeRail_${idx}`, {
+        path: [new BABYLON.Vector3(r.start.x, r.start.y, r.start.z), new BABYLON.Vector3(r.end.x, r.end.y, r.end.z)],
+        radius: 0.05,
+      }, this.scene);
+      rail.material = this.materials.trunk;
+      rail.parent = bridgeGroup;
+    });
+
+    this.bridge = { group: bridgeGroup, deck: deckMesh, layout: bridgeLayout };
   }
 
   _buildPumpStation() {
@@ -501,6 +565,34 @@ export class DeltaVillage {
       const door = BABYLON.MeshBuilder.CreateBox(`door_${i}`, { width: 1.4, height: 2.2, depth: 0.2 }, this.scene);
       door.position.set(h.pos.x, 1.1, h.pos.z + h.d / 2 + 0.05);
       door.material = this.materials.trunk;
+
+      // Shuttered wooden windows
+      for (const side of [-1, 1]) {
+        const win = BABYLON.MeshBuilder.CreateBox(`window_${i}_${side}`, { width: 1.1, height: 1.1, depth: 0.15 }, this.scene);
+        win.position.set(h.pos.x + side * (h.w * 0.28), 2.2, h.pos.z + h.d / 2 + 0.04);
+        win.material = this.materials.trunk;
+      }
+
+      // Rooftop shade pergola (timber shade structure)
+      for (let p = 0; p < 4; p++) {
+        const beam = BABYLON.MeshBuilder.CreateBox(`roofBeam_${i}_${p}`, {
+          width: h.w * 0.65, height: 0.1, depth: 0.15,
+        }, this.scene);
+        beam.position.set(h.pos.x, h.h + 0.5 + p * 0.08, h.pos.z - h.d * 0.2 + p * (h.d * 0.15));
+        beam.material = this.materials.trunk;
+      }
+
+      // Traditional Egyptian Clay Water Jar (الزير - Zir) on wooden tripod stand
+      const zirStand = BABYLON.MeshBuilder.CreateCylinder(`zirStand_${i}`, { diameter: 0.5, height: 0.5, tessellation: 8 }, this.scene);
+      zirStand.position.set(h.pos.x + 1.4, 0.25, h.pos.z + h.d / 2 + 0.6);
+      zirStand.material = this.materials.trunk;
+
+      const zirPot = BABYLON.MeshBuilder.CreateSphere(`zirPot_${i}`, { diameterX: 0.55, diameterY: 0.75, diameterZ: 0.55, segments: 12 }, this.scene);
+      zirPot.position.set(h.pos.x + 1.4, 0.72, h.pos.z + h.d / 2 + 0.6);
+      zirPot.material = this.materials.zir;
+      if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(zirPot);
+
+      this.zirs.push({ stand: zirStand, pot: zirPot, houseIndex: i });
     });
   }
 
@@ -535,6 +627,7 @@ export class DeltaVillage {
       if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(trunk);
 
       // Palm frond canopy (8 radially arranged fronds)
+      const frondList = [];
       for (let f = 0; f < 8; f++) {
         const frond = BABYLON.MeshBuilder.CreateBox(`frond_${idx}_${f}`, { width: 0.45, height: 0.08, depth: 3.8 }, this.scene);
         frond.parent = palmGroup;
@@ -543,7 +636,20 @@ export class DeltaVillage {
         frond.rotation.x = 0.45;
         frond.material = this.materials.palm;
         if (this.shadowGenerator) this.shadowGenerator.addShadowCaster(frond);
+        frondList.push(frond);
       }
+
+      // Date fruit cluster (عراجين البلح) beneath the fronds
+      for (const angle of [0.4, 2.0, 3.6, 5.1]) {
+        const dateCluster = BABYLON.MeshBuilder.CreateSphere(`dates_${idx}_${angle}`, {
+          diameterX: 0.35, diameterY: 0.55, diameterZ: 0.35, segments: 8,
+        }, this.scene);
+        dateCluster.position.set(Math.cos(angle) * 0.65, 6.75, Math.sin(angle) * 0.65);
+        dateCluster.parent = palmGroup;
+        dateCluster.material = this.materials.dateFruit;
+      }
+
+      this.palms.push({ group: palmGroup, trunk, fronds: frondList });
     });
 
     // Repeatable reed silhouettes along the raised mesqa bank. These are
@@ -635,26 +741,27 @@ export class DeltaVillage {
     gate.wheel.rotation.y += Math.PI * 2;
   }
 
-  updateFieldHydration(fieldIndex, hydrationRatio) {
+  updateFieldHydration(fieldIndex, hydrationRatio, salinityRatio = 0) {
     if (fieldIndex < 0 || fieldIndex >= this.fields.length) return;
     const f = this.fields[fieldIndex];
     f.hydration = Math.max(0, Math.min(1, hydrationRatio));
+    f.salinity = Math.max(0, Math.min(1, salinityRatio));
 
-    // Modulate soil PBR material from dry silt to wet saturated mud
-    // Dry: albedo (0.55, 0.44, 0.32), roughness 0.92
-    // Wet: albedo (0.22, 0.17, 0.12), roughness 0.25, metallic 0.15
+    // Modulate soil appearance (dry loam vs puddle wet mud vs saline crust)
+    updateFieldSoilAppearance(f, f.hydration, f.salinity);
+
+    // Modulate crop posture and height
     const r = f.hydration;
-    const albedoR = 0.55 * (1 - r) + 0.22 * r;
-    const albedoG = 0.44 * (1 - r) + 0.17 * r;
-    const albedoB = 0.32 * (1 - r) + 0.12 * r;
-    f.material.albedoColor.set(albedoR, albedoG, albedoB);
-    f.material.roughness = 0.92 * (1 - r) + 0.25 * r;
-    f.material.metallic = 0.15 * r;
-
-    // Perk up crops slightly when irrigated
+    const s = f.salinity;
+    const healthFactor = Math.max(0.68, Math.min(1.22, 0.78 + 0.42 * r - 0.22 * s));
     f.crops.forEach((cropMesh) => {
-      cropMesh.scaling.y = 1.0 + 0.12 * r;
+      cropMesh.scaling.y = healthFactor;
     });
+    if (f.thinCropMeshes) {
+      f.thinCropMeshes.forEach(mesh => {
+        if (mesh?.scaling) mesh.scaling.y = healthFactor;
+      });
+    }
   }
 
   tick(deltaTime) {

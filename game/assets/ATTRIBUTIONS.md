@@ -29,16 +29,20 @@ The project's source and rights principles:
 
 ---
 
-## 4. Environment & Cultural Delta Architecture — PROTOTYPE
-- `game/world/village.js` creates an illustrative flat heightmap-based terrain, basic canal and pump station, simplified sluices, planted fields, box houses and palm fronds. `game/world/delta-procedural-textures.js` adds source-authored procedural soil/path/crop appearance.
-- These are **not** real surveyed farm boundaries, physical 3D scans, licensed Egyptian buildings or finished production 3D models. The first-person scale/camera and PBR surfaces improve reading, but actual Chromium visual review still shows a mostly brown horizon and low-detail characters.
+## 4. Environment & Cultural Delta Architecture — PROTOTYPE (P1-08 Technical Art Pass)
+- `game/world/village.js` creates an illustrative heightmap-based terrain, mesqa canal with visible banks, timber-and-stone footbridge (`planCanalBridge`), diesel pump station, sluice gates, planted crop plots, mudbrick houses with reed pergolas, clay water jars (الزير - Zir), and date palms with fruit clusters.
+- `game/world/delta-procedural-textures.js` generates source-authored procedural canvas textures: alluvial soil, canal footpaths, wet silt, crop loam, saline crust efflorescence, puddle mud, mudbrick patterns, timber grain, and terracotta clay.
+- `game/world/season-feedback.js` coordinates simulated irrigation outcomes and seasonal consequences across fields (perked vs wilted crops, glistening wet mud vs saline crust) and drives gentle palm/water wind sway respecting reduced-motion preferences.
+- `game/render/engine-setup.js` provides golden dawn lighting, warm Nile morning mist fog, inverted sky dome (`nileSkyDome`), and `prefers-reduced-motion` support.
+- These are **not** real surveyed farm boundaries, physical 3D scans, licensed Egyptian buildings or finished production 3D models. The environment is an authentic original fictional technical-art illustration of the Egyptian Nile Delta.
 - All future real-world 3D meshes and texture downloads require their own creator/URL/license/digest entries, not blanket claims under MIT.
 
 ---
 
-## 5. Water Shading & PBR Materials
-- `game/world/water-simulation.js` renders a PBR-colored water **tube** and simple vertical sine-wave motion; it is linked through `game/core/water-window-adapter.js` to the time-sliced canal solver. The earlier claims of custom Fresnel/vertex displacement shader and direct `experience/engine.js::allocateWater` wiring were wrong.
-- Dry/wet terrain albedo and roughness convey **simulated visual state** only; they cannot be read as field-measured soil moisture, groundwater depth, salinity or NASA observation.
+## 5. Water Shading, Seasonal Feedback & PBR Materials
+- `game/world/water-simulation.js` renders a PBR-colored water tube with dynamic ripple oscillations and flow velocity driven by the canal time-sliced solver (`science/mesqa-window.js`).
+- Dry/wet terrain albedo, puddle specular highlights, and white saline efflorescence crust convey **simulated visual state** only; they cannot be read as field-measured soil moisture, groundwater depth, salinity or NASA observation.
+- The Seventh Field Time Echo (`game/world/time-echo.js`) renders dual-scenario holographic volumes (Scenario A Monoculture vs Scenario B Balanced Rotation) with explicit `SIMULATED` and `comparison_only` labels.
 
 ---
 
