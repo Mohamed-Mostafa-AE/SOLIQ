@@ -23,6 +23,7 @@ export class AccessibleStoryDesk {
     this.activeScene = null;
     this.isOpen = false;
     this.returnFocus = null;
+    this.backgroundInert = [];
     this.root = document.createElement('div');
     this.root.id = 'story-desk-overlay';
     this.root.className = 'story-desk-overlay';
@@ -200,6 +201,19 @@ export class AccessibleStoryDesk {
     if (this.isOpen) return;
     this.isOpen = true;
     this.returnFocus = document.activeElement;
+    // Keep the 3D HUD, moving canvas, and text-route page content outside
+    // the modal's accessibility tree. The desk can be hosted in a nested UI
+    // container, so isolate siblings at every ancestor up to the body.
+    let node = this.root;
+    while (node.parentElement) {
+      for (const sibling of node.parentElement.children) {
+        if (sibling === node || sibling.tagName === 'SCRIPT') continue;
+        this.backgroundInert.push({ element: sibling, wasInert: sibling.inert });
+        sibling.inert = true;
+      }
+      node = node.parentElement;
+      if (node === document.body) break;
+    }
     this.root.hidden = false;
     this.refresh();
     this.root.querySelector('#story-desk-close').focus();
@@ -209,6 +223,8 @@ export class AccessibleStoryDesk {
     if (!this.isOpen) return;
     this.isOpen = false;
     this.root.hidden = true;
+    for (const { element, wasInert } of this.backgroundInert) element.inert = wasInert;
+    this.backgroundInert = [];
     if (this.returnFocus?.isConnected && typeof this.returnFocus.focus === 'function') {
       this.returnFocus.focus();
     }

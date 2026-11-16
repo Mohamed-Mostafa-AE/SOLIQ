@@ -276,6 +276,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page).toHaveTitle(/Accessible Story/);
     await expect(page.locator('#story-desk')).toBeVisible();
     await expect(page.locator('#story-desk')).toHaveAttribute('role', 'dialog');
+    await expect(page.locator('#btn-open-story')).toHaveJSProperty('inert', true);
     const noCanvas = await page.evaluate(() => ({
       babylon: typeof window.BABYLON,
       canvasCount: document.querySelectorAll('canvas').length,
@@ -301,6 +302,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#text-receipts')).toContainText('Sustainability trade-offs');
     await page.keyboard.press('Escape');
     await expect(page.locator('#story-desk-overlay')).toBeHidden();
+    await expect(page.locator('#btn-open-story')).toHaveJSProperty('inert', false);
     await page.locator('#story-language').selectOption('ar');
     await expect(page.locator('#text-progress')).toContainText('قرار المياه');
     await page.locator('#btn-open-story').click();
@@ -328,6 +330,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     const story = page.locator('#story-desk');
     await expect(story).toBeVisible();
     await expect(page.locator('#story-desk-source')).toContainText('SIMULATED STORY');
+    await expect(page.locator('#renderCanvas')).toHaveJSProperty('inert', true);
     await expect(page.locator('#story-beat-title')).toContainText('The Seventh Field');
 
     await page.locator('[data-story-target="hassan"]').click();
@@ -348,6 +351,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#story-rotation-link')).toHaveAttribute('href', '../../#rotations');
     await page.keyboard.press('Escape');
     await expect(page.locator('#story-desk-overlay')).toBeHidden();
+    await expect(page.locator('#renderCanvas')).toHaveJSProperty('inert', false);
 
     await page.locator('#btn-settings').click();
     await page.locator('#chk-reduced-motion').check();
