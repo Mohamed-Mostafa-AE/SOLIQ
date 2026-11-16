@@ -157,7 +157,12 @@ export class AccessibleStoryDesk {
         this.refresh();
         const speaker = this.root.querySelector('#story-speaker').textContent;
         const dialogueText = this.root.querySelector('#story-dialogue-text').textContent;
-        this.root.querySelector('#story-announcement').textContent = `${speaker}. ${dialogueText}`;
+        const dialogue = this.mission.getDialogueForTarget({ id: scene.id });
+        const emotion = this._localize(
+          `Emotion: ${dialogue?.emotion || 'neutral'}`,
+          `الحالة: ${({ concerned: 'قلق', hopeful: 'متفائل', satisfied: 'راضٍ', explaining: 'بيشرح', neutral: 'محايد' })[dialogue?.emotion] || 'محايد'}`,
+        );
+        this.root.querySelector('#story-announcement').textContent = `${speaker} (${emotion}). ${dialogueText}`;
         const firstChoice = this.root.querySelector('#story-choice-list button');
         if (firstChoice) firstChoice.focus();
       });
@@ -182,6 +187,7 @@ export class AccessibleStoryDesk {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'story-choice-btn';
+      if (choice.id) button.dataset.choiceId = choice.id;
       button.setAttribute('aria-describedby', 'story-dialogue-text');
       button.textContent = this._localize(choice.labelEn, choice.labelAr);
       button.addEventListener('click', () => {
