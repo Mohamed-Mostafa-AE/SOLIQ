@@ -7,6 +7,7 @@
 import { RenderSetup } from '../../game/render/engine-setup.js';
 import { DeltaVillage } from '../../game/world/village.js';
 import {installFieldVegetation,installVillageDetails} from '../../game/world/visual-polish.js';
+import {applyDetailedSoil} from '../../game/world/delta-procedural-textures.js';
 import {addCharacterDetails} from '../../game/world/character-detail.js';
 import { CharacterSystem } from '../../game/world/characters.js';
 import { PlayerController } from '../../game/world/controls.js';
@@ -57,6 +58,7 @@ class SeventhFieldGame {
     // 2. Build 3D Delta Village Environment
     this.village = new DeltaVillage(scene, shadowGenerator);
     this.visualArtReport = {
+      realisticSurfaces: applyDetailedSoil(this.village,{quality:this.renderSetup.quality}),
       plants: installFieldVegetation(this.village, this.renderSetup.quality),
       details: installVillageDetails(this.village),
     };
@@ -66,6 +68,14 @@ class SeventhFieldGame {
     // 3. Rigged Characters (Nada, Uncle Hassan, Maryam)
     this.characters = new CharacterSystem(scene, shadowGenerator);
     this.visualArtReport.characters = addCharacterDetails(this.characters,{preset:this.renderSetup.quality});
+    // Aim at the actual playable heroine before the first rendered frame.
+    // Otherwise ArcRotateCamera's origin target shows empty soil rather than
+    // the heroine and the planted canal edge, making the game feel lifeless.
+    cameras.follow.setTarget(this.characters.nada.root.position.add(new BABYLON.Vector3(0,1.38,0)));
+    // ArcRotateCamera.setTarget preserves eye position and therefore silently
+    // expands the radius; restore the intended human-scale follow framing.
+    cameras.follow.radius=8.5;
+    cameras.follow.beta=1.20;
 
     this._updateProgress(75, 'توصيل الصوت الإجرائي ومحرك محاكاة المياه...');
 
