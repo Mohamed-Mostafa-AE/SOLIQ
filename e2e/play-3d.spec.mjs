@@ -276,7 +276,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page).toHaveTitle(/Accessible Story/);
     await expect(page.locator('#story-desk')).toBeVisible();
     await expect(page.locator('#story-desk')).toHaveAttribute('role', 'dialog');
-    await expect(page.locator('#btn-open-story')).toHaveJSProperty('inert', true);
+    await expect(page.locator('#content')).toHaveJSProperty('inert', true);
     const noCanvas = await page.evaluate(() => ({
       babylon: typeof window.BABYLON,
       canvasCount: document.querySelectorAll('canvas').length,
@@ -302,7 +302,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#text-receipts')).toContainText('Sustainability trade-offs');
     await page.keyboard.press('Escape');
     await expect(page.locator('#story-desk-overlay')).toBeHidden();
-    await expect(page.locator('#btn-open-story')).toHaveJSProperty('inert', false);
+    await expect(page.locator('#content')).toHaveJSProperty('inert', false);
     await page.locator('#story-language').selectOption('ar');
     await expect(page.locator('#text-progress')).toContainText('قرار المياه');
     await page.locator('#btn-open-story').click();
