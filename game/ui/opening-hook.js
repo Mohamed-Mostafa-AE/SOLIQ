@@ -33,7 +33,10 @@ export class OpeningHook {
         <div class="hook-content">
           <div class="hook-topline">
             <span class="hook-chapter" data-i18n="chapter">CHAPTER 0 / THE DAWN COUNCIL</span>
-            <span class="hook-type" data-i18n="type">FICTIONAL INTERACTIVE STORY</span>
+            <div class="hook-top-actions">
+              <span class="hook-type" data-i18n="type">FICTIONAL INTERACTIVE STORY</span>
+              <button type="button" id="hook-skip" class="hook-skip" data-i18n="skip">Skip intro →</button>
+            </div>
           </div>
           <p class="hook-eyebrow" data-i18n="eyebrow">SIX FIELDS. ONE CANAL. ONE MISSING ANSWER.</p>
           <h1 id="hook-title">The Seventh Field</h1>
@@ -70,7 +73,6 @@ export class OpeningHook {
             </button>
           </div>
           <div class="hook-footer">
-            <button type="button" id="hook-skip" class="hook-skip" data-i18n="explore">Explore the village without choosing a clue →</button>
             <a href="story.html" id="hook-text-story" data-i18n="text">Text-only play · keyboard and screen reader</a>
             <p class="hook-disclaimer" data-i18n="disclaimer">Story choices are fictional. No live NASA observation, field measurement or verified crop comparison is represented in this scene.</p>
           </div>
@@ -93,7 +95,7 @@ export class OpeningHook {
       question: 'هتبدأ بأي خيط؟', questionHelp: 'اختيارك يحدد بداية البحث، مش المحصول الفائز. تقدر تستكشف السؤالين بعدين.',
       waterTitle: 'اتبع المياه', waterText: 'مين هياخد آخر نوبة ري لو السعة محدودة؟', waterAction: 'اتكلم مع حسن ←',
       soilTitle: 'اتبع التربة', soilText: 'هل غطاء التربة لفترة أطول يستحق احتياجات مياه مختلفة؟', soilAction: 'اتكلم مع مريم ←',
-      explore: 'استكشف القرية من غير ما تختار خيط ←', text: 'اللعبة النصية · لوحة مفاتيح وقارئ شاشة',
+      skip: 'تخطى المقدمة ←', text: 'اللعبة النصية · لوحة مفاتيح وقارئ شاشة',
       disclaimer: 'الاختيارات قصة افتراضية؛ لا توجد بيانات NASA حية أو قياس حقلي أو مقارنة محاصيل مثبتة في هذا المشهد.',
     };
     const en = {
@@ -104,7 +106,7 @@ export class OpeningHook {
       question: 'Which clue will you follow first?', questionHelp: 'This sets your opening investigation, not the winning crop. You can explore both questions later.',
       waterTitle: 'Follow the Water', waterText: 'Who gets the last irrigation turn when capacity is limited?', waterAction: 'Investigate with Hassan →',
       soilTitle: 'Follow the Soil', soilText: 'Can a longer period of soil cover justify different water needs?', soilAction: 'Investigate with Maryam →',
-      explore: 'Explore the village without choosing a clue →', text: 'Text-only play · keyboard and screen reader',
+      skip: 'Skip intro →', text: 'Text-only play · keyboard and screen reader',
       disclaimer: 'Story choices are fictional. No live NASA observation, field measurement or verified crop comparison is represented in this scene.',
     };
     for (const node of this.root.querySelectorAll('[data-i18n]')) {
