@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "policy": "Reference-only candidates. No third-party character, texture, animation, movie still, voice or model is bundled until an exact per-file rights and quality review passes.",
+  "items": [
+    {
+      "id": "makehuman-core-characters",
+      "kind": "human-base",
+      "creator": "MakeHuman Community",
+      "url": "https://www.makehumancommunity.org/about/license.html",
+      "licenseUrl": "https://www.makehumancommunity.org/about/license.html",
+      "expectedLicense": "CC0 for core assets only",
+      "purpose": "Sculpt original Egyptian characters in Blender with proper rigging and animations",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "adobe-mixamo-animation",
+      "kind": "character-motion",
+      "creator": "Adobe Mixamo",
+      "url": "https://www.mixamo.com/",
+      "licenseUrl": "https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html",
+      "expectedLicense": "Royalty-free commercial game use; individual item and packaging review required",
+      "purpose": "Retarget realistic walk, idle, listen, notebook and conversation motions",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "rokoko-idle-cycles",
+      "kind": "character-motion",
+      "creator": "Rokoko",
+      "url": "https://www.rokoko.com/resources/rokoko-mocap-10-free-everyday-idle-animations",
+      "licenseUrl": "https://www.rokoko.com/resources/rokoko-mocap-10-free-everyday-idle-animations",
+      "expectedLicense": "Commercial project use noted; downloaded pack terms require review",
+      "purpose": "Gestural acting and idle body language",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "polyhaven-dirt-pbr",
+      "kind": "surface-material",
+      "creator": "Poly Haven / Charlotte Baglioni",
+      "url": "https://polyhaven.com/a/dirt",
+      "licenseUrl": "https://polyhaven.com/license",
+      "expectedLicense": "CC0",
+      "purpose": "Detailed Nile Delta soil normal, albedo and roughness maps",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "polyhaven-wet-mud-pbr",
+      "kind": "surface-material",
+      "creator": "Poly Haven",
+      "url": "https://polyhaven.com/a/mud_forest",
+      "licenseUrl": "https://polyhaven.com/license",
+      "expectedLicense": "CC0",
+      "purpose": "Irrigated silt and bank transition surfaces",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "ambientcg-material-library",
+      "kind": "surface-material",
+      "creator": "ambientCG",
+      "url": "https://ambientcg.com/",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "expectedLicense": "CC0",
+      "purpose": "Original texture choices for mudbrick, concrete, plaster, reed and farm paths",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "fab-premium-environment",
+      "kind": "environment-model",
+      "creator": "Fab Marketplace / creator varies by listing",
+      "url": "https://www.fab.com/",
+      "licenseUrl": "https://www.fab.com/eula",
+      "expectedLicense": "Listing-specific Standard/Reference-Only rights and source-format review required",
+      "purpose": "Potential original rural tools, houses and vegetation; no item approved",
+      "status": "research-needs-rights-review",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "actorcore-premium-motion",
+      "kind": "character-motion",
+      "creator": "Reallusion ActorCore / creator varies",
+      "url": "https://actorcore.reallusion.com/",
+      "licenseUrl": "https://kb.reallusion.com/ExportPDF53026.aspx",
+      "expectedLicense": "Paid item-specific license and export/redistribution rights to confirm",
+      "purpose": "Conditional high-quality rigged actor gestures and motions",
+      "status": "research-needs-rights-review",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    },
+    {
+      "id": "al-ard-film-study",
+      "kind": "film-study",
+      "creator": "Youssef Chahine / film rights holders",
+      "url": "https://www.acmi.net.au/works/94389--the-land-al-ard/",
+      "licenseUrl": null,
+      "expectedLicense": "No production media/likeness rights obtained",
+      "purpose": "Study original dramatic treatment of Egyptian farmland and village group dynamics only",
+      "status": "reference-only",
+      "localPath": null,
+      "sha256": null,
+      "redistributionReviewed": false
+    }
+  ]
+}
