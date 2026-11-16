@@ -147,15 +147,16 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   maryamDlg.choices[0].onSelect();
   assert.equal(mission.flags.talkedToMaryam, true);
 
-  // The simulated pump cannot start without teaching the three safety checks.
-  assert.equal(mission.executeOutcome(OUTCOMES.EQUILIBRIUM), false);
-  assert.equal(mission.activeOutcome, OUTCOMES.NONE);
-  const pumpReview = mission.getDialogueForTarget({ id: 'pumpStation' });
-  assert.equal(pumpReview.speakerEn, 'Safety Check — Before the Pump');
-  for (const key of ['pumpInspected', 'canalAccessSecured', 'heatPrecautionsReviewed']) {
-    mission.completeSafetyTraining(key);
-  }
-  assert.equal(mission.getDialogueForTarget({ id: 'pumpStation' }).choices.length, 3);
+  // The story concerns sustainability decisions, not mandatory equipment checks.
+  const council = mission.getDialogueForTarget({ id: 'pumpStation' });
+  assert.equal(council.speakerEn, 'The Canal Council — Six Families, One Turn');
+  assert.equal(council.choices.length, 3);
+  assert.match(council.textEn, /community decision/);
+  assert.equal(mission.flags.pumpInspected, undefined);
+  const mystery = mission.getDialogueForTarget({ id: 'timeEcho' });
+  mystery.choices[0].onSelect();
+  assert.equal(mission.flags.questionedFuture, true);
+  assert.ok(mission.notebookReceipts.some(r => r.id === 'FUTURE_ROTATION_MYSTERY'));
 
   // Outcome 1: Equilibrium
   mission.executeOutcome(OUTCOMES.EQUILIBRIUM);
