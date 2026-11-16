@@ -441,8 +441,8 @@ export class GameHUD {
     const isEn = this.lang === 'en';
     if (!simResult) {
       w.textContent = isEn
-        ? 'No canal turn simulated yet. Review safety training and choose a fictional water-allocation scenario.'
-        : 'لم يتم تشغيل محاكاة المسقة بعد. راجع السلامة واختر سيناريو افتراضيًا للري.';
+        ? 'No canal turn simulated yet. Hear the families, then choose a fictional water-sharing scenario.'
+        : 'لم تبدأ محاكاة المسقة بعد. اسمع أهل القرية واختَر سيناريو افتراضيًا لتقاسم المياه.';
       return;
     }
 
