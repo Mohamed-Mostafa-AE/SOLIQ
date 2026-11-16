@@ -185,7 +185,7 @@ Add `getSerializableState()` and `restoreState(snapshot)` on `Chapter0Mission` r
 Extend `sustainabilityLesson(outcome, result, context = {})` **without breaking existing positional arguments or assertions in `sustainability.test.mjs`**:
 - Keep `realWorldImpactVerified: false`, `evidenceClass: 'simulated'`, `themes` length `4` (`SDG 2`, `SDG 6`, `SDG 12`, `SDG 13`), and `metrics: { simulatedDeliveredM3, simulatedJainFairness } | null`.
 - Add optional `tradeoffAxes` object to the returned lesson:
-  - `waterFairness`: `'high_simulated' | 'tail_end_deficit' | 'untested_deferred'`
+  - `waterFairness`: `'high_simulated' | 'simulated_allocation_shortfall' | 'untested_deferred'` (the solver models aggregate limited-capacity allocation, **not** verified head-to-tail hydraulic pressure or measured tail-field deprivation)
   - `soilCover`: `context.soilCoverChoice || 'unspecified'`
   - `livelihoodTension`: `context.livelihoodPriority || 'balanced'`
   - `uncertaintyNoteEn` / `uncertaintyNoteAr`: explicitly reminds the player that simulated Chapter 0 choices explore trade-offs and require real NASA POWER data in `../../#rotations`.
