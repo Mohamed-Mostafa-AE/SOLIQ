@@ -25,6 +25,21 @@ export function getSeasonStoryBeat(flags = {}, activeOutcome = 'none') {
       sourceType: 'simulated',
     });
   }
+  if (flags.firstClue && heard === 0) {
+    const water = flags.firstClue === 'water';
+    return Object.freeze({
+      stage: 'thread', heard, futureQuestion,
+      titleEn: water ? 'Follow the water — who receives the last turn?' : 'Follow the soil — what survives the dry season?',
+      titleAr: water ? 'اتبع المياه: مين هيوصله آخر دور؟' : 'اتبع التربة: إيه اللي هيحميها في الموسم الجاف؟',
+      textEn: water
+        ? 'Your first clue is the old canal schedule. Ask Hassan what a fair turn means, then hear Maryam. The two crop plans are UNTESTED; neither promises a harvest.'
+        : 'Your first clue is a torn crop calendar with different soil-cover periods. Ask Maryam what matters next season, then hear Hassan. The two plans are UNTESTED; neither promises a harvest.',
+      textAr: water
+        ? 'أول خيط جدول المياه القديم. اسأل حسن عن عدالة الدور ثم اسمع مريم. الخطتان افتراضيتان ومفيش ضمان للمحصول.'
+        : 'أول خيط تقويم محاصيل ممزق وفترات مختلفة للغطاء النباتي. اسأل مريم ثم حسن. الخطتان افتراضيتان ومفيش ضمان للمحصول.',
+      sourceType: 'simulated',
+    });
+  }
   if (heard === 2) {
     return Object.freeze({
       stage: 'council', heard, futureQuestion,

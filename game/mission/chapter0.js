@@ -18,6 +18,7 @@ export class Chapter0Mission {
     this.activeOutcome = OUTCOMES.NONE;
 
     this.flags = {
+      firstClue: null,
       talkedToHassan: false,
       talkedToMaryam: false,
       inspectedSoil: false,
@@ -54,6 +55,32 @@ export class Chapter0Mission {
       hashKind: 'noncryptographic_display_id',
     });
     this.audio.playNotebookChime();
+  }
+
+  /** The opening branch is a research question, never a crop recommendation. */
+  beginInvestigation(clue) {
+    if (!['water', 'soil'].includes(clue)) {
+      throw new RangeError('Unknown opening investigation');
+    }
+    if (this.flags.firstClue) return false;
+    this.flags.firstClue = clue;
+    const water = clue === 'water';
+    this.addReceipt({
+      id: water ? 'STORY_CLUE_WATER' : 'STORY_CLUE_SOIL',
+      titleAr: water ? 'سؤال ندى: جدول حصص المياه' : 'سؤال ندى: غطاء التربة',
+      titleEn: water ? 'Water-turn question' : 'Soil-cover question',
+      category: 'Opening Investigation',
+      dataClass: 'simulated',
+      timestamp: new Date().toISOString(),
+      detailsAr: water
+        ? 'اخترت البحث أولًا في مواعيد المياه المفترضة. لا توجد توصية مؤكدة ولا قياس ميداني في هذا المشهد.'
+        : 'اخترت البحث أولًا في الغطاء النباتي والدورة الزراعية. لا توجد نتيجة محسومة أو رصد من أقمار NASA في هذا المشهد.',
+      detailsEn: water
+        ? 'You chose to investigate the fictional water schedule first. This is a question, not a tested irrigation recommendation.'
+        : 'You chose to investigate fictional soil-cover and crop-calendar trade-offs first. No winner has been established and no NASA observation is shown here.',
+    });
+    sharedEvents.emit('mission_receipts_updated');
+    return true;
   }
 
   getDialogueForTarget(target) {

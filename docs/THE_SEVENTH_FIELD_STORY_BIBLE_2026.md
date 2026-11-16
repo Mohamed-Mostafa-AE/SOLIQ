@@ -34,8 +34,8 @@ The game remains a major playable part **inside** the existing Soil-IQ website/a
 | Finale / 6: The Field of Possibilities | Reconcile plans, explain assumptions, return to people; multiple endings with honest uncertainty | No magic perfect plan; record what changed, what is unknown, and what must be verified | **Planned** |
 
 ## Prologue — shot/interaction sequence (implement before more unrelated features)
-1. **Cold open:** a sunrise and the sound of a canal. Narrated captions: "Six fields. Two calendars. One future we haven't measured." On screen, label "fictional story".
-2. **The object:** Nada finds the old ledger and sees two contradictory crop calendars. The artwork animates into a transparent 'seventh field' silhouette; the scene is explicitly a hypothesis.
+1. **Playable cold open (implemented):** after the 3D loader, a visually layered sunrise/canal composition frames the question "Six fields. One canal. One missing answer." Text is sufficient; sound is not needed. A large chapter title, three clear stakes and two hypothesis cards replace the passive splash.
+2. **The object and first agency (implemented in prologue, further scene art planned):** Nada finds a torn ledger and two untested plans. Choose **Follow the Water** (Hassan's schedule question) or **Follow the Soil** (Maryam's crop-calendar question), or skip to free-roam without choosing. Either branch records a *simulated research question*, changes the first story beat and never declares a scientific winner. Later routes remain open.
 3. **First person, Hassan:** he wants reliable water timing. His voice is not 'the truth'; listening unlocks context and a notebook receipt.
 4. **Second person, Maryam:** she worries about the next season and sustaining soil cover. Her trade-off is not a fixed fertilizer/carbon claim.
 5. **Player choice:** follow a crop-calendar mystery, test a coordinated fictional water turn, test a constrained fictional one, or defer to request field evidence.
@@ -54,7 +54,8 @@ The game remains a major playable part **inside** the existing Soil-IQ website/a
 There is no villain; the antagonist is uncertainty, conflicting priorities and a limited shared resource. The seventh field represents the ethical cost of pretending a single forecast is a guarantee.
 
 ## Artistic direction to earn attention, not '3D everywhere'
-- Author a short identifiable opening camera move, coherent chapter title treatment, animated paper calendar, believable canals/field boundaries, human-scale camera and ambient day/night variations.
+- **Implemented:** coherent opening title treatment, painted-in-CSS canal/field geometry and sunrise glow with a functional reduced-motion fallback, tactile paired plan cards and mobile-first scrolling.
+- **Still planned:** author an actual 3D opening camera move, animated paper ledger, more believable field boundaries, human-scale scene lighting and ambient day/night variations. Do not describe CSS illustration as 3D cinematics.
 - Add readable reactions and small activity loops for named characters; avoid generic idle skeleton animations after dialogue.
 - Keep a mobile-balanced tier with measured frame time, optional reduced motion, real subtitles and low-texture graphics fallback.
 - Original/licensed assets only. Source evidence thumbnails must never be mistaken for painted fields or NASA observational pixels.
@@ -77,6 +78,7 @@ There is no villain; the antagonist is uncertainty, conflicting priorities and a
 - `game/mission/chapter0.js`: one source of truth for authored dialogue and outcome changes shared by visual and text routes.
 - `game/core/water-window-adapter.js`: shared temporal water solver; do not invent new physical calculations in UI.
 - `game/ui/story-desk.js`: semantic HTML controller using the mission, keyboard/focus/ARIA and localization, no canvas dependency itself.
+- `game/ui/opening-hook.js`: modal, keyboard-accessible hypothesis choice with source disclaimers, localized English/Arabic copy and a direct text-only link; receives the same `Chapter0Mission` rather than creating a separate result.
 - `experience/play/story-only.js`: no-WebGL adaptor with no-op visuals and the actual solver; no extra scientific engine.
 - Main application `/#rotations`: real crop-rotation decision support; explicit separate source context, not game-derived values.
 - Future `scenario contract`: `{sourceType,sourceUrl,observedAt,retrievedAt,assumptions,units,calculationVersion,scenarioId,values}` and fail-closed provenance validation.
@@ -88,13 +90,14 @@ There is no villain; the antagonist is uncertainty, conflicting priorities and a
 | T0 | — | 3 | Update story and remove mandatory safety gate; Node + E2E |
 | T1 | T0 | 4 | Text story companion and no-WebGL route use identical solver; browser functional test |
 | T2 | T1 | 3 | English/Arabic captions, keyboard focus, reduced-motion UI, a11y QA |
+| T2a | T1 | 4 | Playable first-clue opening hook, distinct story branches and traceable simulated receipts; unit + browser |
 | T3 | T0 | 5 | Persistent chapter progress / replay with consentless local save; unit / browser |
 | T4 | T3 | 6 | Chapter 1 My Farm opt-in subsystem with actual field evidence bridge; integration tests |
 | T5 | T4 | 6 | Chapter 4 paired crop rotation puzzles driven by real scientific calculations; no-data tests |
 | T6 | T1 | 5 | Desktop/mobile visual pass, staged assets and motion performance budgets; screenshots and device QA |
 | T7 | T6 | 4 | Vercel preview/production deployment only after a green PR and owner approval |
 
-**Current delivery:** T0, T1 and parts of T2 are implemented in draft PR #34; **T2 manual accessibility validation is not complete**. T3–T7 are not complete. Existing scientific app and NASA 2026 submission/archive remain unchanged.
+**Current delivery:** T0, T1 and T2a are implemented in draft PR #34, with parts of T2; **T2 manual accessibility validation is not complete**. T3–T7 are not complete. Existing scientific app and NASA 2026 submission/archive remain unchanged. T2a does not imply that all subsequent narrative chapters or fully accessible 3D free-roam are complete.
 
 ## Submission and global-quality reality check
 2026 NASA Space Apps submission ended on 15 November. Post-deadline code is future product work unless official judging permits evaluating live updated URLs. Awards are not guaranteed by features or 3D alone. Best chances come from demonstrable challenge relevance, impact, scientific validity, novelty, user-centered accessibility and compelling evidence-led storytelling—not claiming every NASA challenge was solved by one product.

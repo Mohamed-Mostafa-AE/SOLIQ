@@ -17,6 +17,7 @@ import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
 import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
+import { OpeningHook } from '../../game/ui/opening-hook.js';
 import {createNasaBrowseOverlay} from '../../game/ui/nasa-browse-overlay.js';
 import { sharedEvents } from '../../game/core/events.js';
 
@@ -39,6 +40,7 @@ class SeventhFieldGame {
     this.mission = null;
     this.hud = null;
     this.storyDesk = null;
+    this.openingHook = null;
 
     this.isReady = false;
   }
@@ -99,6 +101,7 @@ class SeventhFieldGame {
       this.btnStart.hidden = false;
       this.btnStart.addEventListener('click', () => {
         this.start();
+        this.openingHook?.open();
       });
     } else {
       this.start();
@@ -170,6 +173,7 @@ class SeventhFieldGame {
       },
       onLanguageChange: (language) => {
         this.storyDesk?.setLanguage(language);
+        this.openingHook?.setLanguage(language);
       },
       onToggleCamera: () => {
         this.playerController?.toggleCameraMode();
@@ -193,6 +197,20 @@ class SeventhFieldGame {
       },
     });
     this.storyDesk.setLanguage(this.hud.lang);
+    this.openingHook = new OpeningHook(document.body, this.mission, {
+      onInvestigation: (clue) => {
+        this.storyDesk.refresh();
+        const en = this.hud.lang === 'en';
+        this.hud.showTelemetryToast(
+          en ? (clue === 'water' ? 'Your first clue: the canal ledger' : 'Your first clue: the crop calendar')
+            : (clue === 'water' ? 'أول خيط: دفتر المسقة' : 'أول خيط: تقويم المحاصيل'),
+          en ? 'A question, not an answer. Meet Hassan and Maryam; your investigation is recorded in the evidence notebook.'
+            : 'ده سؤال مش إجابة. اتكلم مع حسن ومريم؛ بداية بحثك اتسجلت في دفتر الأدلة.',
+          'simulated'
+        );
+      },
+    });
+    this.openingHook.setLanguage(this.hud.lang);
 
     // Populate initial notebook receipts
     this.hud.updateNotebookReceipts(this.mission.notebookReceipts);

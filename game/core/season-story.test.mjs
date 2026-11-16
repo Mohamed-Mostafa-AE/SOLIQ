@@ -20,3 +20,16 @@ test('story never treats a fictional crop rotation as observed data', () => {
   assert.equal(outcome.sourceType, 'simulated');
   assert.equal(getSeasonStoryBeat({}, 'deferral').stage, 'decision-recorded');
 });
+
+test('opening clue changes the first narrative thread without declaring a winner', () => {
+  const water = getSeasonStoryBeat({ firstClue: 'water' });
+  const soil = getSeasonStoryBeat({ firstClue: 'soil' });
+  assert.equal(water.stage, 'thread');
+  assert.equal(soil.stage, 'thread');
+  assert.match(water.titleEn, /water/i);
+  assert.match(soil.titleEn, /soil/i);
+  assert.equal(water.sourceType, 'simulated');
+  assert.equal(soil.sourceType, 'simulated');
+  assert.notEqual(water.textEn, soil.textEn);
+  assert.doesNotMatch(water.textEn, /guaranteed|NASA observed/i);
+});

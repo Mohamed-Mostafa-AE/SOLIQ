@@ -139,6 +139,12 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   assert.ok(mission.notebookReceipts.length >= 1);
   assert.equal(mission.notebookReceipts[0].id, 'REC_CH0_START');
 
+  assert.equal(mission.beginInvestigation('water'), true);
+  assert.equal(mission.flags.firstClue, 'water');
+  assert.equal(mission.beginInvestigation('water'), false, 'first meaningful choice is not duplicated');
+  assert.throws(() => mission.beginInvestigation('invented-clue'), RangeError);
+  assert.ok(mission.notebookReceipts.some(r => r.id === 'STORY_CLUE_WATER' && r.dataClass === 'simulated'));
+
   // Hassan interaction
   const hassanDlg = mission.getDialogueForTarget({ id: 'hassan' });
   assert.ok(hassanDlg);

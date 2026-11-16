@@ -43,6 +43,22 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await camBtn.click();
   });
 
+  test('real start reveals a dramatic two-plan prologue and records the chosen investigation', async ({ page }) => {
+    await page.goto('/experience/play/');
+    await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true);
+    await page.locator('#btn-start-game').click();
+    await expect(page.locator('#opening-hook')).toBeVisible();
+    await expect(page.locator('#opening-hook')).toHaveAttribute('role', 'dialog');
+    await expect(page.locator('#opening-hook')).toContainText('The Seventh Field');
+    await expect(page.locator('#opening-hook')).toContainText('UNTESTED');
+    await page.locator('#hook-clue-soil').click();
+    await expect(page.locator('#opening-hook')).toBeHidden();
+    const clue = await page.evaluate(() => window.__seventhFieldGame.mission.flags.firstClue);
+    expect(clue).toBe('soil');
+    await page.locator('#btn-notebook').click();
+    await expect(page.locator('#receipts-list')).toContainText('Soil-cover question');
+  });
+
   test('Interactive conversations with Uncle Hassan and Maryam', async ({ page }) => {
     await startSession(page);
 
@@ -170,7 +186,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
 
     // Verify initial receipt
     await expect(page.locator('.receipt-card').first()).toBeVisible();
-    await expect(page.locator('.receipt-title').first()).toContainText('The Water Has Arrived!');
+    await expect(page.locator('.receipt-title').first()).toContainText('Dawn Council: The Seventh Field Mystery');
 
     // Close Notebook
     await page.locator('#btn-close-notebook').click();
@@ -282,6 +298,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
   });
 
   test('Text-first story route is playable with keyboard, captions and reduced motion', async ({ page }) => {
+    test.setTimeout(90_000); // 3D software renderer on CI can delay focus/keyboard interaction.
     await startSession(page);
     await page.locator('#btn-story-desk').click();
     const story = page.locator('#story-desk');
@@ -301,6 +318,7 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#story-beat-title')).toContainText('seventh field');
 
     await page.locator('[data-story-target="pumpStation"]').click();
+    await expect(page.locator('#story-choice-list button')).toHaveCount(3);
     await page.locator('#story-choice-list button').nth(1).press('Enter');
     await expect(page.locator('#story-beat-title')).toContainText('water turn has consequences');
     await expect(page.locator('#story-rotation-link')).toHaveAttribute('href', '../../#rotations');
