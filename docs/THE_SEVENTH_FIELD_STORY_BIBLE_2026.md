@@ -43,7 +43,7 @@ The game remains a major playable part **inside** the existing Soil-IQ website/a
 7. **The hook:** in the seventh field, the alternate season remains uncertain. The game directs the player to the real Crop Rotation Workspace for source-labelled NASA weather context and declared soil/crop parameters.
 8. **Re-engagement:** research cannot make the mystery vanish automatically; future chapters expose new stakeholder priorities. Chapter ends with a meaningful question, not a fictional "safety cleared" badge.
 
-**Accessible equivalent implemented:** `/experience/play/story.html` offers the same Chapter 0 dialogue choices and water solver without WebGL, audio or device location; English default, Arabic optional. The 3D HUD includes Story Mode. Chapter 0 is **not** a complete audio-described or independently WCAG-certified 3D game.
+**Accessible equivalent implemented:** `/experience/play/story.html` offers the **same two opening investigation questions** (or optional skip by visiting a character), Chapter 0 dialogue choices and water solver without WebGL, audio or device location; English default, Arabic optional. The 3D HUD includes Story Mode. Chapter 0 is **not** a complete audio-described or independently WCAG-certified 3D game.
 
 ## NPC motives / conflict (future writing expansion)
 - **Nada:** wants to reconcile satellite-derived context with knowledge of farmers; grows from "the model knows" to "the evidence has limits".
@@ -65,7 +65,7 @@ There is no villain; the antagonist is uncertainty, conflicting priorities and a
 | User need | Current implementation | Next acceptance test |
 |---|---|---|
 | Deaf/Hard of hearing | All current authored dialogue as visible text; audio can be muted; English/Arabic mode | Confirm no auditory-only clue, verify future sound cues have captions |
-| Blind/screen-reader | Keyboard-accessible text-first Chapter 0 with role labels, live updates and focusable choices; accessible launcher before Babylon runs | Manual NVDA/VoiceOver/TalkBack tests, reading order, focus loops, robust no-JS/error behavior |
+| Blind/screen-reader | Keyboard-accessible text-first Chapter 0 with equivalent opening investigation, role labels, live updates and focusable choices; accessible launcher before Babylon runs | Manual NVDA/VoiceOver/TalkBack tests, reading order, focus loops, robust no-JS/error behavior |
 | Motor limitation | Keyboard alternative to moving a character; focus indicators, buttons with spoken labels | Keyboard-only and switch-control evaluation, adjustable hold times |
 | Motion sensitivity | Functional UI reduced-motion setting, CSS OS preference, no-WebGL text route | Audit 3D camera/particle motion and add a scene-level reduced-motion mode |
 | Low vision / color perception | Non-color-only text labels in story, zoom allowed, distinct class names | Contrast audit and 200–400% zoom on real devices |

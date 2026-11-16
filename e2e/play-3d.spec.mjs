@@ -297,6 +297,19 @@ test.describe('SOLIQ: The Seventh Field - 3D Playable World E2E', () => {
     await expect(page.locator('#story-desk-title')).toContainText('الموسم');
   });
 
+  test('text-only route has the same opening investigation choice and evidence receipt', async ({ page }) => {
+    await page.goto('/experience/play/story.html');
+    await expect(page.locator('#story-thread-list button')).toHaveCount(2);
+    await page.locator('#story-thread-soil').press('Enter');
+    await expect(page.locator('#story-thread-list button')).toHaveCount(0);
+    await expect(page.locator('#story-beat-title')).toContainText('Follow the soil');
+    await expect(page.locator('#text-receipts')).toContainText('Soil-cover question');
+    const flag = await page.evaluate(() => window.__soilIqTextGame.mission.flags.firstClue);
+    expect(flag).toBe('soil');
+    await page.locator('[data-story-target="hassan"]').click();
+    await expect(page.locator('#story-choice-list button')).toHaveCount(2);
+  });
+
   test('Text-first story route is playable with keyboard, captions and reduced motion', async ({ page }) => {
     test.setTimeout(90_000); // 3D software renderer on CI can delay focus/keyboard interaction.
     await startSession(page);

@@ -866,6 +866,12 @@ body.reduced-motion .opening-hook *::after { animation: none !important; transit
 .story-desk-body { padding: 18px 22px 24px; overflow-y: auto; }
 .story-desk-body h3 { margin: 14px 0 8px; }
 .story-desk-body p { line-height: 1.6; }
+.story-thread { margin-top: 16px; padding: 13px; border: 1px solid #c2a66e; border-radius: 10px; background: #29483b; }
+.story-thread[hidden] { display: none !important; }
+.story-thread h3 { margin-top: 0; }
+#story-thread-help { margin: 5px 0 11px; color: #e6ecde; font-size: .89rem; }
+.story-thread-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.story-thread-list .story-choice-btn { min-height: 60px; border-color: #f0cb85; }
 .story-desk-help { color: #e3efe8; }
 .story-source-label { color: #ffe7af; font-weight: 800; font-size: .8rem; letter-spacing: .02em; }
 .story-scene-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
@@ -915,6 +921,7 @@ body.reduced-motion .game-loader * {
   .story-desk-overlay { padding: 6px; }
   .story-desk-header, .story-desk-body { padding: 12px; }
   .story-scene-nav { grid-template-columns: 1fr; }
+  .story-thread-list { grid-template-columns: 1fr; }
   .mobile-action-bar { bottom: 12px; gap: 8px; }
   .mobile-btn { width: 52px; height: 52px; }
 }

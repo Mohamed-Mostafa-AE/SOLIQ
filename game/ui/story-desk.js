@@ -43,6 +43,11 @@ export class AccessibleStoryDesk {
           <div id="story-desk-source" class="story-source-label">SIMULATED STORY · NOT A NASA OBSERVATION</div>
           <h3 id="story-beat-title"></h3>
           <p id="story-beat-text"></p>
+          <section id="story-thread" class="story-thread" aria-labelledby="story-thread-title">
+            <h3 id="story-thread-title">Choose your first clue — optional</h3>
+            <p id="story-thread-help">Both are untested story questions. You can visit anyone without choosing.</p>
+            <div id="story-thread-list" class="story-thread-list" role="group" aria-label="Opening investigation"></div>
+          </section>
           <nav id="story-scene-nav" class="story-scene-nav" aria-label="Choose whom to visit"></nav>
           <section class="story-dialogue" aria-labelledby="story-speaker">
             <h3 id="story-speaker">Choose a scene</h3>
@@ -83,6 +88,12 @@ export class AccessibleStoryDesk {
     this._set('story-desk-limit',
       'The 3D free-roam world is visual; this companion provides an equivalent Chapter 0 decision path, not a full 3D accessibility certification.',
       'العالم ثلاثي الأبعاد يعتمد على الرؤية؛ هذا المسار يوفر اختيارات الفصل صفر نصيًا ولا يعني اكتمال إتاحة التجوال ثلاثي الأبعاد.');
+    this._set('story-thread-title', 'Choose your first clue — optional', 'اختار أول خيط — اختياري');
+    this._set('story-thread-help',
+      'Both are untested story questions. You can visit anyone without choosing.',
+      'الاتنين أسئلة قصة غير مختبرة. تقدر تزور أي شخصية من غير ما تختار.');
+    this.root.querySelector('#story-thread-list').setAttribute('aria-label',
+      this._localize('Opening investigation', 'بداية التحقيق'));
     this._set('story-rotation-link', 'Open the real Crop Rotation Workspace ↗', 'افتح أداة مقارنة دورات المحاصيل الحقيقية ↗');
     this.root.querySelector('#story-desk-close').setAttribute('aria-label',
       this._localize('Close story mode', 'إغلاق وضع القصة'));
@@ -97,8 +108,37 @@ export class AccessibleStoryDesk {
     const beat = getSeasonStoryBeat(this.mission.flags, this.mission.activeOutcome);
     this._set('story-beat-title', beat.titleEn, beat.titleAr);
     this._set('story-beat-text', beat.textEn, beat.textAr);
+    this._renderOpeningThreads();
     this._renderScenes();
     this._renderDialogue();
+  }
+
+  _renderOpeningThreads() {
+    const section = this.root.querySelector('#story-thread');
+    const list = this.root.querySelector('#story-thread-list');
+    list.replaceChildren();
+    section.hidden = Boolean(this.mission.flags.firstClue);
+    if (section.hidden) return;
+    for (const thread of [
+      { id: 'water', en: 'Follow the water — who gets the last turn?', ar: 'اتبع المياه — آخر دور ري لمين؟' },
+      { id: 'soil', en: 'Follow the soil — what will protect it next season?', ar: 'اتبع التربة — إيه اللي هيحميها الموسم الجاي؟' },
+    ]) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.id = `story-thread-${thread.id}`;
+      button.className = 'story-choice-btn';
+      button.textContent = this._localize(thread.en, thread.ar);
+      button.addEventListener('click', () => {
+        this.mission.beginInvestigation(thread.id);
+        this.callbacks.onMissionChanged?.();
+        this.refresh();
+        this.root.querySelector('#story-announcement').textContent = this._localize(
+          'Your question is recorded as simulated; both plans remain untested. Choose a person to investigate.',
+          'اتسجل سؤالك باعتباره افتراضيًا؛ الخطتان لسه غير مختبرتين. اختار شخصية علشان تكمّل التحقيق.');
+        this.root.querySelector('#story-scene-nav button')?.focus();
+      });
+      list.appendChild(button);
+    }
   }
 
   _renderScenes() {
