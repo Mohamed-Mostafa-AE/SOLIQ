@@ -71,7 +71,7 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
 
     // Shot 2: Seasonal Feedback View (Simulated irrigation outcome)
     // Run an irrigation turn where Field 1 & 2 are well-watered, and others face deficit
-    await page.evaluate(() => {
+    const simulatedFeedback = await page.evaluate(() => {
       const g = window.__seventhFieldGame;
       // Trigger simulation: fields 0, 1 delivered full; 2, 3 partial; 4, 5 zero
       const sim = {
@@ -83,7 +83,7 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       };
       g.waterEngine.isPumpActive = true;
       g.village.setPumpRunning(true);
-      g.seasonFeedback.applyIrrigationOutcome(sim);
+      const feedback = g.seasonFeedback.applyIrrigationOutcome(sim);
 
       // Point camera to show contrast between Field 1 (irrigated mud) and Field 5 (dry saline crust)
       const cam = g.renderSetup.cameras.follow;
@@ -91,7 +91,13 @@ test.describe('P1-08: Egyptian Delta World & Seasonal Feedback Evidence Capture'
       cam.radius = 24.0;
       cam.alpha = -Math.PI / 1.8;
       cam.beta = 1.05;
+      return {
+        evidenceClass: feedback?.evidenceClass,
+        dryFieldPosture: g.seasonFeedback.getFieldFeedback(g.village.fields[4].id)?.posture,
+      };
     });
+    expect(simulatedFeedback.evidenceClass).toBe('simulated');
+    expect(simulatedFeedback.dryFieldPosture).toBe('wilted');
     await page.waitForTimeout(600);
     if (captureEvidence) {
       const feedbackShot = await page.screenshot({ animations: 'disabled', timeout: 30000 });
