@@ -42,5 +42,8 @@ test('P1-09 cinematic Welcome preview: accessible choices, routes and mobile red
  await expect(preview.locator('.decision-preview-actions .decision-primary')).toHaveAttribute('href','../walkthrough/');
  await expect(preview.locator('.decision-preview-actions .decision-secondary')).toHaveAttribute('href','../experience/play/');
  await preview.getByRole('link',{name:/Compare crop rotation scenarios/}).click();
- await expect(page.getByRole('heading',{name:'Compare two crop plans, evidence first'})).toBeVisible();
+ await expect(page).toHaveURL(/\/walkthrough\/?$/);
+ await expect(page.getByRole('heading',{level:1,name:/The next crop.*A clearer choice/})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Locate the weather evidence'})).toBeVisible();
+ await expect(page.getByRole('button',{name:/Load dated NASA POWER weather/})).toBeVisible();
 });
