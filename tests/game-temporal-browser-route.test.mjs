@@ -4,7 +4,8 @@ import { resolvePublicPath } from '../dev-server.mjs';
 
 test('browser can load the exact temporal solver module required by Babylon game', () => {
   const resolved = resolvePublicPath('/science/mesqa-window.js');
-  assert.ok(resolved && resolved.endsWith('/science/mesqa-window.js'), 'module must be in local browser allowlist');
+  const normalized = resolved ? resolved.replaceAll('\\', '/') : null;
+  assert.ok(normalized && normalized.endsWith('/science/mesqa-window.js'), 'module must be in local browser allowlist');
 });
 
 test('browser scientific allowlist still rejects unrelated private science files', () => {

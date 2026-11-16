@@ -22,6 +22,7 @@ export class RenderSetup {
     this.activeCameraName = 'follow';
     this.glowLayer = null;
     this.quality = this.options.preset;
+    this.reducedMotion = this.options.reducedMotion ?? false;
 
     this._initEngine();
   }
@@ -40,21 +41,52 @@ export class RenderSetup {
     });
 
     this.scene = new BABYLON.Scene(this.engine);
-    this.scene.clearColor = new BABYLON.Color4(0.82, 0.89, 0.94, 1.0); // Nile Delta morning sky
+    this.scene.clearColor = new BABYLON.Color4(0.80, 0.88, 0.94, 1.0); // Nile Delta morning sky
 
-    // Atmospheric Nile Delta dawn fog
+    // Atmospheric Nile Delta dawn fog (warm morning river mist)
     this.scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
-    this.scene.fogColor = new BABYLON.Color3(0.85, 0.88, 0.91);
-    this.scene.fogDensity = 0.002; // don't wash the village in a grey veil
+    this.scene.fogColor = new BABYLON.Color3(0.88, 0.89, 0.86);
+    this.scene.fogDensity = 0.0022; // calibrated dawn mist without losing field clarity
 
     this.scene.collisionsEnabled = true;
 
     this._setupLights();
+    this._setupSkyDome();
     this._setupCameras();
     this._setupGlowLayer();
     this.setQuality(this.quality);
 
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      this.setReducedMotion(true);
+    }
+
     window.addEventListener('resize', this._onResize);
+  }
+
+  _setupSkyDome() {
+    const skyDome = BABYLON.MeshBuilder.CreateSphere('nileSkyDome', {
+      diameter: 380,
+      segments: 16,
+      sideOrientation: BABYLON.Mesh.BACKSIDE,
+    }, this.scene);
+    skyDome.position.set(20, 15, 10);
+    const skyMat = new BABYLON.StandardMaterial('skyMat', this.scene);
+    skyMat.backFaceCulling = false;
+    skyMat.disableLighting = true;
+    skyMat.emissiveColor = new BABYLON.Color3(0.84, 0.89, 0.95);
+    skyDome.material = skyMat;
+    skyDome.isPickable = false;
+    this.skyDome = skyDome;
+  }
+
+  setReducedMotion(enabled) {
+    this.reducedMotion = Boolean(enabled);
+    if (this.cameras.follow) {
+      this.cameras.follow.inertia = this.reducedMotion ? 0.0 : 0.85;
+    }
+    if (this.cameras.iso) {
+      this.cameras.iso.inertia = this.reducedMotion ? 0.0 : 0.85;
+    }
   }
 
   _onResize = () => {

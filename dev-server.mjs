@@ -1,6 +1,7 @@
 /** Local preview only. Production uses Vercel Functions and static hosting. */
 import http from "node:http";
 import {readFile} from "node:fs/promises";
+import {realpathSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {extname,resolve,sep} from "node:path";
 import outlook from "./api/outlook.js";
@@ -57,7 +58,12 @@ export async function handleRequest(req,res){
  }catch{json(res,404,{error:"Not found"});}
 }
 export function createLocalServer(){return http.createServer((req,res)=>{handleRequest(req,res).catch(()=>{if(!res.writableEnded)json(res,500,{error:"Server error"});});});}
-if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+function isEntry(){
+ if(!process.argv[1])return false;
+ try{return realpathSync(resolve(process.argv[1]))===realpathSync(fileURLToPath(import.meta.url));}
+ catch{return resolve(process.argv[1])===fileURLToPath(import.meta.url);}
+}
+if(isEntry()){
  const host=process.env.HOST??"127.0.0.1",port=Number(process.env.PORT)||4173;
  createLocalServer().listen(port,host,()=>console.log("SOLIQ local preview: http://"+host+":"+port+"/"));
 }
