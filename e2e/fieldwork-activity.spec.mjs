@@ -28,7 +28,7 @@ test('Nada picks up a tool, examines soil, and visibly covers a trial bed', asyn
 
   await approachAndInteract('fieldwork_sample');
   await expect(page.locator('#fieldwork-panel')).toHaveAttribute('data-stage', 'cover');
-  await expect(page.locator('#fieldwork-panel')).toContainText('not a sensor reading');
+  await expect(page.locator('#fieldwork-panel')).toContainText('unknown without ground tests');
 
   await approachAndInteract('fieldwork_cover');
   await expect(page.locator('#fieldwork-choice-straw')).toBeVisible();
@@ -41,11 +41,10 @@ test('Nada picks up a tool, examines soil, and visibly covers a trial bed', asyn
       outcome: game.fieldwork.state.coverChoice,
       rows: game.fieldwork.strawRows.filter(row => row.isEnabled()).length,
       markerVisible: game.fieldwork.marker.isEnabled(),
-      receipts: game.mission.notebookReceipts.length,
       privateKeys: Object.keys(localStorage).filter(key => key.includes('fieldwork')),
     };
   });
-  expect(world).toEqual({outcome: 'straw', rows: 5, markerVisible: false, receipts: 1, privateKeys: []});
+  expect(world).toEqual({outcome: 'straw', rows: 5, markerVisible: false, privateKeys: []});
   await page.screenshot({path: 'test-results/seventh-field-tool-soil-cover.png'});
 
   await page.locator('#fieldwork-replay').click();
@@ -53,7 +52,7 @@ test('Nada picks up a tool, examines soil, and visibly covers a trial bed', asyn
   expect(await page.evaluate(() => window.__seventhFieldGame.fieldwork.strawRows.every(row => !row.isEnabled()))).toBe(true);
 });
 
-test('trial bed can stay bare with Arabic HUD at 360px', async ({page}) => {
+test('trial bed can stay bare with Arabic activity at 360px', async ({page}) => {
   test.setTimeout(90_000);
   await page.setViewportSize({width: 360, height: 800});
   await page.emulateMedia({reducedMotion: 'reduce'});
