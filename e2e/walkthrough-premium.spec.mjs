@@ -1,6 +1,36 @@
 import { test, expect } from '@playwright/test';
 import { demoWeather } from '../engine.js';
 
+// Screenshot artifacts are useful for judging visual quality, but a GitHub
+// Chromium runner can temporarily refuse Page.captureScreenshot after several
+// expensive WebGL suites. Never hide a functional assertion failure or a
+// navigation crash because of this optional recording step.
+async function captureEvidence(page, name, options = {}) {
+  try {
+    await page.screenshot({
+      path: test.info().outputPath(`${name}.png`),
+      animations: 'disabled', timeout: 12_000, ...options,
+    });
+  } catch (error) {
+    if (!/Protocol error \(Page\.captureScreenshot\): Unable to capture screenshot/.test(String(error))) throw error;
+    try {
+      await page.screenshot({
+        path: test.info().outputPath(`${name}-fallback.jpg`),
+        type: 'jpeg', quality: 60,
+        clip: { x: 0, y: 0, width: Math.min(320, page.viewportSize()?.width || 320), height: Math.min(600, page.viewportSize()?.height || 600) },
+        animations: 'disabled', timeout: 12_000,
+      });
+    } catch (fallbackError) {
+      if (!/Protocol error \(Page\.captureScreenshot\): Unable to capture screenshot/.test(String(fallbackError))) throw fallbackError;
+      test.info().annotations.push({
+        type: 'screenshot-unavailable',
+        description: `${name}: Chromium capture backend unavailable; DOM and workflow assertions still ran`,
+      });
+      console.warn(`[visual artifact unavailable] ${name}: Chromium could not capture either viewport image`);
+    }
+  }
+}
+
 function datedPowerResponse() {
   const parameter = { T2M_MIN: {}, T2M_MAX: {}, PRECTOTCORR: {} };
   for (const day of demoWeather(2024)) {
@@ -39,7 +69,7 @@ test('premium evidence-first walkthrough exposes navigable, original responsive 
   // Screenshot only the 360px viewport. Whole-page rasterization can exceed
   // headless Chromium's capture budget for this long accessible form, while
   // the assertions above still exercise its actual DOM and horizontal fit.
-  await page.screenshot({ path: test.info().outputPath('walkthrough-premium-mobile-before-weather.png'), animations: 'disabled' });
+  await captureEvidence(page, 'walkthrough-premium-mobile-before-weather');
 });
 
 test('NASA receipt and editable plans become readable comparison without changing model or evidence', async ({ page }) => {
@@ -57,7 +87,7 @@ test('NASA receipt and editable plans become readable comparison without changin
   await expect(page.locator('#results .outcome-card')).toHaveCount(2);
   await expect(page.locator('#results')).toContainText('not a confidence interval');
   await expect(page.locator('#export')).toBeEnabled();
-  await page.screenshot({ path: test.info().outputPath('walkthrough-premium-desktop-comparison.png'), fullPage: true });
+  await captureEvidence(page, 'walkthrough-premium-desktop-comparison', { fullPage: true });
 
   const download = page.waitForEvent('download');
   await page.locator('#export').click();
