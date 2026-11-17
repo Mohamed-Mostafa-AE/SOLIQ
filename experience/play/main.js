@@ -14,6 +14,7 @@ import { PlayerController } from '../../game/world/controls.js';
 import { DeltaAudioSynthesizer } from '../../game/world/audio.js';
 import { VisualWaterEngine } from '../../game/world/water-simulation.js';
 import { SeasonFeedbackEngine } from '../../game/world/season-feedback.js';
+import { CouncilWorldReactions } from '../../game/world/council-world-reactions.js';
 import { EarthLensSystem } from '../../game/world/earth-lens.js';
 import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
@@ -41,6 +42,7 @@ class SeventhFieldGame {
     this.audio = null;
     this.waterEngine = null;
     this.seasonFeedback = null;
+    this.councilWorldReactions = null;
     this.earthLens = null;
     this.timeEcho = null;
     this.mission = null;
@@ -100,6 +102,10 @@ class SeventhFieldGame {
     this.seasonFeedback = new SeasonFeedbackEngine(this.village, this.waterEngine, {
       reducedMotion: this.renderSetup?.reducedMotion ?? false,
     });
+    this.councilWorldReactions = new CouncilWorldReactions(scene, {
+      reducedMotion: this.renderSetup?.reducedMotion ?? false,
+    });
+    this._lastCouncilTurnCount = 0;
 
     // 5. Earth Lens & Time Echo Systems
     this.earthLens = new EarthLensSystem(scene, this.village);
@@ -114,10 +120,29 @@ class SeventhFieldGame {
     this._setupHUD();
     this.chapterSequence = mountChapterSequence({
       host: this.uiContainer, chapter0: this.mission, language: this.hud.lang,
-      onUnlocked: text => this.hud.showTelemetryToast(
-        this.hud.lang === 'ar' ? 'الفصل الثاني جاهز' : 'Chapter 2 unlocked',
+      onUnlocked: (text, chapter = 2) => this.hud.showTelemetryToast(
+        this.hud.lang === 'ar' ? `الفصل ${chapter} جاهز` : `Chapter ${chapter} unlocked`,
         text, 'simulated',
       ),
+      onChapter5Change: state => {
+        this.councilWorldReactions.apply(state);
+        const turns = state?.choices?.length ?? 0;
+        if (turns > this._lastCouncilTurnCount) {
+          const latest = state.choices.at(-1);
+          const actor = latest === 'protect_cover' ? 'maryam'
+            : latest === 'share_turn' ? 'hassan' : 'nada';
+          // A temporary performance, not a claim that real canal flow changed.
+          this.characters.setActorState(actor, 'talk');
+          this.hud.showTelemetryToast(
+            this.hud.lang === 'ar' ? 'أثر قرار القرية' : 'Village choice reflected',
+            this.hud.lang === 'ar'
+              ? 'علامة ثلاثية الأبعاد خيالية ظهرت في القرية؛ ليست قياسًا حقيقيًا.'
+              : 'A fictional 3D story marker appeared in the village; no field data were measured.',
+            'simulated',
+          );
+        }
+        this._lastCouncilTurnCount = turns;
+      },
     });
     this.nasaBrowseOverlay=createNasaBrowseOverlay(this.uiContainer);
     this.nasaBrowseOverlay.setLanguage(this.hud.lang);
@@ -395,6 +420,7 @@ class SeventhFieldGame {
 
     // 4b. Environmental wind sway and seasonal feedback
     this.seasonFeedback?.tick(deltaTime);
+    this.councilWorldReactions?.tick(deltaTime);
 
     // 5. Check Time Echo field presence
     const inEcho = this.timeEcho.checkPlayerInside(this.characters.nada.root.position);

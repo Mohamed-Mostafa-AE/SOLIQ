@@ -70,12 +70,26 @@ test('Babylon council journey unlocks all six chapters without mobile dock colli
   await page.screenshot({ path: 'test-results/seventh-field-four-chapter-finale-3d.png' });
   await page.locator('#chapter4-harvest-council .harvest-close').click();
   await expect(page.locator('#chapter5-launch')).toBeVisible();
+  const beforeChoices = await page.evaluate(() => window.__seventhFieldGame.councilWorldReactions.frame.map(item=>item.count));
+  expect(beforeChoices).toEqual([0,0,0]);
   await page.locator('#chapter5-launch').click();
   for (const choice of ['share_turn', 'protect_cover', 'ask_for_records']) {
     await page.locator(`#chapter5-canal-turns [data-choice="${choice}"]`).click();
   }
+  const world = await page.evaluate(() => {
+    const reactions=window.__seventhFieldGame.councilWorldReactions;
+    return {frame:reactions.frame.map(item=>({id:item.id,count:item.count,evidenceClass:item.evidenceClass,
+      realMeasurement:item.isFieldMeasurement})),
+      visible:Object.values(reactions.markers).map(marker=>marker.root.isEnabled()),
+      builtMeshes:Object.values(reactions.markers).map(marker=>Boolean(marker.beacon?.material))};
+  });
+  expect(world.frame.map(item=>item.count)).toEqual([1,1,1]);
+  expect(world.frame.every(item=>item.evidenceClass==='SIMULATED'&&!item.realMeasurement)).toBe(true);
+  expect(world.visible).toEqual([true,true,true]);
+  expect(world.builtMeshes).toEqual([true,true,true]);
   await expect(page.locator('#chapter5-canal-turns .sf-result')).toBeVisible();
   await page.locator('#chapter5-canal-turns .sf-close').click();
+  await page.screenshot({ path:'test-results/seventh-field-canal-world-choice-markers.png' });
   await expect(page.locator('#chapter6-launch')).toBeVisible();
   await page.locator('#chapter6-launch').click();
   await page.locator('#chapter6-open-future [data-choice="seek_evidence"]').click();

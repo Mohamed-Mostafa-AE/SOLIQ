@@ -32,7 +32,8 @@ const words = {
     futureSummary: 'اتسجلت تلات نوبات. اختار إزاي القرية هتواجه الأدلة الناقصة.' },
 };
 
-export function mountChapterSequence({ host, chapter0, language = 'en', onUnlocked = () => {} } = {}) {
+export function mountChapterSequence({ host, chapter0, language = 'en',
+  onUnlocked = () => {}, onChapter5Change = () => {} } = {}) {
   if (!host || !chapter0) throw new TypeError('The chapter sequence requires a host and Chapter 0');
   let lang = language === 'ar' ? 'ar' : 'en';
   let chapter2 = null;
@@ -112,6 +113,7 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter5 = null;
     chapter5Launch.hidden = true;
     canalWasUnlocked = false;
+    onChapter5Change(null);
   }
 
   function removeChapter4() {
@@ -131,6 +133,9 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
   }
 
   function refreshFuture() {
+    // Send the real, replayable Chapter 5 history to the optional 3D world.
+    // The text-first route uses the same mission without constructing Babylon.
+    onChapter5Change(chapter5?.mission.view() ?? null);
     if (chapter5?.mission.phase !== 'result') {
       removeChapter6();
       renderLabel();
@@ -142,7 +147,7 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     });
     chapter6Launch.hidden = false;
     renderLabel();
-    if (!futureWasUnlocked) onUnlocked(words[lang].futureSummary);
+    if (!futureWasUnlocked) onUnlocked(words[lang].futureSummary, 6);
     futureWasUnlocked = true;
   }
 
@@ -158,7 +163,7 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     });
     chapter5Launch.hidden = false;
     refreshFuture();
-    if (!canalWasUnlocked) onUnlocked(words[lang].canalSummary);
+    if (!canalWasUnlocked) onUnlocked(words[lang].canalSummary, 5);
     canalWasUnlocked = true;
   }
 
@@ -176,7 +181,7 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter4Launch.hidden = false;
     refreshCanal();
     renderLabel();
-    if (!harvestWasUnlocked) onUnlocked(words[lang].harvestSummary);
+    if (!harvestWasUnlocked) onUnlocked(words[lang].harvestSummary, 4);
     harvestWasUnlocked = true;
   }
 
@@ -194,7 +199,7 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     });
     chapter3Launch.hidden = false;
     refreshFinale();
-    if (!soilWasUnlocked) onUnlocked(words[lang].soilSummary);
+    if (!soilWasUnlocked) onUnlocked(words[lang].soilSummary, 3);
     soilWasUnlocked = true;
   }
 
@@ -216,7 +221,7 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter2Launch.hidden = false;
     refreshLater();
     renderLabel();
-    if (!wasUnlocked) onUnlocked(lang === 'ar' ? words.ar.summary : words.en.summary);
+    if (!wasUnlocked) onUnlocked(lang === 'ar' ? words.ar.summary : words.en.summary, 2);
     wasUnlocked = true;
   }
 
