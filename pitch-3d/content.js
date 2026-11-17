@@ -90,7 +90,7 @@ export const slides=[
   {
     "label": "05 / TWO EXPERIENCES",
     "title": "The data.\nThe people.",
-    "lead": "A science workspace and a playable Delta story.\nAn evidence adviser explains the limits.",
+    "lead": "A science workspace and a playable Delta story.",
     "kind": "ai",
     "scene": "documents",
     "items": [
