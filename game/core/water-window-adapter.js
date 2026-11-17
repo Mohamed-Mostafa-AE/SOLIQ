@@ -17,6 +17,7 @@ const isValidNumber = value => typeof value === 'number' && Number.isFinite(valu
 export function runGameWaterWindow({
   supplyM3h,
   demandsM3,
+  openFields = [true, true, true, true, true, true],
   turnOn = true,
   pumpOn = true,
   pumpFailure = false,
@@ -25,6 +26,10 @@ export function runGameWaterWindow({
   if (!isValidNumber(supplyM3h) || !Array.isArray(demandsM3) ||
       demandsM3.length !== 6 || !demandsM3.every(isValidNumber)) {
     throw new TypeError('Six finite nonnegative demand volumes and a supply rate are required');
+  }
+  if (!Array.isArray(openFields) || openFields.length !== 6 ||
+      !openFields.every(value => typeof value === 'boolean')) {
+    throw new TypeError('Six explicitly opened or closed fictional field valves are required');
   }
   if (typeof turnOn !== 'boolean' || typeof pumpOn !== 'boolean' ||
       typeof pumpFailure !== 'boolean' || typeof seed !== 'string') {
@@ -51,7 +56,7 @@ export function runGameWaterWindow({
       windows: [{startHour: 0, endHour: 2}],
     })),
   };
-  const actions = ids.map(farmId => ({
+  const actions = ids.filter((_, i) => openFields[i]).map(farmId => ({
     type: 'valve', farmId, startHour: 0, endHour: 2,
   }));
   if (pumpFailure) {
@@ -83,6 +88,7 @@ export function runGameWaterWindow({
     inputAssumptions: {
       durationHours: 1, areaPerFieldM2: 1000, efficiency: 1,
       waterDemandUnit: 'm3', canalRateUnit: 'm3/h',
+      openFields: [...openFields],
       realFarmValidation: false,
     },
   };

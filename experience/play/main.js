@@ -21,6 +21,7 @@ import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
 import { FieldworkActivity } from '../../game/ui/fieldwork-activity.js';
 import { WaterPracticeActivity } from '../../game/ui/water-practice.js';
+import { CanalTurnActivity } from '../../game/ui/canal-turns.js';
 import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
 import { OpeningHook } from '../../game/ui/opening-hook.js';
 import { CinematicDirector } from './cinematic-director.js';
@@ -35,6 +36,7 @@ class SeventhFieldGame {
     this.loader = document.getElementById('game-loader');
     this.loaderBar = document.getElementById('loader-bar');
     this.btnStart = document.getElementById('btn-start-game');
+    this.btnStartCanal = document.getElementById('btn-start-canal');
 
     this.renderSetup = null;
     this.village = null;
@@ -50,6 +52,7 @@ class SeventhFieldGame {
     this.hud = null;
     this.fieldwork = null;
     this.waterPractice = null;
+    this.canalTurns = null;
     this.storyDesk = null;
     this.openingHook = null;
 
@@ -172,6 +175,15 @@ class SeventhFieldGame {
   }
 
   _showStartButton() {
+    if (this.btnStartCanal) {
+      this.btnStartCanal.hidden = false;
+      this.btnStartCanal.addEventListener('click', () => {
+        this.start();
+        // Real action in one click: skip the dossier for players who want
+        // gameplay immediately. Story Mode stays accessible from the HUD.
+        this.canalTurns?.open(false);
+      });
+    }
     if (this.btnStart) {
       this.btnStart.hidden = false;
       this.btnStart.addEventListener('click', () => {
@@ -259,6 +271,7 @@ class SeventhFieldGame {
         this.chapterSequence?.setLanguage(language);
         this.fieldwork?.setLanguage(language);
         this.waterPractice?.setLanguage(language);
+        this.canalTurns?.setLanguage(language);
       },
       onToggleCamera: () => {
         this.playerController?.toggleCameraMode();
@@ -386,6 +399,12 @@ class SeventhFieldGame {
       reducedMotion: this.renderSetup.reducedMotion,
       onProgress: () => this._refreshInteractables(),
     });
+    this.canalTurns = new CanalTurnActivity({
+      host: this.uiContainer,
+      village: this.village,
+      waterEngine: this.waterEngine,
+      hud: this.hud,
+    });
     this._refreshInteractables();
   }
 
@@ -400,6 +419,10 @@ class SeventhFieldGame {
   _handleInteraction(target) {
     if (this.fieldwork?.handleInteraction(target)) return;
     if (this.waterPractice?.handleInteraction(target)) return;
+    if (this.canalTurns?.handleInteraction(target)) {
+      this.audio.playGateTurnSFX();
+      return;
+    }
     this.audio.playGateTurnSFX();
     const dialogue = this.mission.getDialogueForTarget(target);
     if (dialogue) {
