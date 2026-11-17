@@ -52,7 +52,9 @@ async function completeSequence(page) {
 }
 
 test('Babylon council journey unlocks all six chapters without mobile dock collisions', async ({ page }) => {
-  test.setTimeout(180_000);
+  // Software-rendered Babylon screenshots can be slow in hosted Chromium;
+  // keep only the two acceptance captures for this full-game journey.
+  test.setTimeout(240_000);
   await page.goto('/experience/play/');
   await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
   await page.locator('#btn-start-game').click();
@@ -67,7 +69,6 @@ test('Babylon council journey unlocks all six chapters without mobile dock colli
       c.chapter4.mission.result.realWorldRecommendation];
   });
   expect(state).toEqual(['result', 'result', 'result', 'result', 'SIMULATED', false]);
-  await page.screenshot({ path: 'test-results/seventh-field-four-chapter-finale-3d.png' });
   await page.locator('#chapter4-harvest-council .harvest-close').click();
   await expect(page.locator('#chapter5-launch')).toBeVisible();
   const beforeChoices = await page.evaluate(() => window.__seventhFieldGame.councilWorldReactions.frame.map(item=>item.count));
@@ -94,7 +95,6 @@ test('Babylon council journey unlocks all six chapters without mobile dock colli
   await page.locator('#chapter6-launch').click();
   await page.locator('#chapter6-open-future [data-choice="seek_evidence"]').click();
   await expect(page.locator('#chapter6-open-future .sf-result')).toBeVisible();
-  await page.screenshot({ path: 'test-results/seventh-field-six-chapter-finale-3d.png' });
   await page.locator('#chapter6-open-future .sf-close').click();
   await page.setViewportSize({ width: 360, height: 740 });
   const dock = await page.evaluate(() => {
