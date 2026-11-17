@@ -27,7 +27,9 @@ test('P0-06: accessible story provides a truthful return to science routes', asy
   await page.locator('#story-project-link').click();
   await expect(page).toHaveURL(/\/explore\/$/);
   await page.getByRole('link', { name: /Start comparison/ }).click();
-  await expect(page.getByRole('heading', { name: /Compare two crop plans/ })).toBeVisible();
+  await expect(page).toHaveURL(/\/walkthrough\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: /The next crop.*A clearer choice/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Start automatic NASA demo/ })).toHaveAttribute('href', '?demo=1');
   await page.getByRole('link', { name: /All project areas/ }).click();
   await expect(page).toHaveURL(/\/explore\/$/);
 });
