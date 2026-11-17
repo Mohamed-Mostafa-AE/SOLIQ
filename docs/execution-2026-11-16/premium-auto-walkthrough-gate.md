@@ -14,4 +14,6 @@ This integration forward-ports the original, CI-green premium UI work in PR #70 
 
 Node contracts cover both old/new DOM and combined receipt/auto-demo logic. Existing Playwright suites `auto-nasa-prototype.spec.mjs` and `walkthrough-premium.spec.mjs` must both pass on the **same exact HEAD**. Verify at 360px as well as desktop, NASA API-error display, export, contrast/focus order and no layout overflow. Real API screenshot and field accuracy require separate review; an API fixture proves UI behavior, not live Earth observations.
 
+The 360px visual artifact intentionally captures one viewport after CSS reduced motion; a headless-browser whole-page screenshot of the long advanced form can exceed the CI screenshot protocol's raster budget. The separate DOM and responsive-overflow assertions still cover the full document, while the desktop comparison retains its full-page artifact.
+
 Current Vercel release preview creation is blocked by the project account's HTTP 402 daily deployment quota. **Do not promote main or claim production updated until an exact-SHA preview and post-deploy public-domain route matrix pass.**

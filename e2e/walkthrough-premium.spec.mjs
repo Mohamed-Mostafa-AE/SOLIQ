@@ -21,6 +21,7 @@ function datedPowerResponse() {
 
 test('premium evidence-first walkthrough exposes navigable, original responsive design without a fabricated answer', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/walkthrough/');
 
   await expect(page.getByRole('navigation', { name: 'Soil-IQ site navigation' })).toBeVisible();
@@ -35,7 +36,10 @@ test('premium evidence-first walkthrough exposes navigable, original responsive 
   await expect(page.locator('.evidence-legend')).toContainText('ASSUMED');
   await expect(page.locator('.evidence-legend')).toContainText('SIMULATED');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.screenshot({ path: test.info().outputPath('walkthrough-premium-mobile-before-weather.png'), fullPage: true });
+  // Screenshot only the 360px viewport. Whole-page rasterization can exceed
+  // headless Chromium's capture budget for this long accessible form, while
+  // the assertions above still exercise its actual DOM and horizontal fit.
+  await page.screenshot({ path: test.info().outputPath('walkthrough-premium-mobile-before-weather.png'), animations: 'disabled' });
 });
 
 test('NASA receipt and editable plans become readable comparison without changing model or evidence', async ({ page }) => {
