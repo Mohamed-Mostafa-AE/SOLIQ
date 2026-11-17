@@ -1,10 +1,47 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Soil-IQ | Evidence-first walkthrough</title><link rel="stylesheet" href="../style.css"><link rel="stylesheet" href="style.css"></head><body><main>
-<a href="../#overview">Back to Soil-IQ</a> · <a href="../explore/">All project areas</a><h1>Compare two crop plans, evidence first</h1><p>Historical exploration, not a field recommendation. Nothing is saved automatically.</p>
+<nav class="demo-top-nav" aria-label="Project"><a href="../#overview">Field workspace</a><a href="../explore/">All project areas</a><a href="../experience/play/">Play The Seventh Field 3D</a><a href="../pitch-3d/">3D Pitch</a></nav>
+<header class="demo-hero">
+ <div class="demo-hero-copy">
+  <span class="demo-eyebrow">FIELD SHIFT / NASA POWER / EXPLORE</span>
+  <h1>Compare two crop plans, evidence first</h1>
+  <p>Watch historical NASA weather become a transparent crop-rotation comparison. We load a public Delta sample automatically; you don't need to enter numbers or create an account.</p>
+  <div class="demo-hero-actions"><a class="demo-launch" href="?demo=1">Launch automatic NASA demo ↗</a><a class="demo-back" href="../welcome/">Project story ↗</a></div>
+  <p class="demo-privacy">Public example: 31.09° N, 30.94° E · 2024. Not your GPS location. NASA weather is observed gridded context; soil, crops and simulated outcomes remain illustrative. No server-side farm-data saving.</p>
+ </div>
+ <div class="demo-scene" aria-hidden="true">
+  <svg viewBox="0 0 500 320" role="img">
+   <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#173f37"/><stop offset="1" stop-color="#396858"/></linearGradient><linearGradient id="canal" x2="1" y2="1"><stop stop-color="#83cbc3"/><stop offset="1" stop-color="#245e62"/></linearGradient></defs>
+   <rect width="500" height="320" rx="20" fill="url(#sky)"/><circle cx="368" cy="62" r="40" fill="#efc987" opacity=".9"/>
+   <path d="M0 195 L92 160 L194 185 L285 136 L500 181 V320 H0Z" fill="#315849"/>
+   <path d="M0 242 L155 205 L282 230 L500 170 V320 H0Z" fill="#476a45"/>
+   <path class="canal-water" d="M12 320 Q115 265 195 294 T500 225 L500 320Z" fill="url(#canal)"/>
+   <g fill="#f1ddac"><rect x="92" y="132" width="61" height="53" rx="2"/><rect x="246" y="121" width="56" height="61" rx="2"/><rect x="407" y="155" width="47" height="43" rx="2"/></g>
+   <g fill="#a85037"><path d="M84 132 L122 101 L159 132Z"/><path d="M239 121 L274 94 L309 121Z"/><path d="M400 155 L431 130 L461 155Z"/></g>
+   <g fill="#1b4131"><rect x="112" y="156" width="14" height="29"/><rect x="266" y="143" width="15" height="39"/><rect x="423" y="171" width="12" height="27"/></g>
+   <g class="field-lines" fill="none" stroke="#93b47f" stroke-width="3" opacity=".75"><path d="M4 266 L146 226 M2 287 L151 246 M5 304 L147 266 M306 274 L493 218 M316 294 L495 247"/></g>
+  </svg>
+  <span class="demo-scene-caption">ORIGINAL DELTA ILLUSTRATION · NOT SATELLITE IMAGERY</span>
+ </div>
+</header>
 <section id="game-handoff" class="game-handoff" role="note" hidden aria-labelledby="game-handoff-heading">
   <h2 id="game-handoff-heading">From The Seventh Field · SIMULATED story question</h2>
   <p id="game-handoff-copy"></p>
   <p><strong>Nothing was imported as NASA evidence or a real farm input.</strong> The point, soil values, calendars and priorities below remain editable illustrative defaults. Confirm them independently before comparing.</p>
 </section>
+<section id="demo-status" class="demo-data-status" role="status" aria-live="polite" hidden></section>
+<section id="demo-controls" class="demo-controls" hidden aria-label="Explore priorities and location">
+ <div><h2>Change a priority — no typing required</h2><p>Switch only the preference scores. Weather and physical assumptions remain unchanged.</p></div>
+ <div class="demo-segments" role="group" aria-label="Farmer priorities">
+  <button type="button" data-demo-priority="water" aria-pressed="false">Water first</button>
+  <button type="button" data-demo-priority="balanced" aria-pressed="true">Balanced</button>
+  <button type="button" data-demo-priority="cover" aria-pressed="false">Crop cover first</button>
+ </div>
+ <p id="priority-state" role="status"></p>
+ <div class="demo-controls-row"><button type="button" id="retry-demo">Retry public NASA example</button><button type="button" id="use-location">Use my location and request NASA weather</button></div>
+ <p class="demo-consent-note">Location is optional. The browser asks permission first; if allowed, your point is sent for a weather request, not identified as your farm or saved to a server.</p>
+</section>
+<section id="auto-summary" class="demo-metrics" aria-label="NASA-based example comparison" aria-live="polite" hidden></section>
+<details id="advanced" open><summary>Inspect or change sample values and crop calendars · advanced</summary>
 <form id="walkthrough">
 <section><h2>1. Confirm the weather query</h2><p>A point is not a parcel or an ownership claim. Coordinates are sent to NASA only when you load weather.</p>
 <div class="fields"><label>Latitude<input name="lat" type="number" step="any" min="-60" max="60" value="31.09" required></label><label>Longitude<input name="lon" type="number" step="any" min="-180" max="180" value="30.94" required></label><label>Historical year<input name="year" type="number" min="1981" value="2024" required></label></div>
@@ -13,5 +50,5 @@
 <div class="fields"><label>Soil-water capacity (mm)<input name="capacity" type="number" min="10" max="500" value="150" required></label><label>Initial storage (mm)<input name="initial" type="number" min="0" value="75" required></label><label>Effective irrigation budget (mm/year)<input name="irrigation" type="number" min="0" max="3000" value="300" required></label><label>Runoff fraction<input name="runoff" type="number" step="0.01" min="0" max="0.8" value="0.1" required></label><label>Water priority<input name="waterWeight" type="number" min="0" max="100" value="60" required></label><label>Planned-cover priority<input name="coverWeight" type="number" min="0" max="100" value="40" required></label></div>
 <p>Priorities affect the preference score, not physical calculations. Missing local suitability and market evidence prevents a recommended winner.</p></section>
 <section><h2>3. Edit two monthly crop calendars</h2><p>ASSUMED — generic crop coefficients, not locally validated species or planting schedules.</p><div id="calendars"></div><button id="compare" disabled>Compare with retrieved weather</button></section>
-</form><p id="error" role="alert"></p><section id="results" hidden aria-live="polite"></section><button id="export" disabled>Download evidence JSON</button><section><h2>What remains unknown</h2><ul id="limits"></ul><p>OBSERVED: retrieved regional weather. DERIVED: coverage count and response hash. ASSUMED: farmer inputs and calendars. SIMULATED: water balance and sensitivity. UNAVAILABLE: field calibration, soil measurements and verified recommendations.</p></section></main><script type="module" src="view.js"></script></body></html>
+</form></details><p id="error" role="alert"></p><section id="results" hidden aria-live="polite"></section><button id="export" disabled>Download evidence JSON</button><section><h2>What remains unknown</h2><ul id="limits"></ul><p>OBSERVED: retrieved regional weather. DERIVED: coverage count and response hash. ASSUMED: farmer inputs and calendars. SIMULATED: water balance and sensitivity. UNAVAILABLE: field calibration, soil measurements and verified recommendations.</p></section></main><script type="module" src="view.js"></script></body></html>
 
