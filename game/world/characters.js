@@ -5,6 +5,8 @@
  * The procedural version remains a resilient offline/low-bandwidth fallback.
  */
 
+import {createVillagePatrols, advanceVillagePatrols} from '../core/village-patrols.js';
+
 const ACTOR_ASSET_ROOT = '/game/assets/models/';
 const MOTIONS = Object.freeze(['idle', 'walk', 'run', 'talk', 'interact']);
 
@@ -24,6 +26,7 @@ export class CharacterSystem {
     this._createNada();
     this._createHassan();
     this._createMaryam();
+    this.villagePatrols = createVillagePatrols();
     // Loaded asynchronously so the player never waits for 1.5MB of extra art
     // before the text-first, keyboard-operable game can begin. Errors preserve
     // the procedural cast; they are never fatal to the science/gameplay core.
@@ -509,6 +512,34 @@ export class CharacterSystem {
     }
   }
 
+  /**
+   * Move living NPCs within their authored gate areas. Their Babylon root
+   * positions are shared by player proximity interactables, so conversations
+   * follow the characters instead of staying at their original spawn spots.
+   */
+  tickVillagePatrols(deltaTime, {dialogueActorId = null, holdReactions = false} = {}) {
+    const reduceMotion = this.reducedMotion || Boolean(
+      typeof document !== 'undefined' && document.body?.classList?.contains('reduced-motion')
+    );
+    const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const pauseIds = ['hassan', 'maryam'].filter(id =>
+      holdReactions || dialogueActorId === id || (this[id]?._scriptedMotionUntil ?? 0) > now);
+    this.villagePatrols = advanceVillagePatrols(this.villagePatrols, deltaTime,
+      {pauseIds, reducedMotion:reduceMotion});
+    for (const id of ['hassan', 'maryam']) {
+      const actor = this[id];
+      const step = this.villagePatrols[id];
+      actor.root.position.x = step.position.x;
+      actor.root.position.z = step.position.z;
+      if (step.motion === 'walk') {
+        actor.root.rotation.y = BABYLON.Scalar.LerpAngle(actor.root.rotation.y, step.heading, 0.16);
+      }
+      // Never replace an active spoken or just-computed water reaction pose.
+      if (pauseIds.includes(id) || reduceMotion && dialogueActorId === id) continue;
+      if (actor.state !== step.motion) this.setActorState(id, step.motion);
+    }
+  }
+
   setReducedMotion(enabled) {
     this.reducedMotion = Boolean(enabled);
     for (const actor of [this.nada, this.hassan, this.maryam]) {
@@ -520,6 +551,12 @@ export class CharacterSystem {
     const actor = { nada: this.nada, hassan: this.hassan, maryam: this.maryam }[actorId];
     if (actor && MOTIONS.includes(state)) {
       actor.state = state;
+      // Let story actions/council gestures finish before ambient patrol takes
+      // over. Dialogue can hold the pose longer until the user closes it.
+      if (actorId !== 'nada') {
+        const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+        actor._scriptedMotionUntil = state === 'talk' || state === 'interact' ? now + 2900 : 0;
+      }
       this._syncSkinnedAnimation(actor, this.reducedMotion);
     }
   }

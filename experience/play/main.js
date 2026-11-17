@@ -455,6 +455,9 @@ class SeventhFieldGame {
         });
       } else {
         this.characters.setActorState('nada', 'talk');
+        if (target?.id === 'hassan' || target?.id === 'maryam') {
+          this.characters.setActorState(target.id, 'talk');
+        }
         this.hud.showDialogue(dialogue);
       }
     }
@@ -473,7 +476,17 @@ class SeventhFieldGame {
       this.renderSetup.cameras.follow.target.set(p.x + 0.5, p.y + 1.55, p.z + 4.2);
     }
 
-    // 2. Update character skeletal animations
+    // 2. Original villagers follow small deterministic routes, pausing for
+    // actual conversations and the water-division reactions. These positions
+    // are the same objects used by proximity interaction checks.
+    const dialogueSpeaker = this.hud?.activeDialogue?.speakerEn;
+    const dialogueActorId = dialogueSpeaker === 'Uncle Hassan' ? 'hassan' :
+      dialogueSpeaker === 'Maryam' ? 'maryam' : null;
+    this.characters.tickVillagePatrols(deltaTime, {
+      dialogueActorId,
+      holdReactions: Boolean(this._communityReactionTimer),
+    });
+    // 3. Update character skeletal animations
     this.characters.updateAnimations(deltaTime);
 
     // 3. Update village mechanical elements (pump flywheel)

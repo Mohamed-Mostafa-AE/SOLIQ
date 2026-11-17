@@ -22,6 +22,11 @@ const COPY = {
     shared: 'Community goal met in this fictional two-turn trial. Replay to explore another strategy.',
     review: 'Community goal missed. Review the branch gates and try again.',
     progress: 'Ask Hassan or Maryam about the simulated water turn.',
+    finaleWin: 'Village council: shared turns agreed',
+    finaleWinBody: 'Hassan and Maryam saw why both branches matter. Your choices met the fictional community objective; now ask what real weather evidence can and cannot tell farmers.',
+    finaleRetry: 'Village council: no agreement yet',
+    finaleRetryBody: 'At least one family remains short in this fictional trial. Change the gates and replay. No real canal flow or farm outcome has been predicted.',
+    scienceNext: 'Next mission: explore real NASA weather ↗',
     warning: 'This is a two-turn training puzzle with assumed demands, not canal hydraulics or a watering recommendation.',
   },
   ar: {
@@ -41,6 +46,11 @@ const COPY = {
     shared: 'اتحقق هدف القرية في التجربة الافتراضية. جرّب استراتيجية تانية.',
     review: 'هدف القرية لسه ما اتحققش. راجع البوابات وجرب من جديد.',
     progress: 'اتكلم مع حسن أو مريم عن توزيع المياه الافتراضي.',
+    finaleWin: 'مجلس القرية: اتفقنا على أدوار عادلة',
+    finaleWinBody: 'حسن ومريم شافوا أهمية الفرعين. حققت هدف القرية في المحاكاة الافتراضية؛ دلوقتي شوف بيانات الطقس الحقيقية وحدودها قبل أي قرار زراعي.',
+    finaleRetry: 'مجلس القرية: لسه ما اتفقناش',
+    finaleRetryBody: 'في عيلة لسه نصيبها ناقص في التجربة الافتراضية. غيّر البوابات وجرّب تاني. دي مش توقعات لتدفق مسقاة أو محصول حقيقي.',
+    scienceNext: 'المهمة الجاية: استكشف طقس NASA الحقيقي ↗',
     warning: 'ده لغز تدريبي بنوبتين واحتياجات مفترضة، مش نموذج هيدروليكي لقناة حقيقية أو توصية ري.',
   },
 };
@@ -85,6 +95,11 @@ export class CanalTurnActivity {
       <div class="canal-turn-gates" role="group" aria-label="Fictional 3D canal gates"></div>
       <button type="button" class="canal-turn-run"></button>
       <p class="canal-turn-message" role="status" aria-live="polite"></p>
+      <section class="canal-turn-finale" aria-live="polite" hidden>
+        <h2 class="canal-turn-finale-title"></h2>
+        <p class="canal-turn-finale-body"></p>
+        <a class="canal-turn-next" href="../../walkthrough/?demo=1"></a>
+      </section>
       <div class="canal-turn-result" aria-label="Six fictional field demand bars"></div>
       <p class="canal-turn-score" role="status"></p>
       <div class="canal-turn-community" role="status" aria-live="polite"></div>
@@ -92,9 +107,12 @@ export class CanalTurnActivity {
       <p class="canal-turn-warning"></p>`;
     this.host.appendChild(this.panel);
     this.nodes = Object.fromEntries([
-      'title', 'badge', 'intro', 'round', 'supply', 'gates', 'run', 'message', 'result', 'score', 'community', 'replay', 'warning', 'close',
+      'title', 'badge', 'intro', 'round', 'supply', 'gates', 'run', 'message', 'finale', 'result', 'score', 'community', 'replay', 'warning', 'close',
     ].map(name => [name, this.panel.querySelector(`.canal-turn-${name}`)]));
     this.nodes.close.addEventListener('click', () => this.open(true));
+    this.nodes.finaleTitle = this.nodes.finale.querySelector('.canal-turn-finale-title');
+    this.nodes.finaleBody = this.nodes.finale.querySelector('.canal-turn-finale-body');
+    this.nodes.nextMission = this.nodes.finale.querySelector('.canal-turn-next');
     this.nodes.run.addEventListener('click', () => this.runTurn());
     this.nodes.replay.addEventListener('click', () => this.reset());
     this.gateButtons = new Map();
@@ -110,6 +128,7 @@ export class CanalTurnActivity {
 
   open(shouldClose = false) {
     this.panel.hidden = shouldClose;
+    document.body.classList.toggle('canal-mission-active', !shouldClose);
     this.launch.setAttribute('aria-expanded', String(!shouldClose));
     if (shouldClose) this.launch.focus();
     else this.nodes.close.focus();
@@ -215,6 +234,13 @@ export class CanalTurnActivity {
     this.nodes.run.textContent = w.run;
     this.nodes.run.disabled = this.state.complete;
     this.nodes.message.textContent = w[this.messageKey];
+    this.nodes.finale.hidden = !this.state.complete;
+    if (this.state.complete) {
+      const goalMet = summarizeCanalCommunity(this.state).goalMet;
+      this.nodes.finaleTitle.textContent = goalMet ? w.finaleWin : w.finaleRetry;
+      this.nodes.finaleBody.textContent = goalMet ? w.finaleWinBody : w.finaleRetryBody;
+      this.nodes.nextMission.textContent = w.scienceNext;
+    }
     this.nodes.replay.textContent = w.replay;
     this.nodes.replay.hidden = this.state.round === 0;
     this.nodes.warning.textContent = w.warning;
