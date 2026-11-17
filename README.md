@@ -114,12 +114,12 @@ The 2026 form now accepts actual monthly calendars, farmer priorities, dated soi
 
 ## One-click NASA prototype (public demonstration, no farm accounts)
 
-Open \`/walkthrough/?demo=1\` from the Welcome hero or the app's **Live NASA demo** link. This intentionally starts with a **public, preselected historical point** (31.09° N, 30.94° E, 2024), retrieves a complete UTC year from NASA POWER through the existing same-origin proxy, and compares two illustrative crop calendars with the unchanged engine. Nobody needs to type coordinates, soil values or crop coefficients to see the demonstration. Three one-tap priority presets update only the preference score, not physical results.
+Open `/walkthrough/?demo=1` from the Welcome hero or the app's **Live NASA demo** link. This intentionally starts with a **public, preselected historical point** (31.09° N, 30.94° E, 2024), retrieves a complete UTC year from NASA POWER through the existing same-origin proxy, and compares two illustrative crop calendars with the unchanged engine. Nobody needs to type coordinates, soil values or crop coefficients to see the demonstration. Three one-tap priority presets update only the preference score, not physical results.
 
 - NASA temperature and rainfall are **OBSERVED gridded weather** only after retrieval and daily/unit validation. Annual rainfall totals are DERIVED from the record.
 - Soil-water capacity, irrigation, crop calendars and coefficients are **ASSUMED** demo inputs; water deficits and sensitivity are **SIMULATED** exploratory estimates. No field-specific yield, soil health or suitable crop is validated.
 - A visitor can explicitly choose **Use my location and request NASA weather**. The browser asks permission; coordinates are used for that request, are not a parcel boundary, and are not persisted by the demo.
 - This prototype uses neither a farm-account database nor the disabled private evidence/session API. No browser-local field save occurs. The optional evidence JSON download is an explicit user action.
 - When NASA is offline, slow or returns invalid data, the demo shows **DATA UNAVAILABLE** and suppresses the comparison; it never substitutes synthetic weather while claiming to have retrieved NASA observations.
-- The original manual evidence-first workflow remains at \`/walkthrough/\`. It keeps explicit point confirmation and scientific controls for researchers.
+- The original manual evidence-first workflow remains at `/walkthrough/`. It keeps explicit point confirmation and scientific controls for researchers.
 
