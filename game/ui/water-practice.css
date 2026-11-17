@@ -1,0 +1,45 @@
+/* Optional game-only tool quest. Kept out of the agronomic decision app. */
+.water-practice-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 135px;
+  z-index: 195;
+  box-sizing: border-box;
+  width: min(330px, calc(100vw - 32px));
+  max-height: 44vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+  padding: 15px;
+  border: 1px solid #91cbcf;
+  border-radius: 17px;
+  background: linear-gradient(140deg, rgba(12, 42, 46, .98), rgba(21, 61, 55, .97));
+  color: #f5f8ec;
+  font: 400 .83rem/1.5 var(--font-sans, system-ui, sans-serif);
+  box-shadow: 0 14px 42px #0006;
+}
+.water-practice-panel[hidden], body.game-intro-active .water-practice-panel { display: none; }
+.water-practice-title { display: block; color: #baf0f2; font-size: .82rem; letter-spacing: .055em; }
+.water-practice-evidence { display: block; color: #d2e3df; font-size: .7rem; }
+.water-practice-status { margin: 9px 0; font-weight: 650; }
+.water-practice-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.water-practice-actions[hidden] { display: none; }
+.water-practice-actions button, .water-practice-replay {
+  min-height: 44px; padding: 10px; border: 1px solid #a1dadd;
+  border-radius: 10px; color: #153d40; background: #d0f1ee;
+  font: 700 .8rem/1.25 var(--font-sans, system-ui, sans-serif);
+  cursor: pointer;
+}
+.water-practice-actions button:hover, .water-practice-replay:hover { background: #f4ffef; }
+.water-practice-actions button:focus-visible, .water-practice-replay:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.water-practice-outcome { color: #e6efde; margin: 9px 0 0; }
+.water-practice-outcome:empty { display: none; }
+.water-practice-replay { width: 100%; margin-top: 10px; }
+.water-practice-replay[hidden] { display: none; }
+@media (max-width: 700px) {
+  .water-practice-panel { right: 10px; bottom: 92px; width: min(315px, calc(100vw - 20px)); max-height: 35vh; padding: 11px; }
+  .water-practice-actions { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .water-practice-panel * { animation: none !important; transition: none !important; }
+}
