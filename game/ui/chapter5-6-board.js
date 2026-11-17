@@ -65,6 +65,11 @@ const words = {
 const escapeText = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const scores = ['tail','cover','livelihood','questions'];
 const endings = {science_before_claims:{en:'Evidence first',ar:'الدليل الأول'},tail_shares:{en:'Shared canal access',ar:'عدالة المياه'},roots_return:{en:'Soil cover',ar:'غطاء التربة'},fragile_harvest:{en:'Family livelihoods',ar:'معيشة الأسر'},difficult_balance:{en:'Difficult balance',ar:'مفاضلة صعبة'}};
+const reactions = {
+  share_turn:{en:'Farida steps closer to the council map. Hassan asks how the family work will be shared.',ar:'فريدة قربت من خريطة المجلس. حسن بيسأل إزاي هنتقاسم شغل الأسر.'},
+  protect_cover:{en:'Maryam adds green strips to the imagined fields. Hassan counts the work that has been diverted.',ar:'مريم زودت شرائط خضراء على الحقول الخيالية. حسن بيحسب المجهود اللي اتحوّل.'},
+  ask_for_records:{en:'Nada opens a blank evidence ledger. The missing readings stay missing.',ar:'ندى فتحت دفتر أدلة فاضي. القياسات الناقصة لسه ناقصة.'},
+};
 
 function makeChapterModal({host,id,titleId,language}) {
   const stylesheet=document.createElement('link');
@@ -130,7 +135,8 @@ export function attachChapter5Game({host=document.body,chapter4,language='en',on
     ui.root.dataset.lastChoice=view.choices.at(-1)||'none';
     const body=`<div class="sf-layout"><main class="sf-gameplay">
       <div class="sf-history"><span>${t.previous}</span><strong>${endings[mission.prior.ending][ui.lang]}</strong><small>${t.pact}: ${mission.prior.mandate==='evidence_first'?(ui.lang==='ar'?'الدليل أولًا':'Evidence first'):(ui.lang==='ar'?'تعليم خيالي':'Fictional rehearsal')}</small></div>
-      ${!isDone?`<div class="sf-turn-heading"><span>${t.progress} ${view.turn} / 3</span><div aria-hidden="true">${[1,2,3].map((n)=>`<i class="${n<=view.choices.length?'active':''}"></i>`).join('')}</div></div>
+      ${!isDone?`${view.choices.length?`<p class="sf-reaction" role="status">${reactions[view.choices.at(-1)][ui.lang]}</p>`:''}
+        <div class="sf-turn-heading"><span>${t.progress} ${view.turn} / 3</span><div aria-hidden="true">${[1,2,3].map((n)=>`<i class="${n<=view.choices.length?'active':''}"></i>`).join('')}</div></div>
         <div class="sf-speaker" aria-hidden="true">${escapeText(turn.speaker)}</div><h2 class="sf-question">${turn[ui.lang]}</h2>
         <div class="sf-action-cards">${Object.values(CANAL_ACTIONS).map(action=>`<button type="button" class="sf-action" data-choice="${action.id}"><strong>${action[ui.lang]}</strong><small>${action[ui.lang==='ar'?'detailAr':'detailEn']}</small></button>`).join('')}</div>`
       :`<section class="sf-result" role="status" aria-live="polite"><span class="sf-kicker">SIMULATED / ${view.choices.length} TURNS</span><h2 tabindex="-1">${t.result5}</h2><p>${t[outcome]}</p>

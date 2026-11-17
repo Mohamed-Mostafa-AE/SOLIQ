@@ -25,6 +25,7 @@ test('three interactive canal turns lead to a distinct local-only, evidence-boun
   await expect(board.locator('[data-choice]')).toHaveCount(3);
   await board.locator('[data-choice="share_turn"]').click();
   await expect(board.getByText('CANAL TURN 2 / 3')).toBeVisible();
+  await expect(board.getByText(/Farida steps closer to the council map/)).toBeVisible();
   await board.locator('[data-choice="share_turn"]').click();
   await board.locator('[data-choice="ask_for_records"]').click();
   await expect(board.getByText(/Farida is heard more often/)).toBeVisible();
@@ -124,6 +125,11 @@ test('real text-first Chapter 0–6 journey unlocks sequentially and replay clea
   });
   expect(result).toEqual(['result','result','result','SIMULATED',false]);
   await page.locator('#chapter6-open-future [data-action="close"]').click();
+  await page.locator('#chapter5-launch').click();
+  await page.locator('#chapter5-canal-turns [data-action="replay"]').click();
+  await expect(page.locator('#chapter6-launch')).toBeHidden();
+  await expect(page.locator('#chapter6-open-future')).toHaveCount(0);
+  await page.locator('#chapter5-canal-turns [data-action="close"]').click();
   await page.locator('#chapter4-launch').click();
   await page.locator('#chapter4-harvest-council [data-action="replay"]').click();
   await expect(page.locator('#chapter5-launch')).toBeHidden();

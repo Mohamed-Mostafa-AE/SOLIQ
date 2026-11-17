@@ -16,6 +16,8 @@
 .sf-landscape:after {content:"";position:absolute;inset:56% 0 0;
   background:repeating-linear-gradient(168deg,transparent 0 16px,#314f34 17px 21px,transparent 22px 43px);
   opacity:.64;clip-path:polygon(0 20%,40% 0,100% 28%,100% 100%,0 100%)}
+.sf-later-modal[data-last-choice="protect_cover"] .sf-landscape:after {background:repeating-linear-gradient(168deg,#537a43 0 12px,#8da44e 13px 20px,#345f3f 21px 35px)}
+.sf-later-modal[data-last-choice="share_turn"] .sf-canal {background:linear-gradient(176deg,#214d55 10%,#84c7bf 40%,#b7ddc9 54%,#337780 75%)}
 .sf-sun {position:absolute;left:72%;top:85px;width:115px;height:115px;border-radius:50%;
   background:#ffe0a0;box-shadow:0 0 80px 40px #eebd7861}
 .sf-canal {position:absolute;left:-8%;right:-8%;top:66%;height:27%;transform:skewY(-5deg);
@@ -46,6 +48,8 @@
 .sf-history strong {font-size:1.27rem}
 .sf-history small {color:#b7d0ca}
 .sf-turn-heading {display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sf-reaction {background:#244e40;border-inline-start:4px solid #ffe09b;border-radius:8px;
+  padding:10px 13px;color:#fff0c9;margin:0 0 19px}
 .sf-turn-heading div {display:flex;gap:6px}
 .sf-turn-heading i {display:block;width:28px;height:5px;border-radius:5px;background:#53716c}
 .sf-turn-heading i.active {background:#ffda8c}
@@ -101,6 +105,8 @@
   .sf-action {padding:12px}
   .sf-recorded li {width:100%}
 }
+body.reduced-motion .sf-later-modal * {animation:none !important;transition:none !important;scroll-behavior:auto !important}
+body.reduced-motion .sf-action:hover {transform:none}
 @media(prefers-reduced-motion:reduce) {
   .sf-later-modal * {animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .sf-action:hover {transform:none}

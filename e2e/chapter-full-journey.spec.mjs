@@ -51,7 +51,7 @@ async function completeSequence(page) {
   await expect(page.locator('.harvest-verdict h2')).toBeFocused();
 }
 
-test('Babylon council outcome genuinely unlocks Chapters 1–4 and the fictional finale', async ({ page }) => {
+test('Babylon council journey unlocks all six chapters without mobile dock collisions', async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto('/experience/play/');
   await page.waitForFunction(() => window.__seventhFieldGame?.isInitialized === true, { timeout: 30_000 });
@@ -69,9 +69,22 @@ test('Babylon council outcome genuinely unlocks Chapters 1–4 and the fictional
   expect(state).toEqual(['result', 'result', 'result', 'result', 'SIMULATED', false]);
   await page.screenshot({ path: 'test-results/seventh-field-four-chapter-finale-3d.png' });
   await page.locator('#chapter4-harvest-council .harvest-close').click();
+  await expect(page.locator('#chapter5-launch')).toBeVisible();
+  await page.locator('#chapter5-launch').click();
+  for (const choice of ['share_turn', 'protect_cover', 'ask_for_records']) {
+    await page.locator(`#chapter5-canal-turns [data-choice="${choice}"]`).click();
+  }
+  await expect(page.locator('#chapter5-canal-turns .sf-result')).toBeVisible();
+  await page.locator('#chapter5-canal-turns .sf-close').click();
+  await expect(page.locator('#chapter6-launch')).toBeVisible();
+  await page.locator('#chapter6-launch').click();
+  await page.locator('#chapter6-open-future [data-choice="seek_evidence"]').click();
+  await expect(page.locator('#chapter6-open-future .sf-result')).toBeVisible();
+  await page.screenshot({ path: 'test-results/seventh-field-six-chapter-finale-3d.png' });
+  await page.locator('#chapter6-open-future .sf-close').click();
   await page.setViewportSize({ width: 360, height: 740 });
   const dock = await page.evaluate(() => {
-    const boxes = [1, 2, 3, 4].map(n => document.querySelector(`#chapter${n}-launch`).getBoundingClientRect());
+    const boxes = [1, 2, 3, 4, 5, 6].map(n => document.querySelector(`#chapter${n}-launch`).getBoundingClientRect());
     const rail = [...document.querySelectorAll('.mobile-action-bar .mobile-btn')]
       .filter(el => getComputedStyle(el).display !== 'none')
       .map(el => el.getBoundingClientRect());
@@ -83,7 +96,7 @@ test('Babylon council outcome genuinely unlocks Chapters 1–4 and the fictional
       selfCollision: boxes.some((a,i)=>boxes.slice(i+1).some(b=>intersection(a,b)>0)) };
   });
   expect(dock).toEqual({ allVisible: true, readingOrder: true, railCollision: false, selfCollision: false });
-  await page.screenshot({ path: 'test-results/seventh-field-four-chapter-mobile-dock.png' });
+  await page.screenshot({ path: 'test-results/seventh-field-six-chapter-mobile-dock.png' });
 });
 
 test('Arabic 360px no-WebGL journey reaches finale, then replay invalidates downstream state', async ({ page }) => {
