@@ -89,8 +89,8 @@ export const slides=[
   },
   {
     "label": "05 / TWO EXPERIENCES",
-    "title": "The data.\\nThe people.",
-    "lead": "A science workspace and a playable Delta story.\\nAn evidence adviser explains the limits.",
+    "title": "The data.\nThe people.",
+    "lead": "A science workspace and a playable Delta story.\nAn evidence adviser explains the limits.",
     "kind": "ai",
     "scene": "documents",
     "items": [
@@ -126,8 +126,8 @@ export const slides=[
   },
   {
     "label": "07 / THE NEXT STEP",
-    "title": "Better questions.\nGrounded decisions.",
-    "lead": "Explore the app. Inspect the evidence.\nHelp us validate the next field pilot.",
+    "title": "See the trade-offs.\nShape the next field.",
+    "lead": "Try the NASA demo. Play the water turn.\nThen question every assumption.",
     "kind": "close",
     "scene": "mixed",
     "items": [
