@@ -1,5 +1,6 @@
 export const LINKS={
   "app": "https://soliq-delta.vercel.app/",
+  "game": "https://soliq-delta.vercel.app/experience/play/",
   "ai": "https://soliq-delta.vercel.app/adviser/?lat=31.083333333333332&lon=30.933333333333334",
   "benchmark": "https://soliq-delta.vercel.app/benchmarks/egypt-sakha/",
   "paper": "https://soliq-delta.vercel.app/welcome/paper.html",
@@ -90,17 +91,17 @@ export const slides=[
   {
     "label": "05 / TWO EXPERIENCES",
     "title": "The data.\nThe people.",
-    "lead": "A science workspace and a playable Delta story.",
+    "lead": "One evidence-first workspace. One hands-on Delta water challenge.",
     "kind": "ai",
     "scene": "documents",
     "items": [
-      ["THE SEVENTH FIELD", "Walk through a fictional Egyptian village, meet its farmers and test irrigation decisions in 3D."],
+      ["THE SEVENTH FIELD", "Operate three animated canal gates. Allocate two fictional water turns across six visible fields; compare outcomes and replay."],
       ["THE FIELD WORKSPACE", "Compare crop calendars with dated NASA POWER weather and clearly declared local assumptions."],
       ["THE EVIDENCE ADVISER", "On-device retrieval from six reviewed passages. It cannot validate a farm or predict crop yields."]
     ],
     "stat": "5 / 5",
     "statLabel": "preset retrieval checks found their expected source in the top three",
-    "notes": "Two experiences share an evidence-first mission: a practical rotation comparison and The Seventh Field, a fictional 3D Delta village with chapters and water-sharing choices. The story does not use actual field measurements and does not change the scientific model. In the optional evidence adviser, all-MiniLM-L6-v2 ranks six reviewed source passages. Five predefined English queries found their expected source in the top three. That is not verified agronomic accuracy, and real-world NASA pixel processing remains limited. Show both live routes and invite the judges to inspect limitations."
+    "notes": "Two experiences share an evidence-first mission: a practical rotation comparison and The Seventh Field. In the original stylized 3D Delta village, players can begin immediately, operate three canal gates by keyboard or touch, and run two one-hour turns through the same tested six-field water-allocation solver. The classroom supply (120 cubic metres per turn), field demands and outcomes are all fictional and must never be presented as observed farm results or calibrated hydraulic advice. The story does not change the scientific crop-rotation model. In the optional evidence adviser, all-MiniLM-L6-v2 ranks six reviewed source passages. Five predefined English queries found their expected source in the top three. That is not verified agronomic accuracy, and real-world NASA pixel processing remains limited. Open both live routes for the judges, and invite questions about limitations."
   },
   {
     "label": "06 / THE EGYPT BENCHMARK",
@@ -127,7 +128,7 @@ export const slides=[
   {
     "label": "07 / THE NEXT STEP",
     "title": "See the trade-offs.\nShape the next field.",
-    "lead": "Try the NASA demo. Play the water turn.\nThen question every assumption.",
+    "lead": "Try the dated NASA demo. Operate the canal.\nThen question every assumption.",
     "kind": "close",
     "scene": "mixed",
     "items": [
