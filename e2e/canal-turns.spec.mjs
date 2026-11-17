@@ -15,6 +15,16 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   await page.locator('#btn-start-canal').click();
   await expect(page.locator('#canal-turn-launch')).toBeVisible();
   await expect(page.locator('#canal-turn-panel')).toBeVisible();
+  await expect(page.locator('.fieldwork-panel')).toBeHidden();
+  await page.waitForFunction(() => {
+    const g = window.__seventhFieldGame;
+    return Math.abs(g.characters.hassan.root.position.x - 4.5) > 0.3 &&
+      Math.abs(g.characters.maryam.root.position.x - 24.5) > 0.3;
+  }, null, {timeout:15_000});
+  expect(await page.evaluate(() => {
+    const g = window.__seventhFieldGame;
+    return ['hassan', 'maryam'].every(id => g.baseInteractables.find(item => item.id === id).position === g.characters[id].root.position);
+  })).toBe(true); // Proximity prompts follow the moving actors.
   await expect(page.locator('#canal-turn-panel')).toContainText('NOT FIELD DATA');
   await page.locator('.canal-turn-run').click();
   await expect(page.locator('.canal-turn-message')).toContainText('Open the main intake');
@@ -61,6 +71,8 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   expect(final.receipts).toBe(first.receiptCount); // Educational activity cannot claim a NASA evidence receipt.
   expect(final.stored).toEqual([]);
   await expect(page.locator('.canal-turn-community')).toContainText('Community goal met');
+  await expect(page.locator('.canal-turn-finale')).toContainText('Village council: shared turns agreed');
+  await expect(page.locator('.canal-turn-next')).toHaveAttribute('href', '../../walkthrough/?demo=1');
   const community = await page.evaluate(() => ({
     hassan: window.__seventhFieldGame.characters.hassan.emotion,
     maryam: window.__seventhFieldGame.characters.maryam.emotion,
@@ -77,6 +89,7 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   })).toBe(true);
   await page.screenshot({path:'test-results/seventh-field-operable-canal-turns.png'});
   await page.locator('.canal-turn-replay').click();
+  await expect(page.locator('.canal-turn-finale')).toBeHidden();
   await expect(page.locator('.canal-turn-community')).toContainText('Hassan: 0%');
   expect(await page.evaluate(() => window.__seventhFieldGame.canalTurns.getNpcFeedback('maryam'))).toBe(null);
   expect(await page.evaluate(() => {
@@ -89,6 +102,13 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
       game.village.fields[6].hydration === 0.1 &&
       game.village.gates.every(g => !g.isOpen);
   })).toBe(true);
+  await page.locator('[data-gate="gate_head"]').click();
+  await page.locator('[data-gate="gate_hassan"]').click();
+  await page.locator('.canal-turn-run').click();
+  await page.locator('.canal-turn-run').click();
+  await expect(page.locator('.canal-turn-finale')).toContainText('Village council: no agreement yet');
+  await page.locator('.canal-turn-close').click();
+  await expect(page.locator('.fieldwork-panel')).toBeVisible();
 });
 
 test('360px Arabic controls and proximity gate are keyboard-accessible without horizontal overflow', async ({page}) => {
@@ -113,6 +133,8 @@ test('360px Arabic controls and proximity gate are keyboard-accessible without h
   await expect(page.locator('.canal-turn-message')).toContainText('انتهت النوبة');
   await expect(page.locator('.canal-turn-community')).toContainText('الهدف');
   await expect(page.locator('.canal-turn-community')).toContainText('مريم');
+  await page.locator('.canal-turn-run').click();
+  await expect(page.locator('.canal-turn-finale')).toContainText('مجلس القرية: لسه ما اتفقناش');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('.canal-turn-close').click();
   await expect(page.locator('#canal-turn-panel')).toBeHidden();

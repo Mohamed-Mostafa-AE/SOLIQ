@@ -28,6 +28,13 @@
 .canal-turn-panel button:disabled{opacity:.55;cursor:not-allowed;}
 .canal-turn-replay[hidden]{display:none;}
 .canal-turn-message{color:#f5daaa;min-height:1.5em;margin:10px 0;}
+.canal-turn-finale{padding:12px 14px;border-radius:12px;background:#294c3d;border:2px solid #f1d49d;margin:10px 0;color:#f9f5e8;}
+.canal-turn-finale[hidden]{display:none;}
+.canal-turn-finale-title{font-size:1.05rem;color:#ffe4a8;margin:0 0 6px;line-height:1.35;}
+.canal-turn-finale-body{font-size:.82rem;line-height:1.55;margin:0 0 10px;}
+.canal-turn-next{display:block;color:#103a28;background:#c8f1d5;border-radius:9px;font-weight:800;padding:10px;text-align:center;text-decoration:none;}
+.canal-turn-next:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+.canal-turn-next:hover{background:#e2ffe9;}
 .canal-turn-result{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;}
 .canal-turn-field{display:grid;gap:3px;font-size:.73rem;font-variant-numeric:tabular-nums;}
 .canal-turn-field progress{width:100%;height:11px;accent-color:#5ed3a0;}
@@ -41,3 +48,4 @@
 }
 @media(max-width:380px){.canal-turn-result{grid-template-columns:1fr;}}
 @media(prefers-reduced-motion:reduce){.canal-turn-panel *{animation:none!important;transition:none!important;}}
+body.canal-mission-active .fieldwork-panel{display:none;}
