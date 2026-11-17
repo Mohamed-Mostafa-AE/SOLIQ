@@ -44,6 +44,18 @@ test('capacity-limited ON turn has real unmet demand but no fabricated downstrea
  assert.equal(r.outcome,'unmet_demand');
  assert.ok(r.waterByField.some(f=>f.unmetM3>0));
 });
+test('fictional selectable branch valves use the physical time-window solver without hidden water', () => {
+ const a=runGameWaterWindow({supplyM3h:120,demandsM3:DEMANDS,openFields:[true,true,true,false,false,false]});
+ const b=runGameWaterWindow({supplyM3h:120,demandsM3:DEMANDS,openFields:[false,false,false,true,true,true]});
+ assert.ok(a.delivered.slice(0,3).some(value=>value>0));
+ assert.deepEqual(a.delivered.slice(3),[0,0,0]);
+ assert.ok(b.delivered.slice(3).some(value=>value>0));
+ assert.deepEqual(b.delivered.slice(0,3),[0,0,0]);
+ near(a.ledger.residualM3,0);
+ near(b.ledger.residualM3,0);
+ assert.deepEqual(a.inputAssumptions.openFields,[true,true,true,false,false,false]);
+ assert.throws(()=>runGameWaterWindow({supplyM3h:120,demandsM3:DEMANDS,openFields:[true]}),/Six explicitly/);
+});
 test('conservation residual per slice and overall water ledger are zero', () => {
  for(const supplyM3h of [0,120,235,400]){
   const r=runGameWaterWindow({supplyM3h,demandsM3:DEMANDS});
