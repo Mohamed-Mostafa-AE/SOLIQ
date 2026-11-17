@@ -404,6 +404,22 @@ class SeventhFieldGame {
       village: this.village,
       waterEngine: this.waterEngine,
       hud: this.hud,
+      onCommunityChange: (community) => {
+        // A short visible NPC performance follows each solver turn. The
+        // emotion and text are narrative responses, not observed farm states.
+        if (this._communityReactionTimer) window.clearTimeout(this._communityReactionTimer);
+        for (const branch of community.branches) {
+          this.characters.setActorEmotion(branch.id, branch.emotion);
+          this.characters.setActorState(branch.id, community.round ? 'talk' : 'idle');
+        }
+        if (community.round) {
+          this._communityReactionTimer = window.setTimeout(() => {
+            this.characters.setActorState('hassan', 'idle');
+            this.characters.setActorState('maryam', 'idle');
+            this._communityReactionTimer = null;
+          }, 2800);
+        }
+      },
     });
     this._refreshInteractables();
   }
@@ -426,8 +442,21 @@ class SeventhFieldGame {
     this.audio.playGateTurnSFX();
     const dialogue = this.mission.getDialogueForTarget(target);
     if (dialogue) {
-      this.characters.setActorState('nada', 'talk');
-      this.hud.showDialogue(dialogue);
+      const community = this.canalTurns?.getNpcFeedback(target?.id);
+      if (community) {
+        this.characters.setActorState(target.id, 'talk');
+        // Keep the entire existing Chapter 0 conversation/choice progression;
+        // prepend only this solver-derived fictional community reaction.
+        this.hud.showDialogue({
+          ...dialogue,
+          textEn: `${community.textEn}\n\n${dialogue.textEn}`,
+          textAr: `${community.textAr}\n\n${dialogue.textAr}`,
+          emotion: community.emotion,
+        });
+      } else {
+        this.characters.setActorState('nada', 'talk');
+        this.hud.showDialogue(dialogue);
+      }
     }
   }
 

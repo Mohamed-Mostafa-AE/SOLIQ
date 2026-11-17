@@ -36,6 +36,11 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   expect(first.delivered.slice(3)).toEqual([0, 0, 0]);
   expect(first.hydration.slice(0, 3).some(n => n > 0)).toBe(true);
   expect(first.headOpen).toBe(true);
+  await expect(page.locator('.canal-turn-community')).toContainText('Maryam: 0%');
+  await page.evaluate(() => window.__seventhFieldGame._handleInteraction({id: 'maryam'}));
+  await expect(page.locator('#dialogue-text')).toContainText('no water in this fictional canal turn');
+  expect(await page.locator('#dialogue-box .dialogue-choice-btn').count()).toBeGreaterThan(0);
+  await page.evaluate(() => window.__seventhFieldGame.hud.hideDialogue());
   await page.locator('[data-gate="gate_hassan"]').click();
   await page.locator('[data-gate="gate_maryam"]').click();
   await page.locator('.canal-turn-run').click();
@@ -55,6 +60,15 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   expect(final.hydration.slice(3).some(n => n > 0)).toBe(true);
   expect(final.receipts).toBe(first.receiptCount); // Educational activity cannot claim a NASA evidence receipt.
   expect(final.stored).toEqual([]);
+  await expect(page.locator('.canal-turn-community')).toContainText('Community goal met');
+  const community = await page.evaluate(() => ({
+    hassan: window.__seventhFieldGame.characters.hassan.emotion,
+    maryam: window.__seventhFieldGame.characters.maryam.emotion,
+    feedback: window.__seventhFieldGame.canalTurns.getNpcFeedback('hassan')?.textEn,
+  }));
+  expect(community.hassan).toBe('relieved');
+  expect(community.maryam).toBe('relieved');
+  expect(community.feedback).toContain('shared fictional objective');
   expect(await page.evaluate(() => {
     const game = window.__seventhFieldGame;
     return game.village.fields.slice(0, 6).every((field, i) =>
@@ -63,6 +77,8 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   })).toBe(true);
   await page.screenshot({path:'test-results/seventh-field-operable-canal-turns.png'});
   await page.locator('.canal-turn-replay').click();
+  await expect(page.locator('.canal-turn-community')).toContainText('Hassan: 0%');
+  expect(await page.evaluate(() => window.__seventhFieldGame.canalTurns.getNpcFeedback('maryam'))).toBe(null);
   expect(await page.evaluate(() => {
     const game = window.__seventhFieldGame;
     // The separate seventh Time Echo is not part of the six-field training
@@ -95,6 +111,8 @@ test('360px Arabic controls and proximity gate are keyboard-accessible without h
   await page.locator('[data-gate="gate_maryam"]').click();
   await page.locator('.canal-turn-run').click();
   await expect(page.locator('.canal-turn-message')).toContainText('انتهت النوبة');
+  await expect(page.locator('.canal-turn-community')).toContainText('الهدف');
+  await expect(page.locator('.canal-turn-community')).toContainText('مريم');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.locator('.canal-turn-close').click();
   await expect(page.locator('#canal-turn-panel')).toBeHidden();
