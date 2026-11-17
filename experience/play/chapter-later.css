@@ -19,14 +19,16 @@
 }
 #chapter3-launch { top: 204px; }
 #chapter4-launch { top: 263px; background: linear-gradient(120deg, #63452b, #9a6b36); }
+#chapter5-launch { top: 322px; background: linear-gradient(120deg, #145d62, #227a79); }
+#chapter6-launch { top: 381px; background: linear-gradient(120deg, #5b413e, #9a564a); }
 .chapter-later-launch[hidden] { display: none !important; }
 .chapter-later-launch:hover { filter: brightness(1.12); }
 .chapter-later-launch:focus-visible { outline: 3px solid #ffefb9; outline-offset: 3px; }
 @media (max-width: 640px) {
-  /* One ordered four-step dock, anchored over the low-detail foreground,
+  /* One ordered six-step dock, anchored over the low-detail foreground,
      leaves the canal, sakia and characters clear in the upper half. The
      right-hand Lens / Notebook / Story touch rail remains fully usable. */
-  #game-ui-container > :is(#chapter1-launch, #chapter2-launch, #chapter3-launch, #chapter4-launch) {
+  #game-ui-container > :is(#chapter1-launch, #chapter2-launch, #chapter3-launch, #chapter4-launch, #chapter5-launch, #chapter6-launch) {
     left: 10px;
     right: auto;
     bottom: auto;
@@ -38,14 +40,16 @@
     font-size: .75rem;
     line-height: 1.22;
   }
-  #game-ui-container > #chapter1-launch { top: max(118px, calc(100dvh - 299px)); }
-  #game-ui-container > #chapter2-launch { top: max(182px, calc(100dvh - 235px)); }
-  #game-ui-container > #chapter3-launch { top: max(246px, calc(100dvh - 171px)); }
-  #game-ui-container > #chapter4-launch { top: max(310px, calc(100dvh - 107px)); }
+  #game-ui-container > #chapter1-launch { top: max(118px, calc(100dvh - 354px)); }
+  #game-ui-container > #chapter2-launch { top: max(172px, calc(100dvh - 300px)); }
+  #game-ui-container > #chapter3-launch { top: max(226px, calc(100dvh - 246px)); }
+  #game-ui-container > #chapter4-launch { top: max(280px, calc(100dvh - 192px)); }
+  #game-ui-container > #chapter5-launch { top: max(334px, calc(100dvh - 138px)); }
+  #game-ui-container > #chapter6-launch { top: max(388px, calc(100dvh - 84px)); }
 }
 /* No-WebGL mode has normal document flow, not a canvas action rail. Let its
    chapter launchers sit in reading order, rather than floating over text. */
-#text-game > :is(#chapter1-launch, #chapter2-launch, #chapter3-launch, #chapter4-launch) {
+#text-game > :is(#chapter1-launch, #chapter2-launch, #chapter3-launch, #chapter4-launch, #chapter5-launch, #chapter6-launch) {
   position: relative;
   display: block;
   inset: auto;

@@ -2,7 +2,7 @@ import { Chapter4CouncilMission, COUNCIL_PLEDGES, COUNCIL_MANDATES, PACT_CAPACIT
 
 const copy = {
   en: {
-    eyebrow: 'THE SEVENTH FIELD / FINAL PLAYABLE COUNCIL', badge: 'FICTIONAL VILLAGE · SIMULATED',
+    eyebrow: 'THE SEVENTH FIELD / CHAPTER 4 COUNCIL', badge: 'FICTIONAL VILLAGE · SIMULATED',
     title: 'The future is not a single harvest.',
     intro: 'Dawn returns to the Delta. Hassan, Maryam and Farida stand beside Nada. Every choice left a mark, but the council has only five fictional commitment tokens. What will the village protect together?',
     previous: 'THE STORY YOU BRING', plan: 'Two-season fictional plan', soil: 'Previous soil decision', trust: 'Evidence decision',
@@ -22,7 +22,7 @@ const copy = {
     mandateNote: 'No. Both choices remain educational. Choosing an evidence-first pause explicitly defers any real field action.',
     missing: 'MISSING: DATED NASA WEATHER · LOCAL SOIL SAMPLES · REAL CANAL RECORDS',
     note: 'OBSERVED WEATHER: UNAVAILABLE · CROP INPUTS: ASSUMED · STORY OUTCOMES: SIMULATED',
-    commit: 'Conclude the village story →', reset: 'Reset promises', replay: 'Rewrite the pact',
+    commit: 'Confirm the village pact →', reset: 'Reset promises', replay: 'Rewrite the pact',
     resultEyebrow: 'THE VILLAGE REMEMBERS', resultTitle: 'One council. No perfect answer.',
     resultEvidence: 'This is a fictional ending, not a field recommendation. No NASA POWER request or local measurement was made in the game.',
     export: 'Download my fictional decisions ↓', exportHint: 'Local JSON only. No name, coordinates or game data are uploaded.',
@@ -30,7 +30,7 @@ const copy = {
     failure: 'Could not create a local download. The story remains playable and no data was uploaded.',
   },
   ar: {
-    eyebrow: 'الحقل السابع / مجلس القرية الختامي', badge: 'قرية خيالية · نتائج محاكاة',
+    eyebrow: 'الحقل السابع / مجلس الفصل الرابع', badge: 'قرية خيالية · نتائج محاكاة',
     title: 'المستقبل مش حصاد واحد.',
     intro: 'الفجر رجع للدلتا. حسن ومريم وفريدة واقفين مع ندى. كل اختيار ساب أثر، لكن المجلس معاه خمس نقاط التزام افتراضية بس. هنحمي إيه مع بعض؟',
     previous: 'الحكاية اللي وصلنا بيها', plan: 'خطة موسمين افتراضية', soil: 'آخر قرار للتربة', trust: 'قرار الأدلة',
@@ -50,7 +50,7 @@ const copy = {
     mandateNote: 'لأ. الاختيارين تعليميين. تأجيل الأدلة معناه مفيش قرار حقلي قبل ما نجيب الدليل.',
     missing: 'غير متاح: طقس ناسا المؤرخ · عينات التربة · سجلات المسقة الفعلية',
     note: 'الطقس المرصود: غير متاح · مدخلات المحصول: مفترضة · النتائج: محاكاة',
-    commit: 'اختم قصة القرية ←', reset: 'صفّر الوعود', replay: 'اكتب اتفاق جديد',
+    commit: 'ثبّت اتفاق القرية ←', reset: 'صفّر الوعود', replay: 'اكتب اتفاق جديد',
     resultEyebrow: 'القرية فاكرة', resultTitle: 'مجلس واحد. مفيش حل مثالي.',
     resultEvidence: 'دي نهاية قصة خيالية، مش توصية حقلية. اللعبة ما عملتش طلب بيانات من NASA POWER ولا قياس محلي.',
     export: 'حمّل اختياراتي الخيالية ↓', exportHint: 'ملف JSON محلي. مش بنرفع اسم أو إحداثيات أو اختيارات لأي خادم.',

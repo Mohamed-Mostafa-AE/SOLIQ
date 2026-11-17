@@ -71,8 +71,8 @@
 | P2-01 Chapter 2 climate evidence puzzle | P1-04 | 6 | Gemini narrative + Codex | PLAYABLE weather-source discrepancy and consequence, no forecast fiction | PLANNED |
 | P2-02 Chapter 3 soil clues | P2-01 | 6 | Gemini + Codex + agronomist | Infiltration/cover illustration, unknown salinity clearly unavailable | PLANNED |
 | P2-03 Chapter 4 rotations conflict | P1-02, P2-02 | 6 | Codex Science/Game | Working paired crop plan outcomes with interval uncertainty | PLANNED |
-| P2-04 Chapter 5 multiple canal turns | P2-03 | 6 | Gemini + Codex | Repeated resource constraints/choice, never forced fake shortages | PLANNED |
-| P2-05 Finale with alternate evidence-bound endings | P2-04 | 6 | Gemini + Codex | Branch choices/unknowns persist to replay, no perfect single crop claim | PLANNED |
+| P2-04 Chapter 5 multiple canal turns | P2-03 | 6 | Gemini + Codex | Repeated fictional turn choices with inherited pact, never forced fake shortages; see `chapter5-6-acceptance.md` | IN REVIEW · PR #75; field-realism remains open |
+| P2-05 Finale with alternate evidence-bound endings | P2-04 | 6 | Gemini + Codex | Three evidence-bound alternate fictional endings, local receipt, downstream replay invalidation; see `chapter5-6-acceptance.md` | IN REVIEW · PR #75; device QA pending |
 | P2-06 Scripted narration, optional audio | P1-10 | 4 | Creative/audio agent + Codex | Captions, original/licensed English tracks, mute, no audio-only clue | PLANNED |
 | P2-07 Microphone permission and speech pipeline | P2-06, P1-19 | 5 | Voice engineer + Codex | Opt-in, visible recording indicator, stop/delete, text fallback | PLANNED |
 | P2-08 Grounded Voice AI explanations | P2-07, P0-05 | 6 | Codex AI + Gemini QA | Source-bound, bounded cost, uncertainty refusal, no unsupported pesticide/soil advice | PLANNED |
