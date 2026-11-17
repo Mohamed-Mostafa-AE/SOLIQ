@@ -13,6 +13,11 @@ test('Dev server allows /experience/play/ and game/ assets', () => {
   assert.ok(resolvePublicPath('/experience/play/index.html'));
   assert.ok(resolvePublicPath('/experience/play/main.js'));
   assert.ok(resolvePublicPath('/experience/play/style.css'));
+  assert.ok(resolvePublicPath('/experience/play/story.html'));
+  assert.ok(resolvePublicPath('/experience/play/story-only.js'));
+  assert.ok(resolvePublicPath('/game/ui/story-desk.js'));
+  assert.ok(resolvePublicPath('/game/core/season-story.js'));
+
   assert.ok(resolvePublicPath('/game/render/engine-setup.js'));
   assert.ok(resolvePublicPath('/game/world/village.js'));
   assert.ok(resolvePublicPath('/game/assets/ATTRIBUTIONS.md'));
@@ -134,10 +139,22 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   assert.ok(mission.notebookReceipts.length >= 1);
   assert.equal(mission.notebookReceipts[0].id, 'REC_CH0_START');
 
+  assert.equal(mission.beginInvestigation('water'), true);
+  assert.equal(mission.flags.firstClue, 'water');
+  assert.equal(mission.beginInvestigation('water'), false, 'first meaningful choice is not duplicated');
+  assert.throws(() => mission.beginInvestigation('invented-clue'), RangeError);
+  assert.ok(mission.notebookReceipts.some(r => r.id === 'STORY_CLUE_WATER' && r.dataClass === 'simulated'));
+
   // Hassan interaction
   const hassanDlg = mission.getDialogueForTarget({ id: 'hassan' });
   assert.ok(hassanDlg);
-  assert.equal(hassanDlg.choices.length, 2);
+  assert.equal(hassanDlg.choices.length, 3);
+  assert.match(hassanDlg.textEn, /ledger|schedule/i);
+  const soilThread = new Chapter0Mission(mockVillage, mockChars, mockWater, mockAudio);
+  soilThread.beginInvestigation('soil');
+  assert.notEqual(soilThread.getDialogueForTarget({ id: 'hassan' }).textEn, hassanDlg.textEn);
+  assert.notEqual(soilThread.getDialogueForTarget({ id: 'maryam' }).textEn,
+    mission.getDialogueForTarget({ id: 'maryam' }).textEn);
   hassanDlg.choices[0].onSelect(); // Choose coordinated turns
   assert.equal(mission.flags.talkedToHassan, true);
 
@@ -147,12 +164,24 @@ test('Chapter 0 Mission state machine executes all three outcomes and stamps rec
   maryamDlg.choices[0].onSelect();
   assert.equal(mission.flags.talkedToMaryam, true);
 
+  // The story concerns sustainability decisions, not mandatory equipment checks.
+  const council = mission.getDialogueForTarget({ id: 'pumpStation' });
+  assert.equal(council.speakerEn, 'The Canal Council — Six Families, One Turn');
+  assert.equal(council.choices.length, 3);
+  assert.match(council.textEn, /community decision/);
+  assert.equal(mission.flags.pumpInspected, undefined);
+  const mystery = mission.getDialogueForTarget({ id: 'timeEcho' });
+  mystery.choices[0].onSelect();
+  assert.equal(mission.flags.questionedFuture, true);
+  assert.ok(mission.notebookReceipts.some(r => r.id === 'FUTURE_ROTATION_COVER'));
+
   // Outcome 1: Equilibrium
   mission.executeOutcome(OUTCOMES.EQUILIBRIUM);
   assert.equal(mission.activeOutcome, OUTCOMES.EQUILIBRIUM);
   const r1 = mission.notebookReceipts.find(r => r.id === 'OUTCOME_1_EQUILIBRIUM');
   assert.ok(r1, 'Outcome 1 receipt generated');
-  assert.ok(r1.hash, 'Receipt has cryptographic hash');
+  assert.equal(r1.hashKind, 'noncryptographic_display_id');
+  assert.match(r1.hash, /^SIM-/);
   assert.equal(r1.dataClass, 'simulated');
 
   // Outcome 2: Bottleneck

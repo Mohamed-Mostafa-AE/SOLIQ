@@ -3,11 +3,13 @@
  * Responsive bilingual interface, evidence notebook drawer, virtual touch joystick.
  */
 
+import { localizeGameUi } from './localization.js';
+
 export class GameHUD {
   constructor(containerElement, callbacks = {}) {
     this.container = containerElement;
     this.callbacks = callbacks;
-    this.lang = 'ar'; // 'ar' | 'en'
+    this.lang = 'en'; // game defaults to English; Arabic remains available
 
     this.elements = {};
     this.isNotebookOpen = false;
@@ -15,6 +17,7 @@ export class GameHUD {
 
     this._buildHUD();
     this._setupTouchJoystick();
+    this.setLanguage('en');
   }
 
   _buildHUD() {
@@ -36,7 +39,11 @@ export class GameHUD {
               <span class="label">دفتر الأدلة</span>
               <span id="notebook-badge" class="badge-dot"></span>
             </button>
-            <button id="btn-camera" class="hud-tool-btn" title="تبديل الكاميرا (Tab)">
+            <button id="btn-story-desk" class="hud-tool-btn" title="Accessible story mode">
+              <span class="icon">📜</span>
+              <span class="label">Story mode</span>
+            </button>
+            <button id="btn-camera" class="hud-tool-btn" title="Switch camera (C)">
               <span class="icon">🎥</span>
               <span class="label">استراتيجي</span>
             </button>
@@ -72,6 +79,7 @@ export class GameHUD {
             <div class="dialogue-avatar" id="dialogue-avatar">🧑‍🌾</div>
             <div class="dialogue-speaker" id="dialogue-speaker">عم حسن</div>
           </div>
+          <p id="dialogue-cue" class="dialogue-cue" role="status" aria-live="polite"></p>
           <div class="dialogue-content" id="dialogue-text">
             يا أهلاً يا باشمهندسة ندى...
           </div>
@@ -103,6 +111,11 @@ export class GameHUD {
                   <p><strong>NASA POWER Sakha:</strong> بيانات إقليمية تاريخية، وليست رصدًا لحظيًا لحقل خاص.</p>
                   <p><strong>Codex Water Solver:</strong> الحسابات تتم بدقة عبر خوارزمية allocateWater دون تكرار الحسابات بالواجهة.</p>
                   <p><strong>The Seventh Field:</strong> محاكاة سيناريوهات تعليمية لتوضيح أثر عدم اليقين (Interval Regret) ولا تشكل توصية زراعية حقلية دون فحص معملي للتربة.</p>
+                  <section class="rotation-bridge" aria-labelledby="rotation-bridge-title">
+                    <h3 id="rotation-bridge-title">Field Shift: Crop Rotation Decision Support</h3>
+                    <p id="rotation-bridge-copy">Compare crop calendars in the separate scientific workspace using source-labelled NASA weather context, declared soil parameters and farmer priorities. The fictional game does not transfer farm data.</p>
+                    <a id="open-rotation-workspace" href="../../walkthrough/?from=seventh-field" target="_blank" rel="noopener noreferrer">Open Crop Rotation Workspace ↗</a>
+                  </section>
                 </div>
               </div>
             </div>
@@ -120,16 +133,16 @@ export class GameHUD {
               <label>
                 جودة الرسوم (Graphics Preset):
                 <select id="select-quality">
-                  <option value="balanced" selected>متوازن (Balanced 60fps)</option>
-                  <option value="low">منخفض للأجهزة القديمة (Low 30fps)</option>
+                  <option value="balanced" selected>متوازن</option>
+                  <option value="low">منخفض للأجهزة القديمة</option>
                   <option value="ultra">فائق (Ultra Shadows & Bloom)</option>
                 </select>
               </label>
               <label>
                 لغة الحوار والترجمة (Language):
                 <select id="select-lang">
-                  <option value="ar" selected>العربية (اللهجة المصرية + ترجمة فصحى)</option>
-                  <option value="en">English (Official Subtitles)</option>
+                  <option value="ar">العربية (اللهجة المصرية + ترجمة فصحى)</option>
+                  <option value="en" selected>English (Official Subtitles)</option>
                 </select>
               </label>
               <label class="checkbox-label">
@@ -152,6 +165,7 @@ export class GameHUD {
           <button id="btn-touch-interact" class="mobile-btn mobile-btn-action" title="تفاعل">تفاعل ⚡</button>
           <button id="btn-touch-lens" class="mobile-btn" title="العدسة">عدسة 🛰️</button>
           <button id="btn-touch-book" class="mobile-btn" title="الدفتر">دفتر 📖</button>
+          <button id="btn-touch-story" class="mobile-btn" title="Accessible story mode">Story 📜</button>
         </div>
       </div>
     `;
@@ -173,6 +187,7 @@ export class GameHUD {
       dialogueBox: q('#dialogue-box'),
       dialogueAvatar: q('#dialogue-avatar'),
       dialogueSpeaker: q('#dialogue-speaker'),
+      dialogueCue: q('#dialogue-cue'),
       dialogueText: q('#dialogue-text'),
       dialogueChoices: q('#dialogue-choices'),
       notebookModal: q('#notebook-modal'),
@@ -182,6 +197,7 @@ export class GameHUD {
       settingsModal: q('#settings-modal'),
       btnEarthLens: q('#btn-earth-lens'),
       btnNotebook: q('#btn-notebook'),
+      btnStoryDesk: q('#btn-story-desk'),
       btnCamera: q('#btn-camera'),
       btnAudio: q('#btn-audio'),
       audioIcon: q('#audio-icon'),
@@ -194,6 +210,7 @@ export class GameHUD {
       touchInteract: q('#btn-touch-interact'),
       touchLens: q('#btn-touch-lens'),
       touchBook: q('#btn-touch-book'),
+      touchStory: q('#btn-touch-story'),
       joystickZone: q('#virtual-joystick-zone'),
       joystickBase: q('#joystick-base'),
       joystickThumb: q('#joystick-thumb'),
@@ -221,6 +238,8 @@ export class GameHUD {
     el.btnNotebook.addEventListener('click', () => this.toggleNotebook());
     el.btnCloseNotebook.addEventListener('click', () => this.toggleNotebook(false));
     el.touchBook.addEventListener('click', () => this.toggleNotebook());
+    el.btnStoryDesk.addEventListener('click', () => this.callbacks.onToggleStoryDesk?.());
+    el.touchStory.addEventListener('click', () => this.callbacks.onToggleStoryDesk?.());
 
     // Notebook tabs
     const nbTabs = this.container.querySelectorAll('.nb-tab');
@@ -255,6 +274,14 @@ export class GameHUD {
     el.selectLang.addEventListener('change', (e) => {
       this.lang = e.target.value;
       this.setLanguage(this.lang);
+    });
+
+    // This setting previously rendered a checkbox without any behavior.
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
+    el.chkReducedMotion.checked = prefersReducedMotion;
+    document.body.classList.toggle('reduced-motion', prefersReducedMotion);
+    el.chkReducedMotion.addEventListener('change', (e) => {
+      document.body.classList.toggle('reduced-motion', e.target.checked);
     });
 
     // Mobile Action buttons
@@ -320,7 +347,7 @@ export class GameHUD {
       return;
     }
     const name = this.lang === 'ar' ? target.nameAr || target.id : target.nameEn || target.id;
-    this.elements.promptText.textContent = `اضغط [E] أو انقر للتفاعل مع ${name}`;
+    this.elements.promptText.textContent = this.lang === 'ar' ? `اضغط [E] أو انقر للتفاعل مع ${name}` : `Press [E] or tap to interact with ${name}`;
     this.elements.prompt.hidden = false;
   }
 
@@ -330,8 +357,11 @@ export class GameHUD {
       return;
     }
 
+    this.activeDialogue = dialogue;
     const el = this.elements;
     el.dialogueSpeaker.textContent = this.lang === 'ar' ? dialogue.speakerAr : dialogue.speakerEn;
+    const emotionAr = ({ neutral: 'محايد', hopeful: 'متفائل', concerned: 'قلق', satisfied: 'راضٍ', explaining: 'بيشرح', relieved: 'مرتاح' })[dialogue.emotion] || 'محايد';
+    el.dialogueCue.textContent = this.lang === 'ar' ? `الحالة: ${emotionAr}` : `Emotion: ${dialogue.emotion || 'neutral'}`;
     el.dialogueText.textContent = this.lang === 'ar' ? dialogue.textAr : dialogue.textEn;
 
     // Render choice buttons
@@ -339,6 +369,8 @@ export class GameHUD {
     dialogue.choices.forEach((c) => {
       const btn = document.createElement('button');
       btn.className = 'dialogue-choice-btn';
+      btn.type = 'button';
+      if (c.id) btn.dataset.choiceId = c.id;
       btn.textContent = this.lang === 'ar' ? c.labelAr : c.labelEn;
       btn.addEventListener('click', () => {
         c.onSelect?.();
@@ -351,6 +383,7 @@ export class GameHUD {
   }
 
   hideDialogue() {
+    this.activeDialogue = null;
     this.elements.dialogueBox.hidden = true;
   }
 
@@ -382,6 +415,7 @@ export class GameHUD {
   }
 
   updateNotebookReceipts(receipts) {
+    this.lastReceipts = receipts;
     const list = this.elements.receiptsList;
     list.innerHTML = '';
 
@@ -408,62 +442,54 @@ export class GameHUD {
   }
 
   updateWaterLedger(simResult) {
+    this.lastSimulation = simResult;
     const w = this.elements.waterLedger;
+    const isEn = this.lang === 'en';
     if (!simResult) {
-      w.innerHTML = '<p>لم يتم تشغيل محاكاة المسقة بعد. شغّل طلمبة الري لمعاينة التوزيع.</p>';
+      w.textContent = isEn
+        ? 'No canal turn simulated yet. Hear the families, then choose a fictional water-sharing scenario.'
+        : 'لم تبدأ محاكاة المسقة بعد. اسمع أهل القرية واختَر سيناريو افتراضيًا لتقاسم المياه.';
       return;
     }
 
     const { totalDemand, supply, delivered, shortfall, fairness, mode } = simResult;
-    const fairnessText = Number.isFinite(fairness) ? (fairness * 100).toFixed(1) + '%' : 'غير محسوب';
+    const fairnessText = Number.isFinite(fairness) ? (fairness * 100).toFixed(1) + '%' : (isEn ? 'N/A' : 'غير محسوب');
+    const terms = isEn
+      ? { demand: 'Total demand', supply: 'Available supply', fairness: 'Jain fairness', mode: 'Scenario status',
+          field: 'Field', demanded: 'Demand', delivered: 'Delivered', shortage: 'Shortfall' }
+      : { demand: 'إجمالي الطلب', supply: 'المورد المتاح', fairness: 'مؤشر العدالة (Jain)', mode: 'حالة المحاكاة',
+          field: 'الحقل', demanded: 'الطلب', delivered: 'المسلّم', shortage: 'العجز' };
     w.innerHTML = `
       <div class="ledger-stats-grid">
-        <div class="stat-box">
-          <span class="stat-lbl">إجمالي الطلب:</span>
-          <span class="stat-val">${totalDemand} م³</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-lbl">المورد المتاح:</span>
-          <span class="stat-val">${supply} م³</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-lbl">مؤشر العدالة (Jain):</span>
-          <span class="stat-val">${fairnessText}</span>
-        </div>
-        <div class="stat-box">
-          <span class="stat-lbl">حالة المحاكاة:</span>
-          <span class="stat-val">${mode}</span>
-        </div>
+        <div class="stat-box"><span class="stat-lbl">${terms.demand}:</span><span class="stat-val">${totalDemand} m³</span></div>
+        <div class="stat-box"><span class="stat-lbl">${terms.supply}:</span><span class="stat-val">${supply} m³</span></div>
+        <div class="stat-box"><span class="stat-lbl">${terms.fairness}:</span><span class="stat-val">${fairnessText}</span></div>
+        <div class="stat-box"><span class="stat-lbl">${terms.mode}:</span><span class="stat-val">${mode}</span></div>
       </div>
       <table class="ledger-table">
-        <thead>
-          <tr>
-            <th>الحقل</th>
-            <th>الطلب</th>
-            <th>المسلّم</th>
-            <th>العجز</th>
-          </tr>
-        </thead>
+        <thead><tr><th>${terms.field}</th><th>${terms.demanded}</th><th>${terms.delivered}</th><th>${terms.shortage}</th></tr></thead>
         <tbody>
-          ${delivered
-            .map(
-              (amt, i) => `
-            <tr>
-              <td>غيط ${i + 1}</td>
-              <td>${amt + shortfall[i]}</td>
-              <td>${amt.toFixed(1)}</td>
-              <td class="${shortfall[i] > 0 ? 'text-deficit' : 'text-ok'}">${shortfall[i].toFixed(1)}</td>
-            </tr>
-          `
-            )
-            .join('')}
+          ${delivered.map((amt,i)=>`<tr>
+            <td>${isEn ? 'Field' : 'غيط'} ${i + 1}</td>
+            <td>${(amt + shortfall[i]).toFixed(1)}</td>
+            <td>${amt.toFixed(1)}</td>
+            <td class="${shortfall[i] > 0 ? 'text-deficit' : 'text-ok'}">${shortfall[i].toFixed(1)}</td>
+          </tr>`).join('')}
         </tbody>
       </table>
+      <p class="ledger-note">${isEn ? 'Fictional water allocation — not a verified farm measurement.' : 'توزيع مياه افتراضي — ليس قياسًا حقليًا موثقًا.'}</p>
     `;
   }
 
   setLanguage(lang) {
-    this.lang = lang;
-    this.elements.root.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    this.lang = lang === 'ar' ? 'ar' : 'en';
+    document.documentElement.lang = this.lang;
+    document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+    this.elements.selectLang.value = this.lang;
+    localizeGameUi(this.container, this.lang);
+    if (this.lastReceipts) this.updateNotebookReceipts(this.lastReceipts);
+    if (this.lastSimulation !== undefined) this.updateWaterLedger(this.lastSimulation);
+    if (this.activeDialogue) this.showDialogue(this.activeDialogue);
+    this.callbacks.onLanguageChange?.(this.lang);
   }
 }

@@ -3,6 +3,7 @@
  * Original procedural artwork, not real satellite imagery or a photogrammetry scan.
  * Thin instances keep the detailed six-field vegetation economical on mobile.
  */
+import {makeCropCutoutTexture,applyCropCutoutMaterial} from './delta-procedural-textures.js';
 export const VISUAL_ART_STATUS = 'Original procedural game art — fictional Nile Delta village';
 export const CROP_VISUALS = Object.freeze({
   wheat: {height: .82, width: .095, color: [0.70, 0.60, 0.27], density: 23},
@@ -76,6 +77,8 @@ export function installFieldVegetation(village,quality='balanced'){
     if(!plants.length)continue;
     if(!materials[f.crop])materials[f.crop]=pbr(scene,'deltaPlantMat_'+f.crop,spec.color,.76);
     const mat=materials[f.crop];
+    if(!mat.albedoTexture)applyCropCutoutMaterial(mat,makeCropCutoutTexture(scene,f.crop));
+    f.thinCropMeshes = [];
     const angles=[0,Math.PI/2];
     for(let side=0;side<2;side++){
       const mesh=BABYLON.MeshBuilder.CreatePlane('liveCrop_'+f.id+'_'+side,
@@ -85,6 +88,7 @@ export function installFieldVegetation(village,quality='balanced'){
       mesh.thinInstanceSetBuffer('matrix',instanceMatrices(plants,angles[side]),16,true);
       mesh.isPickable=false;
       mesh.alwaysSelectAsActiveMesh=true;
+      f.thinCropMeshes.push(mesh);
       meshes++;
     }
     // Old crop-row boxes become believable low soil ridges, not huge green rectangular "plants".

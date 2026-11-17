@@ -25,7 +25,7 @@ export class TimeEchoSystem {
 
   _buildEchoHologram() {
     if (typeof BABYLON === 'undefined') return;
-    // Holographic alternate-future vegetation volume
+    // Holographic alternate-future vegetation volume (preserves this.echoMesh for backward compatibility)
     this.echoMesh = BABYLON.MeshBuilder.CreateBox(
       'timeEchoVolume',
       { width: 17, height: 1.8, depth: 21 },
@@ -38,8 +38,31 @@ export class TimeEchoSystem {
     echoMat.emissiveColor = new BABYLON.Color3(0.05, 0.35, 0.45);
     echoMat.alpha = 0.0; // Hidden initially
     this.echoMesh.material = echoMat;
+
+    // Dual-Scenario split projections:
+    // North: Scenario A (Monoculture: soil depletion, warm amber warning hue)
+    const echoA = BABYLON.MeshBuilder.CreateBox('timeEchoScenarioA', { width: 16.5, height: 1.5, depth: 9.8 }, this.scene);
+    echoA.position.set(68, 0.8, 5.2);
+    const matA = new BABYLON.StandardMaterial('echoMatA', this.scene);
+    matA.diffuseColor = new BABYLON.Color3(0.9, 0.5, 0.2);
+    matA.emissiveColor = new BABYLON.Color3(0.4, 0.18, 0.05);
+    matA.alpha = 0.0;
+    echoA.material = matA;
+    this.echoScenarioA = echoA;
+
+    // South: Scenario B (Balanced Rotation: legume cover, vibrant cyan-emerald hue)
+    const echoB = BABYLON.MeshBuilder.CreateBox('timeEchoScenarioB', { width: 16.5, height: 1.5, depth: 9.8 }, this.scene);
+    echoB.position.set(68, 0.8, -5.2);
+    const matB = new BABYLON.StandardMaterial('echoMatB', this.scene);
+    matB.diffuseColor = new BABYLON.Color3(0.15, 0.85, 0.6);
+    matB.emissiveColor = new BABYLON.Color3(0.05, 0.35, 0.2);
+    matB.alpha = 0.0;
+    echoB.material = matB;
+    this.echoScenarioB = echoB;
   }
 
+  // Public contract used by the game interaction loop and existing E2E/unit tests.
+  // Entering or leaving the Seventh Field toggles every visual scenario together.
   checkPlayerInside(playerPos) {
     const isInside =
       playerPos.x >= this.bounds.minX &&
@@ -48,7 +71,6 @@ export class TimeEchoSystem {
       playerPos.z <= this.bounds.maxZ;
 
     if (isInside !== this.isActive) {
-      this.isActive = isInside;
       this.setEchoActive(isInside);
     }
 
@@ -58,7 +80,13 @@ export class TimeEchoSystem {
   setEchoActive(active) {
     this.isActive = active;
     if (this.echoMesh) {
-      this.echoMesh.material.alpha = active ? 0.35 : 0.0;
+      this.echoMesh.material.alpha = active ? 0.22 : 0.0;
+    }
+    if (this.echoScenarioA?.material) {
+      this.echoScenarioA.material.alpha = active ? 0.35 : 0.0;
+    }
+    if (this.echoScenarioB?.material) {
+      this.echoScenarioB.material.alpha = active ? 0.35 : 0.0;
     }
   }
 

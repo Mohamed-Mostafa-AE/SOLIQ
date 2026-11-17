@@ -1,74 +1,60 @@
-# SOLIQ: The Seventh Field — 3D Asset, Sound and Shading Attributions
+# Soil-IQ: The Seventh Field — Actual Asset and Prototype Art Status
+
+**Audited 2026-11-16.** This file describes the code currently shipping in the *development branch*, not our art goals. Proposed third-party film, model, animation and texture references are in the [art research bible](../../docs/EGYPTIAN_CINEMATIC_ART_REFERENCE_BIBLE_2026.md) and [candidate registry](asset-reference-registry.json). Those third-party candidates remain unbundled; the new **first-party** human GLBs are documented separately below.
+
+**Concept-only art disclosure:** `game/assets/concepts/egyptian-delta-triad-concept-v1.jpg` was generated with OpenAI ImageGen on 2026-11-16 from an original prompt for fictional Nada, Hassan and Maryam; 1200px JPEG export of the original concept. It is for *art direction only* and is **not** used by the 3D runtime or represented as NASA/field evidence, real actors or completed 3D models.
 
 ## 1. Compliance Statement & Ethics
-In compliance with NASA Space Apps 2026 regulations, open-source attribution standards, and project specifications:
+The project's source and rights principles:
 - No copied or ripped commercial assets from GTA, Farming Simulator, or proprietary software.
 - No synthetic pseudo-3D images or static cards disguised as a 3D environment.
-- All 3D procedural meshes, PBR shaders, rig skeletons, particle systems, and audio synthesis routines are authored directly for SOLIQ or derived from permissive open-source licenses (MIT / CC0 / Apache 2.0).
+- Current environment and character meshes are original **procedural prototypes**, not licensed human scans or finished game-ready cinematic art. No third-party art rights have been certified by NASA.
 
 ---
 
 ## 2. 3D Engine & Runtimes
 - **Babylon.js**:
-  - Version: 7.x / 8.x
+  - Version: locally vendored runtime at `game/assets/vendor/babylon.js` and `babylonjs.loaders.min.js`; record exact vendor hash when upgrading.
   - License: Apache License 2.0 (https://github.com/BabylonJS/Babylon.js/blob/master/license.md)
   - Authors: Babylon.js Team / Microsoft and open-source contributors
-  - Usage: Core WebGL2 / WebGPU rendering engine, glTF loader, PBR pipeline, skeletal animation and physics.
+  - Usage: Browser 3D scene, PBR appearance and transform-based character animation. Presence of a glTF loader does not mean actual humanoid GLB skinning has been imported.
 
 ---
 
-## 3. Characters & Skeletal Rigs
-- **Nada (Playable Protagonist)**:
-  - Design: Authentic young Egyptian agricultural engineer, field jacket, trousers, boots, hair scarf, tablet holster.
-  - Geometry & Rig: Custom authored high-poly anatomical mesh with 20-bone skeletal hierarchy (`Hips`, `Spine`, `Chest`, `Neck`, `Head`, `Shoulders`, `Arms`, `Forearms`, `Hands`, `Thighs`, `Shins`, `Feet`) and smooth vertex skinning weights.
-  - License: MIT License (Project SOLIQ original work).
-- **Uncle Hassan (عم حسن - Elder Delta Farmer)**:
-  - Design: Traditional Egyptian Nile Delta farmer, striped galabeya, dark woolen vest (sudayri), white skullcap (taqeyya), cane.
-  - Geometry & Rig: Custom authored skeletal character with expressive posture and conversational gestures.
-  - License: MIT License (Project SOLIQ original work).
-- **Maryam (مريم - Experienced Delta Farmer)**:
-  - Design: Modern competent Egyptian farmer, rural working attire with head wrap, holding irrigation schedule clipboard.
-  - Geometry & Rig: Custom authored skeletal character with articulate pointing and agreement animations.
-  - License: MIT License (Project SOLIQ original work).
+## 3. Characters & Skeletal Rigs — ORIGINAL GLB PROTOTYPES
+- **Nada, Hassan and Maryam** are original fictional Egyptian Delta character concepts, not actress/actor likenesses.
+- `game/assets/models/{nada,hassan,maryam}.glb` are actual Blender 4.3-exported glTF 2.0 **skinned armature assets**, with 17 joints and five named action tracks each. These are original geometry and procedural animations, not scans or film likenesses. Reproducible build script and digests are in [PROVENANCE.md](models/PROVENANCE.md).
+- `game/world/characters.js` imports these files asynchronously into Babylon, switches each actor to a skinned animation graph and preserves the former `TransformNode` human as a fully functional fallback if an asset or loader fails. `game/world/character-detail.js` remains the fallback art pass.
+- Visual quality is deliberately stylized: the model is segmented and rigid-weighted by joint; it does **not** claim professional continuous anatomical skin, facial motion capture, hand-authored blendshapes or full cloth physics. In-engine screenshots and real phone profiling remain required before a cinematic or production-quality claim.
+- No external human, motion, texture or likeness asset was used. Provenance is original first-party project work; redistribution beyond this repository needs owner permission.
 
 ---
 
-## 4. Environment & Cultural Delta Architecture
-- **Nile Delta Village & Organic Farmland**:
-  - Terrain: Multi-zone procedural mesh with elevation curves, agricultural furrow rows, and embankment slopes.
-  - Nile Canal (Mesqa): Curving hydraulic ditch with stone intake abutments, stepped soil banks, and wooden drainage culverts.
-  - Irrigation Pump House: Lister/Deutz-style single-cylinder diesel motor with flywheel, intake pipe, exhaust pipe, and pressure gauge.
-  - Sluice Gates: Metal and timber canal sluice gates with functional turning spindles and raiseable plates.
-  - Crops: Procedural furrowed wheat (قمح), berseem/clover (برسيم), flooded rice (أرز), maize (ذرة), fava beans (فول), and date palms (نخيل بلحي).
-  - Farmhouses: Egyptian Nile Delta rural architecture (mudbrick texture with exposed red brick pillars and timber lintels).
-  - License: MIT License (Project SOLIQ original work).
+## 4. Environment & Cultural Delta Architecture — PROTOTYPE (P1-08 Technical Art Pass)
+- `game/world/village.js` creates an illustrative heightmap-based terrain, mesqa canal with visible banks, timber-and-stone footbridge (`planCanalBridge`), diesel pump station, sluice gates, planted crop plots, mudbrick houses with reed pergolas, clay water jars (الزير - Zir), and date palms with fruit clusters.
+- `game/world/delta-procedural-textures.js` generates source-authored procedural canvas textures: alluvial soil, canal footpaths, wet silt, crop loam, saline crust efflorescence, puddle mud, mudbrick patterns, timber grain, and terracotta clay.
+- `game/world/season-feedback.js` coordinates simulated irrigation outcomes and seasonal consequences across fields (perked vs wilted crops, glistening wet mud vs saline crust) and drives gentle palm/water wind sway respecting reduced-motion preferences.
+- `game/render/engine-setup.js` provides golden dawn lighting, warm Nile morning mist fog, inverted sky dome (`nileSkyDome`), and `prefers-reduced-motion` support.
+- These are **not** real surveyed farm boundaries, physical 3D scans, licensed Egyptian buildings or finished production 3D models. The environment is an authentic original fictional technical-art illustration of the Egyptian Nile Delta.
+- All future real-world 3D meshes and texture downloads require their own creator/URL/license/digest entries, not blanket claims under MIT.
 
 ---
 
-## 5. Water Shading & PBR Materials
-- **Dynamic Nile Silt Water Shader**:
-  - Shader technique: Vertex displacement wave harmonics, Fresnel view reflection, depth extinction with suspended silt turbidity (#3a5a40 / #4a6741), animated surface normal perturbation.
-  - Integration: Directly bound to `experience/engine.js::allocateWater` — canal water level, velocity, and soil wetness respond to Codex's simulation output.
-  - License: MIT License (Project SOLIQ original work).
-- **Soil Moisture PBR Material**:
-  - Dry State: High roughness (0.95), pale sandy loam albedo (#8c7355), micro-crack normal perturbations.
-  - Irrigated Wet State: Low roughness (0.25), dark rich saturated alluvial silt (#2d2218), specular water sheen.
-  - License: MIT License (Project SOLIQ original work).
+## 5. Water Shading, Seasonal Feedback & PBR Materials
+- `game/world/water-simulation.js` renders a PBR-colored water tube with dynamic ripple oscillations and flow velocity driven by the canal time-sliced solver (`science/mesqa-window.js`).
+- Dry/wet terrain albedo, puddle specular highlights, and white saline efflorescence crust convey **simulated visual state** only; they cannot be read as field-measured soil moisture, groundwater depth, salinity or NASA observation.
+- The Seventh Field Time Echo (`game/world/time-echo.js`) renders dual-scenario holographic volumes (Scenario A Monoculture vs Scenario B Balanced Rotation) with explicit `SIMULATED` and `comparison_only` labels.
 
 ---
 
 ## 6. Procedural Audio Synthesis (Web Audio API)
-- Zero external copyright audio samples. All sounds are generated procedurally in real-time via Web Audio API:
-  - **Diesel Engine Thrum**: Low-frequency 4-stroke combustion synthesis using pulse oscillator, low-pass filter with resonant bump, sub-bass harmonic, and randomized mechanical jitter.
-  - **Canal Water Flow**: Multi-pole bandpass filtered pink noise with dynamic turbulence modulation.
-  - **Rural Ambience**: Wind through reeds (biquad filtered noise) and procedural avian whistle synthesis.
-  - **Mechanical SFX**: Sluice gate metallic groan, pump valve click, tablet chime.
-  - License: MIT License (Project SOLIQ original work).
+- `game/world/audio.js` uses a local Web Audio graph without external audio files: filtered engine oscillators, filtered **white** noise for water, low-pass wind noise, and short oscillator cues for gate/notebook actions.
+- The previous references to recorded birds, multi-pole pink noise, physically modeled 4-stroke jitter and metal-groan sample libraries were overstated. Voice acting, signed actor permissions, external sounds and sound-equivalent captions are separate future tasks.
 
 ---
 
 ## 7. Scientific Data & Earth Observation Context
 - **NASA POWER**:
-  - Data: Solar, Precipitation and Surface Meteorological Parameters (Sakha / Kafr El Sheikh station coordinates 31.08°N, 30.94°E).
+  - Data: Regional gridded weather context requested for the illustrative Sakha / Kafr El Sheikh **coordinate point** (31.08°N, 30.94°E). This is not an independently surveyed or authenticated farm station.
   - Attribution: NASA Langley Research Center POWER Project funded through the NASA Earth Science/Applied Science Program.
   - Ethical labeling: Displayed as historical regional weather context, not real-time localized soil telemetry.

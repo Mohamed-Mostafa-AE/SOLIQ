@@ -18,6 +18,236 @@
 @media print{.continuous-field{display:none!important}.slide .scene,.slide .scene-caption{display:block!important}.slide{background:#10271f}}
 
 /* Keep the merged benchmark note clear of the footer. */
+.toolbar .project-route-link{font-size:.76rem;font-weight:700;color:#d0e9aa;white-space:nowrap;text-underline-offset:4px}
+@media(max-width:700px){.toolbar .project-route-link{font-size:.85rem;min-height:44px;display:inline-flex;align-items:center}}
+@media print{.toolbar .project-route-link{display:none!important}}
 .benchmark .stats{margin-top:26px}.benchmark .check-line{margin-top:24px;font-size:15px;line-height:1.5}.benchmark .text-link{margin-top:14px}
 
 .wordmark{display:flex;align-items:center;flex:0 0 auto}.wordmark img{display:block;width:136px;height:auto;max-height:62px;object-fit:contain}@media(max-width:700px){.wordmark img{width:112px;max-height:52px}}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0;
+  margin: -1px; overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; z-index: 100; top: 8px; left: 8px;
+  padding: 12px 16px; background: #c0d794; color: #10271f;
+  font-weight: 700; text-decoration: none; transform: translateY(-160%);
+}
+.skip-link:focus-visible { transform: none; outline: 3px solid white; }
+#close-notes { float: right; min-height: 40px; }
+
+/* P0-08: At phone widths, stop shrinking a 1280px slide into a postage stamp.
+   Preserve the same seven slides in an actual scrollable, accessible reading flow. */
+@media screen and (max-width: 700px) {
+  html { overflow-x: clip; }
+  body { overflow-x: clip; overflow-y: auto; min-width: 320px; }
+  .skip-link:focus { position: fixed; top: 8px; left: 8px; z-index: 100; }
+  .toolbar {
+    position: relative; z-index: 5; height: auto; padding: 12px 16px;
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px;
+    background: #10271f;
+  }
+  .wordmark img { width: 112px; }
+  .toolbar .tools {
+    width: 100%; margin: 0; display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+  }
+  .tools button { min-width: 0; min-height: 44px; font-size: 13px; padding: 8px; }
+  #viewport { display: block; height: auto; min-height: 45vh; overflow: visible; }
+  #stage {
+    display: block; width: 100%; height: auto; min-width: 0;
+    transform: none !important; transform-origin: initial;
+    box-shadow: none; overflow: visible;
+  }
+  #stage > .continuous-field { display: none; }
+  .slide, .slide.leaving { display: none !important; }
+  .slide.active {
+    position: relative; display: flex !important; flex-direction: column;
+    gap: 24px; width: 100%; height: auto; min-height: 480px;
+    padding: 30px 20px 24px; overflow: visible;
+    background: radial-gradient(circle at 90% 85%, #294e3d80, transparent 55%), #10271f;
+  }
+  .slide .left, .problem .left, .compare .left, .ai .left,
+  .benchmark .left, .honesty .left, .close .left { width: 100%; min-width: 0; }
+  .slide.hero .left { padding-top: 0; }
+  .slide .overline { margin-bottom: 18px; font-size: 11px; letter-spacing: 2px; }
+  .slide h1, .slide.hero h1, .problem h1, .compare h1,
+  .evidence h1, .ai h1, .benchmark h1, .honesty h1, .close h1 {
+    font-size: clamp(33px, 9vw, 47px); line-height: 1.1;
+    letter-spacing: -.6px; margin: 0 0 20px;
+    overflow-wrap: anywhere;
+  }
+  .slide .lead, .problem .lead {
+    font-size: 18px; line-height: 1.55; overflow-wrap: anywhere;
+  }
+  .tagline { font-size: 11px; line-height: 1.5; }
+  .need-list, .rotation-grid, .close .steps {
+    display: grid; grid-template-columns: minmax(0, 1fr);
+    width: 100%; gap: 18px; margin-top: 25px;
+  }
+  .need { min-width: 0; }
+  .need p { max-width: none; font-size: 17px; }
+  .rotation-grid .rotation, .rotation-grid .rotation:nth-child(2),
+  .rotation-grid .rotation:nth-child(3) {
+    width: 100%; height: auto; min-height: 180px; padding: 20px 18px 50px;
+    transform: none; box-shadow: none;
+  }
+  .rotation h2 { font-size: 24px; margin: 14px 0 10px; }
+  .rotation p { font-size: 17px; margin: 0; }
+  .rotation .mini-line { left: 18px; right: 18px; bottom: 17px; }
+  .compare .aside-line { line-height: 1.5; font-size: 16px; }
+  .steps { width: 100%; gap: 20px; }
+  .step { max-width: none; }
+  .step h2 { line-height: 1.3; }
+  .step p, .ai .step p, .close .step p { font-size: 17px; line-height: 1.55; }
+  .ai-stat {
+    position: relative; inset: auto; width: 100%; max-width: none;
+    padding: 20px; z-index: auto; transform: none; box-shadow: none;
+  }
+  .ai-stat strong { font-size: 62px; }
+  .ai-stat p { font-size: 19px; }
+  .stats { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; gap: 15px; }
+  .stat { width: 100%; }
+  .stat strong { font-size: 48px; white-space: normal; }
+  .stat p { max-width: none; font-size: 16px; margin: 6px 0; }
+  .benchmark .check-line { font-size: 16px; line-height: 1.6; }
+  .bars { width: 100%; min-width: 0; margin-top: 24px; }
+  .bar-row {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: 9px 12px; align-items: center; margin: 20px 0;
+  }
+  .bar-label { grid-column: 1 / -1; font-size: 18px; }
+  .bar-track { min-width: 0; height: 28px; }
+  .bar-number { font-size: 17px; }
+  .axis { width: 100%; margin: 0; font-size: 11px; gap: 10px; }
+  .caption, .footnote { font-size: 15px; line-height: 1.55; }
+  .actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .actions a { display: flex; align-items: center; min-height: 44px; font-size: 16px; }
+  .authors { font-size: 14px; overflow-wrap: anywhere; }
+  .slide .scene {
+    display: block !important; position: relative; inset: auto;
+    width: 100%; height: min(70vw, 290px); min-height: 180px;
+    transform: none !important; opacity: 1; overflow: hidden;
+  }
+  .scene svg { max-width: 100%; max-height: 100%; filter: none; }
+  .slide .scene-caption {
+    display: block !important; position: static; margin: -10px 0 0;
+    font-size: 10px; letter-spacing: 1px;
+  }
+  .slide-footer {
+    position: relative; inset: auto; display: flex; flex-wrap: wrap;
+    margin-top: auto; padding-top: 14px; gap: 8px 20px;
+    line-height: 1.4; font-size: 10px;
+  }
+  .controls {
+    position: sticky; bottom: 0; z-index: 10; width: 100%; height: auto;
+    padding: 9px 16px max(9px, env(safe-area-inset-bottom));
+    display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px;
+    gap: 7px 10px; background: #081a15f5; backdrop-filter: blur(12px);
+  }
+  #previous { grid-area: 1 / 1; }
+  #counter { grid-area: 1 / 2; justify-self: center; align-self: center; font-size: 14px; }
+  #next { grid-area: 1 / 3; }
+  #previous, #next { min-width: 44px; min-height: 44px; }
+  #slide-nav {
+    grid-area: 2 / 1 / 2 / 4; display: flex;
+    justify-content: space-between; width: 100%; gap: 2px;
+  }
+  #slide-nav button { width: 44px; height: 44px; min-width: 44px; min-height: 44px; font-size: 13px; }
+  #speaker-notes {
+    position: fixed; bottom: 116px; left: 16px; right: 16px;
+    max-height: 45vh; margin: 0; padding: 16px;
+    overflow-y: auto; font-size: 16px;
+  }
+  #export-status { position: relative; inset: auto; margin: 12px 16px; max-width: none; }
+}
+
+/* Judge review polish: align the pitch's original illustration with the
+   dark-emerald / canal-teal / warm-gold visual language of Soil-IQ Welcome.
+   The thin progress track is native HTML, not a scripted animation. */
+:root { --delta-gold: #f4c879; --delta-teal: #72c9c4; }
+.wordmark { gap: 10px; text-decoration: none; }
+.wordmark .brand-name {
+  display: inline-block; color: #f4c879;
+  font: 700 22px/1.2 Arial,sans-serif; letter-spacing: .5px;
+  white-space: nowrap;
+}
+#stage {
+  background:
+    radial-gradient(ellipse at 78% 39%, #26544a55, transparent 52%),
+    radial-gradient(ellipse at 15% 96%, #876b3c25, transparent 43%),
+    #0a241e;
+}
+.slide .overline { color: var(--delta-gold); font-weight: 700; }
+.slide .overline::before {
+  content: ''; display: inline-block; vertical-align: middle;
+  width: 28px; height: 2px; background: var(--delta-gold);
+  margin-right: 12px;
+}
+.tagline { color: var(--delta-gold); }
+.slide .scene svg { filter: drop-shadow(0 21px 20px #0008); }
+.slide .scene-caption, .field-caption { color: #d6e4d0; }
+.controls { position: relative; }
+#deck-progress {
+  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  border: none; border-radius: 0; appearance: none;
+  background: #37574b; color: var(--delta-gold);
+}
+#deck-progress::-webkit-progress-bar { background: #37574b; }
+#deck-progress::-webkit-progress-value { background: linear-gradient(90deg,var(--delta-teal),var(--delta-gold)); }
+#deck-progress::-moz-progress-bar { background: var(--delta-gold); }
+.controls #previous, .controls #next { border-color: #c1d6be80; }
+.controls #previous:not(:disabled):hover,
+.controls #next:not(:disabled):hover { background: #f4c879; border-color: #f4c879; color: #10271f; }
+
+@media screen and (max-width: 700px) {
+  .wordmark .brand-name { font-size: 21px; }
+  .toolbar { border-bottom: 1px solid #f4c87955; }
+  .slide.active {
+    background: radial-gradient(circle at 78% 84%, #275a5066, transparent 57%), #0a241e;
+    padding-top: 32px;
+  }
+  .slide .overline::before { width: 18px; margin-right: 8px; }
+  .slide .scene {
+    min-height: 205px; height: min(72vw, 295px);
+    padding: 10px; border-radius: 16px;
+    border: 1px solid #72c9c47a;
+    background: radial-gradient(ellipse at 62% 31%, #33584c77, #102f28 73%);
+    box-shadow: 0 18px 38px #020e0b70;
+  }
+  .slide .scene svg { filter: drop-shadow(0 10px 8px #0009); }
+  .slide .scene-caption { margin: -12px 0 0; color: #d9ead3; font-size: 11px; }
+  .controls { border-top: 1px solid #f4c87970; }
+  .controls #counter { color: #f1e5c5; font-weight: 700; }
+  .rotation, .need, .step, .ai-stat, .stat { border-color: #f4c87988; }
+}
+@media print { #deck-progress { display: none !important; } }
+
+/* The pitch offers the judges two honest entry points: science and a playable story. */
+.hero-links, .demo-links {display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+.hero-links a {
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:46px;padding:12px 16px;
+  border:1px solid #d6ad64;color:#f8e8bd;
+  background:linear-gradient(145deg,#b68a463a,#244333c9);
+  font-size:15px;font-weight:700;text-decoration:none;
+}
+.hero-links a:first-child {background:#c0d794;color:#10271f;border-color:#c0d794;}
+.demo-links .text-link {font-size:16px;margin-top:3px;}
+.hero-links a:focus-visible,.demo-links a:focus-visible,.actions a:focus-visible {
+  outline:3px solid #fff;outline-offset:4px;
+}
+.close .actions {max-width:850px;gap:10px;}
+.close .actions a {font-size:14px;padding:11px 13px;}
+@media (max-width:700px){
+  .hero-links {margin-top:18px;}
+  .hero-links a {font-size:14px;padding:10px 13px;}
+  .demo-links {gap:10px;}
+  .demo-links .text-link {font-size:14px;}
+  .close .actions a {font-size:15px;}
+}
+@media print {
+  .hero-links,.demo-links,.close .actions {break-inside:avoid;}
+}

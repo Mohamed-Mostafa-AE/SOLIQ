@@ -116,6 +116,110 @@ body, html {
   margin-top: 18px;
   opacity: 0.8;
 }
+.loader-note a { color: #cff1bb; text-underline-offset: 4px; }
+.loader-note a:focus-visible { outline: 3px solid #ffe19c; outline-offset: 4px; }
+
+/* Playable cold open: a fictional question, rather than an unearned prophecy. */
+.opening-hook {
+  position: fixed;
+  inset: 0;
+  z-index: 5100;
+  padding: clamp(8px, 2vw, 25px);
+  display: grid;
+  place-items: center;
+  background: radial-gradient(ellipse at 50% 30%, rgba(25, 65, 54, .84), rgba(1, 8, 7, .96) 78%);
+  overflow-y: auto;
+}
+.opening-hook[hidden] { display: none !important; }
+.opening-hook, .opening-hook * { user-select: text; }
+.hook-stage {
+  position: relative;
+  isolation: isolate;
+  width: min(1050px, 100%);
+  max-height: calc(100dvh - 26px);
+  overflow-y: auto;
+  border: 1px solid rgba(245, 202, 119, .67);
+  border-radius: 19px;
+  color: #fff9eb;
+  background: linear-gradient(130deg, #142b27 5%, #09241e 67%, #291d14);
+  box-shadow: 0 18px 110px #000a, inset 0 0 0 5px #ffffff05;
+}
+.hook-content { position: relative; padding: clamp(18px, 2.5vw, 32px); }
+.hook-atmosphere { position: absolute; inset: 0; overflow: hidden; pointer-events: none; opacity: .83; }
+.hook-horizon {
+  position: absolute; inset: 0 0 36%;
+  background: radial-gradient(circle at 84% 34%, #e4aa5e69, transparent 23%),
+    linear-gradient(160deg, transparent 22%, #1f625848 65%, transparent 95%);
+}
+.hook-sun { position: absolute; top: 10%; right: 13%; width: 85px; height: 85px; border-radius: 50%; background: #eab36a4d; filter: blur(13px); animation: hook-glow 4s ease-in-out infinite alternate; }
+.hook-canal { position: absolute; width: 145%; height: 22%; left: 22%; bottom: 16%; transform: rotate(-20deg); background: linear-gradient(90deg, transparent, #38857a30 20%, #92d4b044 54%, transparent 90%); border-top: 1px solid #b6d9b95c; border-bottom: 1px solid #b6d9b93d; }
+.hook-field { position: absolute; width: 110%; height: 15%; left: 6%; bottom: 7%; border: 1px solid #daba6647; background: repeating-linear-gradient(95deg, #ad9c4220 0 4px, transparent 4px 22px); transform: rotate(-20deg); }
+.hook-field-two { left: 60%; bottom: 27%; }
+.hook-field-three { left: -40%; bottom: -7%; }
+.hook-topline { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: .73rem; letter-spacing: .19em; font-weight: 800; }
+.hook-top-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.hook-chapter { color: #e8b86e; }
+.hook-type { color: #bedacc; }
+.hook-eyebrow { margin: clamp(16px, 2vw, 24px) 0 7px; font-size: .76rem; color: #f5c77d; font-weight: 800; letter-spacing: .21em; }
+.opening-hook h1 { font-family: Georgia, Cambria, 'Times New Roman', serif; font-size: clamp(2.8rem, 7.2vw, 5.6rem); font-weight: 500; line-height: 1.04; letter-spacing: -.035em; text-shadow: 0 3px 27px #030a05; }
+.hook-premise { max-width: 660px; margin: 12px 0 0; line-height: 1.55; font-size: clamp(.95rem, 1.6vw, 1.08rem); color: #f5efe1; text-shadow: 0 1px 5px #041c14; }
+.hook-stakes { display: flex; gap: clamp(18px, 3vw, 42px); margin: 15px 0 16px; padding-bottom: 14px; border-bottom: 1px solid #d7c3935c; }
+.hook-stakes span { display: flex; flex-direction: column; gap: 2px; }
+.hook-stakes strong { font-size: clamp(1.5rem, 3vw, 2.15rem); color: #f8cc80; font-weight: 500; font-family: Georgia, Cambria, serif; }
+.hook-stakes small { font-size: .68rem; letter-spacing: .09em; color: #e5e6cf; font-weight: 750; }
+.hook-decision-head h2 { font-size: clamp(1.13rem, 2.5vw, 1.5rem); color: #fff3d3; }
+.hook-decision-head p { font-size: .84rem; margin: 7px 0 15px; color: #d7e8df; }
+.hook-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.hook-choice {
+  min-height: 175px;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 17px 20px;
+  border: 1px solid #99bea6a6;
+  border-radius: 13px;
+  background: linear-gradient(155deg, #153e4df0, #123038e8);
+  color: #f8fffa;
+  cursor: pointer;
+  font: inherit;
+  box-shadow: 0 8px 30px #0004;
+  position: relative;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.hook-choice-soil { background: linear-gradient(155deg, #4a4127f0, #29371fe8); border-color: #e4bd7794; }
+.hook-choice:hover { transform: translateY(-4px); border-color: #fff1b5; box-shadow: 0 12px 32px #0009; }
+.hook-choice-number, .hook-untested { font-size: .72rem; letter-spacing: .12em; color: #d5e7d9; font-weight: 800; }
+.hook-choice-symbol { position: absolute; right: 19px; top: 24px; font-size: 2.2rem; opacity: .48; line-height: .75; }
+.hook-choice strong { font-family: Georgia, Cambria, serif; font-weight: 500; font-size: clamp(1.38rem, 2.8vw, 1.85rem); }
+.hook-choice > span:not(.hook-choice-symbol, .hook-choice-number, .hook-untested) { line-height: 1.45; font-size: .9rem; }
+.hook-choice em { color: #ffe2a1; font-size: .88rem; font-weight: 800; font-style: normal; }
+.hook-untested { margin-top: auto; padding-top: 6px; color: #f7d59d; font-size: .67rem; }
+.hook-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; margin-top: 13px; }
+.hook-skip { border: 1px solid #d6bf82b0; border-radius: 7px; background: #1b3d32e8; color: #fce5ae; padding: 7px 10px; cursor: pointer; font: inherit; font-size: .76rem; letter-spacing: .02em; white-space: nowrap; }
+#hook-text-story { color: #f9d18d; font-size: .86rem; text-underline-offset: 3px; }
+.hook-disclaimer { width: 100%; padding-top: 8px; font-size: .74rem; line-height: 1.45; color: #d7e1d6; }
+.opening-hook :is(a, button):focus-visible { outline: 3px solid #ffe49d; outline-offset: 4px; }
+@keyframes hook-glow { from { transform: scale(.92); opacity: .6; } to { transform: scale(1.1); opacity: .95; } }
+@media (max-width: 640px) {
+  .opening-hook { padding: 5px; }
+  .hook-stage { max-height: calc(100dvh - 10px); border-radius: 10px; }
+  .hook-content { padding: 17px; }
+  .hook-topline { font-size: .62rem; letter-spacing: .1em; }
+  .hook-top-actions { width: 100%; justify-content: space-between; gap: 8px; }
+  .hook-eyebrow { letter-spacing: .09em; margin-top: 15px; }
+  .hook-premise { margin-top: 10px; }
+  .hook-stakes { margin: 14px 0; padding-bottom: 12px; }
+  .hook-choices { grid-template-columns: 1fr; gap: 9px; }
+  .hook-choice { min-height: 148px; padding: 13px 15px; gap: 5px; }
+  .hook-choice strong { font-size: 1.35rem; }
+}
+body.reduced-motion .opening-hook *,
+body.reduced-motion .opening-hook *::before,
+body.reduced-motion .opening-hook *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .opening-hook *, .opening-hook *::before, .opening-hook *::after { animation: none !important; transition: none !important; }
+}
 
 /* In-Game HUD Layer */
 .hud-layer {
@@ -130,13 +234,15 @@ body, html {
   top: 16px;
   left: 16px;
   right: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 345px) minmax(0, 1fr);
+  align-items: start;
+  column-gap: 14px;
   pointer-events: auto;
 }
 
 .hud-title-zone {
+  min-width: 0;
   background: var(--bg-card);
   backdrop-filter: blur(8px);
   padding: 8px 16px;
@@ -161,7 +267,10 @@ body, html {
 
 .hud-quick-tools {
   display: flex;
+  min-width: 0;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .hud-tool-btn {
@@ -309,6 +418,8 @@ body, html {
   padding: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   pointer-events: auto;
+  /* Dialogue choices must win hit-testing over the touch joystick. */
+  z-index: 10;
 }
 
 .dialogue-header {
@@ -472,6 +583,31 @@ body, html {
   color: #fff;
 }
 
+/* The science workflow is adjacent to the game, never fictional evidence. */
+.rotation-bridge {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--accent-gold);
+  border-radius: 12px;
+  background: rgba(36, 91, 79, 0.16);
+}
+
+.rotation-bridge h3 { margin: 0 0 8px; }
+.rotation-bridge p { line-height: 1.55; color: var(--text-muted); }
+.rotation-bridge a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rotation-bridge a:hover { text-decoration: underline; }
+.rotation-bridge a:focus-visible { outline: 3px solid var(--accent-gold); outline-offset: 3px; }
+
 .receipt-card {
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--border-color);
@@ -605,7 +741,14 @@ body, html {
   left: 0;
   width: 50vw;
   height: 50vh;
-  pointer-events: auto;
+  /* A virtual touch target must not swallow mouse clicks on dialogue. */
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Enable the joystick hit target only on actual touch-first devices. */
+@media (pointer: coarse) {
+  .virtual-joystick-zone { pointer-events: auto; }
 }
 
 .joystick-base {
@@ -674,7 +817,12 @@ body, html {
     top: 8px;
     left: 8px;
     right: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 7px;
   }
+  .hud-title-zone { max-width: 100%; }
+  .hud-quick-tools { gap: 5px; }
+  .hud-tool-btn { padding: 8px; }
   .hud-mission-title {
     font-size: 0.95rem;
   }
@@ -686,4 +834,384 @@ body, html {
   .dialogue-content {
     font-size: 0.95rem;
   }
+}
+
+
+/* Text-first Chapter 0 route uses the same mission logic as the 3D world. */
+.story-desk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 850;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+  background: rgba(0, 13, 12, 0.9);
+  pointer-events: auto;
+}
+.story-desk-overlay[hidden] { display: none !important; }
+
+.story-desk {
+  width: min(760px, 100%);
+  max-height: 94dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #f7faf6;
+  background: #14332d;
+  border: 2px solid #d3a65b;
+  border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+}
+.story-desk, .story-desk * { user-select: text; }
+.story-desk-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #75988b;
+}
+.story-desk-header h2 { margin: 4px 0 0; font-size: clamp(1.1rem, 3vw, 1.5rem); }
+.story-desk-kicker { margin: 0; color: #f4d9a9; font-weight: 800; letter-spacing: .04em; font-size: .78rem; }
+#story-desk-close { min-width: 44px; min-height: 44px; border-radius: 8px; border: 1px solid #a0bcb1; color: #fff; background: #1d5042; font-size: 1.3rem; cursor: pointer; }
+.story-desk-body { padding: 18px 22px 24px; overflow-y: auto; }
+.story-desk-body h3 { margin: 14px 0 8px; }
+.story-desk-body p { line-height: 1.6; }
+.story-thread { margin-top: 16px; padding: 13px; border: 1px solid #c2a66e; border-radius: 10px; background: #29483b; }
+.story-thread[hidden] { display: none !important; }
+.story-thread h3 { margin-top: 0; }
+#story-thread-help { margin: 5px 0 11px; color: #e6ecde; font-size: .89rem; }
+.story-thread-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.story-thread-list .story-choice-btn { min-height: 60px; border-color: #f0cb85; }
+.story-desk-help { color: #e3efe8; }
+.story-source-label { color: #ffe7af; font-weight: 800; font-size: .8rem; letter-spacing: .02em; }
+.story-scene-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }
+.story-scene-btn, .story-choice-btn {
+  padding: 13px 14px;
+  border: 1px solid #99b5a7;
+  border-radius: 10px;
+  background: #245d4c;
+  color: #fff;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.story-scene-btn[aria-pressed="true"] { background: #48653b; border-color: #f1ca7e; }
+.story-dialogue { margin-top: 20px; padding: 14px; border: 1px solid #88aa9d; border-radius: 12px; background: #0c2924; }
+.story-choice-list { display: grid; gap: 10px; margin-top: 12px; }
+.story-choice-btn { background: #1f4b40; }
+.story-scene-btn:hover, .story-choice-btn:hover { border-color: #f1ca7e; }
+.story-desk :is(button, a):focus-visible { outline: 3px solid #ffdf96; outline-offset: 3px; }
+.story-announcement { min-height: 1.6em; font-weight: 600; color: #e4d19f; }
+.story-checkpoint {
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid #9cb5a5;
+  border-radius: 12px;
+  background: #173b32;
+}
+.story-checkpoint h3 { margin-top: 0; }
+#story-checkpoint-help { color: #e7f0e8; font-size: .9rem; }
+.story-checkpoint-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.story-checkpoint-buttons button {
+  flex: 1 1 145px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #b7d2bd;
+  background: #235b4d;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+#story-checkpoint-save { background: #c0e4ac; color: #10291f; }
+#story-checkpoint-reset { border-color: #dfbda7; }
+#story-checkpoint-status { min-height: 1.6em; color: #ffe4ac; font-weight: 700; }
+#story-rotation-link {
+  display: inline-block;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #c0e4ac;
+  color: #10291f;
+  font-weight: 800;
+  text-decoration: none;
+}
+.story-desk-limit { color: #d9e8dd; font-size: .84rem; }
+body.reduced-motion .hud-layer *,
+body.reduced-motion .story-desk-overlay *,
+body.reduced-motion .game-loader * {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hud-layer *, .story-desk-overlay *, .game-loader * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (max-width: 640px) {
+  #btn-story-desk { display: none; }
+  .story-desk-overlay { padding: 6px; }
+  .story-desk-header, .story-desk-body { padding: 12px; }
+  .story-scene-nav { grid-template-columns: 1fr; }
+  .story-thread-list { grid-template-columns: 1fr; }
+  .mobile-action-bar { bottom: 12px; gap: 8px; }
+  .mobile-btn { width: 52px; height: 52px; }
+}
+
+/*
+ * Chapter 0's stage is composed around the live Babylon world. The previous
+ * opaque, centered window hid the village and made 3D gameplay look like a
+ * static web form. All controls remain DOM-native and keyboard accessible.
+ */
+.game-loader {
+  justify-content: flex-end;
+  padding: clamp(16px, 5vw, 70px);
+  /* This layer sits above the actual rendered village. Keep the landscape,
+     teal canal and sakia visible throughout the very first interaction. */
+  background: linear-gradient(90deg, #041b1845 0%, #051b1840 37%, #06150c24 62%, #06150a3b 100%);
+  isolation: isolate;
+}
+/* The splash has its own cinematic chapter headline. The regular in-game HUD
+   must wait until Play, or two titles overlap the live canal image. */
+.game-intro-active .hud-top-bar,
+.game-intro-active .ch1-launch,
+.game-intro-active .chapter2-launch,
+.game-intro-active .chapter-later-launch { visibility: hidden; }
+.game-loader::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #e8ab6416 0%, transparent 28%, #00130b49 92%);
+}
+.loader-world-title {
+  position: absolute;
+  top: clamp(22px, 6vh, 75px);
+  left: clamp(18px, 4vw, 65px);
+  right: auto;
+  max-width: 25rem;
+  color: #fff0d2d6;
+  font: 400 clamp(1.5rem, 3.8vw, 3.5rem)/.9 Georgia, Cambria, serif;
+  letter-spacing: -.055em;
+  text-align: left;
+  text-shadow: 0 8px 25px #000b;
+}
+.loader-world-title span {
+  display: block;
+  margin-bottom: .7rem;
+  font: 800 .7rem/1.4 var(--font-sans);
+  letter-spacing: .22em;
+  color: #f9d08f;
+}
+.loader-content {
+  position: relative;
+  z-index: 2;
+  width: min(460px, 100%);
+  max-width: none;
+  padding: clamp(20px, 3vw, 38px);
+  text-align: left;
+  border: 1px solid #f2cf8957;
+  border-radius: 20px;
+  background: #071d18dc;
+  box-shadow: 0 30px 100px #000a;
+  backdrop-filter: blur(16px);
+}
+.loader-logo { width: 65px; height: 65px; margin-bottom: 16px; }
+.loader-chapter, .loader-world-caption {
+  color: #ecc889;
+  font-size: .7rem;
+  font-weight: 850;
+  letter-spacing: .16em;
+  line-height: 1.5;
+}
+.loader-title {
+  margin: 12px 0 16px;
+  font: 400 clamp(2rem, 4vw, 3.3rem)/1.02 Georgia, Cambria, serif;
+  letter-spacing: -.04em;
+  color: #fff4d8;
+}
+.loader-sub { font-size: 1rem; line-height: 1.65; color: #e9f1e6; }
+.loader-world-caption { margin-bottom: 18px; }
+.btn-start { width: 100%; min-height: 54px; background: #e8bd78; color: #14231b; border: 1px solid #fff1ce; }
+.btn-start:hover { background: #ffdfa0; color: #10221b; }
+.loader-note { font-size: .78rem; opacity: 1; line-height: 1.55; }
+
+.opening-hook {
+  align-items: stretch;
+  justify-items: end;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(90deg, #06100c20, #061a1399 57%, #030c0bcc);
+  isolation: isolate;
+}
+.opening-hook::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #dcb17913, transparent 34%, #051b1499);
+}
+.hook-world-caption {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  left: clamp(19px, 4.5vw, 80px);
+  bottom: clamp(40px, 10vh, 105px);
+  width: min(41vw, 620px);
+  pointer-events: none;
+  text-shadow: 0 4px 25px #020d0bf0;
+}
+.hook-episode { font-size: .74rem; font-weight: 900; letter-spacing: .25em; color: #ffe0a3; }
+.hook-world-title {
+  margin: 13px 0 21px;
+  font: 400 clamp(3rem, 7vw, 7rem)/.88 Georgia, Cambria, serif;
+  letter-spacing: -.065em;
+  color: #fff0d3;
+  white-space: pre-line;
+}
+.hook-world-location {
+  padding-top: 14px;
+  border-top: 1px solid #ffe6ad78;
+  color: #ffd59c;
+  font-weight: 850;
+  font-size: .81rem;
+  letter-spacing: .14em;
+}
+.hook-world-instruction { max-width: 390px; margin-top: 11px; font-size: .84rem; line-height: 1.5; color: #f5eee1; }
+.hook-stage {
+  z-index: 2;
+  width: min(580px, 51vw);
+  min-width: 0;
+  max-height: 100dvh;
+  height: 100dvh;
+  overflow-y: auto;
+  border-radius: 0;
+  border: 0;
+  border-left: 1px solid #e9be7959;
+  background: linear-gradient(120deg, #0b2721f2, #14271eee 56%, #302516ef);
+  box-shadow: -25px 0 100px #0008, inset 0 0 0 1px #ffffff04;
+  backdrop-filter: blur(18px);
+  transition: width .4s ease, background .4s ease;
+}
+.hook-stage::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; left: 0;
+  height: 7px;
+  background: linear-gradient(90deg, #5da99a, #f3c57b, #78522a);
+}
+.hook-atmosphere { opacity: .2; }
+.hook-content { padding: clamp(19px, 2.5vw, 36px); }
+.hook-topline { font-size: .63rem; letter-spacing: .12em; }
+.hook-field-report {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  color: #f2c991;
+  font-size: .7rem;
+  letter-spacing: .14em;
+  font-weight: 850;
+}
+.hook-record-dot { width: 8px; height: 8px; border-radius: 50%; background: #f9cb7b; box-shadow: 0 0 12px #ebb26480; }
+.hook-eyebrow { margin-top: 16px; }
+.opening-hook h1 { font-size: clamp(2.4rem, 3.75vw, 4.25rem); }
+.hook-premise { font-size: clamp(.86rem, 1.1vw, .99rem); line-height: 1.65; }
+.hook-stakes { margin: 13px 0; }
+.hook-stakes strong { font-size: 1.7rem; }
+.hook-decision-head h2 { font-size: 1.2rem; }
+.hook-decision-head p { margin-bottom: 5px; }
+.hook-camera-instruction { color: #f9d79c; font-size: .78rem; margin-bottom: 13px; line-height: 1.4; }
+.hook-choices { gap: 10px; }
+.hook-choice { min-height: 178px; padding: 14px; border-radius: 11px; }
+.hook-choice strong { font-size: clamp(1.22rem, 1.8vw, 1.57rem); }
+.hook-choice:hover, .hook-choice:focus-visible { background: #194c46; box-shadow: 0 0 0 1px #e8cc94, 0 12px 32px #0008; }
+.hook-choice-soil:hover, .hook-choice-soil:focus-visible { background: #5a4b29; }
+.hook-view-village {
+  min-height: 38px;
+  padding: 8px 10px;
+  background: #e5b770;
+  color: #12231a;
+  border: 1px solid #ffdfa4;
+  border-radius: 7px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.hook-wide-view .hook-stage { width: min(470px, 43vw); background: linear-gradient(110deg, #0b2721d9, #14271ed2 56%, #302516d9); }
+
+@media (max-width: 700px) {
+  .game-loader { justify-content: flex-end; padding: 8px 0 0; background: linear-gradient(180deg, #07160a35, #07160a40 35%, #06140d9e 65%); }
+  .loader-world-title { top: 30px; left: 20px; right: auto; font-size: 2rem; }
+  .loader-content { width: 100%; padding: 20px; border-radius: 18px 18px 0 0; max-height: 76dvh; overflow-y: auto; }
+  .loader-title { font-size: 2.3rem; }
+  .opening-hook { background: linear-gradient(180deg, #06100c18, #061a1359 30%, #030c0bee); }
+  .hook-world-caption { top: 4vh; bottom: auto; width: 88%; }
+  .hook-episode { font-size: .6rem; letter-spacing: .12em; }
+  .hook-world-title { font-size: clamp(2.2rem, 11vw, 4rem); margin: 9px 0; }
+  .hook-world-location { padding-top: 6px; font-size: .65rem; }
+  .hook-world-instruction { display: none; }
+  .hook-stage, .hook-wide-view .hook-stage {
+    align-self: end;
+    width: 100%;
+    height: 74dvh;
+    max-height: 74dvh;
+    border: 1px solid #e9be7959;
+    border-bottom: 0;
+    border-radius: 18px 18px 0 0;
+    background: linear-gradient(130deg, #0b2721f5, #14271ef4 56%, #302516f2);
+  }
+  .hook-wide-view .hook-stage { height: 60dvh; max-height: 60dvh; }
+  .hook-content { padding: 16px; }
+  .hook-topline { font-size: .6rem; }
+  .hook-field-report { margin-top: 13px; }
+  .hook-choices { grid-template-columns: 1fr; }
+  .hook-choice { min-height: 143px; }
+  .hook-stakes strong { font-size: 1.4rem; }
+  .hook-world-caption { left: 6%; }
+}
+@media (max-width: 640px) {
+  /* The mobile Lens/Notebook/Story controls form a right-side vertical rail.
+     The Chapter 1 button must stay clear so neither action is obscured. */
+  #game-ui-container > #chapter1-launch {
+    left: 10px;
+    right: auto;
+    max-width: min(210px, calc(100vw - 90px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hook-stage { transition: none; }
+}
+body.reduced-motion .hook-stage { transition: none; }
+
+/* Unlock after Chapter 1 has produced a real (fictional) result, never from a
+   static story outline. Positioned just below Chapter 1's own launch control. */
+.chapter2-launch {
+  position: fixed;
+  top: 147px;
+  right: 18px;
+  z-index: 205;
+  width: min(300px, calc(100vw - 28px));
+  min-height: 48px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: 1px solid #aae6e6;
+  background: linear-gradient(120deg, #124d52, #1f746c);
+  color: #f4fff6;
+  box-shadow: 0 10px 26px #0019139c;
+  font: 800 .9rem/1.35 var(--font-sans);
+  cursor: pointer;
+  pointer-events: auto;
+}
+.chapter2-launch[hidden] { display: none !important; }
+.chapter2-launch:focus-visible { outline: 3px solid #ffe0a1; outline-offset: 3px; }
+.chapter2-launch:hover { background: linear-gradient(120deg, #176065, #208278); }
+@media (max-width: 640px) {
+  .chapter2-launch { top: 149px; right: 14px; width: min(275px, calc(100vw - 28px)); }
 }

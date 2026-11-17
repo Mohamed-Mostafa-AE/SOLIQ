@@ -1,33 +1,40 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#163e35">
-  <title>SOLIQ · الأرض السابعة (The Seventh Field) · 3D World</title>
+  <title>Soil-IQ · The Seventh Field · 3D World</title>
   <link rel="icon" href="../../soliq-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../../game/ui/fieldwork-activity.css">
+  <link rel="stylesheet" href="../../game/ui/water-practice.css">
 </head>
-<body>
+<body class="game-intro-active">
   <!-- Loading Splash Screen -->
   <div id="game-loader" class="game-loader">
+    <div class="loader-world-title" aria-hidden="true"><span>CHAPTER 0</span>THE SEVENTH FIELD</div>
     <div class="loader-content">
-      <img src="../../soliq-logo.svg" alt="SOLIQ Logo" class="loader-logo">
-      <h2 class="loader-title">الأرض السابعة · The Seventh Field</h2>
-      <p class="loader-sub">جاري تهيئة قرية الدلتا ونظام الري ثلاثي الأبعاد...</p>
+      <img src="../../soliq-logo.svg" alt="Soil-IQ logo" class="loader-logo">
+      <p class="loader-chapter">SOIL-IQ / A PLAYABLE EGYPTIAN STORY</p>
+      <h1 class="loader-title">The land remembers water.</h1>
+      <p class="loader-sub">At dawn, the canal falls quiet. Six fields have a plan. The seventh asks a question nobody can answer yet.</p>
+      <p class="loader-world-caption">AN ORIGINAL NILE DELTA WORLD · FICTIONAL SCENARIO</p>
       <div class="loader-progress-bar"><div id="loader-bar" class="loader-bar"></div></div>
-      <button id="btn-start-game" class="btn-start" hidden>ادخل القرية (ابدأ المهمة) 🌾</button>
-      <p class="loader-note">Babylon.js PBR Engine · NASA POWER Context · Real Mesqa Simulation</p>
+      <button id="btn-start-game" class="btn-start" hidden>Enter the Seventh Field →</button>
+      <p class="loader-note">Simulated canal choices, not live farm or satellite measurements.</p>
+      <p class="loader-note"><a href="story.html" id="text-story-entry">Play the same opening choices without 3D · captions, keyboard and screen reader ↗</a></p>
+      <p class="loader-note"><a href="../../explore/">Explore the complete Soil-IQ project ↗</a></p>
     </div>
   </div>
 
   <!-- 3D WebGL Canvas -->
-  <canvas id="renderCanvas" touch-action="none"></canvas>
+  <canvas id="renderCanvas" touch-action="none" tabindex="0" aria-label="The Seventh Field interactive 3D world. Use the text-first story link for a non-spatial alternative."></canvas>
 
   <!-- In-Game UI Layer -->
   <div id="game-ui-container"></div>
 
-  <!-- Fallback Babylon Scripts (Local Vendored with CDN Fallback) -->
+  <!-- Babylon Scripts (vendored with CDN fallback) -->
   <script src="../../game/assets/vendor/babylon.js"></script>
   <script src="../../game/assets/vendor/babylonjs.loaders.min.js"></script>
   <script>

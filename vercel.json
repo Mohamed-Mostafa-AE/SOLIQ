@@ -1,13 +1,24 @@
 {
   "functions": {
     "api/*.js": {
-      "maxDuration": 120
+      "maxDuration": 60
     }
   },
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {"source": "/api/sessions", "destination": "/api/evidence?__evidenceRoute=/api/sessions"},
+    {"source": "/api/farms", "destination": "/api/evidence?__evidenceRoute=/api/farms"},
+    {"source": "/api/evidence/jobs", "destination": "/api/evidence?__evidenceRoute=/api/evidence/jobs"},
+    {"source": "/api/evidence/jobs/:id", "destination": "/api/evidence?__evidenceRoute=/api/evidence/jobs/:id"},
+    {"source": "/api/runs", "destination": "/api/evidence?__evidenceRoute=/api/runs"},
+    {"source": "/api/runs/:id", "destination": "/api/evidence?__evidenceRoute=/api/runs/:id"},
+    {"source": "/api/runs/:id/replay", "destination": "/api/evidence?__evidenceRoute=/api/runs/:id/replay"},
+    {"source": "/api/receipts/:id", "destination": "/api/evidence?__evidenceRoute=/api/receipts/:id"}
+  ],
   "git": {
     "deploymentEnabled": {
       "main": true,
+      "release/soil-iq-unified-20261116": true,
       "*": false
     }
   }

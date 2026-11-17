@@ -1751,3 +1751,456 @@ html, body { overflow-x: clip; }
 .brand-wordmark{max-width:148px!important;max-height:70px!important;width:auto!important;height:auto!important;object-fit:contain!important}
 .footer-brand img{max-width:166px!important;max-height:80px!important;width:auto!important;height:auto!important;object-fit:contain!important}
 @media(max-width:760px){.brand-wordmark{max-width:116px!important;max-height:56px!important}.footer-brand img{max-width:142px!important;max-height:68px!important}}
+
+/* P1-09:BEGIN_CINEMATIC_PREVIEW */
+/* P1-09 · Soil-IQ original cinematic Nile Delta preview.
+   Native CSS illustration, not satellite imagery or a scientific measurement. */
+:root{
+  --cin-ink:#061b1a;
+  --cin-paper:#f8f1df;
+  --cin-muted:#c7d5cc;
+  --cin-gold:#f4c879;
+  --cin-water:#80d6c2;
+}
+.topbar{border-bottom-color:rgba(244,200,121,.17);background:rgba(6,23,22,.91)}
+.main-nav a:focus-visible,.decision-preview a:focus-visible,.decision-preview button:focus-visible{outline:3px solid #f4c879;outline-offset:4px}
+.hero-panel .hero-copy{width:min(660px,100%)}
+.hero-panel .hero-copy h1{
+  font-family:"Space Grotesk",sans-serif;
+  font-size:clamp(3.4rem,6.2vw,6.8rem);
+  letter-spacing:-.075em;
+  line-height:.9;
+  max-width:660px;
+  color:var(--cin-paper);
+  text-wrap:balance;
+}
+.hero-panel .hero-copy h1 em{color:var(--cin-gold);text-shadow:0 0 52px rgba(244,200,121,.12)}
+.hero-panel .hero-description{max-width:570px;color:#d8e1d6}
+.hero-panel .eyebrow{color:var(--cin-gold)}
+.hero-panel .button-primary{
+  background:var(--cin-gold);
+  color:#071a16;
+  box-shadow:0 15px 40px rgba(244,200,121,.18);
+}
+.hero-panel .button-primary:hover{background:#ffe0a0;box-shadow:0 18px 45px rgba(244,200,121,.25)}
+.hero-panel .button-quiet{border-color:rgba(244,200,121,.34)}
+.hero-panel .button-quiet:hover{border-color:var(--cin-gold);color:var(--cin-paper)}
+.hero-panel .hero-disclaimer{color:#d6d6c9}
+.hero-proof-strip{
+  display:flex;
+  align-items:flex-start;
+  gap:clamp(10px,2vw,26px);
+  flex-wrap:wrap;
+  max-width:600px;
+  padding:15px 0 0;
+  margin-top:20px;
+  border-top:1px solid rgba(244,200,121,.3);
+  font:700 .67rem/1.4 "Space Grotesk",sans-serif;
+  letter-spacing:.045em;
+  color:#d4decc;
+}
+.hero-proof-strip span{white-space:nowrap}
+.hero-proof-strip b{color:var(--cin-gold);margin-right:6px}
+.decision-preview{
+  position:relative;
+  isolation:isolate;
+  padding:clamp(80px,10vw,155px) var(--pad);
+  background:
+    radial-gradient(ellipse at 80% 23%,rgba(34,110,93,.2),transparent 54%),
+    linear-gradient(155deg,#081e1d,#04120f);
+  border-top:1px solid rgba(249,213,151,.16);
+  border-bottom:1px solid rgba(249,213,151,.12);
+  overflow:hidden;
+}
+.decision-preview::before{
+  content:"";
+  position:absolute;
+  width:86vw;
+  height:86vw;
+  right:-54vw;
+  top:-43vw;
+  border-radius:50%;
+  border:1px solid rgba(244,200,121,.075);
+  box-shadow:0 0 0 90px rgba(244,200,121,.013),0 0 0 180px rgba(244,200,121,.01);
+  pointer-events:none;
+}
+.decision-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);
+  gap:clamp(32px,6vw,105px);
+  align-items:center;
+  max-width:1440px;
+  margin-inline:auto;
+}
+.decision-kicker{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--cin-gold);
+  font:700 .72rem/1.4 "Space Grotesk",sans-serif;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+.decision-kicker::before{
+  content:"";
+  width:26px;
+  height:2px;
+  background:var(--cin-gold);
+}
+.decision-copy h2{
+  max-width:640px;
+  margin:22px 0 18px;
+  color:var(--cin-paper);
+  font:700 clamp(2.8rem,5vw,5.9rem)/.98 "Space Grotesk",sans-serif;
+  letter-spacing:-.075em;
+  text-wrap:balance;
+}
+.decision-copy h2 em{display:block;color:var(--cin-gold);font-style:normal}
+.decision-intro{
+  max-width:530px;
+  font-size:clamp(1rem,1.3vw,1.17rem);
+  color:var(--cin-muted);
+}
+.decision-choices{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:30px 0 18px;
+}
+.decision-choices button{
+  min-height:48px;
+  padding:10px 15px;
+  background:rgba(228,240,224,.035);
+  border:1px solid rgba(224,240,220,.27);
+  border-radius:9px;
+  font:700 .85rem/1.3 "Space Grotesk",sans-serif;
+  color:#e0e9df;
+  cursor:pointer;
+  transition:background .24s,border-color .24s,transform .24s;
+}
+.decision-choices button:hover{transform:translateY(-3px);border-color:rgba(244,200,121,.8)}
+.decision-choices button[aria-pressed="true"]{background:var(--cin-gold);color:#051713;border-color:var(--cin-gold)}
+.decision-result{
+  min-height:156px;
+  border-left:3px solid var(--cin-gold);
+  border-radius:0 13px 13px 0;
+  padding:18px 22px;
+  background:rgba(236,245,221,.056);
+}
+.decision-evidence{
+  font:800 .65rem/1.4 "Space Grotesk",sans-serif;
+  letter-spacing:.13em;
+  color:#f4ce89;
+  text-transform:uppercase;
+}
+.decision-result h3{
+  margin:6px 0 5px;
+  font:700 1.25rem/1.3 "Space Grotesk",sans-serif;
+  color:var(--cin-paper);
+}
+.decision-result p{margin:0;max-width:550px;color:#d4dfd2;font-size:.95rem}
+.decision-preview-actions{display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin-top:28px}
+.decision-preview-actions .decision-primary{
+  display:inline-flex;align-items:center;gap:14px;
+  min-height:52px;padding:12px 21px;
+  border-radius:9px;background:var(--cin-gold);color:#091a17;
+  font:800 .9rem/1.35 "Space Grotesk",sans-serif;
+  box-shadow:0 11px 30px rgba(244,200,121,.17);
+}
+.decision-preview-actions .decision-primary:hover{background:#ffe3ac}
+.decision-preview-actions .decision-secondary{
+  color:#e8f1e8;border-bottom:1px solid rgba(232,241,232,.45);
+  padding:10px 0;font-weight:700;
+}
+.decision-preview-actions .decision-secondary:hover{color:var(--cin-gold);border-color:var(--cin-gold)}
+.decision-disclosure{font-size:.78rem;color:#bfcabd;max-width:550px;margin-top:18px}
+.delta-art{
+  position:relative;
+  perspective:900px;
+  height:clamp(440px,46vw,660px);
+  overflow:hidden;
+  border:1px solid rgba(244,200,121,.29);
+  border-radius:25px;
+  background:linear-gradient(180deg,#b99a70 0%,#8ea49a 32%,#2c554a 33%,#122d27 100%);
+  box-shadow:0 30px 100px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,236,185,.4);
+  contain:layout paint;
+}
+.delta-art::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(155deg,transparent 0 60px,rgba(245,220,157,.055) 61px 63px,transparent 64px 126px);
+  mix-blend-mode:screen;pointer-events:none;z-index:5;
+}
+.delta-sun{
+  position:absolute;top:12%;right:19%;width:88px;height:88px;border-radius:50%;
+  background:#f6d3a0;box-shadow:0 0 65px 40px rgba(250,212,147,.26),0 0 130px 70px rgba(250,212,147,.11);
+}
+.delta-horizon{position:absolute;top:35%;width:100%;height:8%;background:linear-gradient(180deg,rgba(24,69,57,0),#2e5642)}
+.delta-village{
+  position:absolute;z-index:1;left:4%;top:31%;width:32%;height:12%;
+  background:linear-gradient(180deg,#b5a186,#95785b);
+  clip-path:polygon(0 38%,9% 38%,9% 16%,27% 16%,27% 36%,36% 36%,36% 0,62% 0,62% 31%,72% 31%,72% 11%,90% 11%,90% 43%,100% 43%,100% 100%,0 100%);
+  box-shadow:0 8px 15px rgba(27,51,42,.15);
+  opacity:.84;
+}
+.delta-village::after{
+  content:"";position:absolute;inset:40% 0 8%;
+  background:repeating-linear-gradient(90deg,transparent 0 19px,#4f6551 20px 23px,transparent 24px 43px);
+  opacity:.36;
+}
+.delta-palm{
+  position:absolute;z-index:2;top:25%;height:22%;width:7px;
+  background:linear-gradient(90deg,#6a503a,#926e48 52%,#4a3e30);
+  border-radius:60% 30% 15% 10%;transform:rotate(8deg);
+  transform-origin:bottom center;
+  box-shadow:4px 5px 11px rgba(1,19,14,.18);
+}
+.delta-palm--left{left:32%;height:21%;top:23%;transform:rotate(7deg)}
+.delta-palm--right{left:83%;height:18%;top:29%;transform:rotate(-6deg);filter:brightness(.7)}
+.delta-palm::before{
+  content:"";position:absolute;bottom:calc(100% - 5px);left:50%;width:95px;height:61px;
+  transform:translateX(-50%) rotate(-3deg);transform-origin:50% 75%;
+  background:conic-gradient(from -8deg at 50% 72%,#254c36 0 13deg,transparent 13deg 38deg,#356044 38deg 54deg,transparent 54deg 82deg,#31563b 82deg 99deg,transparent 99deg 130deg,#254c36 130deg 147deg,transparent 147deg 181deg,#31553b 181deg 199deg,transparent 199deg 234deg,#315c42 234deg 255deg,transparent 255deg 289deg,#264c35 289deg 307deg,transparent 307deg 346deg,#31553b 346deg 360deg);
+  clip-path:ellipse(50% 47% at 50% 52%);
+  animation:delta-palm-sway 7s ease-in-out infinite alternate;
+}
+.delta-palm::after{
+  content:"";position:absolute;top:4px;left:-5px;width:19px;height:10px;
+  background:radial-gradient(circle at 28% 50%,#4e5b2e 0 4px,transparent 5px),radial-gradient(circle at 75% 50%,#5d532e 0 4px,transparent 5px);
+}
+.delta-bank{position:absolute;inset:42% -7% -10%;transform:perspective(700px) rotateX(43deg);transform-origin:50% 20%;background:repeating-linear-gradient(98deg,#41653e 0 22px,#536d3d 22px 38px,#b6a367 38px 48px,#557b42 49px 72px);filter:saturate(.85)}
+.delta-canal{
+  position:absolute;
+  left:27%;top:37%;width:49%;height:75%;
+  clip-path:polygon(24% 0,49% 0,81% 100%,0 100%);
+  background:linear-gradient(95deg,#0c4242 2%,#347977 25%,#83b4a6 53%,#24585b 78%,#092e39 100%);
+  transform:rotate(-4deg);
+  box-shadow:0 0 50px rgba(4,44,53,.5);
+  overflow:hidden;
+}
+.delta-canal::after{
+  content:"";position:absolute;inset:-100% -60%;
+  background:repeating-linear-gradient(174deg,transparent 0 20px,rgba(220,255,236,.28) 21px 23px,transparent 25px 55px);
+  animation:canal-current 9s linear infinite;
+}
+.delta-sluice{
+  position:absolute;z-index:4;left:51%;top:45%;width:17%;height:10%;
+  border-left:7px solid #b2a185;border-right:7px solid #b2a185;
+  background:repeating-linear-gradient(90deg,transparent 0 10px,rgba(32,58,52,.7) 11px 13px);
+  box-shadow:0 7px 10px rgba(7,34,33,.28);
+  transform:skewY(-9deg);
+  opacity:.95;
+}
+.delta-sluice::before{
+  content:"";position:absolute;top:-6px;left:-13px;right:-13px;height:7px;
+  background:linear-gradient(#e0cfaa,#8b7457);border-radius:2px;
+}
+.delta-sluice::after{
+  content:"";position:absolute;left:46%;top:-15px;width:6px;height:20px;
+  background:#a3926d;border-radius:3px;box-shadow:0 -4px 0 2px #655b46;
+}
+.delta-bridge{
+  position:absolute;left:23%;top:56%;width:58%;height:15px;
+  transform:rotate(-8deg);border-radius:60% 60% 3px 3px;
+  background:linear-gradient(#bd9d65,#6c492f);
+  box-shadow:0 8px 0 #4b3829,0 10px 25px rgba(0,0,0,.5);
+}
+.delta-bridge::before,.delta-bridge::after{
+  content:"";position:absolute;top:-28px;width:3px;height:32px;
+  background:#cfab70;box-shadow:20px 0 #cfab70,40px 0 #cfab70,60px 0 #cfab70,80px 0 #cfab70;
+}
+.delta-bridge::before{left:9%}.delta-bridge::after{right:22%}
+.delta-field{
+  position:absolute;bottom:10%;width:31%;height:27%;
+  background:repeating-linear-gradient(105deg,#8da84f 0 10px,#d1b265 11px 16px,#4c6834 17px 22px);
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.25));
+  border:5px solid rgba(58,68,30,.46);border-radius:12px;
+}
+.delta-field--near{left:-5%;transform:skewY(10deg) rotate(-3deg)}
+.delta-field--far{right:-3%;bottom:24%;height:20%;transform:skewY(-12deg) rotate(8deg)}
+.delta-house{
+  position:absolute;z-index:3;top:37%;left:13%;width:78px;height:47px;
+  background:linear-gradient(140deg,#d1ae88,#aa8161);
+  box-shadow:5px 7px 0 #735c47,0 12px 17px rgba(25,45,36,.24);
+}
+.delta-house::before{
+  content:"";position:absolute;left:-4px;right:-4px;top:-7px;height:10px;
+  background:linear-gradient(180deg,#9f8264,#745b46);
+  border-top:2px solid #e4c5a0;
+  box-shadow:0 -3px 0 -1px #b89a77;
+}
+.delta-house::after{
+  content:"";position:absolute;bottom:0;left:14px;width:14px;height:26px;
+  background:#665c4a;border-radius:7px 7px 0 0;
+  box-shadow:34px -7px 0 -3px #606b5b;
+}
+.delta-chapter-tag,.delta-fiction{
+  position:absolute;z-index:8;
+  left:20px;padding:9px 13px;
+  background:rgba(3,26,24,.79);border:1px solid rgba(244,200,121,.31);
+  border-radius:6px;color:#ffdea5;
+  font:700 .7rem/1.4 "Space Grotesk",sans-serif;
+  letter-spacing:.08em;
+}
+.delta-chapter-tag{top:20px}
+.delta-fiction{bottom:18px;color:#e1ebe0;letter-spacing:0;font-weight:600}
+.delta-art[data-mode="soil"] .delta-field{filter:hue-rotate(22deg) brightness(1.15);transform:translateY(-8px) skewY(-6deg)}
+.delta-art[data-mode="soil"] .delta-canal{filter:brightness(.82)}
+/* Evidence is a subdued *illustration state*, not a readability filter for
+   the UI labels or the scene's safety/science disclaimers. */
+.delta-art[data-mode="evidence"]:not([data-diorama-ready="true"]) .delta-field,
+.delta-art[data-mode="evidence"]:not([data-diorama-ready="true"]) .delta-canal { filter:saturate(.68) brightness(.86) }
+.delta-art[data-mode="evidence"] .delta-chapter-tag{color:#f8ecbd}
+.delta-art[data-mode="evidence"] .delta-canal::after{animation-play-state:paused}
+@keyframes canal-current{from{transform:translateY(-14%)}to{transform:translateY(18%)}}
+@keyframes delta-palm-sway{from{transform:translateX(-50%) rotate(-4deg)}to{transform:translateX(-50%) rotate(4deg)}}
+@media(max-width:1050px){
+  .hero-panel .hero-copy h1{font-size:clamp(3rem,6.8vw,5.2rem)}
+  .decision-grid{grid-template-columns:1fr}
+  .delta-art{height:clamp(340px,55vw,540px)}
+}
+@media(max-width:760px){
+  .hero-panel .hero-copy h1{font-size:clamp(2.75rem,11vw,4.6rem);line-height:.94}
+  .hero-proof-strip{font-size:.59rem}
+  .decision-preview{padding:70px 22px}
+  .decision-grid{gap:28px}
+  .decision-copy h2{font-size:clamp(2.5rem,10vw,4rem)}
+  .decision-choices{gap:8px}
+  .decision-choices button{flex:1 1 43%;padding:10px 12px}
+  .delta-art{height:370px;border-radius:17px}
+  .decision-preview-actions{flex-direction:column;align-items:stretch}
+  .decision-preview-actions a{text-align:center;justify-content:center}
+  .delta-chapter-tag,.delta-fiction{font-size:.58rem}
+}
+@media(max-width:420px){
+  .hero-panel .hero-copy h1{font-size:clamp(2.4rem,12vw,3.3rem)}
+  .hero-proof-strip span{white-space:normal}
+  .decision-grid{min-width:0}
+  .decision-preview{padding-inline:18px}
+  .delta-art{height:330px}
+}
+@media(prefers-reduced-motion:reduce){
+  .decision-preview *, .decision-preview *::before,.decision-preview *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .decision-choices button:hover{transform:none}
+}
+
+/* P1-09:END_CINEMATIC_PREVIEW */
+
+/* P1-11: An original THREE.js aerial Delta diorama lives *inside* the decision
+   scene. CSS terrain remains a complete offline/no-WebGL fallback. */
+.delta-diorama-canvas {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  display: block;
+  pointer-events: none;
+  transition: opacity .9s cubic-bezier(.19,1,.22,1);
+  filter: saturate(1.16) contrast(1.045);
+}
+.delta-art[data-diorama-ready="true"] .delta-diorama-canvas { opacity: 1; }
+.delta-art[data-diorama-ready="true"] {
+  background: radial-gradient(ellipse at 26% 16%,#f6d1a3 0,#91b0a0 35%,#2e6259 68%,#102c2a 100%);
+}
+.delta-art[data-diorama-ready="true"]::after {
+  content: "";
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,rgba(4,27,25,.22),transparent 16%,transparent 61%,rgba(3,24,23,.47)),
+    radial-gradient(ellipse at center,transparent 45%,rgba(5,24,20,.22));
+}
+.diorama-view-label {
+  position: absolute;
+  z-index: 10;
+  top: 65px;
+  right: 22px;
+  max-width: min(62%,260px);
+  color: #fff4cf;
+  font: 800 .68rem/1.3 "Space Grotesk", sans-serif;
+  letter-spacing: .13em;
+  text-align: right;
+  text-shadow: 0 2px 8px #092821;
+  opacity: 0;
+  transition: opacity .5s ease .3s;
+}
+.delta-art[data-diorama-ready="true"] .diorama-view-label { opacity: 1; }
+.diorama-view-label small {
+  display: block;
+  margin-top: 7px;
+  font: 600 .56rem/1.45 "Space Grotesk", sans-serif;
+  letter-spacing: .05em;
+  color: #f3f0df;
+}
+.diorama-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: #ffe3ad;
+  box-shadow: 0 0 9px #f4c879;
+}
+.diorama-compass {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  bottom: 62px;
+  right: 22px;
+  border-radius: 24px;
+  padding: 7px 10px;
+  color: #f8ebc6;
+  border: 1px solid rgba(255,230,169,.5);
+  background: rgba(3,32,30,.74);
+  font: 700 .65rem/1.3 "Space Grotesk",sans-serif;
+  opacity: 0;
+}
+.delta-art[data-diorama-ready="true"] .diorama-compass { opacity: 1; }
+.diorama-compass i {
+  width: 33px;
+  height: 1px;
+  background: #b6d1b8;
+  position: relative;
+}
+.diorama-compass i::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: 0;
+  border: 4px solid transparent;
+  border-left: 7px solid #f5c878;
+}
+.delta-art[data-diorama-ready="true"] .delta-fiction,
+.delta-art[data-diorama-ready="true"] .delta-chapter-tag { background: rgba(3,28,25,.83); }
+.decision-preview .decision-result { transition: border-color .35s, background .35s; }
+.decision-preview:has(.delta-art[data-mode="soil"]) .decision-result { border-color: #aee49b; background: rgba(109,163,104,.08); }
+.decision-preview:has(.delta-art[data-mode="evidence"]) .decision-result { border-color: #8ad8e5; background: rgba(101,175,195,.08); }
+@media(max-width:760px) {
+  .diorama-view-label {
+    top: auto;
+    bottom: 65px;
+    left: 14px;
+    right: auto;
+    box-sizing: border-box;
+    max-width: min(60%,190px);
+    padding: 9px 10px;
+    border-radius: 7px;
+    border: 1px solid rgba(255,232,177,.45);
+    color: #fff5d8;
+    background: rgba(3,27,25,.9);
+    font-size: .62rem;
+    letter-spacing: .055em;
+    text-align: left;
+    text-shadow: none;
+  }
+  .diorama-view-label small { font-size: .52rem; line-height: 1.35; color: #f2f0e5; }
+  .diorama-compass { right: 13px; bottom: 54px; transform: scale(.86); transform-origin: bottom right; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .delta-diorama-canvas,.diorama-view-label,.decision-preview .decision-result { transition: none!important; }
+}

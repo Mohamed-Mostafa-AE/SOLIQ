@@ -4,7 +4,7 @@ const polygon=(points,fill,extra='')=>'<polygon points="'+points.map(pair).join(
 export function farmSVG(mode='mixed'){
  let p=(x,y,z=0)=>point(x,y,z),parts=[];
  const dry=mode==='dry',layers=mode==='layers',docs=mode==='documents';
- parts.push('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="520" viewBox="0 0 640 520" role="img" aria-label="Conceptual isometric field and soil cutaway, not measured crop growth"><defs><linearGradient id="soilLeft" x2="0" y2="1"><stop stop-color="#82603a"/><stop offset="1" stop-color="#3e3024"/></linearGradient><linearGradient id="soilRight" x2="1" y2="1"><stop stop-color="#5e482e"/><stop offset="1" stop-color="#322a21"/></linearGradient></defs>');
+ parts.push('<svg xmlns="http://www.w3.org/2000/svg" width="640" height="520" viewBox="0 0 640 520" role="img" aria-label="Conceptual Egyptian Delta isometric field, decorative canal, bridge and waterwheel; not measured crop growth"><defs><linearGradient id="soilLeft" x2="0" y2="1"><stop stop-color="#82603a"/><stop offset="1" stop-color="#3e3024"/></linearGradient><linearGradient id="soilRight" x2="1" y2="1"><stop stop-color="#5e482e"/><stop offset="1" stop-color="#322a21"/></linearGradient><linearGradient id="deltaCanal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#73cec6"/><stop offset=".43" stop-color="#278e9b"/><stop offset="1" stop-color="#164d5c"/></linearGradient></defs>');
  parts.push('<ellipse cx="321" cy="449" rx="238" ry="27" fill="#071912" opacity=".65"/>');
  const offset=layers?65:0;
  parts.push(polygon([p(0,300),p(300,300),p(300,300,-65),p(0,300,-65)],'url(#soilLeft)'));
@@ -28,6 +28,39 @@ export function farmSVG(mode='mixed'){
   if(gold)parts.push('<ellipse cx="'+top[0]+'" cy="'+(top[1]+4)+'" rx="3.6" ry="9" fill="#dac286" transform="rotate(-10 '+top.join(' ')+')"/>');
  }
  for(let x=30;x<300;x+=48){let a=p(x,300,-5),b=p(x+8,300,-46);parts.push('<path d="M'+pair(a)+' Q'+pair([a[0]-10,a[1]+25])+' '+pair(b)+'" stroke="#c4b185" stroke-width="1.2" opacity=".55" fill="none"/>');}
+ // The local mesqa is scenery, not a measurement or proof of delivered water.
+ // Draw it below the near bank so all rotations retain the same illustrative context.
+ parts.push('<g data-art="delta-canal" aria-hidden="true">');
+ parts.push(polygon([p(0,309,-3),p(300,309,-3),p(300,380,-3),p(0,380,-3)],'#c7b382'));
+ parts.push(polygon([p(0,317,-4),p(300,317,-4),p(300,367,-4),p(0,367,-4)],'url(#deltaCanal)',dry?'opacity=".79"':''));
+ parts.push('<path d="M'+pair(p(0,324,-4))+' L'+pair(p(300,324,-4))+' M'+pair(p(0,361,-4))+' L'+pair(p(300,361,-4))+'" fill="none" stroke="#9be1d4" stroke-width="1.8" opacity=".62"/>');
+ for(let i=0;i<9;i++){
+  const wave=p(18+i*30,342,-5);
+  parts.push('<path d="M'+pair([wave[0]-7,wave[1]-2])+' q6 -3 12 0" fill="none" stroke="#d5f0db" stroke-linecap="round" opacity=".52" stroke-width="1.4"/>');
+ }
+ parts.push('</g>');
+ // A short timber footbridge makes the shared canal legible at presentation size.
+ parts.push('<g data-art="mesqa-bridge" aria-hidden="true">');
+ parts.push(polygon([p(166,301,9),p(203,301,9),p(203,382,9),p(166,382,9)],'#b99862','stroke="#ebd79a" stroke-width="1.5"'));
+ parts.push(polygon([p(166,382,9),p(203,382,9),p(203,382,-2),p(166,382,-2)],'#68543b'));
+ for(let y=310;y<383;y+=10){const a=p(166,y,9),b=p(203,y,9);parts.push('<path d="M'+pair(a)+' L'+pair(b)+'" stroke="#725d43" stroke-width="1.1" opacity=".7"/>');}
+ for(const x of [166,203]){
+  const a=p(x,306,10),b=p(x,379,10),topA=p(x,306,32),topB=p(x,379,32);
+  parts.push('<path d="M'+pair(topA)+' L'+pair(topB)+'" stroke="#e7d49b" stroke-width="2.4"/>');
+  parts.push('<path d="M'+pair(a)+' L'+pair(topA)+' M'+pair(b)+' L'+pair(topB)+'" stroke="#785e3a" stroke-width="3"/>');
+ }
+ parts.push('</g>');
+ const wheelCenter=p(347,363,13),wx=wheelCenter[0],wy=wheelCenter[1];
+ parts.push('<g data-art="sakia-wheel" aria-hidden="true">');
+ parts.push('<path d="M'+pair([wx-32,wy+39])+' L'+pair([wx-8,wy+3])+' L'+pair([wx+19,wy+40])+'" fill="none" stroke="#c3a878" stroke-width="5"/>');
+ parts.push('<circle cx="'+wx+'" cy="'+wy+'" r="28" fill="#184c4c" fill-opacity=".26" stroke="#c6a56c" stroke-width="5"/>');
+ parts.push('<circle cx="'+wx+'" cy="'+wy+'" r="7" fill="#f3dba8" stroke="#8b714b" stroke-width="2"/>');
+ for(let k=0;k<10;k++){
+  const angle=k*Math.PI/5,cs=Math.cos(angle),sn=Math.sin(angle);
+  parts.push('<path d="M'+wx+' '+wy+' L'+(wx+cs*29).toFixed(1)+' '+(wy+sn*29).toFixed(1)+'" stroke="#ecd6a1" stroke-width="2.4"/>');
+  parts.push('<path d="M'+(wx+cs*29).toFixed(1)+' '+(wy+sn*29).toFixed(1)+' l'+(-sn*8).toFixed(1)+' '+(cs*8).toFixed(1)+'" stroke="#795c37" stroke-width="4"/>');
+ }
+ parts.push('</g>');
  if(layers){
   parts.push(polygon([p(0,0,130),p(300,0,130),p(300,300,130),p(0,300,130)],'#b4c6bd','opacity=".15" stroke="#b8d7ce" stroke-width="1.2" stroke-dasharray="5 5"'));
   for(let x=60;x<300;x+=60){let a=p(x,0,130),b=p(x,300,130);parts.push('<path d="M'+pair(a)+' L'+pair(b)+'" stroke="#c0dbcf" opacity=".2"/>');}

@@ -1,8 +1,12 @@
 /**
- * SOLIQ: The Seventh Field - 3D Rigged Human Character Pipeline
- * Playable protagonist Nada + Expressive NPCs Uncle Hassan and Maryam.
- * Full anatomical skeletal rigs with smooth bone skinning and expressive procedural animations.
+ * Soil-IQ: The Seventh Field - original 3D character pipeline.
+ * A temporary lightweight procedural rig remains interactive while three
+ * original, Blender-authored skinned GLB actors and their animation clips load.
+ * The procedural version remains a resilient offline/low-bandwidth fallback.
  */
+
+const ACTOR_ASSET_ROOT = '/game/assets/models/';
+const MOTIONS = Object.freeze(['idle', 'walk', 'run', 'talk', 'interact']);
 
 export class CharacterSystem {
   constructor(scene, shadowGenerator) {
@@ -11,12 +15,19 @@ export class CharacterSystem {
     this.nada = null;
     this.hassan = null;
     this.maryam = null;
+    this.reducedMotion = Boolean(
+      typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    );
 
     this.materials = {};
     this._initMaterials();
     this._createNada();
     this._createHassan();
     this._createMaryam();
+    // Loaded asynchronously so the player never waits for 1.5MB of extra art
+    // before the text-first, keyboard-operable game can begin. Errors preserve
+    // the procedural cast; they are never fatal to the science/gameplay core.
+    this.visualLoadPromise = this.loadSkinnedCharacters();
   }
 
   _initMaterials() {
@@ -98,7 +109,7 @@ export class CharacterSystem {
   _createRiggedHuman(id, skinMat, clothesMat, height = 1.72) {
     const root = new BABYLON.TransformNode(`${id}_root`, this.scene);
 
-    // Anatomical Skeletal Hierarchy using TransformNodes
+    // Joint hierarchy using TransformNodes (no claim of mesh skinning).
     const hips = new BABYLON.TransformNode(`${id}_Hips`, this.scene);
     hips.parent = root;
     hips.position.y = height * 0.54;
@@ -198,6 +209,27 @@ export class CharacterSystem {
     hipsMesh.parent = hips;
     hipsMesh.material = clothesMat;
 
+    // Distinct Delta clothing silhouettes are part of the inexpensive base
+    // meshes. Parenting to the low-detail body pieces means the higher-quality
+    // sculpted-character pass can disable both without overlapping geometry.
+    if (id === 'hassan' || id === 'maryam') {
+      const hem = BABYLON.MeshBuilder.CreateCylinder(
+        id === 'hassan' ? 'hassanGalabeyaHem' : 'maryamDressHem',
+        { diameterTop: 0.34, diameterBottom: id === 'hassan' ? 0.55 : 0.62,
+          height: 0.55, tessellation: 10 }, this.scene
+      );
+      hem.parent = hipsMesh;
+      hem.position.y = -0.26;
+      hem.material = clothesMat;
+    } else if (id === 'nada') {
+      const jacketHem = BABYLON.MeshBuilder.CreateBox(
+        'nadaJacketHem', { width: 0.39, height: 0.16, depth: 0.26 }, this.scene
+      );
+      jacketHem.parent = chestMesh;
+      jacketHem.position.y = -0.23;
+      jacketHem.material = clothesMat;
+    }
+
     // Limb Meshes
     const limbMat = clothesMat;
     const makeLimb = (name, parent, len, radius) => {
@@ -253,6 +285,7 @@ export class CharacterSystem {
       },
       headMesh,
       eyes: [leftEye, rightEye],
+      height,
       animTime: 0,
       state: 'idle', // 'idle' | 'walk' | 'run' | 'interact' | 'talk'
     };
@@ -261,7 +294,10 @@ export class CharacterSystem {
   _createNada() {
     // Playable Female Protagonist Nada (1.68m)
     const actor = this._createRiggedHuman('nada', this.materials.skinNada, this.materials.nadaJacket, 1.68);
-    actor.root.position.set(-16, 0.0, 3.0); // Starting position near the pump lane
+    // Begin near the canal, palms, Hassan and planted fields. The older pump-lane
+    // spawn framed bare soil and oversized machinery, undermining the story's
+    // focus on the village and the next season. Pump remains walkable nearby.
+    actor.root.position.set(-4, 0.0, 3.0);
     actor.root.rotation.y = 0.4;
 
     // Ponytail & scarf
@@ -344,6 +380,16 @@ export class CharacterSystem {
     scarf.position.set(0, 0.04, -0.02);
     scarf.material = this.materials.maryamScarf;
 
+    // One folded cloth tail distinguishes Maryam's original rural headscarf
+    // from a rigid helmet while adding only one small low-poly mesh.
+    const scarfTail = BABYLON.MeshBuilder.CreateCylinder('maryamScarfTail', {
+      diameterTop: 0.075, diameterBottom: 0.12, height: 0.31, tessellation: 8,
+    }, this.scene);
+    scarfTail.parent = actor.bones.head;
+    scarfTail.position.set(0.08, -0.15, -0.12);
+    scarfTail.rotation.z = -0.2;
+    scarfTail.material = this.materials.maryamScarf;
+
     // Irrigation schedule ledger in hands
     const clipboard = BABYLON.MeshBuilder.CreateBox('maryamBoard', { width: 0.22, height: 0.28, depth: 0.02 }, this.scene);
     clipboard.parent = actor.bones.rightHand;
@@ -366,11 +412,43 @@ export class CharacterSystem {
 
   updateAnimations(deltaTime) {
     const actors = [this.nada, this.hassan, this.maryam].filter(Boolean);
+    // A suspended tab must not jump the pose on resume or amplify animations.
+    const frame = Number.isFinite(deltaTime) ? Math.max(0, Math.min(deltaTime, 0.05)) : 0;
+    // The in-game accessibility toggle also sets this body class; honor it
+    // without requiring HUD code to know about character joint internals.
+    const reduceMotionNow = this.reducedMotion || Boolean(
+      typeof document !== 'undefined' && document.body?.classList?.contains('reduced-motion')
+    );
 
     for (const a of actors) {
-      a.animTime += deltaTime;
+      a.animTime += frame;
       const t = a.animTime;
       const b = a.bones;
+
+      // The original skinned rig is animated by glTF NLA clips, while these
+      // hidden proxy joints remain available to gameplay and interaction logic.
+      this._syncSkinnedAnimation(a, reduceMotionNow);
+
+      // Fully reset transient poses before applying the current state. Without
+      // this, an interaction freezes Nada's forearm or the run hip bob in idle.
+      b.hips.position.y = a.height * 0.54;
+      b.spine.rotation.x = 0;
+      b.spine.rotation.z = 0;
+      b.head.rotation.x = 0;
+      b.head.rotation.y = 0;
+      b.chest.rotation.x = 0;
+      b.leftThigh.rotation.x = 0;
+      b.rightThigh.rotation.x = 0;
+      b.leftShin.rotation.x = 0;
+      b.rightShin.rotation.x = 0;
+      b.leftArm.rotation.x = 0;
+      b.rightArm.rotation.x = 0;
+      b.leftForearm.rotation.x = 0;
+      b.rightForearm.rotation.x = 0;
+
+      // Captions/text UI convey interactions; no limb or camera motion is
+      // required to understand them when reduced-motion is requested.
+      if (reduceMotionNow) continue;
 
       // 1. Idle breathing (all actors have subtle natural chest & head motion)
       const breath = Math.sin(t * 2.2) * 0.03;
@@ -396,7 +474,7 @@ export class CharacterSystem {
         b.rightArm.rotation.x = legCycle * ampArm;
 
         // Subtle hip bob
-        b.hips.position.y = (a.id === 'nada' ? 1.68 : 1.74) * 0.54 + Math.abs(Math.sin(t * freq)) * 0.04;
+        b.hips.position.y = a.height * 0.54 + Math.abs(Math.sin(t * freq)) * 0.04;
       } else if (a.state === 'interact') {
         // Reaching out right hand to interact
         b.rightArm.rotation.x = -Math.PI / 2.8;
@@ -431,17 +509,117 @@ export class CharacterSystem {
     }
   }
 
+  setReducedMotion(enabled) {
+    this.reducedMotion = Boolean(enabled);
+    for (const actor of [this.nada, this.hassan, this.maryam]) {
+      if (actor) this._syncSkinnedAnimation(actor, this.reducedMotion);
+    }
+  }
+
   setActorState(actorId, state) {
-    const actor = actorId === 'nada' ? this.nada : actorId === 'hassan' ? this.hassan : this.maryam;
-    if (actor) {
+    const actor = { nada: this.nada, hassan: this.hassan, maryam: this.maryam }[actorId];
+    if (actor && MOTIONS.includes(state)) {
       actor.state = state;
+      this._syncSkinnedAnimation(actor, this.reducedMotion);
     }
   }
 
   setActorEmotion(actorId, emotion) {
-    const actor = actorId === 'hassan' ? this.hassan : actorId === 'maryam' ? this.maryam : this.nada;
+    const actor = { nada: this.nada, hassan: this.hassan, maryam: this.maryam }[actorId];
     if (actor) {
       actor.emotion = emotion;
     }
+  }
+
+  async loadSkinnedCharacters() {
+    if (typeof BABYLON?.SceneLoader?.ImportMeshAsync !== 'function') {
+      return { loaded: [], fallback: ['nada', 'hassan', 'maryam'], reason: 'glb_loader_unavailable' };
+    }
+
+    const actors = [this.nada, this.hassan, this.maryam];
+    // On very low-memory devices prioritize a working protagonist and preserve
+    // lightweight NPC proxies; the story remains usable in every preset.
+    const smallMemory = typeof navigator !== 'undefined' &&
+      Number.isFinite(navigator.deviceMemory) && navigator.deviceMemory <= 2;
+    const list = smallMemory ? actors.slice(0, 1) : actors;
+    const loaded = [];
+    const fallback = smallMemory ? ['hassan', 'maryam'] : [];
+    await Promise.all(list.map(async actor => {
+      let result;
+      let priorMeshStates = [];
+      try {
+        result = await BABYLON.SceneLoader.ImportMeshAsync(
+          '', ACTOR_ASSET_ROOT, `${actor.id}.glb`, this.scene
+        );
+        if (!result.meshes?.length || !result.skeletons?.length ||
+            !result.animationGroups?.length) {
+          throw new Error('Imported GLB has no skinned human or animation');
+        }
+        const imported = new Set([...(result.meshes ?? []), ...(result.transformNodes ?? [])]);
+        for (const mesh of imported) {
+          if (!mesh.parent || !imported.has(mesh.parent)) mesh.parent = actor.root;
+        }
+        const clips = new Map();
+        for (const group of result.animationGroups) {
+          group.stop();
+          for (const motion of MOTIONS) {
+            if (group.name.toLowerCase().includes(motion)) clips.set(motion, group);
+          }
+        }
+        if (!clips.has('idle') || !clips.has('walk') || !clips.has('talk')) {
+          throw new Error('Missing required animated gestures');
+        }
+        // Switch visible character meshes only after every skin/clip is ready.
+        // Geometry from the existing non-destructive detail pass is also hidden.
+        const originalMeshes = actor.root.getChildMeshes?.(false)
+          .filter(mesh => !imported.has(mesh)) ?? [];
+        priorMeshStates = originalMeshes.map(mesh => ({
+          mesh,
+          enabled: mesh.isEnabled?.() ?? true,
+        }));
+        for (const mesh of originalMeshes) mesh.setEnabled(false);
+        actor.motionClips = clips;
+        actor.visualMode = 'skinned-glb';
+        actor.visualLicense = 'Soil-IQ original authored 2026; no external likeness';
+        if (this.shadowGenerator) {
+          for (const mesh of result.meshes) {
+            if (mesh.getTotalVertices?.()) this.shadowGenerator.addShadowCaster(mesh);
+          }
+        }
+        this._syncSkinnedAnimation(actor, this.reducedMotion);
+        loaded.push(actor.id);
+      } catch (error) {
+        // An invalid asset must never leave a second half-rendered character
+        // layered over the fully functional fallback.
+        for (const { mesh, enabled } of priorMeshStates) mesh.setEnabled(enabled);
+        for (const mesh of result?.meshes ?? []) mesh.dispose?.();
+        for (const group of result?.animationGroups ?? []) group.dispose?.();
+        delete actor.motionClips;
+        actor.activeClip = null;
+        actor.visualMode = 'procedural-fallback';
+        actor.visualAssetError = String(error?.message ?? error);
+        fallback.push(actor.id);
+      }
+    }));
+    return { loaded, fallback, reason: fallback.length ? 'some_assets_unavailable_or_low_memory' : null };
+  }
+
+  _syncSkinnedAnimation(actor, reduceMotion = false) {
+    if (!actor?.motionClips) return;
+    const paused = reduceMotion || Boolean(
+      typeof document !== 'undefined' && document.body?.classList?.contains('reduced-motion')
+    );
+    if (paused) {
+      actor.activeClip?.stop();
+      actor.activeClip?.reset?.();
+      actor.activeClip = null;
+      return;
+    }
+    const next = actor.motionClips.get(actor.state) ?? actor.motionClips.get('idle');
+    if (!next || actor.activeClip === next) return;
+    actor.activeClip?.stop();
+    next.reset?.();
+    next.start(true, 1);
+    actor.activeClip = next;
   }
 }

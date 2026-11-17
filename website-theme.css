@@ -1085,6 +1085,21 @@ html[dir="rtl"] .farm-location-dialog select {
 /* Two audience modes: a calm farmer workflow and a separate graduate research workspace. */
 nav [hidden], #workspace-nav [hidden] { display: none !important; }
 
+/* A visible path back to the project's other workspaces in both audience modes. */
+.audience-banner .project-route-link {
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: #d3efba;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-size: .76rem;
+  font-weight: 750;
+}
+@media (max-width: 600px) {
+  .audience-banner { flex-wrap: wrap; }
+  .audience-banner .project-route-link { margin-left: 0; min-height: 40px; display: inline-flex; align-items: center; }
+}
+
 .audience-banner {
   display: flex;
   align-items: center;

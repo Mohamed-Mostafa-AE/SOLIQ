@@ -88,28 +88,19 @@ export const slides=[
     "notes": "NASA POWER is the live environmental adapter in this build. Its regional meteorology is not a field sensor. A simple single-layer water bucket uses declared capacity and crop coefficients; it does not model yield, profit, soil carbon, nutrient credits, salinity or groundwater. Other Earth-observation adapters and multi-year crop transitions remain future work. Present the paper as a methods draft."
   },
   {
-    "label": "05 / THE AI DEMO",
-    "title": "Find the evidence\nbehind the answer.",
-    "lead": "An open model retrieves relevant guidance.\nThe report stays tied to NASA evidence.",
+    "label": "05 / TWO EXPERIENCES",
+    "title": "The data.\nThe people.",
+    "lead": "A science workspace and a playable Delta story.",
     "kind": "ai",
     "scene": "documents",
     "items": [
-      [
-        "Runs on the device",
-        "A real embedding model; no paid inference key."
-      ],
-      [
-        "Cites the guidance",
-        "Six reviewed source summaries, including FAO and NASA."
-      ],
-      [
-        "Shows its scope",
-        "English / Arabic reports. No invented crop forecasts."
-      ]
+      ["THE SEVENTH FIELD", "Walk through a fictional Egyptian village, meet its farmers and test irrigation decisions in 3D."],
+      ["THE FIELD WORKSPACE", "Compare crop calendars with dated NASA POWER weather and clearly declared local assumptions."],
+      ["THE EVIDENCE ADVISER", "On-device retrieval from six reviewed passages. It cannot validate a farm or predict crop yields."]
     ],
     "stat": "5 / 5",
-    "statLabel": "predefined queries retrieved the expected source in the top three",
-    "notes": "The working AI demo uses all-MiniLM-L6-v2 to rank the relevance of reviewed source passages. The six-document corpus has English embeddings; preset questions are English, and reviewed guidance and deterministic reports are available in Arabic. Five hand-written English queries retrieved the expected source in their top three. This is a small retrieval diagnostic, not 100 percent agronomic accuracy. The numerical report is produced by rules and calculations. Free-form Kimi and DeepSeek generation still requires provider activation. Open the demo before judging to cache the model."
+    "statLabel": "preset retrieval checks found their expected source in the top three",
+    "notes": "Two experiences share an evidence-first mission: a practical rotation comparison and The Seventh Field, a fictional 3D Delta village with chapters and water-sharing choices. The story does not use actual field measurements and does not change the scientific model. In the optional evidence adviser, all-MiniLM-L6-v2 ranks six reviewed source passages. Five predefined English queries found their expected source in the top three. That is not verified agronomic accuracy, and real-world NASA pixel processing remains limited. Show both live routes and invite the judges to inspect limitations."
   },
   {
     "label": "06 / THE EGYPT BENCHMARK",
@@ -135,8 +126,8 @@ export const slides=[
   },
   {
     "label": "07 / THE NEXT STEP",
-    "title": "Better questions.\nGrounded decisions.",
-    "lead": "Explore the app. Inspect the evidence.\nHelp us validate the next field pilot.",
+    "title": "See the trade-offs.\nShape the next field.",
+    "lead": "Try the NASA demo. Play the water turn.\nThen question every assumption.",
     "kind": "close",
     "scene": "mixed",
     "items": [
@@ -153,6 +144,6 @@ export const slides=[
         "Multi-year rotations and justified satellite vegetation layers."
       ]
     ],
-    "notes": "Soil-IQ is a supportive decision tool. The next work is independent validation with local crop, soil and irrigation evidence, farmer usability review, and evaluation across locations and years. Our authors are Mohamed Mostafa, Youssef Mohamed, Aya Abdelnabi and Mohamed Abdelrahman. We are a NASA Space Apps 6 October project team. Badr University in Cairo is the event venue; we do not claim institutional affiliation or endorsement. The research paper remains a methods draft. Invite questions and show the live demo."
+    "notes": "Soil-IQ is a supportive decision tool. The next work is independent validation with local crop, soil and irrigation evidence, farmer usability review, and evaluation across locations and years. Our authors are Mohamed Mostafa, Youssef Mohamed, Aya Abdelnabi and Mohamed Abdelrahman. We are a NASA Space Apps 6 October project team. Badr University in Cairo is the event venue; we do not claim institutional affiliation or endorsement. The research paper remains a methods draft. Invite questions and demonstrate the zero-input NASA walkthrough plus the original 3D mission. Both show their own uncertainty boundaries."
   }
 ];

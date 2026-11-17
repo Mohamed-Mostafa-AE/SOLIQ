@@ -1,14 +1,22 @@
 /**
  * SOLIQ: The Seventh Field - 3D Character Controller & Inputs
- * Responsive desktop (WASD/Mouse) + Mobile Virtual Analog Joystick controls.
+ * Responsive desktop (WASD/Mouse, C for camera) + Mobile Virtual Analog Joystick controls.
  * Proximity interaction detector and dual-mode camera tracker.
  */
+
+// Never hijack keys intended for HUD buttons, forms, story dialogs or screen
+// readers. In particular, Tab must remain native keyboard focus navigation.
+export function isGameplayKeyTarget(event, canvas) {
+  return Boolean(canvas && event?.target === canvas && !event.defaultPrevented &&
+    !event.ctrlKey && !event.metaKey && !event.altKey);
+}
 
 export class PlayerController {
   constructor(scene, nadaActor, cameras, uiCallbacks = {}) {
     this.scene = scene;
     this.nada = nadaActor;
     this.cameras = cameras; // { follow, iso, dialogue }
+    this.canvas = this.scene?.getEngine?.()?.getRenderingCanvas?.() ?? null;
     this.uiCallbacks = uiCallbacks;
 
     this.keys = {
@@ -40,7 +48,7 @@ export class PlayerController {
 
   _setupDesktopInputs() {
     window.addEventListener('keydown', (e) => {
-      if (!this.inputEnabled) return;
+      if (!this.inputEnabled || !isGameplayKeyTarget(e, this.canvas)) return;
       const k = e.code;
       if (k === 'KeyW' || k === 'ArrowUp') this.keys.forward = true;
       if (k === 'KeyS' || k === 'ArrowDown') this.keys.backward = true;
@@ -48,13 +56,15 @@ export class PlayerController {
       if (k === 'KeyD' || k === 'ArrowRight') this.keys.right = true;
       if (k === 'ShiftLeft' || k === 'ShiftRight') this.keys.sprint = true;
 
-      if (k === 'KeyE' || k === 'Space') {
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(k)) {
         e.preventDefault();
+      }
+
+      if (k === 'KeyE' || k === 'Space') {
         this.triggerInteraction();
       }
 
-      if (k === 'Tab') {
-        e.preventDefault();
+      if (k === 'KeyC') {
         this.toggleCameraMode();
       }
 
@@ -66,12 +76,17 @@ export class PlayerController {
     });
 
     window.addEventListener('keyup', (e) => {
+      // Release existing movement state even after focus leaves the canvas.
       const k = e.code;
       if (k === 'KeyW' || k === 'ArrowUp') this.keys.forward = false;
       if (k === 'KeyS' || k === 'ArrowDown') this.keys.backward = false;
       if (k === 'KeyA' || k === 'ArrowLeft') this.keys.left = false;
       if (k === 'KeyD' || k === 'ArrowRight') this.keys.right = false;
       if (k === 'ShiftLeft' || k === 'ShiftRight') this.keys.sprint = false;
+    });
+    // Pressing a game key then switching tabs should never leave Nada walking.
+    window.addEventListener('blur', () => {
+      for (const key of Object.keys(this.keys)) this.keys[key] = false;
     });
   }
 
