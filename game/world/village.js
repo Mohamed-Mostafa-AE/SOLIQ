@@ -421,6 +421,7 @@ export class DeltaVillage {
         wheel,
         isOpen: false,
         openRatio: 0,
+        targetPlateY: 0.4,
         position: cfg.pos,
       });
     });
@@ -740,10 +741,8 @@ export class DeltaVillage {
     const gate = this.gates.find((g) => g.id === gateId);
     if (!gate) return;
     gate.isOpen = isOpen;
-    // Animate gate plate up/down
-    const targetY = isOpen ? 1.4 : 0.4;
-    gate.plate.position.y = targetY;
-    gate.wheel.rotation.y += Math.PI * 2;
+    // Animate a real visible sluice transition in tick(). No hydraulic claim.
+    gate.targetPlateY = isOpen ? 1.4 : 0.4;
   }
 
   updateFieldHydration(fieldIndex, hydrationRatio, salinityRatio = 0) {
@@ -770,6 +769,19 @@ export class DeltaVillage {
   }
 
   tick(deltaTime) {
+    // Independent of frame rate and respects a paused render loop. The wheel
+    // turns only while a gate is physically travelling, not on every click.
+    const step = Math.max(0, Math.min(0.1, deltaTime)) * 2.2;
+    for (const gate of this.gates) {
+      const diff = gate.targetPlateY - gate.plate.position.y;
+      if (Math.abs(diff) < 0.003) {
+        gate.plate.position.y = gate.targetPlateY;
+        continue;
+      }
+      gate.plate.position.y += Math.sign(diff) * Math.min(Math.abs(diff), step);
+      gate.wheel.rotation.z += Math.sign(diff) * step * Math.PI * 1.8;
+      gate.openRatio = (gate.plate.position.y - 0.4);
+    }
     // Animate flywheel when pump is running
     if (this.pump && this.pump.running && this.pump.flywheel) {
       this.pump.flywheel.rotation.x += deltaTime * 18.0;
