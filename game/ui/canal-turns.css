@@ -32,6 +32,7 @@
 .canal-turn-field{display:grid;gap:3px;font-size:.73rem;font-variant-numeric:tabular-nums;}
 .canal-turn-field progress{width:100%;height:11px;accent-color:#5ed3a0;}
 .canal-turn-score{font-weight:800;color:#e8d39e;font-variant-numeric:tabular-nums;margin:11px 0 0;}
+.canal-turn-community{margin-top:10px;padding:10px 12px;border-radius:10px;border:1px solid #8fc6a3;background:#214338;color:#e4f7e8;font-variant-numeric:tabular-nums;line-height:1.55;}
 .canal-turn-warning{font-size:.7rem;color:#bfd9ca;border-top:1px solid #bfd9ca50;padding-top:8px;}
 @media(max-width:700px){
   .canal-turn-panel{top:auto;bottom:90px;right:8px;width:min(360px,calc(100vw - 16px));max-height:59dvh;padding:12px;}

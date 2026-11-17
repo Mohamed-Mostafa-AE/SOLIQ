@@ -2,6 +2,7 @@ import {
   createCanalTurns, toggleCanalGate, runCanalTurn, resetCanalTurns,
   CANAL_GATE_IDS, CANAL_TURN_COUNT, CANAL_TURN_DEMANDS, CANAL_TURN_SUPPLY,
 } from '../core/canal-turns.js';
+import {summarizeCanalCommunity, canalNpcFeedback} from '../core/canal-community.js';
 
 const COPY = {
   en: {
@@ -13,10 +14,14 @@ const COPY = {
     open: 'OPEN', closed: 'CLOSED', turn: 'Turn', supply: 'Available per turn',
     run: '▶ Run one-hour turn', replay: '↻ Try a different strategy',
     close: 'Close canal mission', missing: 'Open the main intake and at least one branch first.',
-    result: 'One turn completed. Adjust the gates for the next turn; field soil visibly changes.',
+    result: 'Turn complete. Watch the fields and ask Hassan or Maryam how the fictional distribution affected their branch.',
     finished: 'Two turns complete. Compare covered needs and distribution balance, then replay.',
     coverage: 'Demand met', balance: 'Distribution balance', field: 'Field',
     empty: 'No water delivered yet. Use the gates below or walk to one and press E.',
+    goal: 'Goal: meet 90% of total needs and at least 80% in each branch.',
+    shared: 'Community goal met in this fictional two-turn trial. Replay to explore another strategy.',
+    review: 'Community goal missed. Review the branch gates and try again.',
+    progress: 'Ask Hassan or Maryam about the simulated water turn.',
     warning: 'This is a two-turn training puzzle with assumed demands, not canal hydraulics or a watering recommendation.',
   },
   ar: {
@@ -28,21 +33,26 @@ const COPY = {
     open: 'مفتوحة', closed: 'مغلقة', turn: 'النوبة', supply: 'المتاح لكل نوبة',
     run: '▶ شغّل نوبة ساعة', replay: '↻ جرّب استراتيجية تانية',
     close: 'اقفل مهمة المسقاة', missing: 'افتح المأخذ الرئيسي وبوابة فرعية واحدة على الأقل.',
-    result: 'انتهت النوبة. غيّر البوابات للنوبة الجاية وشوف التربة بتتغير.',
+    result: 'انتهت النوبة. شوف تغيّر الحقول وكلم حسن أو مريم عن نصيب فرعهم في المحاكاة.',
     finished: 'خلصت النوبتان. قارن الاحتياجات الملباة وتوازن التوزيع، وجرب من جديد.',
     coverage: 'احتياجات تمت تلبيتها', balance: 'توازن التوزيع', field: 'الحقل',
     empty: 'لسه مفيش مياه اتوزعت. استخدم البوابات أو امشِ عند بوابة واضغط E.',
+    goal: 'الهدف: نلبي ٩٠٪ من الاحتياج الإجمالي و٨٠٪ على الأقل لكل فرع.',
+    shared: 'اتحقق هدف القرية في التجربة الافتراضية. جرّب استراتيجية تانية.',
+    review: 'هدف القرية لسه ما اتحققش. راجع البوابات وجرب من جديد.',
+    progress: 'اتكلم مع حسن أو مريم عن توزيع المياه الافتراضي.',
     warning: 'ده لغز تدريبي بنوبتين واحتياجات مفترضة، مش نموذج هيدروليكي لقناة حقيقية أو توصية ري.',
   },
 };
 
 /** UI and visible scene coupling; authoritative water arithmetic stays in the science solver. */
 export class CanalTurnActivity {
-  constructor({host, village, waterEngine, hud}) {
+  constructor({host, village, waterEngine, hud, onCommunityChange = () => {}}) {
     this.host = host;
     this.village = village;
     this.waterEngine = waterEngine;
     this.hud = hud;
+    this.onCommunityChange = onCommunityChange;
     this.lang = hud.lang === 'ar' ? 'ar' : 'en';
     this.state = createCanalTurns();
     this.ownsWaterVisuals = false;
@@ -77,11 +87,12 @@ export class CanalTurnActivity {
       <p class="canal-turn-message" role="status" aria-live="polite"></p>
       <div class="canal-turn-result" aria-label="Six fictional field demand bars"></div>
       <p class="canal-turn-score" role="status"></p>
+      <div class="canal-turn-community" role="status" aria-live="polite"></div>
       <button type="button" class="canal-turn-replay"></button>
       <p class="canal-turn-warning"></p>`;
     this.host.appendChild(this.panel);
     this.nodes = Object.fromEntries([
-      'title', 'badge', 'intro', 'round', 'supply', 'gates', 'run', 'message', 'result', 'score', 'replay', 'warning', 'close',
+      'title', 'badge', 'intro', 'round', 'supply', 'gates', 'run', 'message', 'result', 'score', 'community', 'replay', 'warning', 'close',
     ].map(name => [name, this.panel.querySelector(`.canal-turn-${name}`)]));
     this.nodes.close.addEventListener('click', () => this.open(true));
     this.nodes.run.addEventListener('click', () => this.runTurn());
@@ -115,6 +126,10 @@ export class CanalTurnActivity {
     return true;
   }
 
+  getNpcFeedback(actorId) {
+    return canalNpcFeedback(this.state, actorId);
+  }
+
   toggleGate(id) {
     if (this.state.complete) return false;
     this.state = toggleCanalGate(this.state, id);
@@ -145,6 +160,7 @@ export class CanalTurnActivity {
         this.village.fields[i].shortfall = this.state.remaining[i];
       }
     });
+    this.onCommunityChange(summarizeCanalCommunity(this.state));
     this._sync();
     this.hud.showTelemetryToast(
       this.lang === 'ar' ? 'نوبة المسقاة الخيالية' : 'Fictional canal turn',
@@ -169,6 +185,7 @@ export class CanalTurnActivity {
       });
     }
     this.ownsWaterVisuals = false;
+    this.onCommunityChange(summarizeCanalCommunity(this.state));
     this._sync();
     return true;
   }
@@ -202,6 +219,13 @@ export class CanalTurnActivity {
     this.nodes.replay.hidden = this.state.round === 0;
     this.nodes.warning.textContent = w.warning;
     this.nodes.score.textContent = `${w.coverage}: ${Math.round(this.state.coverage * 100)}% · ${w.balance}: ${Math.round(this.state.balance * 100)}%`;
+    const community = summarizeCanalCommunity(this.state);
+    const branchCoverage = community.branches.map(branch =>
+      `${this.lang === 'ar' ? branch.nameAr : branch.nameEn}: ${Math.round(branch.coverage * 100)}%`);
+    const outcome = community.status === 'shared_success' ? w.shared :
+      community.status === 'needs_review' ? w.review :
+      community.status === 'in_progress' ? w.progress : '';
+    this.nodes.community.textContent = [w.goal, branchCoverage.join(' · '), outcome].filter(Boolean).join(' ');
     this.nodes.result.replaceChildren();
     this.state.delivered.forEach((amount, index) => {
       const row = document.createElement('div');
