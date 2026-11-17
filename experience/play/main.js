@@ -18,6 +18,7 @@ import { EarthLensSystem } from '../../game/world/earth-lens.js';
 import { TimeEchoSystem } from '../../game/world/time-echo.js';
 import { Chapter0Mission } from '../../game/mission/chapter0.js';
 import { GameHUD } from '../../game/ui/hud.js';
+import { FieldworkActivity } from '../../game/ui/fieldwork-activity.js';
 import { AccessibleStoryDesk } from '../../game/ui/story-desk.js';
 import { OpeningHook } from '../../game/ui/opening-hook.js';
 import { CinematicDirector } from './cinematic-director.js';
@@ -44,6 +45,7 @@ class SeventhFieldGame {
     this.timeEcho = null;
     this.mission = null;
     this.hud = null;
+    this.fieldwork = null;
     this.storyDesk = null;
     this.openingHook = null;
 
@@ -228,6 +230,7 @@ class SeventhFieldGame {
         this.openingHook?.setLanguage(language);
         this.nasaBrowseOverlay?.setLanguage(language);
         this.chapterSequence?.setLanguage(language);
+        this.fieldwork?.setLanguage(language);
       },
       onToggleCamera: () => {
         this.playerController?.toggleCameraMode();
@@ -338,10 +341,27 @@ class SeventhFieldGame {
       { id: 'timeEcho', nameAr: 'الغيط السابع (صدى الزمن)', nameEn: 'The Seventh Field (Time Echo)', position: new BABYLON.Vector3(68, 0, 0) },
     ];
 
-    this.playerController.setInteractables(targets);
+    this.baseInteractables = targets;
+    this.fieldwork = new FieldworkActivity({
+      scene: this.renderSetup.scene,
+      host: this.uiContainer,
+      nada: this.characters.nada,
+      hud: this.hud,
+      reducedMotion: this.renderSetup.reducedMotion,
+      onProgress: () => this._refreshInteractables(),
+    });
+    this._refreshInteractables();
+  }
+
+  _refreshInteractables() {
+    this.playerController?.setInteractables([
+      ...this.baseInteractables,
+      ...(this.fieldwork?.getInteractables() || []),
+    ]);
   }
 
   _handleInteraction(target) {
+    if (this.fieldwork?.handleInteraction(target)) return;
     this.audio.playGateTurnSFX();
     const dialogue = this.mission.getDialogueForTarget(target);
     if (dialogue) {
@@ -368,6 +388,7 @@ class SeventhFieldGame {
 
     // 3. Update village mechanical elements (pump flywheel)
     this.village.tick(deltaTime);
+    this.fieldwork?.tick(deltaTime);
 
     // 4. Update water simulation waves and height
     this.waterEngine.update(deltaTime);
