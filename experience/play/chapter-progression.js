@@ -1,5 +1,5 @@
 /**
- * One honest Chapter 0 → 1 → 2 → 3 → 4 route shared by Babylon and text-only.
+ * One honest Chapter 0 → 1 → 2 → 3 → 4 → 5 → 6 route shared by Babylon and text-only.
  * Every later chapter is instantiated only after the preceding fictional
  * result exists; replay invalidates all downstream decisions.
  */
@@ -7,20 +7,29 @@ import { attachChapter1Game } from '../../game/ui/chapter1-board.js';
 import { attachChapter2Game } from '../../game/ui/chapter2-board.js';
 import { attachChapter3Game } from '../../game/ui/chapter3-board.js';
 import { attachChapter4Game } from '../../game/ui/chapter4-board.js';
+import { attachChapter5Game, attachChapter6Game } from '../../game/ui/chapter5-6-board.js';
 
 const words = {
   en: { launch: 'Chapter 2 · The Evidence Gap →', replay: 'Replay Chapter 2 · The Evidence Gap ↻',
     summary: 'Your fictional crop plan is ready. Investigate what the village knows — and what it does not.',
     soil: 'Chapter 3 · The Soil Lab →', soilReplay: 'Replay Chapter 3 · The Soil Lab ↻',
     harvest: 'Chapter 4 · The Harvest Council →', harvestReplay: 'Replay Chapter 4 · The Harvest Council ↻',
+    canal: 'Chapter 5 · Three Canal Turns →', canalReplay: 'Replay Chapter 5 · Three Canal Turns ↻',
+    future: 'Chapter 6 · The Open Future →', futureReplay: 'Replay Chapter 6 · The Open Future ↻',
     soilSummary: 'Your evidence question is recorded. Explore soil-cover trade-offs in a fictional two-plot lab.',
-    harvestSummary: 'Your simulated soil plan is ready. Write the village pact with limited promises.' },
+    harvestSummary: 'Your simulated soil plan is ready. Write the village pact with limited promises.',
+    canalSummary: 'The village pact is set. Play three consequential, fictional canal decisions.',
+    futureSummary: 'Three canal turns are recorded. Decide how the village should face its missing evidence.' },
   ar: { launch: 'الفصل الثاني · فجوة الأدلة ←', replay: 'أعد الفصل الثاني · فجوة الأدلة ↻',
     summary: 'خطة اللعبة الافتراضية جاهزة. اكتشف الأدلة الموجودة والناقصة في القرية.',
     soil: 'الفصل الثالث · مختبر التربة ←', soilReplay: 'أعد الفصل الثالث · مختبر التربة ↻',
     harvest: 'الفصل الرابع · مجلس الحصاد ←', harvestReplay: 'أعد الفصل الرابع · مجلس الحصاد ↻',
+    canal: 'الفصل الخامس · تلات نوبات للمسقة ←', canalReplay: 'أعد الفصل الخامس · تلات نوبات للمسقة ↻',
+    future: 'الفصل السادس · المستقبل المفتوح ←', futureReplay: 'أعد الفصل السادس · المستقبل المفتوح ↻',
     soilSummary: 'اتسجل قرار الأدلة. جرّب مفاضلات غطاء التربة افتراضياً في قطعتين.',
-    harvestSummary: 'خطة التربة الافتراضية جاهزة. اكتب اتفاق القرية بوعود محدودة.' },
+    harvestSummary: 'خطة التربة الافتراضية جاهزة. اكتب اتفاق القرية بوعود محدودة.',
+    canalSummary: 'اتفاق القرية جاهز. العب تلات قرارات خيالية مؤثرة في المسقة.',
+    futureSummary: 'اتسجلت تلات نوبات. اختار إزاي القرية هتواجه الأدلة الناقصة.' },
 };
 
 export function mountChapterSequence({ host, chapter0, language = 'en', onUnlocked = () => {} } = {}) {
@@ -29,9 +38,13 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
   let chapter2 = null;
   let chapter3 = null;
   let chapter4 = null;
+  let chapter5 = null;
+  let chapter6 = null;
   let wasUnlocked = false;
   let soilWasUnlocked = false;
   let harvestWasUnlocked = false;
+  let canalWasUnlocked = false;
+  let futureWasUnlocked = false;
   const style = document.createElement('link');
   style.rel = 'stylesheet';
   style.href = new URL('./chapter-later.css', import.meta.url).href;
@@ -64,6 +77,8 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
   }
   const chapter3Launch = makeLaterButton('chapter3-launch', () => chapter3?.open());
   const chapter4Launch = makeLaterButton('chapter4-launch', () => chapter4?.open());
+  const chapter5Launch = makeLaterButton('chapter5-launch', () => chapter5?.open());
+  const chapter6Launch = makeLaterButton('chapter6-launch', () => chapter6?.open());
 
   function renderLabel() {
     const t = words[lang];
@@ -76,9 +91,31 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter4Launch.textContent = chapter4?.mission.phase === 'result' ? t.harvestReplay : t.harvest;
     chapter4Launch.setAttribute('aria-label', chapter4Launch.textContent);
     chapter4Launch.title = t.harvestSummary;
+    chapter5Launch.textContent = chapter5?.mission.phase === 'result' ? t.canalReplay : t.canal;
+    chapter5Launch.setAttribute('aria-label', chapter5Launch.textContent);
+    chapter5Launch.title = t.canalSummary;
+    chapter6Launch.textContent = chapter6?.mission.phase === 'result' ? t.futureReplay : t.future;
+    chapter6Launch.setAttribute('aria-label', chapter6Launch.textContent);
+    chapter6Launch.title = t.futureSummary;
+  }
+
+  function removeChapter6() {
+    chapter6?.destroy();
+    chapter6 = null;
+    chapter6Launch.hidden = true;
+    futureWasUnlocked = false;
+  }
+
+  function removeChapter5() {
+    removeChapter6();
+    chapter5?.destroy();
+    chapter5 = null;
+    chapter5Launch.hidden = true;
+    canalWasUnlocked = false;
   }
 
   function removeChapter4() {
+    removeChapter5();
     chapter4?.destroy();
     chapter4 = null;
     chapter4Launch.hidden = true;
@@ -93,6 +130,38 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     soilWasUnlocked = false;
   }
 
+  function refreshFuture() {
+    if (chapter5?.mission.phase !== 'result') {
+      removeChapter6();
+      renderLabel();
+      return;
+    }
+    if (!chapter6) chapter6 = attachChapter6Game({
+      host, chapter5: chapter5.mission, language: lang,
+      onStateChange: () => renderLabel(),
+    });
+    chapter6Launch.hidden = false;
+    renderLabel();
+    if (!futureWasUnlocked) onUnlocked(words[lang].futureSummary);
+    futureWasUnlocked = true;
+  }
+
+  function refreshCanal() {
+    if (chapter4?.mission.phase !== 'result') {
+      removeChapter5();
+      renderLabel();
+      return;
+    }
+    if (!chapter5) chapter5 = attachChapter5Game({
+      host, chapter4: chapter4.mission, language: lang,
+      onStateChange: () => refreshFuture(),
+    });
+    chapter5Launch.hidden = false;
+    refreshFuture();
+    if (!canalWasUnlocked) onUnlocked(words[lang].canalSummary);
+    canalWasUnlocked = true;
+  }
+
   function refreshFinale() {
     if (chapter3?.mission.phase !== 'result') {
       removeChapter4();
@@ -102,9 +171,10 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     if (!chapter4) chapter4 = attachChapter4Game({
       host, chapter3: chapter3.mission, language: lang,
       // The Chapter 4 board has already re-rendered and restored focus.
-      onStateChange: () => renderLabel(),
+      onStateChange: () => refreshCanal(),
     });
     chapter4Launch.hidden = false;
+    refreshCanal();
     renderLabel();
     if (!harvestWasUnlocked) onUnlocked(words[lang].harvestSummary);
     harvestWasUnlocked = true;
@@ -156,6 +226,8 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter2?.setLanguage(lang);
     chapter3?.setLanguage(lang);
     chapter4?.setLanguage(lang);
+    chapter5?.setLanguage(lang);
+    chapter6?.setLanguage(lang);
     renderLabel();
   }
 
@@ -166,11 +238,15 @@ export function mountChapterSequence({ host, chapter0, language = 'en', onUnlock
     chapter2Launch.remove();
     chapter3Launch.remove();
     chapter4Launch.remove();
+    chapter5Launch.remove();
+    chapter6Launch.remove();
     style.remove();
   }
 
   refresh();
   return { chapter1, get chapter2() { return chapter2; }, get chapter3() { return chapter3; },
-    get chapter4() { return chapter4; }, chapter2Launch, chapter3Launch, chapter4Launch,
+    get chapter4() { return chapter4; }, get chapter5() { return chapter5; },
+    get chapter6() { return chapter6; },
+    chapter2Launch, chapter3Launch, chapter4Launch, chapter5Launch, chapter6Launch,
     refresh, setLanguage, destroy };
 }

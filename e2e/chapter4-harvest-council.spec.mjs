@@ -31,10 +31,10 @@ test('final council offers real playable trade-offs and two distinct fictional e
   await council.locator('#harvest-water').selectOption('3');
   await council.locator('#harvest-soil').selectOption('2');
   await expect(council.getByText(/promised more than its fictional capacity/)).toBeVisible();
-  await expect(council.getByRole('button',{name:/Conclude the village story/})).toBeDisabled();
+  await expect(council.getByRole('button',{name:/Confirm the village pact/})).toBeDisabled();
   await council.locator('#harvest-soil').selectOption('1');
-  await expect(council.getByRole('button',{name:/Conclude the village story/})).toBeEnabled();
-  await council.getByRole('button',{name:/Conclude the village story/}).click();
+  await expect(council.getByRole('button',{name:/Confirm the village pact/})).toBeEnabled();
+  await council.getByRole('button',{name:/Confirm the village pact/}).click();
   await expect(council.getByText(/Hassan gives the first water turn back/)).toBeVisible();
   await expect(council.getByText(/fictional ending, not a field recommendation/)).toBeVisible();
   await expect(council.locator('#harvest-water')).toBeDisabled();
@@ -42,7 +42,7 @@ test('final council offers real playable trade-offs and two distinct fictional e
   await council.getByRole('button',{name:'Rewrite the pact'}).click();
   await council.locator('#harvest-water').selectOption('1');
   await council.locator('#harvest-soil').selectOption('3');
-  await council.getByRole('button',{name:/Conclude the village story/}).click();
+  await council.getByRole('button',{name:/Confirm the village pact/}).click();
   await expect(council.getByText(/Maryam places living cover/)).toBeVisible();
 });
 
@@ -51,7 +51,7 @@ test('evidence-first finale makes an actual local JSON receipt with no invented 
     ...baseOutcome,ending:'prepared_for_measurement',previousChapterEnding:'evidence_pause',
   });
   const council=page.locator('#chapter4-harvest-council');
-  await council.getByRole('button',{name:/Conclude the village story/}).click();
+  await council.getByRole('button',{name:/Confirm the village pact/}).click();
   await expect(council.getByText(/does not call a story result a real harvest/)).toBeVisible();
   const downloadPromise=page.waitForEvent('download');
   await council.getByRole('button',{name:/Download my fictional decisions/}).click();
@@ -91,6 +91,6 @@ test('360px Arabic text-only finale is keyboard accessible without motion or hor
   expect(properties.canvas).toBe(0);
   expect(properties.title).toBeGreaterThanOrEqual(0);
   await page.screenshot({path:'test-results/chapter4-council-arabic-mobile-360.png'});
-  await council.getByRole('button',{name:/اختم قصة القرية/}).click();
+  await council.getByRole('button',{name:/ثبّت اتفاق القرية/}).click();
   await expect(council.getByText('مجلس واحد. مفيش حل مثالي.')).toBeVisible();
 });
