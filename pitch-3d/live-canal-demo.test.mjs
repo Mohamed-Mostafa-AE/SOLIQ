@@ -7,8 +7,9 @@ test('the live pitch links judges to the actual game, not a static video or conc
   assert.equal(LINKS.game, 'https://soliq-delta.vercel.app/experience/play/');
   const interactive = slides.find(slide => slide.kind === 'ai');
   assert.ok(interactive);
-  assert.match(interactive.items[0][1], /Operate three animated canal gates/);
-  assert.match(interactive.items[0][1], /six visible fields/);
+  assert.match(interactive.items[0][1], /Operate 3 animated gates/);
+  assert.match(interactive.items[0][1], /6 fields respond/);
+  assert.ok(interactive.items[0][1].length <= 100, 'PPTX slide 5 uses a fixed-height 48 px text box');
   assert.match(interactive.notes, /120 cubic metres per turn/);
   assert.match(interactive.notes, /fictional/);
   assert.match(interactive.notes, /never be presented as observed farm results/);

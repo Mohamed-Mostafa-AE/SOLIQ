@@ -95,7 +95,7 @@ export const slides=[
     "kind": "ai",
     "scene": "documents",
     "items": [
-      ["THE SEVENTH FIELD", "Operate three animated canal gates. Allocate two fictional water turns across six visible fields; compare outcomes and replay."],
+      ["THE SEVENTH FIELD", "Operate 3 animated gates, run 2 fictional water turns, and watch 6 fields respond."],
       ["THE FIELD WORKSPACE", "Compare crop calendars with dated NASA POWER weather and clearly declared local assumptions."],
       ["THE EVIDENCE ADVISER", "On-device retrieval from six reviewed passages. It cannot validate a farm or predict crop yields."]
     ],
