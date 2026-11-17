@@ -13,6 +13,10 @@ fictional game extension, not an agronomic or NASA data claim.
   different scene descriptions, scores and Chapter 5 ending IDs.
 - No random/fabricated canal shortage, water units, yields, NASA records or
   environmental sensor readings. Replaying resets all turns.
+- The Babylon route now displays three original low-poly **story markers**
+  representing the counts of fairness, cover-work and missing-record choices.
+  These are symbolic cues; no crop meshes, canal-flow measurements or NASA
+  source classifications are modified. Earlier-chapter replay removes them.
 
 ## Chapter 6 — The Open Future
 
@@ -35,6 +39,7 @@ fictional game extension, not an agronomic or NASA data claim.
 | Arabic at 360px, keyboard and reduced motion | `e2e/chapter5-6-future.spec.mjs` | GitHub Actions required |
 | Real text route 0–6 and descendant invalidation | `e2e/chapter5-6-future.spec.mjs` | GitHub Actions required |
 | Babylon 0–6 and six-button mobile dock | `e2e/chapter-full-journey.spec.mjs` | GitHub Actions required |
+| Real 3D markers follow decisions and reset | `game/world/council-world-reactions.test.mjs`, `e2e/chapter-full-journey.spec.mjs` | New exact-head CI required |
 | Browser-native DOM smoke (UI mount/actions/close) | ephemeral Happy DOM check | PASS locally |
 
 The local container's Chromium cannot launch because its OS denies
