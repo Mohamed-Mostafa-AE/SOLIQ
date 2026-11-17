@@ -138,6 +138,12 @@ export class CanalTurnActivity {
     this.waterEngine.applySimulationToWorld(action.result);
     this.state.delivered.forEach((amount, i) => {
       this.village.updateFieldHydration(i, amount / CANAL_TURN_DEMANDS[i]);
+      // The visual water engine records this *turn* only. Keep each game's
+      // field metadata coherent with the cumulative two-turn puzzle panel.
+      if (this.village.fields[i]) {
+        this.village.fields[i].delivered = amount;
+        this.village.fields[i].shortfall = this.state.remaining[i];
+      }
     });
     this._sync();
     this.hud.showTelemetryToast(
@@ -154,7 +160,13 @@ export class CanalTurnActivity {
     for (const id of CANAL_GATE_IDS) this.village.setGateOpen(id, false);
     if (this.ownsWaterVisuals) {
       this.waterEngine.setPumpState(false);
-      CANAL_TURN_DEMANDS.forEach((_, i) => this.village.updateFieldHydration(i, 0));
+      CANAL_TURN_DEMANDS.forEach((demand, i) => {
+        this.village.updateFieldHydration(i, 0);
+        if (this.village.fields[i]) {
+          this.village.fields[i].delivered = 0;
+          this.village.fields[i].shortfall = demand;
+        }
+      });
     }
     this.ownsWaterVisuals = false;
     this._sync();

@@ -55,11 +55,22 @@ test('live three-gate canal puzzle alters delivered water, six 3D fields and is 
   expect(final.hydration.slice(3).some(n => n > 0)).toBe(true);
   expect(final.receipts).toBe(first.receiptCount); // Educational activity cannot claim a NASA evidence receipt.
   expect(final.stored).toEqual([]);
+  expect(await page.evaluate(() => {
+    const game = window.__seventhFieldGame;
+    return game.village.fields.slice(0, 6).every((field, i) =>
+      Math.abs(field.delivered - game.canalTurns.state.delivered[i]) < 1e-6 &&
+      Math.abs(field.shortfall - game.canalTurns.state.remaining[i]) < 1e-6);
+  })).toBe(true);
   await page.screenshot({path:'test-results/seventh-field-operable-canal-turns.png'});
   await page.locator('.canal-turn-replay').click();
   expect(await page.evaluate(() => {
     const game = window.__seventhFieldGame;
-    return game.canalTurns.state.round === 0 && game.village.fields.every(f => f.hydration === 0) &&
+    // The separate seventh Time Echo is not part of the six-field training
+    // solver and must preserve its initial appearance on a puzzle replay.
+    return game.canalTurns.state.round === 0 &&
+      game.village.fields.slice(0, 6).every((f, i) => f.hydration === 0 && f.delivered === 0 &&
+        f.shortfall === [35, 45, 60, 40, 25, 30][i]) &&
+      game.village.fields[6].hydration === 0.1 &&
       game.village.gates.every(g => !g.isOpen);
   })).toBe(true);
 });
